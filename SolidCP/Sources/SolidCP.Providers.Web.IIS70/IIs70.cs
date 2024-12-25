@@ -65,7 +65,6 @@ using System.Collections.Specialized;
 using SolidCP.Providers.Web.WebObjects;
 using SolidCP.Providers.Web.Iis.Common;
 using SolidCP.Providers.Web.Iis;
-using Ionic.Zip;
 using SolidCP.Providers.WebAppGallery;
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Web.Delegation;

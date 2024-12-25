@@ -16,7 +16,7 @@
 		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.6.0" />
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.6.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.9.0" />
+		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
 		<!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />

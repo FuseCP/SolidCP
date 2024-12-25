@@ -4,7 +4,6 @@ using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
-using Ionic.Zip;
 using System.Globalization;
 using System.Security.Policy;
 using System.Diagnostics.Contracts;
@@ -30,8 +29,18 @@ namespace SolidCP.UniversalInstaller
 			CopyServer();
 			SetServerFilePermissions();
 			SetServerFileOwner();
-			InstallServerWebsite();
 			ConfigureServer();
+			InstallServerWebsite();
+		}
+		public virtual void UpdateServer()
+		{
+			InstallServerPrerequisites();
+			CopyServer(ConfigAndSetupFilter);
+			SetServerFilePermissions();
+			SetServerFileOwner();
+			UpdateServerConfig();
+			ConfigureServer();
+			InstallServerWebsite();
 		}
 
 		public virtual void RemoveServer()
@@ -51,6 +60,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemoveServerUser() { }
 		public virtual void RemoveServerApplicationPool() { }
 		public virtual void ReadServerConfiguration() { }
+		public virtual void UpdateServerConfig() { }
 		public virtual void ConfigureServer() { }
 		public virtual void CopyServer(Func<string, string> filter = null)
 		{

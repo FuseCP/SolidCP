@@ -4,7 +4,6 @@ using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
-using Ionic.Zip;
 using System.Globalization;
 using System.Security.Policy;
 using System.Diagnostics.Contracts;
@@ -28,12 +27,9 @@ namespace SolidCP.UniversalInstaller
 			CopyEnterpriseServer();
 			SetEnterpriseServerFilePermissions();
 			SetEnterpriseServerFileOwner();
+			InstallDatabase();
 			InstallEnterpriseServerWebsite();
 			ConfigureEnterpriseServer();
-		}
-		public virtual void UpdateEnterpriseServerConfig()
-		{
-
 		}
 		public virtual void UpdateEnterpriseServer()
 		{
@@ -46,6 +42,10 @@ namespace SolidCP.UniversalInstaller
 			ConfigureEnterpriseServer();
 			InstallEnterpriseServerWebsite();
 		}
+		public virtual void UpdateEnterpriseServerConfig() { }
+		public virtual void InstallDatabase() { }
+		public virtual void UpdateDatabase() { }
+		public virtual void DeleteDatabase() { }
 		public virtual void InstallEnterpriseServerWebsite()
 		{
 			InstallWebsite($"{SolidCP}EnterpriseServer",
@@ -63,6 +63,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			RemoveEnterpriseServerWebsite();
 			RemoveEnterpriseServerFolder();
+			DeleteDatabase();
 		}
 		public virtual void ReadEnterpriseServerConfiguration() { }
 

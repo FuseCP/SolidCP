@@ -16,9 +16,6 @@
     <DebugType>full</DebugType>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching">
       <HintPath>..\..\Lib\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
     </Reference>

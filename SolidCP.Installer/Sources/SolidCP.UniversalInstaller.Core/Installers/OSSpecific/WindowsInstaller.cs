@@ -319,8 +319,9 @@ namespace SolidCP.UniversalInstaller
 			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
 		}
 
-		public override void ConfigureWebPortal(WebPortalSettings settings)
+		public override void ConfigureWebPortal()
 		{
+			var settings = Settings.WebPortal;
 			var confFile = Path.Combine(InstallWebRootPath, PortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");

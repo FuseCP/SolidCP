@@ -503,7 +503,7 @@ namespace SolidCP.Providers.Virtualization
 
             SKImageInfo thumbinfo = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Opaque);
             SKImage thumb = SKImage.Create(thumbinfo);
-            image?.ScalePixels(thumb.PeekPixels(), SKFilterQuality.Medium);
+            image?.ScalePixels(thumb.PeekPixels(), SKSamplingOptions.Default);
 
             MemoryStream stream = new MemoryStream();
 
@@ -1255,7 +1255,7 @@ namespace SolidCP.Providers.Virtualization
                 var img = SKImage.FromEncodedData(screenshotFile);
                 SKImageInfo thumbinfo = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Opaque);
                 SKImage thumb = SKImage.Create(thumbinfo);
-                img?.ScalePixels(thumb.PeekPixels(), SKFilterQuality.Medium);
+                img?.ScalePixels(thumb.PeekPixels(), SKSamplingOptions.Default);
 
                 MemoryStream stream = new MemoryStream();
 

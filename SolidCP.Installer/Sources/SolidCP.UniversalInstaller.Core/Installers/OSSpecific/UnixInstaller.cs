@@ -75,7 +75,7 @@ namespace SolidCP.UniversalInstaller
 				"SolidCP.Server service, the server management service for the SolidCP control panel.");
 		}
 
-		public override void InstallPortalWebsite()
+		public override void InstallWebPortalWebsite()
 		{
 			var dll = Path.Combine(InstallWebRootPath, PortalFolder, "bin_dotnet", "SolidCP.WebPortal.dll");
 
@@ -99,7 +99,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public override void RemoveServerWebsite() => RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
 		public override void RemoveEnterpriseServerWebsite() => RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
-		public override void RemovePortalWebsite() => RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
+		public override void RemoveWebPortalWebsite() => RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
 
 		public override void OpenFirewall(int port)
 		{

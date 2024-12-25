@@ -33,6 +33,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
 
@@ -42,17 +43,18 @@ namespace SolidCP.Setup
     /// </summary>
     public class EnterpriseServer160 : EnterpriseServer
     {
-        public new bool Install(string args)
-        {
-            return Install(args, minimalInstallerVersion: "1.6.0");
-        }
+        public override Version MinimalInstallerVersion => new Version("1.6.0");
+        public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public bool Install(string args) => base.InstallOrSetup(args, "Install EnterpriseServer",
+            Installer.Current.InstallEnterpriseServer, true);
 
-        public new bool Update(string args)
-        {
-            return UpdateBase(args,
-                 minimalInstallerVersion: "1.6.0",
-                 versionToUpgrade: "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5",
-                 updateSql: true);
-        }
+        public bool Update(string args) => base.Update(args, "Update EnterpriseServer",
+            Installer.Current.UpdateEnterpriseServer);
+
+        public bool Setup(string args) => base.InstallOrSetup(args, "Setup EnterpriseServer",
+            Installer.Current.ConfigureEnterpriseServer, true);
+
+        public bool Uninstall(string args) => base.Uninstall(args, "Uninstall EnterpriseServer",
+            Installer.Current.RemoveEnterpriseServer);
     }
 }

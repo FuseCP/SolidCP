@@ -99,6 +99,9 @@ namespace SolidCP.Providers.OS
 
 		public override ServiceManager Install(ServiceDescription description)
 		{
+			var desc = description as SystemdServiceDescription;
+			if (desc == null) throw new ArgumentException("Service description is not a SystemdServiceDescription.");
+
 			var srvcFile = @"[Unit]
 Description=@description
 @dependsOn
@@ -120,12 +123,12 @@ WorkingDirectory=@workdir
 WantedBy=multi-user.target
 ";
 
-			var env = string.Join(Environment.NewLine, description.EnvironmentVariables.Keys
+			var env = string.Join(Environment.NewLine, desc.EnvironmentVariables.Keys
 				.OfType<string>()
-				.Select(key => $"Environment=\"{key}={description.EnvironmentVariables[key]}\"")
+				.Select(key => $"Environment=\"{key}={desc.EnvironmentVariables[key]}\"")
 				.ToArray());
 
-			var deps = string.Join(Environment.NewLine, description.DependsOn
+			var deps = string.Join(Environment.NewLine, desc.DependsOn
 				.Select(dep => $"Requires={dep}{Environment.NewLine}After={dep}")
 			.ToArray());
 
@@ -166,29 +169,28 @@ WantedBy=multi-user.target
 				}
 			}
 
-			var unixDescription = description as UnixServiceDescription;
 			srvcFile = srvcFile
-				.Replace("@description", description.Description)
+				.Replace("@description", desc.Description)
 				.Replace("@dependsOn", deps)
 				.Replace("@exec", exe)
-				.Replace("@workdir", description.Directory)
+				.Replace("@workdir", desc.Directory)
 				.Replace("@environment", env)
-				.Replace("@Restart_", !string.IsNullOrEmpty(description.Restart) ? $"Restart={description.Restart}" : "")
-				.Replace("@RestartSec", !string.IsNullOrEmpty(description.RestartSec) ? $"RestartSec={description.RestartSec}" : "")
-				.Replace("@StartLimitIntervalSec", !string.IsNullOrEmpty(description.StartLimitIntervalSec) ? $"StartLimitIntervalSec={description.StartLimitIntervalSec}" : "")
-				.Replace("@StartLimitBurst", !string.IsNullOrEmpty(description.StartLimitBurst) ? $"StartLimitBurst={description.StartLimitBurst}" : "")
-				.Replace("@User", !string.IsNullOrEmpty(description.User) ? $"User={description.User}" : "")
-				.Replace("@Group", !string.IsNullOrEmpty(unixDescription?.Group) ? $"Group={unixDescription.Group}" : "")
-				.Replace("@Syslog", !string.IsNullOrEmpty(unixDescription?.SyslogIdentifier) ?
-					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={unixDescription.SyslogIdentifier}" : "")
+				.Replace("@Restart_", !string.IsNullOrEmpty(desc.Restart) ? $"Restart={desc.Restart}" : "")
+				.Replace("@RestartSec", !string.IsNullOrEmpty(desc.RestartSec) ? $"RestartSec={desc.RestartSec}" : "")
+				.Replace("@StartLimitIntervalSec", !string.IsNullOrEmpty(desc.StartLimitIntervalSec) ? $"StartLimitIntervalSec={desc.StartLimitIntervalSec}" : "")
+				.Replace("@StartLimitBurst", !string.IsNullOrEmpty(desc.StartLimitBurst) ? $"StartLimitBurst={desc.StartLimitBurst}" : "")
+				.Replace("@User", !string.IsNullOrEmpty(desc.User) ? $"User={desc.User}" : "")
+				.Replace("@Group", !string.IsNullOrEmpty(desc.Group) ? $"Group={desc.Group}" : "")
+				.Replace("@Syslog", !string.IsNullOrEmpty(desc.SyslogIdentifier) ?
+					$"StandardOutput=journal{Environment.NewLine}StandardError=journal{Environment.NewLine}SyslogIdentifier={desc.SyslogIdentifier}" : "")
 				.Replace("\r\n", "\n");
 			srvcFile = Regex.Replace(srvcFile, @"^\s*$(?!^\[.*?\])", "", RegexOptions.Multiline); // remove empty lines
 
-			File.WriteAllText(Path.Combine(ServicesDirectory, $"{description.ServiceId}.service"), srvcFile);
+			File.WriteAllText(Path.Combine(ServicesDirectory, $"{desc.ServiceId}.service"), srvcFile);
 
 			Shell.Exec($"systemctl daemon-reload");
 
-			return this[description.ServiceId];
+			return this[desc.ServiceId];
 		}
 
 		public override void Remove(string serviceId)

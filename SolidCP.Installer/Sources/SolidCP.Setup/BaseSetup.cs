@@ -43,7 +43,7 @@ using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
-	public class BaseSetup: ISetupInstaller
+	public class BaseSetup
 	{
 		public InstallerSettings Settings => Installer.Current.Settings;
 		static BaseSetup()
@@ -59,55 +59,125 @@ namespace SolidCP.Setup
 			Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
 		}
 
+		bool argsParsed = false;
 		public void ParseArgs(string args)
 		{
-			Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(args, new VersionConverter());
-		}
-
-		public virtual bool Install(string args) => throw new NotImplementedException();
-		public virtual bool Setup(string args) => throw new NotImplementedException();
-		public virtual bool Update(string args) => throw new NotImplementedException();
-		public virtual bool Uninstall(string args) => throw new NotImplementedException();
-		public bool UpdateBase(string args, string minimalInstallerVersion, string versionToUpgrade, bool updateSql)
-		{
-			return UpdateBase(args, minimalInstallerVersion, versionToUpgrade, updateSql, null);
-		}
-
-		public bool UpdateBase(string args, string minimalInstallerVersion,
-			string versionsToUpgrade, bool updateSql, Action versionSpecificAction)
-		{
-			ParseArgs(args);
-			Version version = Settings.Installer.Version;
-			if (version < new Version(minimalInstallerVersion))
+			if (!argsParsed)
 			{
-				UI.Current.ShowWarning($"SolidCP Installer {minimalInstallerVersion} or higher required.");
+				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(args, new VersionConverter());
+				argsParsed = true;
+			}
+		}
+		public virtual Version MinimalInstallerVersion => new Version("1.6.0");
+		public virtual string VersionsToUpgrade => "";
+		public bool CheckInstallerVersion()
+		{
+			if (Settings.Installer.Version < MinimalInstallerVersion)
+			{
+				UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
 				return false;
 			}
-			
-			#region Support for multiple versions to upgrade from
+			else return true;
+		}
+		public virtual CommonSettings CommonSettings => null;
+		public virtual ComponentInfo Component => null;
+		public virtual UI.SetupWizard Wizard(string args, bool installFolder = true,
+			bool urlWizard = true, bool userWizard = true)
+		{
+			ParseArgs(args);
+
+			if (CheckInstallerVersion())
+			{
+				var wizard = UI.Current.Wizard
+					.Introduction()
+					.CheckPrerequisites()
+					.LicenseAgreement();
+				if (CommonSettings != null)
+				{
+					if (installFolder) wizard = wizard
+						.InstallFolder(CommonSettings);
+
+					if (urlWizard) wizard = wizard
+						.Web(CommonSettings)
+						.InsecureHttpWarning(CommonSettings)
+						.Certificate(CommonSettings);
+
+					if (userWizard) wizard = wizard
+						.UserAccount(CommonSettings);
+				} else
+				{
+					wizard = wizard
+						.InstallFolder(Settings.Standalone)
+						.Web(Settings.WebPortal)
+						.InsecureHttpWarning(Settings.WebPortal)
+						.Certificate(Settings.WebPortal)
+						.UserAccount(Settings.WebPortal)
+						.Web(Settings.EnterpriseServer)
+						.InsecureHttpWarning(Settings.EnterpriseServer)
+						.Certificate(Settings.EnterpriseServer)
+						.UserAccount(Settings.EnterpriseServer)
+						.Database()
+						.Web(Settings.Server)
+						.InsecureHttpWarning(Settings.Server)
+						.Certificate(Settings.Server)
+						.UserAccount(Settings.Server);
+				}
+				return wizard;
+			}
+			return null;
+		}
+		public virtual bool InstallOrSetup(string args, string title, Action installer, bool database = false) {
+			var wizard = Wizard(args, true, true, true);
+			if (database) wizard = wizard.Database();
+
+			return wizard
+				.RunWithProgress(title, installer)
+				.Finish()
+				.Show();
+		}
+
+		public bool CheckUpdate()
+		{
 			// Find out whether the version(s) are supported in that upgrade
-			var upgradeSupported = versionsToUpgrade.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				.Any(x => Settings.Installer.Version == new Version(x.Trim()));
+			var upgradeSupported = VersionsToUpgrade.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+				.Any(x => Component?.Version == new Version(x.Trim()));
 			// 
 			if (!upgradeSupported)
 			{
 				Log.WriteInfo(
-					String.Format("Could not find a suitable version to upgrade. Current version: {0}; Versions supported: {1};", Settings.Installer.Version, versionsToUpgrade));
+					String.Format("Could not find a suitable version to upgrade. Current version: {0}; Versions supported: {1};", Component?.Version.ToString() ?? "?", VersionsToUpgrade));
 				//
 				UI.Current.ShowWarning(
 					"Your current software version either is not supported or could not be upgraded at this time. Please send log file from the installer to the software vendor for further research on the issue.");
 				//
-				return false;
 			}
-			#endregion
 
-			return true;
-			/* return UI.Current.Wizard
-				.Introduction()
-				.LicenseAgreement()
-				.Progress()
+			return upgradeSupported;
+		}
+		public virtual bool Update(string args, string title, Action installer)
+		{
+			ParseArgs(args);
+
+			return CheckUpdate() && Wizard(args, false, true, true)
+				.RunWithProgress(title, installer)
 				.Finish()
-				.Show(); */
+				.Show();
+		}
+
+		public virtual bool Uninstall(string args, string title, Action installer)
+		{
+			ParseArgs(args);
+
+			if (CheckInstallerVersion())
+			{
+				return UI.Current.Wizard
+					.Introduction()
+					.ConfirmUninstall()
+					.RunWithProgress(title, installer)
+					.Finish()
+					.Show();
+			}
+			return false;
 		}
 	}
 }
