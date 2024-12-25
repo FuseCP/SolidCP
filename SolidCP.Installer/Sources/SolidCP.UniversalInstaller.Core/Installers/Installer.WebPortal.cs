@@ -17,11 +17,11 @@ namespace SolidCP.UniversalInstaller
 	{
 		public virtual void InstallWebPortalPrerequisites() { }
 		public virtual void RemoveWebPortalPrerequisites() { }
-		public virtual void SetWebPortalFilePermissions() => SetFilePermissions(PortalFolder);
-		public virtual void SetWebPortalFileOwner() => SetFileOwner(PortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
+		public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
+		public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
 		public virtual void InstallWebPortalWebsite()
 		{
-			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, PortalFolder), Settings.WebPortal.Urls ?? "", "", "");
+			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, WebPortalFolder), Settings.WebPortal.Urls ?? "", "", "");
 		}
 		public virtual void InstallWebPortal()
 		{
@@ -49,6 +49,11 @@ namespace SolidCP.UniversalInstaller
 			RemoveWebPortalWebsite();
 			RemoveWebPortalFolder();
 		}
+		public virtual void RemoveWebPortalFolder()
+		{
+			Directory.Delete(Path.Combine(InstallWebRootPath, WebPortalFolder), true);
+		}
+
 		public virtual void ReadWebPortalConfiguration()
 		{
 			Settings.WebPortal = new WebPortalSettings();
@@ -58,7 +63,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void CopyWebPortal(Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
-			var websitePath = Path.Combine(InstallWebRootPath, PortalFolder);
+			var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
 			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
 		}
 	}

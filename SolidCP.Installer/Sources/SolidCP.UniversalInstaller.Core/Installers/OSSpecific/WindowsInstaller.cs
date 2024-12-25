@@ -313,7 +313,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			Settings.WebPortal = new WebPortalSettings();
 
-			var confFile = Path.Combine(InstallWebRootPath, PortalFolder, "App_Data", "SiteSettings.config");
+			var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
 			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
@@ -322,7 +322,7 @@ namespace SolidCP.UniversalInstaller
 		public override void ConfigureWebPortal()
 		{
 			var settings = Settings.WebPortal;
-			var confFile = Path.Combine(InstallWebRootPath, PortalFolder, "App_Data", "SiteSettings.config");
+			var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
 			enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;

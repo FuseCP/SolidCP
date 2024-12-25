@@ -28,7 +28,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual string SolidCP => "SolidCP";
 		public virtual string ServerFolder => "Server";
 		public virtual string EnterpriseServerFolder => "EnterpriseServer";
-		public virtual string PortalFolder => "Portal";
+		public virtual string WebPortalFolder => "Portal";
 		public virtual string WebDavPortalFolder => "WebDavPortal";
 		public virtual string ServerUser => $"{SolidCP}Server";
 		public virtual string EnterpriseServerUser => $"{SolidCP}EnterpriseServer";

@@ -31,7 +31,7 @@ namespace SolidCP.UniversalInstaller
 				throw new FileNotFoundException($"The service executable {dll} was not found.");
 			}
 
-			var service = new UnixServiceDescription()
+			var service = new SystemdServiceDescription()
 			{
 				ServiceId = UnixServerServiceId,
 				Directory = Path.GetDirectoryName(dll),
@@ -52,7 +52,6 @@ namespace SolidCP.UniversalInstaller
 			InstallService(service);
 
 			OpenFirewall(urls);
-
 		}
 		public override void InstallServerWebsite()
 		{
@@ -77,7 +76,7 @@ namespace SolidCP.UniversalInstaller
 
 		public override void InstallWebPortalWebsite()
 		{
-			var dll = Path.Combine(InstallWebRootPath, PortalFolder, "bin_dotnet", "SolidCP.WebPortal.dll");
+			var dll = Path.Combine(InstallWebRootPath, WebPortalFolder, "bin_dotnet", "SolidCP.WebPortal.dll");
 
 			AddUnixUser(UnixPortalServiceId, SolidCPUnixGroup);
 
