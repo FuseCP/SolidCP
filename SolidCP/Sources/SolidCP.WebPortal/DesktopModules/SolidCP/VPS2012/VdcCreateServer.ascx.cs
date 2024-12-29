@@ -160,8 +160,6 @@ namespace SolidCP.Portal.VPS2012
 
             QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
 
-            bool isCpuQuotaAllocated = cpuQuota2.QuotaAllocatedValue > 0;
-
             if (cpuQuota2.QuotaAllocatedValue == -1)
             {
                 for (int i = 1; i < maxCores + 1; i++)
@@ -171,7 +169,7 @@ namespace SolidCP.Portal.VPS2012
             }
             else if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
             {
-                if (!isCpuQuotaAllocated && ((cpuQuota2.QuotaAllocatedValue + 1 - cpuQuota2.QuotaUsedValue) > maxCores))
+                if ((cpuQuota2.QuotaAllocatedValue + 1 - cpuQuota2.QuotaUsedValue) > maxCores)
                 {
                     for (int i = 1; i < maxCores + 1; i++)
                         ddlCpu.Items.Add(i.ToString());
