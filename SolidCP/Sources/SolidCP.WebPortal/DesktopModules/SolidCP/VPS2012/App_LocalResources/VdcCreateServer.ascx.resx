@@ -483,4 +483,13 @@
   <data name="valHddSize.ErrorMessage" xml:space="preserve">
     <value>Enter a numeric value</value>
   </data>
+  <data name="valCoresStatus.Text" xml:space="preserve">
+    <value>(available range: {0} cores)</value>
+  </data>
+  <data name="valHddStatus.Text" xml:space="preserve">
+    <value>(available range: {0} GB, {1} GB can be used for additional HDDs, total disk space cannot exceed {2} GB)</value>
+  </data>
+  <data name="valRamStatus.Text" xml:space="preserve">
+    <value>(available range: {0} MB, 256 MB increments, 1 GB is 1024 MB, most OSs require at least 2048 MB)</value>
+  </data>
 </root>

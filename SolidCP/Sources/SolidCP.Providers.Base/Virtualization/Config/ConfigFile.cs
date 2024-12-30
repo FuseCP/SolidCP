@@ -16,15 +16,13 @@ namespace SolidCP.Providers.Virtualization
 </items>";
 
         const string itemTemplate = @"
-    <item path=""{0}"" legacyNetworkAdapter=""{1}"" remoteDesktop=""{2}"" processVolume=""{3}"" 
-                        generation=""{11}"" enableSecureBoot=""{12}"" secureBootTemplate=""{16}"" vhdBlockSizeBytes=""{13}"" diskSize=""{17}"">
+    <item path=""{0}"" legacyNetworkAdapter=""{1}"" remoteDesktop=""{2}"" processVolume=""{3}"" generation=""{11}"" enableSecureBoot=""{12}"" secureBootTemplate=""{16}"" vhdBlockSizeBytes=""{13}"" diskSize=""{17}"" serverAdminOnly=""{18}"">
         <name>{4}</name>
         <description>{5}</description>
         <DeployScriptParams>{10}</DeployScriptParams>
         <provisioning>
             {6}
-            <vmconfig computerName=""{7}"" administratorPassword=""{8}"" networkAdapters=""{9}"" 
-                cdKey=""{14}"" timeZoneId=""{15}"" />
+            <vmconfig computerName=""{7}"" administratorPassword=""{8}"" networkAdapters=""{9}"" cdKey=""{14}"" timeZoneId=""{15}"" />
         </provisioning>
     </item>";
 
@@ -78,6 +76,10 @@ namespace SolidCP.Providers.Virtualization
                 item.EnableSecureBoot = true;
                 if (nodeItem.Attributes["enableSecureBoot"] != null)
                     item.EnableSecureBoot = Boolean.Parse(nodeItem.Attributes["enableSecureBoot"].Value);
+
+                item.ServerAdminOnly = false;
+                if (nodeItem.Attributes["serverAdminOnly"] != null)
+                    item.ServerAdminOnly = Boolean.Parse(nodeItem.Attributes["serverAdminOnly"].Value);
 
                 item.SecureBootTemplate = "";
                 if (nodeItem.Attributes["secureBootTemplate"] != null)
@@ -169,7 +171,7 @@ namespace SolidCP.Providers.Virtualization
                     sysprep, libraryItem.ProvisionComputerName, libraryItem.ProvisionAdministratorPassword,
                     libraryItem.ProvisionNetworkAdapters, libraryItem.DeployScriptParams, libraryItem.Generation,
                     libraryItem.EnableSecureBoot, libraryItem.VhdBlockSizeBytes, libraryItem.CDKey, libraryItem.TimeZoneId, 
-                    libraryItem.SecureBootTemplate, libraryItem.DiskSize));
+                    libraryItem.SecureBootTemplate, libraryItem.DiskSize, libraryItem.ServerAdminOnly));
             }
 
             Xml = string.Format(resultTemplate, string.Join("", items.ToArray()));

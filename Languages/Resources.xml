@@ -38968,6 +38968,11 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
+    <Key>chkServerAdminOnly.Text</Key>
+    <DefaultValue>Administrators only</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\HyperV2012R2_Settings.ascx.resx</File>
     <Key>chkCanSetNetwork.Text</Key>
     <DefaultValue>Can set Ip addresses</DefaultValue>
   </Resource>
@@ -57761,6 +57766,21 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Enter a numeric value</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valCoresStatus.Text</Key>
+    <DefaultValue>(available range: {0} cores)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valHddStatus.Text</Key>
+    <DefaultValue>(available range: {0} GB, {1} GB can be used for additional HDDs, total disk space cannot exceed {2} GB)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcCreateServer.ascx.resx</File>
+    <Key>valRamStatus.Text</Key>
+    <DefaultValue>(available range: {0} MB, 256 MB increments, 1 GB is 1024 MB, most OSs require at least 2048 MB)</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VdcDmzNetwork.ascx.resx</File>
     <Key>FormComments.Text</Key>
     <DefaultValue>&lt;p&gt;If this form is available in the hosting space, it means that the VMs in this hosting space can be connected to a dedicated DMZ network that is only available in this hosting space.&lt;/p&gt; &lt;p&gt;</DefaultValue>
@@ -59119,6 +59139,21 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
     <Key>chkDmzNetworkEnabled.Text</Key>
     <DefaultValue>DMZ network enabled</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>valCoresStatus.Text</Key>
+    <DefaultValue>(available range: {0} cores)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>valHddStatus.Text</Key>
+    <DefaultValue>(available range: {0} GB, {1} GB can be added to additional HDDs, total disk space cannot exceed {2} GB)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsEditConfiguration.ascx.resx</File>
+    <Key>valRamStatus.Text</Key>
+    <DefaultValue>(available range: {0} MB, 256 MB increments, 1 GB is 1024 MB, most OSs require at least 2048 MB)</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\VPS2012\App_LocalResources\VpsDetailsGeneral.ascx.resx</File>

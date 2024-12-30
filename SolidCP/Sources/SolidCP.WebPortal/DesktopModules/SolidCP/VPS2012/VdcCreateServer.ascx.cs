@@ -33,12 +33,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.EnterpriseServer;
 using SolidCP.Portal.Code.Helpers;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Providers.ResultObjects;
+using System.Data;
 
 namespace SolidCP.Portal.VPS2012
 {
@@ -136,7 +138,29 @@ namespace SolidCP.Portal.VPS2012
             password.SetPackagePolicy(PanelSecurity.PackageId, UserSettings.VPS_POLICY, "AdministratorPasswordPolicy");
 
             // OS templates
-            listOperatingSystems.DataSource = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
+            LibraryItem[] ostItems = ES.Services.VPS2012.GetOperatingSystemTemplates(PanelSecurity.PackageId);
+            List<LibraryItem> ostList = new List<LibraryItem>();
+
+            bool isAdmin = (PanelSecurity.EffectiveUser.Role == UserRole.Administrator);
+
+            foreach (LibraryItem ostItem in ostItems) // filter out admin only templates if user is not admin
+            {
+                if (isAdmin)
+                {
+                    ostList.Add(ostItem);
+                }
+                else
+                {
+                    if (ostItem.ServerAdminOnly.Equals(false))
+                    {
+                        ostList.Add(ostItem);
+                    }
+                }
+            }
+
+            LibraryItem[] ostItemsFiltered = ostList.ToArray();
+
+            listOperatingSystems.DataSource = ostItemsFiltered;
             listOperatingSystems.DataBind();
             listOperatingSystems.Items.Insert(0, new ListItem(GetLocalizedString("SelectOsTemplate.Text"), ""));
 
@@ -151,6 +175,8 @@ namespace SolidCP.Portal.VPS2012
                     txtSummaryEmail.Text = user.Email;
                 }
             }
+            chkSendSummary.Checked = false;
+            txtSummaryEmail.Enabled = false;
 
             // load package context
             PackageContext cntx = PackagesHelper.GetCachedPackageContext(PanelSecurity.PackageId);
@@ -158,37 +184,61 @@ namespace SolidCP.Portal.VPS2012
             // bind CPU cores
             int maxCores = ES.Services.VPS2012.GetMaximumCpuCoresNumber(PanelSecurity.PackageId);
 
+            // add VpsMaxCoresPerVM key to web.config appsettings section for a static number of maxCores to take effect
+            string vpsMaxCoresPerVM = WebConfigurationManager.AppSettings.Get("VpsMaxCoresPerVM");
+            bool showCpuLabel = false;
+
+            if (!String.IsNullOrEmpty(vpsMaxCoresPerVM)) 
+            { 
+                maxCores = Int32.Parse(vpsMaxCoresPerVM);
+                showCpuLabel = true;
+            }
+
+            string cpuRange = "0";
+            int cpuAvailable = 0;
+
             QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
 
-            if (cpuQuota2.QuotaAllocatedValue == -1)
+            if (maxCores > 0)
             {
-                for (int i = 1; i < maxCores + 1; i++)
-                    ddlCpu.Items.Add(i.ToString());
+                if (cpuQuota2.QuotaAllocatedValue <= -1)
+                {
+                    cpuAvailable = maxCores;
+                }
+                else if (cpuQuota2.QuotaAllocatedValue > 0)
+                {
+                    if (cpuQuota2.QuotaAllocatedValue > cpuQuota2.QuotaUsedValue)
+                    {
+                        int cpuRemaining = cpuQuota2.QuotaAllocatedValue - cpuQuota2.QuotaUsedValue;
 
-                ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                        if (cpuRemaining > maxCores)
+                        {
+                            cpuAvailable = maxCores;
+                        }
+                        else
+                        {
+                            cpuAvailable = cpuRemaining;
+                        }
+                    }
+                }
             }
-            else if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+
+            if (cpuAvailable <= 0)
             {
-                if ((cpuQuota2.QuotaAllocatedValue + 1 - cpuQuota2.QuotaUsedValue) > maxCores)
-                {
-                    for (int i = 1; i < maxCores + 1; i++)
-                        ddlCpu.Items.Add(i.ToString());
-
-                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
-                }
-                else
-                {
-                    for (int i = 1; i < (cpuQuota2.QuotaAllocatedValue - cpuQuota2.QuotaUsedValue) + 1; i++)
-                        ddlCpu.Items.Add(i.ToString());
-
-                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
-                }
+                ddlCpu.Items.Add("0");
             }
             else
             {
-                ddlCpu.Items.Add("0");
+                for (int i = 1; i <= cpuAvailable; i++)
+                    ddlCpu.Items.Add(i.ToString());
 
+                ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1;
+
+                if (cpuAvailable == 1) { cpuRange = "1"; } else { cpuRange = "1 - " + cpuAvailable; }
             }
+
+            valCoresStatus.Text = String.Format(GetLocalizedString("valCoresStatus.Text"), cpuRange);
+            valCoresStatus.Visible = showCpuLabel;
 
             // external network details
             if (PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_EXTERNAL_NETWORK_ENABLED))
@@ -355,39 +405,168 @@ namespace SolidCP.Portal.VPS2012
             // RAM size
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_RAM))
             {
+                string vpsMinRamPerVM = WebConfigurationManager.AppSettings.Get("VpsMinRamPerVM");
+                string vpsMaxRamPerVM = WebConfigurationManager.AppSettings.Get("VpsMaxRamPerVM");
+
+                int minRam = 0;
+                int maxRam = 0;
+                string ramRange = "0";
+                bool showRamLabel = false;
+
+                if (!String.IsNullOrEmpty(vpsMinRamPerVM) && !String.IsNullOrEmpty(vpsMaxRamPerVM) )
+                { 
+                    minRam = Int32.Parse(vpsMinRamPerVM); 
+                    maxRam = Int32.Parse(vpsMaxRamPerVM);
+                    showRamLabel = true;
+                }
+
                 QuotaValueInfo ramQuota = cntx.Quotas[Quotas.VPS2012_RAM];
                 if (ramQuota.QuotaAllocatedValue == -1)
                 {
                     // unlimited RAM
                     txtRam.Text = "";
+
+                    if (!showRamLabel)
+                    {
+                        ramRange = "unlimited";
+                    }
+                    else
+                    {
+                        ramRange = minRam + " - " + maxRam;
+                    }
+
                 }
                 else
                 {
                     int availSize = ramQuota.QuotaAllocatedValue - ramQuota.QuotaUsedValue;
-                    txtRam.Text = availSize < 0 ? "" : availSize.ToString();
+                    int ramRemaining = 0;
 
                     if (availSize > 0)
                     {
-                        virtualMachine.DynamicMemory.Minimum = availSize / 2;
-                        virtualMachine.DynamicMemory.Maximum = availSize;
+
+                        if (!showRamLabel)
+                        {
+                            ramRemaining = availSize;
+                        }
+                        else
+                        {
+
+                            if (availSize >= maxRam)
+                            {
+                                ramRemaining = maxRam;
+                            }
+                            else if (availSize < maxRam && availSize >= minRam)
+                            {
+                                ramRemaining = availSize;
+                            }
+
+                        }
+
                     }
+
+                    if (ramRemaining > 0)
+                    {
+                        virtualMachine.DynamicMemory.Minimum = ramRemaining / 2;
+                        virtualMachine.DynamicMemory.Maximum = ramRemaining;
+
+                        ramRange = minRam + " - " + ramRemaining;
+                    }
+
+                    txtRam.Text = ramRemaining <= 0 ? "" : ramRemaining.ToString();
+
                 }
+
+                valRamStatus.Text = String.Format(GetLocalizedString("valRamStatus.Text"), ramRange);
+                valRamStatus.Visible = showRamLabel;
+
             }
 
             // HDD size
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_HDD))
             {
+
+                string vpsMinHddPerVM = WebConfigurationManager.AppSettings.Get("VpsMinHddPerVM");
+                string vpsMaxHddPerVM = WebConfigurationManager.AppSettings.Get("VpsMaxHddPerVM");
+
+                int minHdd = 0;
+                int maxHdd = 0;
+                int maxHddAdds = 0;
+                string hddRange = "0";
+                string hddAdds = "0";
+                string hddTotal = "0";
+                bool showHddLabel = false;
+
+                if (!String.IsNullOrEmpty(vpsMinHddPerVM) && !String.IsNullOrEmpty(vpsMaxHddPerVM))
+                {
+                    minHdd = Int32.Parse(vpsMinHddPerVM);
+                    maxHdd = Int32.Parse(vpsMaxHddPerVM);
+                    maxHddAdds = maxHdd - minHdd;
+                    showHddLabel = true;
+                }
+
                 QuotaValueInfo hddQuota = cntx.Quotas[Quotas.VPS2012_HDD];
                 if (hddQuota.QuotaAllocatedValue == -1)
                 {
                     // unlimited HDD
                     txtHdd.Text = "";
+
+                    if (!showHddLabel)
+                    {
+                        hddRange = "unlimited";
+                        hddAdds = "unlimited";
+                    }
+                    else
+                    {
+                        hddRange = minHdd + " - " + maxHdd;
+                        hddAdds = "1 - " + maxHddAdds;
+                    }
+
+                    hddTotal = "unlimited";
+
                 }
                 else
                 {
                     int availSize = hddQuota.QuotaAllocatedValue - hddQuota.QuotaUsedValue;
-                    txtHdd.Text = availSize < 0 ? "" : availSize.ToString();
+                    int hddRemaining = 0;
+
+                    if (availSize > 0)
+                    {
+
+                        if (!showHddLabel)
+                        {
+                            hddRemaining = availSize;
+                        }
+                        else
+                        {
+
+                            if (availSize >= maxHdd)
+                            {
+                                hddRemaining = maxHdd;
+                            }
+                            else if (availSize < maxHdd && availSize >= minHdd)
+                            {
+                                hddRemaining = availSize;
+                            }
+
+                        }
+
+                    }
+
+                    if (hddRemaining > 0)
+                    {
+                        maxHddAdds = hddRemaining - minHdd;
+                        hddRange = minHdd + " - " + hddRemaining;
+                        hddAdds = "1 - " + maxHddAdds;
+                        hddTotal = availSize.ToString();
+                    }
+
+                    txtHdd.Text = hddRemaining <= 0 ? "" : hddRemaining.ToString();
+
                 }
+
+                valHddStatus.Text = String.Format(GetLocalizedString("valHddStatus.Text"), hddRange, hddAdds, hddTotal);
+                valHddStatus.Visible = showHddLabel;
+
             }
 
             if (cntx.Quotas.ContainsKey(Quotas.VPS2012_ADDITIONAL_VHD_COUNT))
@@ -412,6 +591,7 @@ namespace SolidCP.Portal.VPS2012
             // toggle controls
             BindCheckboxOption(chkDvdInstalled, Quotas.VPS2012_DVD_ENABLED);
             chkBootFromCd.Enabled = PackagesHelper.IsQuotaEnabled(PanelSecurity.PackageId, Quotas.VPS2012_BOOT_CD_ALLOWED);
+            chkNumLock.Checked = true;
 
             BindCheckboxOption(chkStartShutdown, Quotas.VPS2012_START_SHUTDOWN_ALLOWED);
             BindCheckboxOption(chkPauseResume, Quotas.VPS2012_PAUSE_RESUME_ALLOWED);
