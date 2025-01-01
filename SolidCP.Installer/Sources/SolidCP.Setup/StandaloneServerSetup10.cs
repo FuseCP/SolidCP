@@ -50,20 +50,30 @@ namespace SolidCP.Setup
 				Installer.Current.InstallServer();
 				Installer.Current.InstallEnterpriseServer();
 				Installer.Current.InstallWebPortal();
-			});
-
+			}, true, false,
+			Installer.Current.InstallServerMaxProgress +
+			Installer.Current.InstallEnterpriseServerMaxProgress +
+			Installer.Current.InstallWebPortalMaxProgress);
 		public bool Update(string args) => base.Update(args, "Update Standalone Server",
 			() =>
 			{
 				Installer.Current.InstallServer();
 				Installer.Current.InstallEnterpriseServer();
 				Installer.Current.InstallWebPortal();
-			});
-
+			},
+			Installer.Current.UpdateServerMaxProgress +
+			Installer.Current.UpdateEnterpriseServerMaxProgress +
+			Installer.Current.UpdateWebPortalMaxProgress);
 		public bool Setup(string args) => base.InstallOrSetup(args, "Setup Standalone Server",
-			Installer.Current.ConfigureServer);
+			Installer.Current.ConfigureServer, false, true,
+			Installer.Current.SetupServerMaxProgress +
+			Installer.Current.SetupEnterpriseServerMaxProgress +
+			Installer.Current.SetupWebPortalMaxProgress);
 
 		public bool Uninstall(string args) => base.Uninstall(args, "Uninstall Standalone Server",
-			Installer.Current.RemoveServer);
+			Installer.Current.RemoveServer,
+			Installer.Current.UninstallServerMaxProgress +
+			Installer.Current.UninstallEnterpriseServerMaxProgress +
+			Installer.Current.UninstallWebPortalMaxProgress);
 	}
 }

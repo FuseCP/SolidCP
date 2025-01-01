@@ -10,7 +10,8 @@
 		<StartupObject>SolidCP.UniversalInstaller.Program</StartupObject>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
-	</PropertyGroup>
+        <EmbdeddReferences>true</EmbdeddReferences>
+    </PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
 		<DebugType>portable</DebugType>
@@ -36,6 +37,21 @@
 
 	<ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(EmbeddReferences) == 'true'">
+        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Fody" Version="6.9.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="FodyWeavers.xsd" />
     </ItemGroup>
 
 </Project>

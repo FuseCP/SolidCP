@@ -30,16 +30,16 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-namespace SolidCP.UniversalInstaller
+namespace SolidCP.UniversalInstaller.WinForms
 {
-	partial class RootPasswordForm
+	partial class ProgressPage
 	{
-		/// <summary>
+		/// <summary> 
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.IContainer components = null;
-		
-		/// <summary>
+
+		/// <summary> 
 		/// Clean up any resources being used.
 		/// </summary>
 		/// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
@@ -52,73 +52,73 @@ namespace SolidCP.UniversalInstaller
 			base.Dispose(disposing);
 		}
 
-		#region Windows Form Designer generated code
+		#region Component Designer generated code
 
-		/// <summary>
-		/// Required method for Designer support - do not modify
+		/// <summary> 
+		/// Required method for Designer support - do not modify 
 		/// the contents of this method with the code editor.
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.button = new System.Windows.Forms.Button();
-			this.txtPassword = new System.Windows.Forms.TextBox();
-			this.label1 = new System.Windows.Forms.Label();
+			this.grpFiles = new System.Windows.Forms.GroupBox();
+			this.progressBar = new System.Windows.Forms.ProgressBar();
+			this.lblProcess = new System.Windows.Forms.Label();
+			this.lblIntro = new System.Windows.Forms.Label();
+			this.grpFiles.SuspendLayout();
 			this.SuspendLayout();
 			// 
-			// button
+			// grpFiles
 			// 
-			this.button.DialogResult = System.Windows.Forms.DialogResult.OK;
-			this.button.Location = new System.Drawing.Point(101, 88);
-			this.button.Name = "button";
-			this.button.Size = new System.Drawing.Size(75, 23);
-			this.button.TabIndex = 0;
-			this.button.Text = "Ok";
-			this.button.UseVisualStyleBackColor = true;
+			this.grpFiles.Controls.Add(this.progressBar);
+			this.grpFiles.Controls.Add(this.lblProcess);
+			this.grpFiles.Location = new System.Drawing.Point(0, 43);
+			this.grpFiles.Name = "grpFiles";
+			this.grpFiles.Size = new System.Drawing.Size(457, 88);
+			this.grpFiles.TabIndex = 4;
+			this.grpFiles.TabStop = false;
 			// 
-			// txtPassword
+			// progressBar
 			// 
-			this.txtPassword.Location = new System.Drawing.Point(12, 62);
-			this.txtPassword.Name = "txtPassword";
-			this.txtPassword.Size = new System.Drawing.Size(250, 20);
-			this.txtPassword.TabIndex = 2;
-			this.txtPassword.UseSystemPasswordChar = true;
+			this.progressBar.Location = new System.Drawing.Point(16, 40);
+			this.progressBar.Name = "progressBar";
+			this.progressBar.Size = new System.Drawing.Size(427, 23);
+			this.progressBar.Step = 1;
+			this.progressBar.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+			this.progressBar.TabIndex = 1;
 			// 
-			// label1
+			// lblProcess
 			// 
-			this.label1.Location = new System.Drawing.Point(15, 15);
-			this.label1.Name = "label1";
-			this.label1.Size = new System.Drawing.Size(246, 34);
-			this.label1.TabIndex = 3;
-			this.label1.Text = "SolidCP Installer needs to run with root privileges. Please specify the root pass" +
-    "word:";
-			this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+			this.lblProcess.Location = new System.Drawing.Point(16, 24);
+			this.lblProcess.Name = "lblProcess";
+			this.lblProcess.Size = new System.Drawing.Size(427, 16);
+			this.lblProcess.TabIndex = 0;
 			// 
-			// RootPasswordForm
+			// lblIntro
 			// 
-			this.AcceptButton = this.button;
+			this.lblIntro.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.lblIntro.Location = new System.Drawing.Point(3, 0);
+			this.lblIntro.Name = "lblIntro";
+			this.lblIntro.Size = new System.Drawing.Size(451, 40);
+			this.lblIntro.TabIndex = 5;
+			// 
+			// ExpressInstallPage
+			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(282, 127);
-			this.Controls.Add(this.label1);
-			this.Controls.Add(this.txtPassword);
-			this.Controls.Add(this.button);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-			this.MaximizeBox = false;
-			this.MinimizeBox = false;
-			this.Name = "RootPasswordForm";
-			this.ShowInTaskbar = false;
-			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-			this.Text = "Root Password";
+			this.Controls.Add(this.grpFiles);
+			this.Controls.Add(this.lblIntro);
+			this.Name = "ExpressInstallPage";
+			this.Size = new System.Drawing.Size(457, 228);
+			this.grpFiles.ResumeLayout(false);
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
-
 		#endregion
 
-		private System.Windows.Forms.Button button;
-		private System.Windows.Forms.TextBox txtPassword;
-		private System.Windows.Forms.Label label1;
+		private System.Windows.Forms.GroupBox grpFiles;
+		private System.Windows.Forms.ProgressBar progressBar;
+		private System.Windows.Forms.Label lblProcess;
+		private System.Windows.Forms.Label lblIntro;
 	}
 }

@@ -75,5 +75,9 @@ namespace SolidCP.UniversalInstaller
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
 			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
 		}
+		public virtual int InstallEnterpriseServerMaxProgress => 100;
+		public virtual int UninstallEnterpriseServerMaxProgress => 100;
+		public virtual int SetupEnterpriseServerMaxProgress => 100;
+		public virtual int UpdateEnterpriseServerMaxProgress => 100;
 	}
 }

@@ -59,5 +59,9 @@ namespace SolidCP.UniversalInstaller
 			var websitePath = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
 			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
 		}
+		public virtual int InstallWebDavPortalMaxProgress => 100;
+		public virtual int UninstallWebDavPortalMaxProgress => 100;
+		public virtual int SetupWebDavPortalMaxProgress => 100;
+		public virtual int UpdateWebDavPortalMaxProgress => 100;
 	}
 }

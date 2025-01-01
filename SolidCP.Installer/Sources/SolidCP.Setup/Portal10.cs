@@ -45,15 +45,19 @@ namespace SolidCP.Setup
 		public override Version MinimalInstallerVersion => new Version("1.6.0");
 		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
 		public bool Install(string args) => base.InstallOrSetup(args, "Install WebPortal",
-			Installer.Current.InstallWebPortal);
+			Installer.Current.InstallWebPortal, false, false,
+			Installer.Current.InstallWebPortalMaxProgress);
 
 		public bool Update(string args) => base.Update(args, "Update WebPortal",
-			Installer.Current.UpdateWebPortal);
+			Installer.Current.UpdateWebPortal,
+			Installer.Current.UpdateWebPortalMaxProgress);
 
 		public bool Setup(string args) => base.InstallOrSetup(args, "Setup WebPortal",
-			Installer.Current.ConfigureWebPortal);
+			Installer.Current.ConfigureWebPortal, false, true,
+			Installer.Current.SetupWebPortalMaxProgress);
 
 		public bool Uninstall(string args) => base.Uninstall(args, "Uninstall WebPortal",
-			Installer.Current.RemoveWebPortal);
+			Installer.Current.RemoveWebPortal,
+			Installer.Current.UninstallWebPortalMaxProgress);
 	}
 }

@@ -98,7 +98,7 @@ namespace SolidCP.UniversalInstaller
 			throw new NotImplementedException();
 		}
 
-		public override void ShowInstallationProgress(string title = null)
+		public override void ShowInstallationProgress(string title = null, int maxProgress = 100)
 		{
 			throw new NotImplementedException();
 		}

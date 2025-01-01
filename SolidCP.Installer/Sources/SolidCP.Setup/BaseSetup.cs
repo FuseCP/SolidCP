@@ -80,6 +80,7 @@ namespace SolidCP.Setup
 			else return true;
 		}
 		public virtual CommonSettings CommonSettings => null;
+		public virtual ComponentSettings ComponentSettings => (CommonSettings as ComponentSettings) ?? Installer.Current.Settings.Standalone;
 		public virtual ComponentInfo Component => null;
 		public virtual UI.SetupWizard Wizard(string args, bool installFolder = true,
 			bool urlWizard = true, bool userWizard = true)
@@ -126,12 +127,13 @@ namespace SolidCP.Setup
 			}
 			return null;
 		}
-		public virtual bool InstallOrSetup(string args, string title, Action installer, bool database = false) {
+		public virtual bool InstallOrSetup(string args, string title, Action installer, bool database = false, bool setup = false, int maxProgress = 100) {
 			var wizard = Wizard(args, true, true, true);
 			if (database) wizard = wizard.Database();
-
+			if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
+			else Installer.Current.Settings.Installer.Action = SetupActions.Install;
 			return wizard
-				.RunWithProgress(title, installer)
+				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 				.Finish()
 				.Show();
 		}
@@ -154,26 +156,30 @@ namespace SolidCP.Setup
 
 			return upgradeSupported;
 		}
-		public virtual bool Update(string args, string title, Action installer)
+		public virtual bool Update(string args, string title, Action installer, int maxProgress)
 		{
 			ParseArgs(args);
 
+			Installer.Current.Settings.Installer.Action = SetupActions.Update;
+
 			return CheckUpdate() && Wizard(args, false, true, true)
-				.RunWithProgress(title, installer)
+				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 				.Finish()
 				.Show();
 		}
 
-		public virtual bool Uninstall(string args, string title, Action installer)
+		public virtual bool Uninstall(string args, string title, Action installer, int maxProgress)
 		{
 			ParseArgs(args);
+
+			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
 
 			if (CheckInstallerVersion())
 			{
 				return UI.Current.Wizard
 					.Introduction(CommonSettings)
 					.ConfirmUninstall(CommonSettings)
-					.RunWithProgress(title, installer)
+					.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 					.Finish()
 					.Show();
 			}

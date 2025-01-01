@@ -30,8 +30,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if NETFRAMEWORK
-
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -54,5 +52,3 @@ namespace SolidCP.UniversalInstaller
 		}
 	}
 }
-
-#endif

@@ -46,15 +46,19 @@ namespace SolidCP.Setup
         public override Version MinimalInstallerVersion => new Version("1.6.0");
         public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
 		public bool Install(string args) => base.InstallOrSetup(args, "Install EnterpriseServer",
-            Installer.Current.InstallEnterpriseServer, true);
+            Installer.Current.InstallEnterpriseServer, true, false,
+            Installer.Current.InstallEnterpriseServerMaxProgress);
 
         public bool Update(string args) => base.Update(args, "Update EnterpriseServer",
-            Installer.Current.UpdateEnterpriseServer);
+            Installer.Current.UpdateEnterpriseServer,
+            Installer.Current.UpdateEnterpriseServerMaxProgress);
 
         public bool Setup(string args) => base.InstallOrSetup(args, "Setup EnterpriseServer",
-            Installer.Current.ConfigureEnterpriseServer, true);
+            Installer.Current.ConfigureEnterpriseServer, true, true,
+            Installer.Current.SetupEnterpriseServerMaxProgress);
 
         public bool Uninstall(string args) => base.Uninstall(args, "Uninstall EnterpriseServer",
-            Installer.Current.RemoveEnterpriseServer);
+            Installer.Current.RemoveEnterpriseServer,
+            Installer.Current.UninstallEnterpriseServerMaxProgress);
     }
 }

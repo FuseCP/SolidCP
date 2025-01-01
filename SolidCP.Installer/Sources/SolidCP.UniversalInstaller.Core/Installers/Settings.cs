@@ -29,9 +29,9 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public virtual string ComponentCode => null;
-		public virtual string ComponentName => null;
-			
+		public virtual string ComponentName => null;		
 	}
+
 	public class CommonSettings: ComponentSettings
 	{
 		public string Urls { get; set; }

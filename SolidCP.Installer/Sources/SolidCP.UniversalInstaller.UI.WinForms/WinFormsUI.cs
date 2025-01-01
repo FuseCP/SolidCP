@@ -1,5 +1,3 @@
-#if NETFRAMEWORK
-
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -26,7 +24,7 @@ namespace SolidCP.UniversalInstaller {
 			}
 			public override UI.SetupWizard ConfirmUninstall(ComponentSettings settings)
 			{
-				Add(new WinForms.ConfirmUninstallPage());
+				Add(new WinForms.ConfirmUninstallPage() { Settings = settings });
 				return this;
 			}
 			public override UI.SetupWizard CheckPrerequisites()
@@ -79,8 +77,9 @@ namespace SolidCP.UniversalInstaller {
 				Add(new WinForms.ServerAdminPasswordPage());
 				return this;
 			}
-			public override UI.SetupWizard RunWithProgress(string title, Action action)
+			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress)
 			{
+				Add(new WinForms.ProgressPage() { Maximum = maxProgress, Settings = settings });
 				return this;
 			}
 			public override UI.SetupWizard ServerPassword()
@@ -103,7 +102,9 @@ namespace SolidCP.UniversalInstaller {
 				Form.Wizard.LinkPages();
 				Form.Wizard.SelectedPage = Form.Wizard.Controls.OfType<WinForms.WizardPageBase>()
 					.FirstOrDefault();
-				return Form.ShowDialog() == DialogResult.OK;
+				var result = Form.ShowDialog() == DialogResult.OK;
+				if (result) Installer.Current.UpdateSettings();
+				return result;
 			}
 		}
 
@@ -145,7 +146,7 @@ namespace SolidCP.UniversalInstaller {
 			throw new NotImplementedException();
         }
         
-        public override void ShowInstallationProgress(string title = null) {
+        public override void ShowInstallationProgress(string title = null, int maxProgress = 100) {
             throw new NotImplementedException();
         }
 
@@ -275,7 +276,6 @@ namespace SolidCP.UniversalInstaller {
 			if (!exitCalled)
 			{
 				exitCalled = true;
-				Installer.SaveSettings();
 				Application.Exit();
 				Installer.Exit(0);
 			}
@@ -326,4 +326,3 @@ namespace SolidCP.UniversalInstaller {
 	}
 }
 
-#endif

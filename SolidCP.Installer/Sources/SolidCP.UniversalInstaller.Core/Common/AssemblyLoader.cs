@@ -130,6 +130,8 @@ namespace SolidCP.UniversalInstaller
 					}
 					object ret = (bool)loader.RemoteRun(fileName, typeName, methodName, parameters);
 					AppDomain.Unload(domain);
+					Installer.Current.LoadSettings();
+					Installer.Current.SaveSettings();
 					return ret;
 				}
 				else

@@ -647,11 +647,11 @@ SolidCP Installer successfully has:
 				return this;
 			}
 
-			public override UI.SetupWizard RunWithProgress(string title, Action action)
+			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress)
 			{
 				Pages.Add(() =>
 				{
-					UI.ShowInstallationProgress(title);
+					UI.ShowInstallationProgress(title, maxProgress);
 					action();
 				});
 				return this;
@@ -683,6 +683,8 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 				try
 				{
 					while (!HasExited) Current();
+
+					Installer.Current.UpdateSettings();
 
 					return true;
 				} catch (Exception ex)
@@ -1002,7 +1004,7 @@ Components to Install
 		}
 
 		ConsoleForm InstallationProgress = null;
-		public override void ShowInstallationProgress(string title = null)
+		public override void ShowInstallationProgress(string title = null, int maxProgress = 100)
 		{
 			title ??= "Installation Progress";
 			InstallationProgress = new ConsoleForm(@$"
@@ -1011,7 +1013,7 @@ Components to Install
 
 [%Progress                                                                      ]
 ")
-			.ShowProgress(Installer.Shell, Installer.EstimatedOutputLines)
+			.ShowProgress(Installer.Shell, maxProgress)
 			.Show();
 		}
 

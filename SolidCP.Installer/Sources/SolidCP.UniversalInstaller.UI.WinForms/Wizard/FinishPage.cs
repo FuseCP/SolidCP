@@ -36,6 +36,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Data;
+using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
@@ -55,7 +56,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.Description = "Click Finish to exit the wizard.";
 			this.AllowMoveBack = false;
 			this.AllowCancel = false;
-			this.txtLog.Text = string.Join(Environment.NewLine, "- " + Installer.Current.InstallLogs);
+			this.txtLog.Text = string.Join(Environment.NewLine, Installer.Current.InstallLogs
+				.Select(log => "- " + log));
 		}
 
 		protected internal override void OnAfterDisplay(EventArgs e)

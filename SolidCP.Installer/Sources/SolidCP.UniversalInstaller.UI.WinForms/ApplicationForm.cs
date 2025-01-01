@@ -412,16 +412,15 @@ namespace SolidCP.UniversalInstaller
 
 			foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
 			{
-				string instance = string.Empty;
+				/*string instance = string.Empty;
 				if (!string.IsNullOrEmpty(component.ComponentCode))
 				{
 					instance = $"({component.ComponentCode})";
-				}
-				string title = string.Format("{0} {1} {2} {3}",
+				}*/
+				string title = string.Format("{0} {1} {2}",
 					component.ApplicationName,
 					component.ComponentName,
-					component.Version,
-					instance);
+					component.Version);
 
 				AddComponentNode(node, title, component);
 			}

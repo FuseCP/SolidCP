@@ -49,10 +49,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			InitializeComponent();
 		}
 
-		public CommonSettings Settings { get; set; }
-
-		public UninstallPage UninstallPage { get; set; }
-
+		public ComponentSettings Settings { get; set; }
 		protected override void InitializePageInternal()
 		{
 			base.InitializePageInternal();
@@ -64,7 +61,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		protected internal override void OnBeforeDisplay(EventArgs e)
 		{
 			base.OnBeforeDisplay(e);
-			string componentCode = Settings.ComponentCode;
+			//string componentCode = Settings.ComponentCode;
 			//this.txtActions.Text = GetUninstallActions(componentCode);
 		}
 

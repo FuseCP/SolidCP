@@ -101,6 +101,7 @@ namespace SolidCP.UniversalInstaller
 			public const string NotEnoughPermissionsError = "You do not have the appropriate permissions to perform this operation. Make sure you are running the application from the local disk and you have local system administrator privileges.";
 			public const string InstallerVersionIsObsolete = "SolidCP Installer {0} or higher required.";
 			public const string ComponentIsAlreadyInstalled = "Component or its part is already installed.";
+			public const string ComponentIsNotInstalled = "Component or its part is not installed.";
 			public const string AnotherInstanceIsRunning = "Another instance of the installation process is already running.";
 			public const string NoInputParametersSpecified = "No input parameters specified";
 			public const int InstallationError = -1000;

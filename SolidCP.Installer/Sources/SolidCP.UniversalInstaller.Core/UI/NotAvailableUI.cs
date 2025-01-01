@@ -20,7 +20,7 @@ namespace SolidCP.UniversalInstaller {
 		public override WebPortalSettings GetWebPortalSettings() => throw new NotImplementedException();
 		public override void GetCommonSettings(CommonSettings settings) => throw new NotImplementedException();
 		public override Packages GetPackagesToInstall() => throw new NotImplementedException();
-		public override void ShowInstallationProgress(string title = null) => throw new NotImplementedException();
+		public override void ShowInstallationProgress(string title = null, int maxProgress = 100) => throw new NotImplementedException();
 		public override void CloseInstallationProgress() => throw new NotImplementedException();
 		public override void ShowLogFile() => throw new NotImplementedException();
 		public override string GetRootPassword() => throw new NotImplementedException();
@@ -33,6 +33,5 @@ namespace SolidCP.UniversalInstaller {
 		public override bool DownloadSetup(string fileName) => throw new NotImplementedException();
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
 			=> throw new NotSupportedException();
-
 	}
 }

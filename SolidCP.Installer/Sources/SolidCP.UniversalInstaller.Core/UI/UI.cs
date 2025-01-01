@@ -139,7 +139,7 @@ namespace SolidCP.UniversalInstaller
 			public virtual SetupWizard LicenseAgreement() => this;
 			public virtual SetupWizard ServerAdminPassword() => this;
 			public virtual SetupWizard ServerPassword() => this;
-			public virtual SetupWizard RunWithProgress(string title, Action action) => this;
+			public virtual SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress = 100) => this;
 			public virtual SetupWizard UserAccount(CommonSettings settings) => this;
 			public virtual SetupWizard Web(CommonSettings settings) => this;
 			public abstract bool Show();
@@ -157,7 +157,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract WebPortalSettings GetWebPortalSettings();
 		public abstract void GetCommonSettings(CommonSettings settings);
 		public abstract Packages GetPackagesToInstall();
-		public abstract void ShowInstallationProgress(string title = null);
+		public abstract void ShowInstallationProgress(string title = null, int maxProgress = 100);
 		public abstract void CloseInstallationProgress();
 		public abstract void ShowError(Exception ex);
 		public abstract void ShowInstallationSuccess(Packages packages);
@@ -175,6 +175,6 @@ namespace SolidCP.UniversalInstaller
 		public abstract void ShowWarning(string msg);
 		public abstract bool DownloadSetup(string fileName);
 		public abstract bool ExecuteSetup(string path, string installerType, string method, object[] args);
-		public object MainForm { get; }
+		public virtual object MainForm { get; }
 	}
 }

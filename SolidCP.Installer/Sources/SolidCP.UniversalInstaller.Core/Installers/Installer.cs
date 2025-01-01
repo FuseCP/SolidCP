@@ -101,20 +101,43 @@ namespace SolidCP.UniversalInstaller
 			var json = JsonConvert.SerializeObject(Settings, Formatting.Indented, new VersionConverter());
 			File.WriteAllText(path, json);
 		}
-
-		public bool Install(ComponentInfo info)
+		public void UpdateSettings()
 		{
+			if (Settings.Installer.Component != null)
+			{
+				if (Settings.Installer.Action != SetupActions.Uninstall)
+				{
+					Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
+				}
+				else
+				{
+					var component = Settings.Installer.InstalledComponents
+						.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
+					if (component != null) Settings.Installer.InstalledComponents.Remove(component);
+				}
+				Settings.Installer.Component = null;
+				SaveSettings();
+			}
+		}
+		public bool RunSetup(ComponentInfo info, SetupActions action)
+		{
+			Settings.Installer.Component = info;
+			Settings.Installer.Action = action;
+
 			info.FullFilePath = info.FullFilePath.Replace('\\', Path.DirectorySeparatorChar);
 			info.InstallerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
-			Settings.Installer.Component = info;
 
 			string fileName = info.FullFilePath;
 			string installerPath = info.InstallerPath;
 			string installerType = info.InstallerType;
 
-			if (info.IsInstalled)
+			if (Settings.Installer.Action == SetupActions.Install && info.IsInstalled)
 			{
 				UI.Current.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
+				return false;
+			} else if (!info.IsInstalled)
+			{
+				UI.Current.ShowWarning(Global.Messages.ComponentIsNotInstalled);
 				return false;
 			}
 			try
@@ -122,9 +145,18 @@ namespace SolidCP.UniversalInstaller
 				// download installer
 				var tmpFolder = Settings.Installer.TempPath = FileUtils.GetTempDirectory();
 
-				if (UI.Current.DownloadSetup(fileName)) {
+				if (UI.Current.DownloadSetup(fileName))
+				{
 					string path = Path.Combine(tmpFolder, installerPath);
-					string method = "Install";
+					string method;
+					switch (Settings.Installer.Action)
+					{
+						default:
+						case SetupActions.Install: method = "Install"; break;
+						case SetupActions.Uninstall: method = "Uninstall"; break;
+						case SetupActions.Setup: method = "Setup"; break;
+						case SetupActions.Update: method = "Update"; break;
+					}
 					Log.WriteStart(string.Format("Running installer {0}.{1} from {2}", installerType, method, path));
 
 					var json = JsonConvert.SerializeObject(Settings, new VersionConverter());
@@ -132,6 +164,8 @@ namespace SolidCP.UniversalInstaller
 					//run installer
 					var res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { json });
 					FileUtils.DeleteTempDirectory();
+
+					if (res) UpdateSettings();
 
 					return res;
 				}
@@ -144,6 +178,10 @@ namespace SolidCP.UniversalInstaller
 
 			return false;
 		}
+		public bool Install(ComponentInfo info) => RunSetup(info, SetupActions.Install);
+		public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
+		public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
+		public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
 
 		bool firstCheck = true;
 		public bool CheckNet8RuntimeInstalled()

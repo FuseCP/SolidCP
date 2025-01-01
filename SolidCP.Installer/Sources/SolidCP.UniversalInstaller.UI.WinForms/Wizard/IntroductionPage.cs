@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			string product = Settings.ComponentName;
 			if (string.IsNullOrEmpty(product))
 				product = "SolidCP";
-			this.introductionText = string.Format("This wizard will guide you through the installation of {0} product.\n\n" +
+			this.introductionText = string.Format("This wizard will guide you through the installation of the {0} product.\n\n" +
 				"It is recommended that you close all other applications before starting Setup. This will make it possible to update relevant system files without having to reboot your computer.",
 				product);
 			this.Text = string.Format("Welcome to the {0} Setup Wizard", product);

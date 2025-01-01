@@ -66,5 +66,9 @@ namespace SolidCP.UniversalInstaller
 			var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
 			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
 		}
+		public virtual int InstallWebPortalMaxProgress => 100;
+		public virtual int UninstallWebPortalMaxProgress => 100;
+		public virtual int SetupWebPortalMaxProgress => 100;
+		public virtual int UpdateWebPortalMaxProgress => 100;
 	}
 }

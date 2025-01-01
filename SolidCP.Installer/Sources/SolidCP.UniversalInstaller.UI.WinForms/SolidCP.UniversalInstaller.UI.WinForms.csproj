@@ -49,6 +49,7 @@
             <Private>False</Private>
             <SpecificVersion>False</SpecificVersion>
         </Reference>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net48'">
@@ -154,11 +155,20 @@
         <Compile Update="Wizard\EmbedEnterpriseServer.Designer.cs">
             <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
         </Compile>
+        <Compile Update="Wizard\ExpressInstallPage - Copy.Designer.cs">
+          <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+        </Compile>
         <Compile Update="Wizard\ExpressInstallPage.cs">
             <SubType>UserControl</SubType>
         </Compile>
         <Compile Update="Wizard\ExpressInstallPage.Designer.cs">
             <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ProgressPage.cs">
+          <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage2 - Copy.Designer.cs">
+          <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
         </Compile>
         <Compile Update="Wizard\ExpressInstallPage2.cs">
             <SubType>UserControl</SubType>
@@ -330,9 +340,17 @@
             <SubType>Designer</SubType>
             <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
         </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ExpressInstallPage - Copy.resx">
+          <SubType>Designer</SubType>
+          <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+        </EmbeddedResource>
         <EmbeddedResource Update="Wizard\ExpressInstallPage.resx">
             <SubType>Designer</SubType>
             <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ExpressInstallPage2 - Copy.resx">
+          <SubType>Designer</SubType>
+          <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
         </EmbeddedResource>
         <EmbeddedResource Update="Wizard\ExpressInstallPage2.resx">
             <SubType>Designer</SubType>
