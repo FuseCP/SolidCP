@@ -1812,7 +1812,7 @@ namespace SolidCP.Setup
 				if ( serversNode.HasChildNodes )
 					serversNode.RemoveAll();
 
-				foreach (ServerItem item in Wizard.SetupVariables.SQLServers)
+				foreach (Common.ServerItem item in Wizard.SetupVariables.SQLServers)
 				{
 					XmlElement serverNode = doc.CreateElement("sqlserver");
 					serverNode.SetAttribute("address", item.Server);
@@ -3193,7 +3193,7 @@ namespace SolidCP.Setup
 				Log.WriteInfo(string.Format("Creating Windows user account \"{0}\"", userName));
 				
 				// create account
-				SystemUserItem user = new SystemUserItem();
+				Windows.SystemUserItem user = new Windows.SystemUserItem();
 				user.Domain = domain;
 				user.Name = userName;
 				user.FullName = userName;

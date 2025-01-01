@@ -125,7 +125,7 @@ namespace SolidCP.Setup.Actions
 			Log.WriteInfo(String.Format(LogInfoMessage, userName));
 
 			// create account
-			SystemUserItem user = new SystemUserItem
+			Windows.SystemUserItem user = new Windows.SystemUserItem
 			{
 				Domain = domain,
 				Name = userName,

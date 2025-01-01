@@ -8,12 +8,12 @@ namespace SolidCP.UniversalInstaller
 		{
 			public SetupWizard(UI ui): base(ui) { }
 
-			public override UI.SetupWizard Introduction() => this;
+			public override UI.SetupWizard Introduction(CommonSettings settings) => this;
 			public override UI.SetupWizard Certificate(CommonSettings settings) => this;
 			public override UI.SetupWizard CheckPrerequisites() => this;
-			public override UI.SetupWizard ConfirmUninstall() => this;
+			public override UI.SetupWizard ConfirmUninstall(ComponentSettings settings) => this;
 			public override UI.SetupWizard Database() => this;
-			public override UI.SetupWizard EmbeddEnterpriseServer() => this;
+			public override UI.SetupWizard EmbedEnterpriseServer() => this;
 			public override UI.SetupWizard Progress() => this;
 			public override UI.SetupWizard Download() => this;
 			public override UI.SetupWizard Finish() => this;
@@ -29,7 +29,8 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		public override bool IsAvailable => true;
+		bool isAvailable = true;
+		public override bool IsAvailable => isAvailable;
 
 		public override UI.SetupWizard Wizard => new SetupWizard(this);
 
@@ -45,7 +46,6 @@ namespace SolidCP.UniversalInstaller
 
 		public override void Exit()
 		{
-			throw new NotImplementedException();
 		}
 
 		public override void GetCommonSettings(CommonSettings settings)
@@ -80,7 +80,12 @@ namespace SolidCP.UniversalInstaller
 
 		public override void Init()
 		{
-			throw new NotImplementedException();
+			try
+			{
+			} catch
+			{
+
+			}
 		}
 
 		public override void RunMainUI()

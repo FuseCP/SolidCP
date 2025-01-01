@@ -198,7 +198,7 @@ namespace SolidCP.UniversalInstaller.Core
 			RaiseOnStatusChangedEvent(statusMessage, eventData, true);
 		}
 
-		protected void RaiseDownloadCompleteEvent() => DownloadComplete(this, EventArgs.Empty);
+		protected void RaiseDownloadCompleteEvent() => DownloadComplete?.Invoke(this, EventArgs.Empty);
 		protected void RaiseOnStatusChangedEvent(string statusMessage, string eventData, bool cancellable)
 		{
 			if (StatusChanged == null)

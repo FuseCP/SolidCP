@@ -3,13 +3,14 @@ using System.Reflection;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller
-{
-
+{	
 	[Flags]
 	public enum Packages { None = 0, Server = 1, EnterpriseServer = 2, WebPortal = 4, WebDavPortal = 8, All = 15 }
 
 	public abstract class UI
 	{
+		public const bool UseWinForms = true;
+
 		static UI current;
 		public static UI Current
 		{
@@ -18,21 +19,22 @@ namespace SolidCP.UniversalInstaller
 				if (current == null)
 				{
 					var naUI = new NotAvailableUI();
-					UI ui = AvaloniaUI;
-					//if (!ui.IsAvailable) ui = WinFormsUI;
+					UI ui = naUI;
+					if (!ui.IsAvailable && UseWinForms) ui = WinFormsUI;
+					if (!ui.IsAvailable) ui = AvaloniaUI;
 					if (!ui.IsAvailable) ui = ConsoleUI;
 					if (!ui.IsAvailable) ui = naUI;
 					current = ui;
 				}
 				return current;
 			}
-			protected set
+			set
 			{
 				current = value;
 			}
 		}
 
-		public static UI Set(string name)
+		public static UI SetCurrent(string name)
 		{
 			switch (name)
 			{
@@ -46,32 +48,60 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public abstract bool IsAvailable { get; }
+
+		static UI winFormsUI = null;
 		public static UI WinFormsUI
 		{
 			get
 			{
-				var type = Type.GetType("SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms");
-				if (type != null) return Activator.CreateInstance(type) as UI;
-				else return NotAvailableUI;
+				if (winFormsUI == null)
+				{
+					var type = Type.GetType($"SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms.{
+						(OSInfo.IsNetFX ? "NetFX" : "NetCore")}");
+					if (type != null) winFormsUI = Activator.CreateInstance(type) as UI;
+					else winFormsUI = NotAvailableUI;
+				}
+				return winFormsUI;
 			}
 		}
 
 		static UI consoleUI = null;
-		public static UI ConsoleUI => consoleUI ??= new ConsoleUI();
+		public static UI ConsoleUI {
+			get {
+				if (consoleUI == null)
+				{
+					var type = Type.GetType("SolidCP.UniversalInstaller.ConsoleUI, SolidCP.UniversalInstaller.UI.Console");
+					if (type != null) consoleUI = Activator.CreateInstance(type) as UI;
+					else consoleUI = NotAvailableUI;
+				}
+				return consoleUI;
+			}
+		}
 
 		static UI notAvailableUI = null;
 		public static UI NotAvailableUI => notAvailableUI ??= new NotAvailableUI();
 
+		static UI avaloniaUI = null;
 		public static UI AvaloniaUI {
-			get {
-				var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
-				if (type != null) return Activator.CreateInstance(type) as UI;
-				else return NotAvailableUI;
+			get
+			{
+				if (avaloniaUI == null)
+				{
+					var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
+					if (type != null) avaloniaUI = Activator.CreateInstance(type) as UI;
+					else avaloniaUI = NotAvailableUI;
+				}
+				return avaloniaUI;
 			}
 		}
+		public bool IsConsole => this == ConsoleUI;
+		public bool IsWinForms => this == WinFormsUI;
+		public bool IsAvalonia => this == AvaloniaUI;
+		public bool IsGraphical => !IsConsole && this != NotAvailableUI;
+
 		public void ShowRunningInstance()
 		{
-			if (!(this is ConsoleUI) && OSInfo.IsWindows)
+			if (OSInfo.IsWindows && IsGraphical)
 			{
 				Process currentProcess = Process.GetCurrentProcess();
 				foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
@@ -94,12 +124,12 @@ namespace SolidCP.UniversalInstaller
 
 			public SetupWizard(UI ui) => UI = ui;
 
-			public virtual SetupWizard Introduction() => this;
+			public virtual SetupWizard Introduction(CommonSettings settings) => this;
 			public virtual SetupWizard Certificate(CommonSettings settings) => this;
 			public virtual SetupWizard CheckPrerequisites() => this;
-			public virtual SetupWizard ConfirmUninstall() => this;
+			public virtual SetupWizard ConfirmUninstall(ComponentSettings settings) => this;
 			public virtual SetupWizard Database() => this;
-			public virtual SetupWizard EmbeddEnterpriseServer() => this;
+			public virtual SetupWizard EmbedEnterpriseServer() => this;
 			public virtual SetupWizard EnterpriseServerUrl() => this;
 			public virtual SetupWizard Progress() => this;
 			public virtual SetupWizard Download() => this;
@@ -146,6 +176,5 @@ namespace SolidCP.UniversalInstaller
 		public abstract bool DownloadSetup(string fileName);
 		public abstract bool ExecuteSetup(string path, string installerType, string method, object[] args);
 		public object MainForm { get; }
-		public bool IsConsole => this == ConsoleUI;
 	}
 }

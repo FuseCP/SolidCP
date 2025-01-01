@@ -44,10 +44,10 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32;
 using System.Xml;
-using System.Runtime.Remoting.Lifetime;
-
 using SolidCP.UniversalInstaller.Controls;
-
+#if NETFRAMEWORK
+using System.Runtime.Remoting.Lifetime;
+#endif
 //using SolidCP.Installer.Common;
 //using SolidCP.Installer.Services;
 //using SolidCP.Installer.Configuration;
@@ -259,7 +259,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			get
 			{
-				return this.GetType().Assembly.GetName().Version.ToString();
+				return typeof(Installer).Assembly.GetName().Version.ToString();
 			}
 		}
 
@@ -292,8 +292,9 @@ namespace SolidCP.UniversalInstaller
 		internal void InitializeApplication()
 		{
 			CheckForIllegalCrossThreadCalls = false;
+#if NETFRAMEWORK
 			LifetimeServices.LeaseTime = TimeSpan.Zero;
-
+#endif
 			this.splitContainer.Panel2MinSize = 380;
 			this.splitContainer.Panel1MinSize = 150;
 			this.progressManager = new ProgressManager(this, this.statusBarLabel);
@@ -641,11 +642,15 @@ namespace SolidCP.UniversalInstaller
 
 		public override object InitializeLifetimeService()
 		{
+#if NETFRAMEWORK
 			ILease lease = (ILease)base.InitializeLifetimeService();
 
 			//Set lease properties
 			lease.InitialLeaseTime = TimeSpan.Zero;
 			return lease;
+#else
+			return new object();
+#endif
 		}
 
 	}

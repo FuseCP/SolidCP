@@ -12,8 +12,8 @@ namespace SolidCP.UniversalInstaller
 		public ServerSettings Server { get; set; }
 		public EnterpriseServerSettings EnterpriseServer { get; set; }
 		public WebPortalSettings WebPortal { get; set; }
-		public ComponentSettings Standalone { get; set; }
-		public CommonSettings WebDavPortal { get; set; } 
+		public StandaloneSettings Standalone { get; set; }
+		public WebDavPortalSettings WebDavPortal { get; set; } 
 		public InstallerSpecificSettings Installer { get; set; }
 	}
 
@@ -27,11 +27,18 @@ namespace SolidCP.UniversalInstaller
 				Installer.Current.UnixAppRootPath, Installer.Current.SolidCP);
 			set => installFolder = value;
 		}
+
+		public virtual string ComponentCode => null;
+		public virtual string ComponentName => null;
 			
 	}
 	public class CommonSettings: ComponentSettings
 	{
 		public string Urls { get; set; }
+		public string WebSiteIp { get; set; }
+		public string WebSiteDomain { get; set; }
+		public string WebSitePort { get; set; }
+		public bool UpdateWebSite { get; set; }
 		public string Username { get; set; }
 		public string Password { get; set; }
 		public bool UseActiveDirectory { get; set; }
@@ -53,6 +60,9 @@ namespace SolidCP.UniversalInstaller
 		}
 		public string ServerPassword { get; set; }
 		public string ServerPasswordSHA { get; set; }
+		public bool UpdateServerPassword { get; set; }
+		public override string ComponentCode => Global.Server.ComponentCode;
+		public override string ComponentName => Global.Server.ComponentName;
 	}
 
 	public class EnterpriseServerSettings: CommonSettings
@@ -67,10 +77,14 @@ namespace SolidCP.UniversalInstaller
 		public string DatabaseUser { get; set; }
 		public string DatabasePassword { get; set; }
 		public string DatabaseName { get; set; }
+		public string DbInstallConnectionString { get; set; }
 		public string ServerAdminPassword { get; set; }
+		public bool UpdateServerAdminPassword { get; set; }
 		public bool TrustDatabaseServerCertificate { get; set; } = false;
 		public bool WindowsAuthentication { get; set; } = false;
 		public string CryptoKey { get; set; }
+		public override string ComponentCode => Global.EntServer.ComponentCode;
+		public override string ComponentName => Global.EntServer.ComponentName;
 	}
 
 	public class WebPortalSettings: CommonSettings
@@ -79,8 +93,20 @@ namespace SolidCP.UniversalInstaller
 		public string EnterpriseServerPath { get; set; } = "..\\EnterpriseServer";
 		public bool EmbedEnterpriseServer { get; set; } = true;
 		public bool ExposeEnterpriseServerWebServices { get; set; } = true;
+		public override string ComponentCode => Global.WebPortal.ComponentCode;
+		public override string ComponentName => Global.WebPortal.ComponentName;
 	}
 
+	public class WebDavPortalSettings: CommonSettings
+	{
+		public override string ComponentCode => Global.WebDavPortal.ComponentCode;
+		public override string ComponentName => Global.WebDavPortal.ComponentName;
+	}
+	public class StandaloneSettings: ComponentSettings
+	{
+		public override string ComponentCode => Global.StandaloneServer.ComponentCode;
+		public override string ComponentName => Global.StandaloneServer.ComponentName;
+	}
 	public class ProxySettings
 	{
 		public string Address { get; set; }
@@ -94,7 +120,9 @@ namespace SolidCP.UniversalInstaller
 		public List<ComponentInfo> InstalledComponents { get; set; } = new List<ComponentInfo>();
 		public string ComponentSettingsXml { get; set; }
 		public ComponentInfo Component { get; set; }
+		public SetupActions Action { get; set; }
 		public string TempPath { get; set; }
+		public bool IsUnattended { get; set; }
 
 		Version? installerVersion = null;
 		public Version Version {

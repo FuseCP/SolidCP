@@ -1,13 +1,14 @@
+using System;
+using System.IO;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer.Data;
-using Microsoft.Identity.Client;
-using System.Collections;
-using System.Runtime.InteropServices.ComTypes;
-using SolidCP.Providers.Web;
-using System.Security.Policy;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -34,7 +35,7 @@ namespace SolidCP.UniversalInstaller
 			protected bool HasExited => CurrentPage < 0 || CurrentPage >= Pages.Count;
 			protected Action Current => CurrentPage >= 0 && CurrentPage < Pages.Count ? Pages[CurrentPage] : () => { };
 
-			public override UI.SetupWizard Introduction()
+			public override UI.SetupWizard Introduction(CommonSettings settings)
 			{
 				Pages.Add(() =>
 				{
@@ -278,7 +279,7 @@ Path to EnterpriseServer: [?EnterpriseServerPath                                
 				});
 				return this;
 			}
-			public override UI.SetupWizard EmbeddEnterpriseServer()
+			public override UI.SetupWizard EmbedEnterpriseServer()
 			{
 				var settings = Settings.WebPortal;
 
@@ -655,7 +656,27 @@ SolidCP Installer successfully has:
 				});
 				return this;
 			}
+			public override UI.SetupWizard ConfirmUninstall(ComponentSettings settings)
+			{
+				Pages.Add(() =>
+				{
+					if (settings == null) settings = Settings.Standalone;
+					var form = new ConsoleForm(@$"
+Uninstall {settings.ComponentName}:
+=========={new string('=', settings.ComponentName.Length)}=
 
+If you proceed, the installer will completely uninstall {settings.ComponentName} from this computer.
+
+[*  Cancel  ]  [  Uninstall  ]")
+					.ShowDialog();
+					if (form["Cancel"].Clicked)
+					{
+						UI.RunMainUI();
+					}
+					else Next();
+				});
+				return this;
+			}
 			public SetupWizard(UI ui) : base(ui) { }
 			public override bool Show()
 			{
@@ -759,8 +780,7 @@ Password: [!ProxyPassword                           ]
 			//remove already installed components or components not available on this platform
 			foreach (var component in components.ToArray())
 			{
-				if (component.CheckForInstalledComponent()) components.Remove(component);
-				else if (!component.CheckIsAvailableOnPlatform()) components.Remove(component);
+				if (component.IsInstalled || !component.IsAvailableOnPlatform) components.Remove(component);
 				else
 				{
 					str.AppendLine($"[  {component.ComponentName}, {component.Version}  ]");
@@ -1168,10 +1188,16 @@ You have successfully installed the following components:
 				Exit();
 			};
 		}
+		bool exitCalled = false;
 		public override void Exit()
 		{
-			Console.Clear();
-			Console.CursorVisible = true;
+			if (!exitCalled)
+			{
+				exitCalled = true;
+				Console.Clear();
+				Console.CursorVisible = true;
+				Installer.Exit();
+			}
 		}
 
 		public override void CheckPrerequisites()

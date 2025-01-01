@@ -3,6 +3,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using SolidCP.Providers.OS;
@@ -11,16 +12,114 @@ namespace SolidCP.UniversalInstaller {
 
     public class WinFormsUI: UI {
 
-		public class SetupWizard : UI.SetupWizard
+		public new class SetupWizard : UI.SetupWizard
 		{
+			public WinForms.InstallerForm Form { get; private set; } = new WinForms.InstallerForm();	
+			public WinForms.Wizard Wizard => Form.Wizard;
 			public SetupWizard(UI ui): base(ui) { }
+
+			void Add(Control page) => Wizard.Controls.Add(page);
+			public override UI.SetupWizard Certificate(CommonSettings settings)
+			{
+				Add(new WinForms.CertificatePage(settings));
+				return this;
+			}
+			public override UI.SetupWizard ConfirmUninstall(ComponentSettings settings)
+			{
+				Add(new WinForms.ConfirmUninstallPage());
+				return this;
+			}
+			public override UI.SetupWizard CheckPrerequisites()
+			{
+				Add(new WinForms.ConfigurationCheckPage());
+				return this;
+			}
+			public override UI.SetupWizard Database()
+			{
+				Add(new WinForms.DatabasePage());
+				return this;
+			}
+			public override UI.SetupWizard EmbedEnterpriseServer()
+			{
+				Add(new WinForms.EmbedEnterpriseServerPage());
+				return this;
+			}
+			public override UI.SetupWizard EnterpriseServerUrl()
+			{
+				Add(new WinForms.EnterpriseServerUrlPage());
+				return this;
+			}
+			public override UI.SetupWizard Finish()
+			{
+				Add(new WinForms.FinishPage());
+				return this;
+			}
+			public override UI.SetupWizard InsecureHttpWarning(CommonSettings settings)
+			{
+				Add(new WinForms.InsecureHttpWarningPage() { Settings = settings });
+				return this;
+			}
+			public override UI.SetupWizard InstallFolder(ComponentSettings settings)
+			{
+				Add(new WinForms.InstallFolderPage() { Settings = settings });
+				return this;
+			}
+			public override UI.SetupWizard Introduction(CommonSettings settings)
+			{
+				Add(new WinForms.IntroductionPage() { Settings = settings });
+				return this;
+			}
+			public override UI.SetupWizard LicenseAgreement()
+			{
+				Add(new WinForms.LicenseAgreementPage());
+				return this;
+			}
+			public override UI.SetupWizard ServerAdminPassword()
+			{
+				Add(new WinForms.ServerAdminPasswordPage());
+				return this;
+			}
+			public override UI.SetupWizard RunWithProgress(string title, Action action)
+			{
+				return this;
+			}
+			public override UI.SetupWizard ServerPassword()
+			{
+				Add(new WinForms.ServerPasswordPage());
+				return this;
+			}
+			public override UI.SetupWizard UserAccount(CommonSettings settings)
+			{
+				Add(new WinForms.UserAccountPage() { Settings = settings });
+				return this;
+			}
+			public override UI.SetupWizard Web(CommonSettings settings)
+			{
+				Add(new WinForms.WebPage() { Settings = settings });
+				return this;
+			}
 			public override bool Show()
 			{
-				throw new NotImplementedException();
+				Form.Wizard.LinkPages();
+				Form.Wizard.SelectedPage = Form.Wizard.Controls.OfType<WinForms.WizardPageBase>()
+					.FirstOrDefault();
+				return Form.ShowDialog() == DialogResult.OK;
 			}
 		}
 
-		public override bool IsAvailable => true;
+		bool isAvailable = false;
+		public override bool IsAvailable
+		{
+			get
+			{
+				if (OSInfo.IsWindows || OSInfo.IsMono)
+				{
+					Init();
+					return isAvailable;
+				}
+				else return false;
+			}
+		}
 		public override UI.SetupWizard Wizard => new SetupWizard(this);
 
 		public override ServerSettings GetServerSettings()
@@ -43,8 +142,7 @@ namespace SolidCP.UniversalInstaller {
 		}
 
 		public override Packages GetPackagesToInstall() {
-			UI.Current = new ConsoleUI();
-			return UI.Current.GetPackagesToInstall();
+			throw new NotImplementedException();
         }
         
         public override void ShowInstallationProgress(string title = null) {
@@ -65,10 +163,6 @@ namespace SolidCP.UniversalInstaller {
 		{
 			try
 			{
-				Application.ApplicationExit += new EventHandler(OnApplicationExit);
-				Application.ThreadException += new ThreadExceptionEventHandler(OnThreadException);
-				Application.EnableVisualStyles();
-				Application.SetCompatibleTextRenderingDefault(false);
 				var mainForm = new ApplicationForm();
 				MainForm = MainForm;
 				mainForm.InitializeApplication();
@@ -76,6 +170,8 @@ namespace SolidCP.UniversalInstaller {
 			}
 			catch (Exception ex)
 			{
+				isAvailable = false;
+
 				try
 				{
 					UI.Current = UI.AvaloniaUI;
@@ -134,6 +230,7 @@ namespace SolidCP.UniversalInstaller {
 				return form.Password;
 			} catch (Exception ex)
 			{
+				isAvailable = false;
 				try
 				{
 					UI.Current = UI.AvaloniaUI;
@@ -151,17 +248,42 @@ namespace SolidCP.UniversalInstaller {
 			throw new NotImplementedException();
 		}
 
+		bool initCalled = false;
 		public override void Init()
 		{
+			if (!initCalled)
+			{
+				initCalled = true;
+				try
+				{
+					Application.ApplicationExit += new EventHandler(OnApplicationExit);
+					Application.ThreadException += new ThreadExceptionEventHandler(OnThreadException);
+					Application.EnableVisualStyles();
+					Application.SetCompatibleTextRenderingDefault(false);
+					isAvailable = true;
+				}
+				catch
+				{
+					isAvailable = false;
+				}
+			}
 		}
+
+		bool exitCalled = false;
 		public override void Exit()
 		{
+			if (!exitCalled)
+			{
+				exitCalled = true;
+				Installer.SaveSettings();
+				Application.Exit();
+				Installer.Exit(0);
+			}
 		}
 
 		public override void CheckPrerequisites()
 		{
-			UI.Current = new ConsoleUI();
-			UI.Current.CheckPrerequisites();			
+			throw new NotSupportedException();
 		}
 
 		public override void ShowLogFile()
@@ -177,12 +299,11 @@ namespace SolidCP.UniversalInstaller {
 
 		public override bool DownloadSetup(string fileName)
 		{
-			Controls.Loader form = new Controls.Loader(fileName, (e) => ShowError(e));
-			DialogResult result = form.ShowDialog((Form)MainForm);
+			Controls.Loader loader = new Controls.Loader(fileName, (e) => ShowError(e));
+			DialogResult result = loader.ShowDialog();
 
 			if (result == DialogResult.OK)
 			{
-				((Form)MainForm).Update();
 				return true;
 			}
 			return false;

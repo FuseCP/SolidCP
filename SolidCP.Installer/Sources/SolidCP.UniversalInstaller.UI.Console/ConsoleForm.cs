@@ -1,12 +1,11 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Net.Http.Headers;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
-using SolidCP.Providers.Utils.LogParser;
-using SolidCP.Providers.Virtualization;
 
 namespace SolidCP.UniversalInstaller
 {

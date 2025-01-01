@@ -62,7 +62,8 @@ namespace SolidCP.UniversalInstaller
 			EnterpriseServer = new EnterpriseServerSettings(),
 			WebPortal = new WebPortalSettings(),
 			Installer = new InstallerSpecificSettings(),
-			WebDavPortal = new CommonSettings()
+			WebDavPortal = new WebDavPortalSettings(),
+			Standalone = new StandaloneSettings()
 		};
 
 		public Shell Shell { get; set; } = Shell.Standard.Clone;
@@ -89,8 +90,7 @@ namespace SolidCP.UniversalInstaller
 			if (File.Exists(path))
 			{
 				var settings = JsonConvert.DeserializeObject<InstallerSettings>(
-						File.ReadAllText(path)
-					);
+					File.ReadAllText(path), new VersionConverter());
 				Settings = settings;
 			}
 			else SaveSettings();
@@ -98,7 +98,7 @@ namespace SolidCP.UniversalInstaller
 		public void SaveSettings()
 		{
 			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
-			var json = JsonConvert.SerializeObject(Settings, Formatting.Indented);
+			var json = JsonConvert.SerializeObject(Settings, Formatting.Indented, new VersionConverter());
 			File.WriteAllText(path, json);
 		}
 
@@ -112,7 +112,7 @@ namespace SolidCP.UniversalInstaller
 			string installerPath = info.InstallerPath;
 			string installerType = info.InstallerType;
 
-			if (info.CheckForInstalledComponent())
+			if (info.IsInstalled)
 			{
 				UI.Current.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
 				return false;
@@ -482,7 +482,17 @@ namespace SolidCP.UniversalInstaller
 				Console.Read();
 			}
 		}
-
+		bool exitCalled = false;
+		public virtual void Exit(int errorCode = 0)
+		{
+			if (!exitCalled)
+			{
+				exitCalled = true;
+				SaveSettings();
+				UI.Exit();
+				Environment.Exit(errorCode);
+			}
+		}
 		protected void ParseConnectionString(string connectionString, out string server, out string user, out string password,
 			out bool windowsAuthentication)
 		{

@@ -295,7 +295,7 @@ namespace SolidCP.Setup
 
 		public bool NewApplicationPool { get; set; }
 
-		public ServerItem[] SQLServers { get; set; }
+		public Common.ServerItem[] SQLServers { get; set; }
 
 		public string Product { get; set; }
 

@@ -1,143 +1,496 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+        <TargetFrameworks>net48;net8.0-windows</TargetFrameworks>
         <RootNamespace>SolidCP.UniversalInstaller</RootNamespace>
         <LangVersion>13</LangVersion>
         <UseWindowsForms>true</UseWindowsForms>
+        <PackageId>SolidCP.UniversalInstaller.UI.WinForms</PackageId>
     </PropertyGroup>
 
+    <PropertyGroup Condition="$(TargetFramework) == 'net48'">
+        <AssemblyName>SolidCP.UniversalInstaller.UI.WinForms.NetFX</AssemblyName>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework) == 'net8.0'">
+        <AssemblyName>SolidCP.UniversalInstaller.UI.WinForms.NetCore</AssemblyName>
+    </PropertyGroup>
     <ItemGroup>
-      <Content Include="Resources\application.ico" />
+      <Compile Remove="Wizard\SQLServersPage.cs" />
+      <Compile Remove="Wizard\SQLServersPage.Designer.cs" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+        <Content Include="Resources\application.ico" />
     </ItemGroup>
 
     <ItemGroup>
+      <EmbeddedResource Include="Resources\EULA.rtf" />
+      <EmbeddedResource Include="Resources\EULA.Unix.rtf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="Wizard\SQLServersPage.cs">
+        <SubType>UserControl</SubType>
+      </None>
+      <None Include="Wizard\SQLServersPage.Designer.cs">
+        <DependentUpon>SQLServersPage.cs</DependentUpon>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+        <Reference Include="Microsoft.Web.Administration, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\..\Lib\Microsoft.Web.Administration.dll</HintPath>
+            <Private>False</Private>
+            <SpecificVersion>False</SpecificVersion>
+        </Reference>
+        <Reference Include="Microsoft.Web.Management, Version=7.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\..\Lib\Microsoft.Web.Management.dll</HintPath>
+            <Private>False</Private>
+            <SpecificVersion>False</SpecificVersion>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
         <Reference Include="System.Windows.Forms" />
-        <Reference Include="System.ServiceModel" />
-        <!--<Reference Include="System.Configuration" />
-        <Reference Include="System.Deployment" />
-        <Reference Include="System.DirectoryServices" />
-        <Reference Include="System.EnterpriseServices" />-->
     </ItemGroup>
 
     <ItemGroup>
-      <Compile Update="Controls\ComponentControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ComponentControl.Designer.cs">
-        <DependentUpon>ComponentControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\ComponentsControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ComponentsControl.Designer.cs">
-        <DependentUpon>ComponentsControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\LineBox.cs">
-        <SubType>Component</SubType>
-      </Compile>
-      <Compile Update="Controls\LineBox.Designer.cs">
-        <DependentUpon>LineBox.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\Loader.cs">
-        <SubType>Form</SubType>
-      </Compile>
-      <Compile Update="Controls\Loader.Designer.cs">
-        <DependentUpon>Loader.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\ProgressIcon.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ResultViewControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ServerControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ServerControl.Designer.cs">
-        <DependentUpon>ServerControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\ServersControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ServersControl.Designer.cs">
-        <DependentUpon>ServersControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\ServiceControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\ServiceControl.Designer.cs">
-        <DependentUpon>ServiceControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\SettingsControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\SettingsControl.Designer.cs">
-        <DependentUpon>SettingsControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Controls\TopLogoControl.cs">
-        <SubType>UserControl</SubType>
-      </Compile>
-      <Compile Update="Controls\TopLogoControl.Designer.cs">
-        <DependentUpon>TopLogoControl.cs</DependentUpon>
-      </Compile>
-      <Compile Update="Properties\Resources.Designer.cs">
-        <DependentUpon>Resources.resx</DependentUpon>
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-      </Compile>
+        <Compile Update="Controls\ComponentControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ComponentControl.Designer.cs">
+            <DependentUpon>ComponentControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\ComponentsControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ComponentsControl.Designer.cs">
+            <DependentUpon>ComponentsControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\LineBox.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Controls\LineBox.Designer.cs">
+            <DependentUpon>LineBox.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\Loader.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="Controls\Loader.Designer.cs">
+            <DependentUpon>Loader.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\ProgressIcon.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ResultViewControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ServerControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ServerControl.Designer.cs">
+            <DependentUpon>ServerControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\ServersControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ServersControl.Designer.cs">
+            <DependentUpon>ServersControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\ServiceControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\ServiceControl.Designer.cs">
+            <DependentUpon>ServiceControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\SettingsControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\SettingsControl.Designer.cs">
+            <DependentUpon>SettingsControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Controls\TopLogoControl.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Controls\TopLogoControl.Designer.cs">
+            <DependentUpon>TopLogoControl.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Properties\Resources.Designer.cs">
+            <DependentUpon>Resources.resx</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Wizard\BannerWizardPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\CertificatePage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\CertificatePage.Designer.cs">
+            <DependentUpon>CertificatePage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ConfigurationCheckPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ConfigurationCheckPage.Designer.cs">
+            <DependentUpon>ConfigurationCheckPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ConfirmUninstallPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ConfirmUninstallPage.Designer.cs">
+            <DependentUpon>ConfirmUninstallPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\DatabasePage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\DatabasePage.Designer.cs">
+            <DependentUpon>DatabasePage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\EmbedEnterpriseServer.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\EmbedEnterpriseServer.Designer.cs">
+            <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage.Designer.cs">
+            <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage2.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ExpressInstallPage2.Designer.cs">
+            <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\FinishPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\FinishPage.Designer.cs">
+            <DependentUpon>FinishPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\InsecureHttpWarning.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\InsecureHttpWarning.Designer.cs">
+            <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\InstallerForm.cs">
+          <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="Wizard\InstallerForm.Designer.cs">
+          <DependentUpon>InstallerForm.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\InstallFolderPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\InstallFolderPage.Designer.cs">
+            <DependentUpon>InstallFolderPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\IntroductionPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\LicenseAgreementPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\LicenseAgreementPage.Designer.cs">
+            <DependentUpon>LicenseAgreementPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\MarginWizardPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\RollBackPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\RollBackPage.Designer.cs">
+            <DependentUpon>RollBackPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ServerAdminPasswordPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ServerAdminPasswordPage.Designer.cs">
+            <DependentUpon>ServerAdminPasswordPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ServerPasswordPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ServerPasswordPage.Designer.cs">
+            <DependentUpon>ServerPasswordPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\ServiceAddressPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\ServiceAddressPage.Designer.cs">
+            <DependentUpon>ServiceAddressPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\SetupCompletePage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\SetupCompletePage.Designer.cs">
+            <DependentUpon>SetupCompletePage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\UninstallPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\UninstallPage.Designer.cs">
+            <DependentUpon>UninstallPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\EnterpriseServerUrlPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\EnterpriseServerUrlPage.Designer.cs">
+            <DependentUpon>EnterpriseServerUrlPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\UserAccountPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\UserAccountPage.Designer.cs">
+            <DependentUpon>UserAccountPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\WebPage.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
+        <Compile Update="Wizard\WebPage.Designer.cs">
+            <DependentUpon>WebPage.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Wizard\Wizard.cs">
+            <SubType>Component</SubType>
+        </Compile>
+        <Compile Update="Wizard\WizardPageBase.cs">
+            <SubType>UserControl</SubType>
+        </Compile>
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Update="ApplicationForm.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ApplicationForm.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\ComponentControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ComponentControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\ComponentsControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ComponentsControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\Loader.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>Loader.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\ProgressIcon.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ProgressIcon.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\ServerControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ServerControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\ServersControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ServersControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\ServiceControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>ServiceControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\SettingsControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>SettingsControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Controls\TopLogoControl.resx">
-        <SubType>Designer</SubType>
-        <DependentUpon>TopLogoControl.cs</DependentUpon>
-      </EmbeddedResource>
-      <EmbeddedResource Update="Properties\Resources.resx">
-        <SubType>Designer</SubType>
-        <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-        <Generator>ResXFileCodeGenerator</Generator>
-      </EmbeddedResource>
+        <EmbeddedResource Update="ApplicationForm.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ApplicationForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\ComponentControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ComponentControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\ComponentsControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ComponentsControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\Loader.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>Loader.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\ProgressIcon.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ProgressIcon.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\ServerControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ServerControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\ServersControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ServersControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\ServiceControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ServiceControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\SettingsControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>SettingsControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Controls\TopLogoControl.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>TopLogoControl.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <SubType>Designer</SubType>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+            <Generator>ResXFileCodeGenerator</Generator>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\CertificatePage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>CertificatePage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ConfigurationCheckPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ConfigurationCheckPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ConfirmUninstallPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ConfirmUninstallPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\DatabasePage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>DatabasePage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\EmbedEnterpriseServer.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ExpressInstallPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ExpressInstallPage2.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\FinishPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>FinishPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\InsecureHttpWarning.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\InstallerForm.resx">
+          <SubType>Designer</SubType>
+          <DependentUpon>InstallerForm.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\InstallFolderPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>InstallFolderPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\LicenseAgreementPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>LicenseAgreementPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\RollBackPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>RollBackPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ServerAdminPasswordPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ServerAdminPasswordPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ServerPasswordPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ServerPasswordPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ServiceAddressPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>ServiceAddressPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\SetupCompletePage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>SetupCompletePage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\SQLServersPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>SQLServersPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\UninstallPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>UninstallPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\EnterpriseServerUrlPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>UrlPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\UserAccountPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>UserAccountPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\WebPage.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>WebPage.cs</DependentUpon>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Forms\InstallerForm.resx">
+            <DependentUpon>InstallerForm.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Properties\Resources.resx">
+            <SubType>Designer</SubType>
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ExpressInstallPage2.resx">
+            <DependentUpon>ExpressInstallPage2.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\InsecureHttpWarning.resx">
+            <DependentUpon>InsecureHttpWarning.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\LicenseAgreementPage.resx">
+            <DependentUpon>LicenseAgreementPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\SQLServersPage.resx">
+            <DependentUpon>SQLServersPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\EmbedEnterpriseServer.resx">
+            <DependentUpon>EmbedEnterpriseServer.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\UserAccountPage.resx">
+            <DependentUpon>UserAccountPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\EnterpriseServerUrlPage.resx">
+            <DependentUpon>EnterpriseServerUrlPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\CertificatePage.resx">
+            <DependentUpon>CertificatePage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\WebPage.resx">
+            <DependentUpon>WebPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\InstallFolderPage.resx">
+            <DependentUpon>InstallFolderPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\DatabasePage.resx">
+            <DependentUpon>DatabasePage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ServerPasswordPage.resx">
+            <DependentUpon>ServerPasswordPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\RollBackPage.resx">
+            <DependentUpon>RollBackPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ExpressInstallPage.resx">
+            <DependentUpon>ExpressInstallPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\FinishPage.resx">
+            <DependentUpon>FinishPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\UninstallPage.resx">
+            <DependentUpon>UninstallPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ConfirmUninstallPage.resx">
+            <DependentUpon>ConfirmUninstallPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ConfigurationCheckPage.resx">
+            <DependentUpon>ConfigurationCheckPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\SetupCompletePage.resx">
+            <DependentUpon>SetupCompletePage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ServerAdminPasswordPage.resx">
+            <DependentUpon>ServerAdminPasswordPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <EmbeddedResource Update="Wizard\ServiceAddressPage.resx">
+            <DependentUpon>ServiceAddressPage.cs</DependentUpon>
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
     </ItemGroup>
 
 </Project>

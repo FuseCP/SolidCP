@@ -89,7 +89,7 @@ namespace SolidCP.Setup
 			if (CheckInstallerVersion())
 			{
 				var wizard = UI.Current.Wizard
-					.Introduction()
+					.Introduction(CommonSettings)
 					.CheckPrerequisites()
 					.LicenseAgreement();
 				if (CommonSettings != null)
@@ -171,8 +171,8 @@ namespace SolidCP.Setup
 			if (CheckInstallerVersion())
 			{
 				return UI.Current.Wizard
-					.Introduction()
-					.ConfirmUninstall()
+					.Introduction(CommonSettings)
+					.ConfirmUninstall(CommonSettings)
 					.RunWithProgress(title, installer)
 					.Finish()
 					.Show();

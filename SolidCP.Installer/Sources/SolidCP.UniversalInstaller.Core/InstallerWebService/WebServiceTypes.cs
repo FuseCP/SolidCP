@@ -83,36 +83,44 @@ namespace SolidCP.UniversalInstaller
 		public string ComponentDescription { get; set; }
 		public string ComponentCode { get; set; }
 		public string ComponentName { get; set; }
-		public bool CheckIsAvailableOnPlatform()
+		public bool IsAvailableOnPlatform
 		{
-			if (Platforms == Platforms.Undefined) Platforms = Platforms.Windows;
+			get
+			{
+				if (Platforms == Platforms.Undefined) Platforms = Platforms.Windows;
 
-			return OSInfo.IsWindows && Platforms.HasFlag(Platforms.Windows) ||
-				!OSInfo.IsWindows && Platforms.HasFlag(Platforms.Unix);
+				return OSInfo.IsWindows && Platforms.HasFlag(Platforms.Windows) ||
+					!OSInfo.IsWindows && Platforms.HasFlag(Platforms.Unix);
+			}
 		}
-		public bool CheckForInstalledComponent()
+
+		public bool UsesNewInstaller => !InstallerPath.Equals("setup\\setup.dll", StringComparison.OrdinalIgnoreCase);
+		public bool IsInstalled
 		{
-			var componentCode = ComponentCode;
-			bool ret = false;
-			var installedComponents = new HashSet<string>();
-			foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
+			get
 			{
-				string code = component.ComponentCode;
-				installedComponents.Add(code);
-				if (code == componentCode)
+				var componentCode = ComponentCode;
+				bool ret = false;
+				var installedComponents = new HashSet<string>();
+				foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
 				{
-					ret = true;
-					break;
+					string code = component.ComponentCode;
+					installedComponents.Add(code);
+					if (code == componentCode)
+					{
+						ret = true;
+						break;
+					}
 				}
+				if (componentCode == "standalone")
+				{
+					if ((installedComponents.Contains("server") || installedComponents.Contains("serverunix")) &&
+						installedComponents.Contains("enterprise server") &&
+						installedComponents.Contains("portal"))
+						ret = true;
+				}
+				return ret;
 			}
-			if (componentCode == "standalone")
-			{
-				if ((installedComponents.Contains("server") || installedComponents.Contains("serverunix")) &&
-					installedComponents.Contains("enterprise server") &&
-					installedComponents.Contains("portal"))
-					ret = true;
-			}
-			return ret;
 		}
 	}
 

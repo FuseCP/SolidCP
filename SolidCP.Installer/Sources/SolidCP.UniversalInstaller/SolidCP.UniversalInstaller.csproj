@@ -28,8 +28,10 @@
 	
     <ItemGroup>
 		<ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
+		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Avalonia\SolidCP.UniversalInstaller.UI.Avalonia.csproj" />
+		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj" />
+		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
     </ItemGroup>
 
 	<ItemGroup>

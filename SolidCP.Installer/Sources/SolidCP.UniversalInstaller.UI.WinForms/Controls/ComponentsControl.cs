@@ -94,7 +94,7 @@ namespace SolidCP.UniversalInstaller.Controls
 		private void StartInstaller(ComponentInfo info)
         {
             Installer.Current.Install(info);
-
+            return;
 
             string applicationName = info.ApplicationName;
             string componentName = info.ComponentName;
@@ -106,7 +106,7 @@ namespace SolidCP.UniversalInstaller.Controls
             string installerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
             string installerType = info.InstallerType;
 
-            if (info.CheckForInstalledComponent())
+            if (info.IsInstalled)
             {
                 AppContext.AppForm.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
                 return;
@@ -217,9 +217,7 @@ namespace SolidCP.UniversalInstaller.Controls
                 //remove already installed components or components not available on this platform
                 foreach (var component in dsComponents.ToArray())
                 {
-                    string componentCode = component.ComponentCode;
-                    if (component.CheckForInstalledComponent()) dsComponents.Remove(component);
-                    else if (!component.CheckIsAvailableOnPlatform()) dsComponents.Remove(component);
+                    if (component.IsInstalled || !component.IsAvailableOnPlatform) dsComponents.Remove(component);
 				}
 
 				this.grdComponents.ClearSelection();

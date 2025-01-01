@@ -32,62 +32,77 @@
 
 using System;
 using System.IO;
-using System.Windows.Forms;
-using System.Configuration;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
 using System.Diagnostics;
-using System.DirectoryServices;
-using System.DirectoryServices.ActiveDirectory;
-using System.Reflection;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Text;
+using System.Windows.Forms;
+using SolidCP.Providers.OS;
 
-using System.Security.Principal;
-using System.Security;
-using System.Security.Permissions;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Linq;
-
-namespace SolidCP.UniversalInstaller
+namespace SolidCP.UniversalInstaller.WinForms
 {
-	public static class UiUtils
+	public partial class LicenseAgreementPage : BannerWizardPage
 	{
-		public static void ShowRunningInstance()
+		private string nextText;
+		public LicenseAgreementPage()
 		{
-			Process currentProcess = Process.GetCurrentProcess();
-			foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
-			{
-				if (process.Id != currentProcess.Id)
-				{
-					//set focus
-					User32.SetForegroundWindow(process.MainWindowHandle);
-					break;
-				}
-			}
+			InitializeComponent();
 		}
-	}
 
-	public class ResourceUtils
-	{
-		public static void CreateDefaultAppConfig()
+		protected override void InitializePageInternal()
 		{
-			var path = AppDomain.CurrentDomain.BaseDirectory;
-			var assembly = Assembly.GetEntryAssembly();
-			var file = Path.Combine(Path.GetDirectoryName(assembly.Location), "installer.settings.json");
-			if (!File.Exists(file))
+			base.InitializePageInternal();
+
+			this.Text = "License Agreement";
+			this.Description = "Please review the license terms before installing the product";
+
+			string resource = OSInfo.IsWindows ? "SolidCP.UniversalInstaller.Resources.EULA.rtf" : "SolidCP.UniversalInstaller.Resources.EULA.Unix.rtf";
+
+			try
 			{
-				var resources = assembly.GetManifestResourceNames();
-				var resource = resources.FirstOrDefault(r => r.EndsWith("installer.settings.json") || r.EndsWith("installer.settings.release.json"));
-				if (resource != null)
+				var asm = GetType().Assembly;
+				using (Stream stream = asm.GetManifestResourceStream(resource))
 				{
-					using (var src = assembly.GetManifestResourceStream(resource))
-					using (var reader = new StreamReader(src))
+					using (StreamReader sr = new StreamReader(stream))
 					{
-						File.WriteAllText(file, reader.ReadToEnd());
+						this.txtLicense.Rtf = sr.ReadToEnd();
 					}
 				}
 			}
+			catch (Exception ex)
+			{
+				Log.WriteError("License agreement error", ex);
+			}
+
+		}
+
+		protected internal override void OnBeforeDisplay(EventArgs e)
+		{
+			base.OnBeforeDisplay(e);
+			nextText = this.Wizard.NextText;
+		}
+
+		protected internal override void OnAfterDisplay(EventArgs e)
+		{
+			base.OnAfterDisplay(e);
+			this.Wizard.NextText = "I &Agree";
+			//unattended setup
+			if (Installer.Current.Settings.Installer.IsUnattended && AllowMoveNext)
+				Wizard.GoNext();
+		}
+
+		protected internal override void OnBeforeMoveNext(CancelEventArgs e)
+		{
+			this.Wizard.NextText = nextText;
+			base.OnBeforeMoveNext(e);
+		}
+
+		protected internal override void OnBeforeMoveBack(CancelEventArgs e)
+		{
+			this.Wizard.NextText = nextText;
+			base.OnBeforeMoveBack(e);
 		}
 	}
 }

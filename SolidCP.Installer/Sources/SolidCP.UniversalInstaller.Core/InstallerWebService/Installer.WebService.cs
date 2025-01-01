@@ -67,9 +67,8 @@ namespace SolidCP.UniversalInstaller
 				string url = Settings.Installer.WebServiceUrl;
 				if (string.IsNullOrEmpty(url)) url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
 
-				var type = OSInfo.IsCore ?
-					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.Runtime.NetCore") :
-					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.Runtime.NetFX");
+				var type = Type.GetType($"SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.Runtime.{
+					(OSInfo.IsCore ? "NetCore" : "NetFX")}");
 
 				var webService = Activator.CreateInstance(type, url) as IInstallerWebService;
 				

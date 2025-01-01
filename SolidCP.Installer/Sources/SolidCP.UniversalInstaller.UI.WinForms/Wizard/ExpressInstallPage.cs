@@ -1,0 +1,161 @@
+// Copyright (c) 2016, SolidCP
+// SolidCP is distributed under the Creative Commons Share-alike license
+// 
+// SolidCP is a fork of WebsitePanel:
+// Copyright (c) 2015, Outercurve Foundation.
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted provided that the following conditions are met:
+//
+// - Redistributions of source code must  retain  the  above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+// - Redistributions in binary form  must  reproduce the  above  copyright  notice,
+//   this list of conditions  and  the  following  disclaimer in  the documentation
+//   and/or other materials provided with the distribution.
+//
+// - Neither  the  name  of  the  Outercurve Foundation  nor   the   names  of  its
+//   contributors may be used to endorse or  promote  products  derived  from  this
+//   software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,  BUT  NOT  LIMITED TO, THE IMPLIED
+// WARRANTIES  OF  MERCHANTABILITY   AND  FITNESS  FOR  A  PARTICULAR  PURPOSE  ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+// ANY DIRECT, INDIRECT, INCIDENTAL,  SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO,  PROCUREMENT  OF  SUBSTITUTE  GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER  CAUSED AND ON
+// ANY  THEORY  OF  LIABILITY,  WHETHER  IN  CONTRACT,  STRICT  LIABILITY,  OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using System.Threading;
+using System.Windows.Forms;
+using System.Linq;
+using System.Reflection;
+using System.Collections.Specialized;
+
+using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Common;
+using SolidCP.Providers.ResultObjects;
+using SolidCP.Providers.OS;
+using SolidCP.EnterpriseServer.Data;
+using SolidCP.UniversalInstaller;
+using SolidCP.UniversalInstaller.Web;
+
+namespace SolidCP.UniversalInstaller.WinForms
+{
+	public partial class ExpressInstallPage : BannerWizardPage
+	{
+		private Thread thread;
+
+		public ComponentSettings Settings { get; set; }
+	
+		public Action Action { get; set; }
+		public ExpressInstallPage(ComponentSettings settings)
+		{
+			InitializeComponent();
+			//
+			//
+			this.CustomCancelHandler = true;
+			Settings = settings;
+		}
+
+		delegate void StringCallback(string value);
+		delegate void IntCallback(int value);
+
+		private void SetProgressValue(int value)
+		{
+			//thread safe call
+			if (InvokeRequired)
+			{
+				IntCallback callback = new IntCallback(SetProgressValue);
+				Invoke(callback, new object[] { value });
+			}
+			else
+			{
+				progressBar.Value = value;
+				Update();
+			}
+		}
+
+		private void SetProgressText(string text)
+		{
+			//thread safe call
+			if (InvokeRequired)
+			{
+				StringCallback callback = new StringCallback(SetProgressText);
+				Invoke(callback, new object[] { text });
+			}
+			else
+			{
+				lblProcess.Text = text;
+				Update();
+			}
+		}
+		
+		protected internal override void OnBeforeDisplay(EventArgs e)
+		{
+			base.OnBeforeDisplay(e);
+			string name = Settings.ComponentName;
+			this.Text = string.Format("Installing {0}", name);
+			this.Description = string.Format("Please wait while {0} is being installed.", name);
+			this.AllowMoveBack = false;
+			this.AllowMoveNext = false;
+			this.AllowCancel = false;
+		}
+
+		protected internal override void OnAfterDisplay(EventArgs e)
+		{
+			base.OnAfterDisplay(e);
+			thread = new Thread(new ThreadStart(this.Start));
+			thread.Start();
+		}
+
+		public void Start()
+		{
+			SetProgressValue(0);
+
+			string componentName = Settings.ComponentName;
+			bool isUnattended = Installer.Current.Settings.Installer.IsUnattended;
+
+			try
+			{
+				SetProgressText("Creating installation script...");
+
+				//SetProgressText(action.Description);
+				SetProgressValue(0);
+
+				Action?.Invoke();
+
+				this.progressBar.Value = 100;
+
+			}
+			catch (Exception ex)
+			{
+				if (Utils.IsThreadAbortException(ex))
+					return;
+
+				ShowError();
+				Rollback();
+				return;
+			}
+
+			SetProgressText("Completed. Click Next to continue.");
+			this.AllowMoveNext = true;
+			this.AllowCancel = true;
+			//unattended setup
+			if (!isUnattended) Wizard.GoNext();
+		}
+	}
+}
