@@ -4,8 +4,9 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <AssemblyName>Setup2</AssemblyName>
-        <EmbeddReferences>true</EmbeddReferences>
+        <EmbedReferences>true</EmbedReferences>
         <LangVersion>13</LangVersion>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,7 +17,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
-    <ItemGroup Condition="$(EmbeddReferences) == 'true'">
+    <ItemGroup Condition="$(EmbedReferences) == 'true'">
         <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
@@ -36,6 +37,10 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj">
             <SetTargetFramework>TargetFramework=net8.0</SetTargetFramework>
         </ProjectReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\..\Build\$(Configuration)\SolidCP.UniversalInstaller.Core.deps.json" />
     </ItemGroup>
 
 </Project>

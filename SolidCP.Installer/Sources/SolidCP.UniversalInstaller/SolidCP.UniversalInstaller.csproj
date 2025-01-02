@@ -5,12 +5,12 @@
 		<TargetFrameworks>net48;net8.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<LangVersion>12</LangVersion>
+		<LangVersion>13</LangVersion>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<StartupObject>SolidCP.UniversalInstaller.Program</StartupObject>
 		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
 		<ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
-        <EmbdeddReferences>true</EmbdeddReferences>
+        <EmbdedReferences>true</EmbdedReferences>
     </PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -39,7 +39,7 @@
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
 
-    <ItemGroup Condition="$(EmbeddReferences) == 'true'">
+    <ItemGroup Condition="$(EmbedReferences) == 'true'">
         <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
@@ -53,5 +53,19 @@
     <ItemGroup>
       <None Include="FodyWeavers.xsd" />
     </ItemGroup>
+
+    <Target Name="DeleteDlls" AfterTargets="Build">
+        <ItemGroup>
+            <DllsToKeep Include="$(OutputPath)\**\Setup2.*" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.exe" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.dll" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.pdb" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.Core.deps.json" />
+            <DllsToDelete Include="$(OutputPath)\**\*.*" Exclude="@(DllsToKeep)" />
+        </ItemGroup>
+        <Message Importance="high" Text="OutputPath: $(OutputPath)" />
+        <Message Importance="high" Text="DllsToKeep: @(DllsToKeep)" />
+        <Delete Files="@(DllsToDelete)" />
+    </Target>
 
 </Project>

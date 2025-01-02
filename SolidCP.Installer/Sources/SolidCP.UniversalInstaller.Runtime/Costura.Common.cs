@@ -10,10 +10,24 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-// ReSharper disable CommentTypo
+using SolidCP.Providers.OS;
 
 public class Loader
 {
+    static int initialized = 0;
+
+    AssemblyLoadContext
+    public static void Init()
+    {
+        if (Interlocked.Exchange(ref initialized, 1) == 0)
+        {
+            var guid = Guid.NewGuid();
+            var path = Path.Combine(Path.GetTempPath(), guid.ToString("X"));
+            if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+            AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
+        }
+    }
+
     [DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
     public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, uint dwFlags);
 
@@ -101,9 +115,19 @@ public class Loader
         return culture.Name;
     }
 
-    public void SaveDiskCache(string tempBasePath)
+	public static bool IsLinuxMusl
+	{
+		get
+		{
+			if (!OSInfo.IsLinux) return false;
+			return Shell.Standard.Exec("ldd /bin/ls").OutputAndError().Result.Contains("musl");
+		}
+	}
+
+	public static void SaveDiskCache(string tempBasePath)
     {
-        var asm = GetType().Assembly;
+        var resourceNames = new HashSet<string>();
+        var asm = typeof(Loader).Assembly;
         using (StreamReader reader = new StreamReader(asm.GetManifestResourceStream("custora.metadata")))
         {
             var line = reader.ReadLine();
@@ -111,6 +135,7 @@ public class Loader
             {
                 var tokens = line.Split('|');
                 var resname = tokens[0];
+                resourceNames.Add(resname);
                 var filename = tokens[3];
                 filename = Path.Combine(tempBasePath, filename);
                 using (var resStream = asm.GetManifestResourceStream(resname))
@@ -118,7 +143,34 @@ public class Loader
                     resStream.CopyTo(file);
             }
         }
-    } 
+
+		var arch = RuntimeInformation.ProcessArchitecture.ToString().ToLower();
+		if (arch == "x64" && IsLinuxMusl) arch = "musl-x64";
+
+        foreach (var resname in asm.GetManifestResourceNames())
+        {
+            if (resname.StartsWith("NativeDlls/"))
+            {
+                var name = resname.Substring("NativeDlls/".Length);
+                if ((name.StartsWith($"{arch}/") || !name.Contains("/")) &&
+                    OSInfo.IsWindows && name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
+                    OSInfo.IsMac && name.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase) ||
+                    OSInfo.IsLinux && name.EndsWith(".so", StringComparison.OrdinalIgnoreCase))
+                {
+                    var filename = Path.Combine(tempBasePath, name.Replace('/', Path.DirectorySeparatorChar));
+                    using (var src = asm.GetManifestResourceStream(resname))
+                    using (var file = new FileStream(filename, FileMode.Create, FileAccess.Write))
+                        src.CopyTo(file);
+#if NETCOREAPP
+                    NativeLibrary.Load(filename);
+#endif
+                }
+            }
+        }
+#if NETFRAMEWORK
+        AddEnvironmentPaths(tempBasePath, Path.Combine(tempBasePath, arch));
+#endif
+    }
 
     public Assembly ReadFromDiskCache(string tempBasePath, AssemblyName requestedAssemblyName)
     {
@@ -302,7 +354,7 @@ public class Loader
         //
         // return value is the previous state of the error-mode bit flags.
         // ErrorModes.SEM_FAILCRITICALERRORS | ErrorModes.SEM_NOGPFAULTERRORBOX | ErrorModes.SEM_NOOPENFILEERRORBOX;
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
         {
             uint errorModes = 32771;
             var originalErrorMode = SetErrorMode(errorModes);
@@ -363,13 +415,13 @@ public class Loader
     {
         var os = "win";
 
-        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        if (!RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
         {
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            if (RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
             {
                 os = "osx";
             }
-            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            else if (RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
             {
                 os = "linux";
             }
@@ -380,11 +432,11 @@ public class Loader
         return $"{os}-{Enum.GetName(typeof(Architecture), processorArchitecture).ToLowerInvariant()}";
     }
 
-    private void AddEnvironmentPaths(string newpath)
+    private static void AddEnvironmentPaths(params IEnumerable<string> newpaths)
     {
         var path = new[] { Environment.GetEnvironmentVariable("PATH") ?? string.Empty };
 
-        newpath = string.Join(Path.PathSeparator.ToString(), path.Concat(new string[] { newpath }));
+        var newpath = string.Join(Path.PathSeparator.ToString(), path.Concat(newpaths));
 
         Environment.SetEnvironmentVariable("PATH", newpath);
     }
