@@ -39,19 +39,19 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SolidCP.UniversalInstaller;
-using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.Setup
 {
 	public class BaseSetup
 	{
 		public InstallerSettings Settings => Installer.Current.Settings;
+
 		static BaseSetup()
 		{
 #if Costura
 			CosturaUtility.Initialize();
 #endif
-			//ResourceAssemblyLoader.Init();
+			AssemblyLoader.Init();
 			AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
 		}
 		static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
@@ -60,13 +60,23 @@ namespace SolidCP.Setup
 		}
 
 		bool argsParsed = false;
-		public void ParseArgs(string args)
+		public bool ParseArgs(object args)
 		{
 			if (!argsParsed)
 			{
-				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(args, new VersionConverter());
 				argsParsed = true;
+				if (args is string)
+				{
+					Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>((string)args, new VersionConverter());
+					return true;
+				}
+				else
+				{
+					UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
+					return false;
+				}
 			}
+			return true;
 		}
 		public virtual Version MinimalInstallerVersion => new Version("1.6.0");
 		public virtual string VersionsToUpgrade => "";
@@ -82,12 +92,10 @@ namespace SolidCP.Setup
 		public virtual CommonSettings CommonSettings => null;
 		public virtual ComponentSettings ComponentSettings => (CommonSettings as ComponentSettings) ?? Installer.Current.Settings.Standalone;
 		public virtual ComponentInfo Component => null;
-		public virtual UI.SetupWizard Wizard(string args, bool installFolder = true,
+		public virtual UI.SetupWizard Wizard(object args, bool installFolder = true,
 			bool urlWizard = true, bool userWizard = true)
 		{
-			ParseArgs(args);
-
-			if (CheckInstallerVersion())
+			if (ParseArgs(args) && CheckInstallerVersion())
 			{
 				var wizard = UI.Current.Wizard
 					.Introduction(CommonSettings)
@@ -127,7 +135,7 @@ namespace SolidCP.Setup
 			}
 			return null;
 		}
-		public virtual bool InstallOrSetup(string args, string title, Action installer, bool database = false, bool setup = false, int maxProgress = 100) {
+		public virtual Result InstallOrSetup(object args, string title, Action installer, bool database = false, bool setup = false, int maxProgress = 100) {
 			var wizard = Wizard(args, true, true, true);
 			if (database) wizard = wizard.Database();
 			if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
@@ -135,7 +143,7 @@ namespace SolidCP.Setup
 			return wizard
 				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 				.Finish()
-				.Show();
+				.Show() ? Result.OK : Result.Cancel;
 		}
 
 		public bool CheckUpdate()
@@ -156,34 +164,37 @@ namespace SolidCP.Setup
 
 			return upgradeSupported;
 		}
-		public virtual bool Update(string args, string title, Action installer, int maxProgress)
+		public virtual Result Update(object args, string title, Action installer, int maxProgress)
 		{
-			ParseArgs(args);
-
-			Installer.Current.Settings.Installer.Action = SetupActions.Update;
-
-			return CheckUpdate() && Wizard(args, false, true, true)
-				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
-				.Finish()
-				.Show();
-		}
-
-		public virtual bool Uninstall(string args, string title, Action installer, int maxProgress)
-		{
-			ParseArgs(args);
-
-			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
-
-			if (CheckInstallerVersion())
+			if (ParseArgs(args))
 			{
-				return UI.Current.Wizard
-					.Introduction(CommonSettings)
-					.ConfirmUninstall(CommonSettings)
+				Installer.Current.Settings.Installer.Action = SetupActions.Update;
+
+				return CheckUpdate() && Wizard(args, false, true, true)
 					.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 					.Finish()
-					.Show();
+					.Show() ? Result.OK : Result.Cancel;
 			}
-			return false;
+			return Result.Cancel;
+		}
+				
+		public virtual Result Uninstall(object args, string title, Action installer, int maxProgress)
+		{
+			if (ParseArgs(args))
+			{
+				Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
+
+				if (CheckInstallerVersion())
+				{
+					return UI.Current.Wizard
+						.Introduction(CommonSettings)
+						.ConfirmUninstall(CommonSettings)
+						.RunWithProgress(title, installer, ComponentSettings, maxProgress)
+						.Finish()
+						.Show() ? Result.OK : Result.Cancel;
+				}
+			}
+			return Result.Cancel;
 		}
 	}
 }

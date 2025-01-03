@@ -49,7 +49,7 @@ namespace SolidCP.UniversalInstaller.Controls
     /// </summary>
     internal partial class Loader : Form
     {
-        private Core.Loader appLoader;
+        private Core.SetupLoader appLoader;
 
         public Loader()
         {
@@ -89,7 +89,7 @@ namespace SolidCP.UniversalInstaller.Controls
         /// <param name="remoteFile">URL of the file to be downloaded</param>
         private void Start(string remoteFile, Action<Exception> callback)
         {
-            appLoader = Core.LoaderFactory.CreateFileLoader(remoteFile);
+            appLoader = Core.SetupLoaderFactory.CreateFileLoader(remoteFile);
 
             appLoader.OperationFailed += new EventHandler<Core.LoaderEventArgs<Exception>>(appLoader_OperationFailed);
             appLoader.OperationFailed += (object sender, Core.LoaderEventArgs<Exception> e) => {

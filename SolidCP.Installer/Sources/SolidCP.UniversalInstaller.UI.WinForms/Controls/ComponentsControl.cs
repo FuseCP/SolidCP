@@ -137,7 +137,7 @@ namespace SolidCP.UniversalInstaller.Controls
                     args[Global.Parameters.InstallerPath] = installerPath;
                     args[Global.Parameters.InstallerType] = installerType;
                     args[Global.Parameters.Installer] = Path.GetFileName(fileName);
-                    args[Global.Parameters.ShellVersion] = AssemblyLoader.GetShellVersion();
+                    args[Global.Parameters.ShellVersion] = Installer.Current.LoadContext.GetShellVersion();
                     args[Global.Parameters.BaseDirectory] = FileUtils.GetCurrentDirectory();
                     args[Global.Parameters.ShellMode] = Global.VisualInstallerShell;
                     args[Global.Parameters.IISVersion] = Global.IISVersion;
@@ -146,7 +146,7 @@ namespace SolidCP.UniversalInstaller.Controls
                     args[Global.Parameters.UIType] = UI.Current.GetType().Name;
 
                     //run installer
-                    var res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
+                    var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args }) == Result.OK; 
                     Log.WriteInfo(string.Format("Installer returned {0}", res));
                     Log.WriteEnd("Installer finished");
                     Update();

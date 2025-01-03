@@ -1,41 +1,44 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-	<PropertyGroup>
-		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net48;net8.0</TargetFrameworks>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<LangVersion>13</LangVersion>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<StartupObject>SolidCP.UniversalInstaller.Program</StartupObject>
-		<GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-		<ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
-        <EmbdedReferences>true</EmbdedReferences>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFrameworks>net8.0;net48</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>13</LangVersion>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <StartupObject>SolidCP.UniversalInstaller.Program</StartupObject>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
+        <EmbedReferences>true</EmbedReferences>
     </PropertyGroup>
 
-	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-		<DebugType>portable</DebugType>
-		<Optimize>false</Optimize>
-	</PropertyGroup>
-		
-	<PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-		<DebugType>portable</DebugType>
-		<Optimize>false</Optimize>
-	</PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DebugType>portable</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>portable</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
 
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj" />
-    </ItemGroup>
-	
-    <ItemGroup>
-		<ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
-		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Avalonia\SolidCP.UniversalInstaller.UI.Avalonia.csproj" />
-		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj" />
-		<ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
+        <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj" ReferenceOutputAssembly="false" />
     </ItemGroup>
 
-	<ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj">
+            <SetTargetFramework>TargetFramework=net8.0</SetTargetFramework>
+        </ProjectReference>
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Avalonia\SolidCP.UniversalInstaller.UI.Avalonia.csproj" />
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj" />
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
 
@@ -51,7 +54,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Include="FodyWeavers.xsd" />
+        <None Include="FodyWeavers.xsd" />
+        <Compile Include="..\SolidCP.Setup\AssemblyLoader.cs" />
     </ItemGroup>
 
     <Target Name="DeleteDlls" AfterTargets="Build">
@@ -63,8 +67,6 @@
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.Core.deps.json" />
             <DllsToDelete Include="$(OutputPath)\**\*.*" Exclude="@(DllsToKeep)" />
         </ItemGroup>
-        <Message Importance="high" Text="OutputPath: $(OutputPath)" />
-        <Message Importance="high" Text="DllsToKeep: @(DllsToKeep)" />
         <Delete Files="@(DllsToDelete)" />
     </Target>
 

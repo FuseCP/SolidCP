@@ -1329,7 +1329,7 @@ SolidCP cannot be installed on this System.
 		bool downloadComplete = false;
 		public override bool DownloadSetup(string fileName)
 		{
-			var loader = Core.LoaderFactory.CreateFileLoader(fileName);
+			var loader = Core.SetupLoaderFactory.CreateFileLoader(fileName);
 			loader.ProgressChanged += DownloadProgressChanged;
 			ShowInstallationProgress("Download and Extract Component");
 			loader.OperationCompleted += DownloadAndUnzipCompleted;
@@ -1359,7 +1359,7 @@ SolidCP cannot be installed on this System.
 
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
-			bool res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
+			bool res = (bool)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
 
 			return res;
 		}

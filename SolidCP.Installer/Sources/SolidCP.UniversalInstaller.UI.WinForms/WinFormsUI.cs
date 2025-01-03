@@ -312,7 +312,7 @@ namespace SolidCP.UniversalInstaller {
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
 			//run installer
-			var res = (bool)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
+			var res = (bool)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
 			Log.WriteInfo(string.Format("Installer returned {0}", res));
 			Log.WriteEnd("Installer finished");
 			((Form)MainForm).Update();

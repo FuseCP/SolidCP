@@ -45,7 +45,7 @@ namespace SolidCP.UniversalInstaller
 	public class InstallerWebService : InstallerService_SoapClient, IInstallerWebService
 	{
 		public InstallerWebService(string url) : base(
-			new BasicHttpBinding() { MaxReceivedMessageSize = Core.Loader.ChunkSize * 2 },
+			new BasicHttpBinding() { MaxReceivedMessageSize = Core.SetupLoader.ChunkSize * 2 },
 			new EndpointAddress(url)) { }
 
 		private Stream XStream(XElement xml)

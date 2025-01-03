@@ -44,19 +44,19 @@ namespace SolidCP.Setup
     {
 		public override Version MinimalInstallerVersion => new Version("1.6.0");
 		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
-		public bool Install(string args) => base.InstallOrSetup(args, "Install Server",
+		public Result Install(object args) => base.InstallOrSetup(args, "Install Server",
 			Installer.Current.InstallServer, false, false,
 			Installer.Current.InstallServerMaxProgress);
 
-		public bool Update(string args) => base.Update(args, "Update Server",
+		public Result Update(object args) => base.Update(args, "Update Server",
 			Installer.Current.UpdateServer,
 			Installer.Current.UpdateServerMaxProgress);
 
-		public bool Setup(string args) => base.InstallOrSetup(args, "Setup Server",
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Server",
 			Installer.Current.ConfigureServer, false, true,
 			Installer.Current.SetupServerMaxProgress);
 
-		public bool Uninstall(string args) => base.Uninstall(args, "Uninstall Server",
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Server",
 			Installer.Current.RemoveServer,
 			Installer.Current.UninstallServerMaxProgress);
 	}

@@ -7,12 +7,13 @@ namespace SolidCP.UniversalInstaller
 
 	public class Program
 	{
+		static AssemblyLoader loader = null;
 		public static void Main(string[] args)
 		{
 			try
 			{
 				//if (!Debugger.IsAttached && !OSInfo.IsMono) Debugger.Launch();
-				ResourceAssemblyLoader.Init();
+				loader = AssemblyLoader.Init();
 				StartMain(args);
 			} catch { }
 		}

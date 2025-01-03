@@ -54,14 +54,14 @@ namespace SolidCP.UniversalInstaller.Core
 		public bool Cancellable { get; set; }
 	}
 
-	public static class LoaderFactory
+	public static class SetupLoaderFactory
 	{
 		/// <summary>
 		/// Instantiates either CodeplexLoader or InstallerServiceLoader based on remote file format.
 		/// </summary>
 		/// <param name="remoteFile"></param>
 		/// <returns></returns>
-		public static Loader CreateFileLoader(string remoteFile)
+		public static SetupLoader CreateFileLoader(string remoteFile)
 		{
 			Debug.Assert(!String.IsNullOrEmpty(remoteFile), "Remote file is empty");
 
@@ -71,12 +71,12 @@ namespace SolidCP.UniversalInstaller.Core
 			}
 			else
 			{
-				return new Loader(remoteFile);
+				return new SetupLoader(remoteFile);
 			}
 		}
 	}
 
-	public class CodeplexLoader : Loader
+	public class CodeplexLoader : SetupLoader
 	{
 		public const string WEB_PI_USER_AGENT_HEADER = "PI-Integrator/3.0.0.0({0})";
 
@@ -159,7 +159,7 @@ namespace SolidCP.UniversalInstaller.Core
 	/// <summary>
 	/// Loader form.
 	/// </summary>
-	public class Loader
+	public class SetupLoader
 	{
 		public const string ConnectingRemotServiceMessage = "Connecting...";
 		public const string DownloadingSetupFilesMessage = "Downloading setup files...";
@@ -178,7 +178,7 @@ namespace SolidCP.UniversalInstaller.Core
 		public event EventHandler<EventArgs> DownloadComplete;
 		public event EventHandler<EventArgs> OperationCompleted;
 
-		internal Loader(string remoteFile)
+		internal SetupLoader(string remoteFile)
 		{
 			this.remoteFile = remoteFile;
 		}
