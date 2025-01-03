@@ -25,7 +25,7 @@ namespace SolidCP.UniversalInstaller {
 		public override void ShowLogFile() => throw new NotImplementedException();
 		public override string GetRootPassword() => throw new NotImplementedException();
 		public override void ShowInstallationSuccess(Packages packages) => throw new NotImplementedException();
-		public override void Init() => throw new NotImplementedException();
+		public override void Init() { }
 		public override void Exit() => throw new NotImplementedException();
 		public override void CheckPrerequisites() => throw new NotImplementedException();
 		public override void ShowWarning(string msg) => throw new NotImplementedException();

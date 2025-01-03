@@ -11,6 +11,8 @@
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
         <EmbedReferences>true</EmbedReferences>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <DefineConstants Condition="$(EmbedReferences) == 'true'">$(DefineConstants);Costura</DefineConstants>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -35,7 +37,17 @@
         </ProjectReference>
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Avalonia\SolidCP.UniversalInstaller.UI.Avalonia.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj" />
+    </ItemGroup>
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
+            <SetTargetFramework>TargetFramework=net48</SetTargetFramework>
+        </ProjectReference>
+    </ItemGroup>
+    <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
+        <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
+            <SetTargetFramework>TargetFramework=net8.0-windows</SetTargetFramework>
+        </ProjectReference>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
     </ItemGroup>
 
     <ItemGroup>
@@ -58,11 +70,12 @@
         <Compile Include="..\SolidCP.Setup\AssemblyLoader.cs" />
     </ItemGroup>
 
-    <Target Name="DeleteDlls" AfterTargets="Build">
+    <Target Name="DeleteDlls" AfterTargets="Build" Condition="$(EmbedReferences) == 'true'">
         <ItemGroup>
             <DllsToKeep Include="$(OutputPath)\**\Setup2.*" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.exe" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.dll" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.runtimeconfig.json" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.pdb" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.Core.deps.json" />
             <DllsToDelete Include="$(OutputPath)\**\*.*" Exclude="@(DllsToKeep)" />

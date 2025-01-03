@@ -53,7 +53,7 @@ public class AssemblyLoader
 		if (IsCore)
 		{
 			var ctxType = Type.GetType("System.Runtime.Loader.AssemblyLoadContext, System.Runtime.Loader");
-			var getContext = ctxType.GetMethod("GetAssemblyLoadContext", BindingFlags.Public | BindingFlags.Static);
+			var getContext = ctxType.GetMethod("GetLoadContext", BindingFlags.Public | BindingFlags.Static);
 			assemblyLoadContext = getContext.Invoke(null, new[] { mainAssembly });
 			loaderType = loaderGenericType.MakeGenericType(ctxType);
 		} else
@@ -75,7 +75,9 @@ public class AssemblyLoader
 
 	public void CosturaInit()
 	{
+#if Costura
 		CosturaUtility.Initialize();
+#endif
 	}
 }
 
@@ -93,6 +95,7 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 		var loader = new AssemblyLoader<T>() { assembliesPath = path, assemblyLoadContext = assemblyLoadContext };
 		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 		AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
+#if Costura
 		loader.SaveAssembliesToDisk();
 
 #if NETCOREAPP
@@ -115,6 +118,7 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 		}
 #else
 		AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => loader.ResolveAssembly(null, new AssemblyName(args.Name));
+#endif
 #endif
 		return loader;
 	}

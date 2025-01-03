@@ -29,7 +29,7 @@ namespace SolidCP.UniversalInstaller
 			}
 		}
 
-		bool isAvailable = true;
+		bool isAvailable = false;
 		public override bool IsAvailable => isAvailable;
 
 		public override UI.SetupWizard Wizard => new SetupWizard(this);

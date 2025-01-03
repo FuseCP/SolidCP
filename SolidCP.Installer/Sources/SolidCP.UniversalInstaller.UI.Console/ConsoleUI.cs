@@ -55,7 +55,6 @@ It is recommended that you close all other applications before starting Setup. "
 					{
 						UI.RunMainUI();
 						Exit();
-						Environment.Exit(0);
 					}
 					Next();
 				});
@@ -116,7 +115,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 						{
 							UI.RunMainUI();
 							Exit();
-							Environment.Exit(0);
 						}
 						else if (lastPage && form["I Agree"].Clicked)
 						{
@@ -642,7 +640,6 @@ SolidCP Installer successfully has:
 						.ShowDialog();
 					UI.RunMainUI();
 					UI.Exit();
-					Environment.Exit(0);
 				});
 				return this;
 			}
@@ -710,7 +707,7 @@ SolidCP Installer
 			if (form["Application Settings"].Clicked) ApplicationSettings();
 			else if (form["View Available Components"].Clicked) AvailableComponents();
 			else if (form["View Installed Components"].Clicked) InstalledComponents();
-			else Environment.Exit(0);
+			else Installer.Current.Exit();
 		}
 
 		public void ApplicationSettings()
@@ -985,7 +982,7 @@ Components to Install
 [    Ok    ] [    Cancel    ]
 ")
 					.ShowDialog();
-				if (form[4].Clicked) Environment.Exit(0);
+				if (form[4].Clicked) Exit();
 				if (form[0].Checked) packages |= Packages.Server;
 				if (form[1].Checked) packages |= Packages.EnterpriseServer;
 				if (form[2].Checked) packages |= Packages.WebPortal;
@@ -1305,7 +1302,6 @@ SolidCP cannot be installed on this System.
 ");
 				form.ShowDialog();
 				Exit();
-				Environment.Exit(0);
 			}
 		}
 

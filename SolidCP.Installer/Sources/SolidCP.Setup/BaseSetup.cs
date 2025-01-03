@@ -46,14 +46,16 @@ namespace SolidCP.Setup
 	{
 		public InstallerSettings Settings => Installer.Current.Settings;
 
+		static AssemblyLoader loader;
 		static BaseSetup()
 		{
 #if Costura
 			CosturaUtility.Initialize();
 #endif
-			AssemblyLoader.Init();
+			loader = AssemblyLoader.Init();
 			AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
 		}
+		public void Unload() => loader.Unload();
 		static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
 		{
 			Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
@@ -140,10 +142,12 @@ namespace SolidCP.Setup
 			if (database) wizard = wizard.Database();
 			if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
 			else Installer.Current.Settings.Installer.Action = SetupActions.Install;
-			return wizard
+			var res = wizard
 				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 				.Finish()
 				.Show() ? Result.OK : Result.Cancel;
+			Unload();
+			return res;
 		}
 
 		public bool CheckUpdate()
@@ -166,15 +170,19 @@ namespace SolidCP.Setup
 		}
 		public virtual Result Update(object args, string title, Action installer, int maxProgress)
 		{
+			Result res;
 			if (ParseArgs(args))
 			{
 				Installer.Current.Settings.Installer.Action = SetupActions.Update;
 
-				return CheckUpdate() && Wizard(args, false, true, true)
+				res = CheckUpdate() && Wizard(args, false, true, true)
 					.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 					.Finish()
 					.Show() ? Result.OK : Result.Cancel;
+				Unload();
+				return res;
 			}
+			Unload();
 			return Result.Cancel;
 		}
 				
@@ -186,14 +194,17 @@ namespace SolidCP.Setup
 
 				if (CheckInstallerVersion())
 				{
-					return UI.Current.Wizard
+					var res = UI.Current.Wizard
 						.Introduction(CommonSettings)
 						.ConfirmUninstall(CommonSettings)
 						.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 						.Finish()
 						.Show() ? Result.OK : Result.Cancel;
+					Unload();
+					return res;
 				}
 			}
+			Unload();
 			return Result.Cancel;
 		}
 	}
