@@ -38,6 +38,7 @@ using System.Drawing;
 using System.Data;
 using System.Windows.Forms;
 using System.Threading;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller.Controls
 {
@@ -103,21 +104,24 @@ namespace SolidCP.UniversalInstaller.Controls
 			// 
 			// images
 			// 
-			this.images.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("images.ImageStream")));
-			this.images.TransparentColor = System.Drawing.Color.Transparent;
-			this.images.Images.SetKeyName(0, "ProgressImage00.bmp");
-			this.images.Images.SetKeyName(1, "ProgressImage01.bmp");
-			this.images.Images.SetKeyName(2, "ProgressImage02.bmp");
-			this.images.Images.SetKeyName(3, "ProgressImage03.bmp");
-			this.images.Images.SetKeyName(4, "ProgressImage04.bmp");
-			this.images.Images.SetKeyName(5, "ProgressImage05.bmp");
-			this.images.Images.SetKeyName(6, "ProgressImage06.bmp");
-			this.images.Images.SetKeyName(7, "ProgressImage07.bmp");
-			this.images.Images.SetKeyName(8, "ProgressImage08.bmp");
-			this.images.Images.SetKeyName(9, "ProgressImage09.bmp");
-			this.images.Images.SetKeyName(10, "ProgressImage10.bmp");
-			this.images.Images.SetKeyName(11, "ProgressImage11.bmp");
-			this.images.Images.SetKeyName(12, "ProgressImage12.bmp");
+			if (OSInfo.IsNetFX)
+			{
+				this.images.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("images.ImageStream")));
+				this.images.TransparentColor = System.Drawing.Color.Transparent;
+				this.images.Images.SetKeyName(0, "ProgressImage00.bmp");
+				this.images.Images.SetKeyName(1, "ProgressImage01.bmp");
+				this.images.Images.SetKeyName(2, "ProgressImage02.bmp");
+				this.images.Images.SetKeyName(3, "ProgressImage03.bmp");
+				this.images.Images.SetKeyName(4, "ProgressImage04.bmp");
+				this.images.Images.SetKeyName(5, "ProgressImage05.bmp");
+				this.images.Images.SetKeyName(6, "ProgressImage06.bmp");
+				this.images.Images.SetKeyName(7, "ProgressImage07.bmp");
+				this.images.Images.SetKeyName(8, "ProgressImage08.bmp");
+				this.images.Images.SetKeyName(9, "ProgressImage09.bmp");
+				this.images.Images.SetKeyName(10, "ProgressImage10.bmp");
+				this.images.Images.SetKeyName(11, "ProgressImage11.bmp");
+				this.images.Images.SetKeyName(12, "ProgressImage12.bmp");
+			}
 			// 
 			// ProgressIcon
 			// 
