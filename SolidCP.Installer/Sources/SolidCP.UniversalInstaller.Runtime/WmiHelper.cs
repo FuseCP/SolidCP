@@ -32,7 +32,7 @@
 
 using System.Management;
 
-namespace SolidCP.UniversalInstaller
+namespace SolidCP.UniversalInstaller.Runtime
 {
 	/// <summary>
 	/// Wmi helper class.

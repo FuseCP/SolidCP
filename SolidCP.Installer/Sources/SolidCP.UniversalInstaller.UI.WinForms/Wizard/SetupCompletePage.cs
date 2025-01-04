@@ -47,6 +47,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			InitializeComponent();
 		}
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public CommonSettings Settings { get; set; }
 		protected internal override void OnBeforeDisplay(EventArgs e)
 		{

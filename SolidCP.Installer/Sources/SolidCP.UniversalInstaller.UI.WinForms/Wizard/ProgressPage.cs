@@ -56,9 +56,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 	public partial class ProgressPage : BannerWizardPage
 	{
 		private Thread thread;
-		
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ComponentSettings Settings { get; set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Action Action { get; set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public int Maximum { get => progressBar.Maximum; set => progressBar.Maximum = value; }
 		public ProgressPage()
 		{

@@ -59,8 +59,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 	{
 		private Thread thread;
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ComponentSettings Settings { get; set; }
-	
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Action Action { get; set; }
 		public ExpressInstallPage(ComponentSettings settings)
 		{

@@ -12,10 +12,13 @@
 
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+        <Compile Include="..\SolidCP.UniversalInstaller\AssemblyLoader.cs" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true"
+            IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
     </ItemGroup>
 
     <ItemGroup Condition="$(EmbedReferences) == 'true'">
@@ -45,6 +48,17 @@
 
     <ItemGroup>
         <EmbeddedResource Include="..\..\Build\$(Configuration)\SolidCP.UniversalInstaller.Core.deps.json" />
+        <Reference Include="System.Management">
+            <HintPath>$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
     </ItemGroup>
 
+    <!--<Target Name="CopySystemManagement" BeforeTargets="CoreCompile" Condition="'$(TargetFramework)' == 'net8.0'">
+        <ItemGroup>
+            <MgmtDll Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(MgmtDll)" DestinationFolder="$(OutputPath)" />
+    </Target>-->
+    
 </Project>

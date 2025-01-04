@@ -63,22 +63,23 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfigurationCheckPage));
 			this.lvCheck = new System.Windows.Forms.ListView();
-			this.colImage = new System.Windows.Forms.ColumnHeader();
-			this.colAction = new System.Windows.Forms.ColumnHeader();
-			this.colStatus = new System.Windows.Forms.ColumnHeader();
-			this.colDetails = new System.Windows.Forms.ColumnHeader();
+			this.colImage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colAction = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+			this.colDetails = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
 			this.smallImages = new System.Windows.Forms.ImageList(this.components);
 			this.imgOk = new System.Windows.Forms.PictureBox();
 			this.lblResult = new System.Windows.Forms.Label();
 			this.imgError = new System.Windows.Forms.PictureBox();
+			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			((System.ComponentModel.ISupportInitialize)(this.imgOk)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imgError)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// lvCheck
 			// 
-			this.lvCheck.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lvCheck.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.lvCheck.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.colImage,
             this.colAction,
@@ -87,6 +88,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.lvCheck.FullRowSelect = true;
 			this.lvCheck.GridLines = true;
 			this.lvCheck.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
+			this.lvCheck.HideSelection = false;
 			this.lvCheck.Location = new System.Drawing.Point(0, 55);
 			this.lvCheck.MultiSelect = false;
 			this.lvCheck.Name = "lvCheck";
@@ -136,8 +138,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// 
 			// lblResult
 			// 
-			this.lblResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lblResult.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblResult.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.lblResult.Location = new System.Drawing.Point(50, 16);
 			this.lblResult.Name = "lblResult";
@@ -153,6 +155,15 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.imgError.Size = new System.Drawing.Size(32, 32);
 			this.imgError.TabIndex = 7;
 			this.imgError.TabStop = false;
+			// 
+			// imageList1
+			// 
+			this.imageList1.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imageList1.ImageStream")));
+			this.imageList1.TransparentColor = System.Drawing.Color.Transparent;
+			this.imageList1.Images.SetKeyName(0, "ConfigurationCheckPage_16_0.png");
+			this.imageList1.Images.SetKeyName(1, "ConfigurationCheckPage_16_1.png");
+			this.imageList1.Images.SetKeyName(2, "ConfigurationCheckPage_16_2.png");
+			this.imageList1.Images.SetKeyName(3, "ConfigurationCheckPage_16_3.png");
 			// 
 			// ConfigurationCheckPage
 			// 
@@ -181,5 +192,6 @@ namespace SolidCP.UniversalInstaller.WinForms
 		private System.Windows.Forms.PictureBox imgOk;
 		private System.Windows.Forms.Label lblResult;
 		private System.Windows.Forms.PictureBox imgError;
+		private System.Windows.Forms.ImageList imageList1;
 	}
 }

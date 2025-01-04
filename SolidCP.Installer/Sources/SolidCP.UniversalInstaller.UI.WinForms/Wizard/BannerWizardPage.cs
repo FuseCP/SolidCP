@@ -65,7 +65,8 @@ namespace SolidCP.UniversalInstaller.WinForms
             }
         }
 
-        public string Description
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public string Description
         {
             get
             {
@@ -81,7 +82,8 @@ namespace SolidCP.UniversalInstaller.WinForms
             }
         }
 
-        public Color DescriptionColor
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+		public Color DescriptionColor
         {
             get
             {

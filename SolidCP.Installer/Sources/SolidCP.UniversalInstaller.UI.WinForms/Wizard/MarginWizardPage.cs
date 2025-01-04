@@ -77,7 +77,8 @@ namespace SolidCP.UniversalInstaller.WinForms
             }
         }
 
-        public override Color ForeColor
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+		public override Color ForeColor
         {
             get
             {

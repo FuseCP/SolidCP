@@ -56,8 +56,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 	public partial class ExpressInstallPage2 : BannerWizardPage
 	{
 		private Thread thread;
-		
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public CommonSettings Settings { get; set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Action Action { get; set; }
 		public ExpressInstallPage2()
 		{

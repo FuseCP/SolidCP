@@ -44,6 +44,7 @@ namespace SolidCP.Setup
 {
 	public class BaseSetup
 	{
+		public bool IsJsonArguments => true;
 		public InstallerSettings Settings => Installer.Current.Settings;
 
 		static AssemblyLoader loader;

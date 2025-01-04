@@ -7,9 +7,8 @@
         <LangVersion>13</LangVersion>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-        <OutputPath>..\..\Build\$(Configuration)</OutputPath>
+        <OutputPath>bin\$(Configuration)</OutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <StartupObject>SolidCP.UniversalInstaller.Core.Program</StartupObject>
         <GenerateDependencyFile>true</GenerateDependencyFile>
     </PropertyGroup>

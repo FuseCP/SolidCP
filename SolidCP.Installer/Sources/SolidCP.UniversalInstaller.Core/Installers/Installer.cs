@@ -41,6 +41,7 @@ public abstract partial class Installer
 	public virtual string InstallerSettingsFile => "installer.settings.json";
 	public virtual bool IsWindows => OSInfo.IsWindows;
 	public virtual bool IsUnix => OSInfo.IsUnix;
+	public Action OnExit { get; set; }
 
 	static bool? hasDotnet = null;
 	public virtual bool HasDotnet
@@ -134,7 +135,7 @@ public abstract partial class Installer
 		{
 			UI.Current.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
 			return false;
-		} else if (!info.IsInstalled)
+		} else if (Settings.Installer.Action != SetupActions.Install && !info.IsInstalled)
 		{
 			UI.Current.ShowWarning(Global.Messages.ComponentIsNotInstalled);
 			return false;
@@ -526,6 +527,7 @@ public abstract partial class Installer
 		{
 			exitCalled = true;
 			SaveSettings();
+			OnExit?.Invoke();
 			UI.Exit();
 			Environment.Exit(errorCode);
 		}
@@ -560,6 +562,24 @@ public abstract partial class Installer
 		{
 			if (OSInfo.IsCore) return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.LoadContextImplementation, SolidCP.UniversalInstaller.Runtime.NetCore")) as ILoadContext;
 			else return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.LoadContextImplementation, SolidCP.UniversalInstaller.Runtime.NetFX")) as ILoadContext;
+		}
+	}
+
+	public virtual SecurityUtils SecurityUtils
+	{
+		get
+		{
+			if (OSInfo.IsCore) return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.SecurityUtils, SolidCP.UniversalInstaller.Runtime.NetCore")) as SecurityUtils;
+			else return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.SecurityUtils, SolidCP.UniversalInstaller.Runtime.NetFX")) as SecurityUtils;
+		}
+	}
+
+	public virtual WebUtils WebUtils
+	{
+		get
+		{
+			if (OSInfo.IsCore) return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.WebUtils, SolidCP.UniversalInstaller.Runtime.NetCore")) as WebUtils;
+			else return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.WebUtils, SolidCP.UniversalInstaller.Runtime.NetFX")) as WebUtils;
 		}
 	}
 

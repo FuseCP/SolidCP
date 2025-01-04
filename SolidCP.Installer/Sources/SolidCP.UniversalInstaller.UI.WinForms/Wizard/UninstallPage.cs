@@ -51,7 +51,9 @@ public partial class UninstallPage : BannerWizardPage
 {
 	private Thread thread;
 
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public CommonSettings Settings { get; set; }
+	[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 	public Action Action { get; set; }
 	public UninstallPage()
 	{

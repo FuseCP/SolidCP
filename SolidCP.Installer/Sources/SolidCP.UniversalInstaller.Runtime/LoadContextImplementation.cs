@@ -168,7 +168,7 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 			if (!Debugger.IsAttached) loadContext = AssemblyLoadContext = new AssemblyLoadContext("Setup Context", true);
 			else loadContext = AssemblyLoadContext = AssemblyLoadContext.Default;
 			var res = RemoteRun(fileName, typeName, methodName, parameters);
-			loadContext.Unload();
+			if (!Debugger.IsAttached) loadContext.Unload();
 			return res;
 		} catch
 		{

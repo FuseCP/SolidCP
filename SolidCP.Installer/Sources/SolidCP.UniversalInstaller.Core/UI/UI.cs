@@ -175,6 +175,6 @@ namespace SolidCP.UniversalInstaller
 		public abstract void ShowWarning(string msg);
 		public abstract bool DownloadSetup(string fileName);
 		public abstract bool ExecuteSetup(string path, string installerType, string method, object[] args);
-		public virtual object MainForm { get; }
+		public virtual object MainForm { get; set; }
 	}
 }

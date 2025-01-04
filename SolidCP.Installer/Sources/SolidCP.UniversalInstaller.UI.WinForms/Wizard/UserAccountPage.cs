@@ -47,13 +47,15 @@ namespace SolidCP.UniversalInstaller.WinForms
 {
 	public partial class UserAccountPage : BannerWizardPage
 	{
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public CommonSettings Settings { get; set; }
-
+		SecurityUtils SecurityUtils => Installer.Current.SecurityUtils;
 		public UserAccountPage()
 		{
 			InitializeComponent();
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string WarningText
 		{
 			get { return lblWarning.Text; }

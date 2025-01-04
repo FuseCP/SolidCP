@@ -25,7 +25,8 @@
 			<HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
 			<Private>True</Private>
 			<SpecificVersion>False</SpecificVersion>
-		</Reference>		<Reference Include="System.Web" />
+		</Reference>
+        <Reference Include="System.Web" />
 		<Reference Include="System.Data.DataSetExtensions" />
 		<Reference Include="Microsoft.CSharp" />
 	</ItemGroup>

@@ -567,7 +567,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 		}
 
         [Browsable(false)]
-        public override Color BackColor
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Content)]
+		public override Color BackColor
         {
             get
             {
@@ -580,7 +581,8 @@ namespace SolidCP.UniversalInstaller.WinForms
         }
 
         [Browsable(false)]
-        public override Image BackgroundImage
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public override Image BackgroundImage
         {
             get
             {
@@ -791,8 +793,9 @@ namespace SolidCP.UniversalInstaller.WinForms
             }
         }
 
-        //[Category("Paging"), Description("The active wizard page.")]
-        public WizardPageBase SelectedPage
+		//[Category("Paging"), Description("The active wizard page.")]
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public WizardPageBase SelectedPage
         {
             get
             {
@@ -832,7 +835,8 @@ namespace SolidCP.UniversalInstaller.WinForms
         }
 
         [Browsable(false)]
-        public override string Text
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public override string Text
         {
             get
             {

@@ -46,6 +46,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 {
 	public partial class CertificatePage : BannerWizardPage
 	{
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public CommonSettings Settings { get; private set; }
 
 		public CertificatePage(CommonSettings settings)

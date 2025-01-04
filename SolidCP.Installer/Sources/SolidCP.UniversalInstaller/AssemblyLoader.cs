@@ -1,4 +1,5 @@
-﻿using SolidCP.Providers.OS;
+﻿using MySqlX.XDevAPI.Common;
+using SolidCP.Providers.OS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 #if NETCOREAPP
@@ -19,6 +19,12 @@ namespace SolidCP.UniversalInstaller;
 
 public class AssemblyLoader
 {
+	public const string NativeDllsFolder = "NativeDlls";
+	public string AssembliesPath { get; set; } = null;
+	public object AssemblyLoadContext { get; set; } = null;
+	public object LoaderRuntime { get; set; } = null;
+	public Assembly MainAssembly { get; set; }
+
 	[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
 	public static extern IntPtr LoadLibraryEx(string lpFileName, IntPtr hReservedNull, uint dwFlags);
 	public static bool IsCore => !(IsNetFX || IsNetNative);
@@ -43,104 +49,74 @@ public class AssemblyLoader
 	public static bool IsLinux => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
 	public static bool IsMac => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
 
-	protected object AssemblyLoadContext { get; set; } = null;
 	public static AssemblyLoader Init()
 	{
 		var mainAssembly = Assembly.GetExecutingAssembly();
-		object assemblyLoadContext = null;
-		Type loaderType = null;
-		var loaderGenericType = typeof(AssemblyLoader<>);
+
+#if Costura
+		var guid = Guid.NewGuid();
+		var path = Path.Combine(Path.GetTempPath(), guid.ToString("D"));
+		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+		AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
+#else
+		var path = Path.Combine(Path.GetDirectoryName(mainAssembly.Location));
+#endif
+
+		var loader = new AssemblyLoader() { AssembliesPath = path, MainAssembly = Assembly.GetExecutingAssembly() };
+#if Costura
+		loader.SaveAssembliesToDisk();
+#endif
 		if (IsCore)
 		{
 			var ctxType = Type.GetType("System.Runtime.Loader.AssemblyLoadContext, System.Runtime.Loader");
 			var getContext = ctxType.GetMethod("GetLoadContext", BindingFlags.Public | BindingFlags.Static);
-			assemblyLoadContext = getContext.Invoke(null, new[] { mainAssembly });
-			loaderType = loaderGenericType.MakeGenericType(ctxType);
+			var loadContext = getContext.Invoke(null, new[] { mainAssembly });
+			var defaultProp = ctxType.GetProperty("Default", BindingFlags.Public | BindingFlags.Static);
+			var defaultCtx = defaultProp.GetValue(null);
+			if (loadContext != defaultCtx) loader.AssemblyLoadContext = loadContext;
+
+			loader.ResolveAssembly(loader.AssemblyLoadContext, new AssemblyName("SolidCP.UniversalInstaller.Core"));
+			var runtime = loader.ResolveAssembly(loader.AssemblyLoadContext, new AssemblyName($"SolidCP.UniversalInstaller.Runtime.{(IsCore ? "NetCore" : "NetFX")}"));
+			var loaderRuntimeType = runtime.GetType("SolidCP.UniversalInstaller.AssemblyLoader");
+			loader.LoaderRuntime = Activator.CreateInstance(loaderRuntimeType);
+			var assCtx = loaderRuntimeType.GetMethod("InitAssemblyLoadContext");
+			assCtx.Invoke(loader.LoaderRuntime, new object[] { loader.AssembliesPath, loader.MainAssembly });
 		} else
-		{
-			loaderType = loaderGenericType.MakeGenericType(typeof(object));
-		}
-		var init = loaderType.GetMethod("Init", BindingFlags.Static | BindingFlags.Public);
-		return init.Invoke(null, new[] { assemblyLoadContext, mainAssembly }) as AssemblyLoader;
-	}
-
-	public void Unload()
-	{
-		if (AssemblyLoadContext != null)
-		{
-			var unload = AssemblyLoadContext.GetType().GetMethod("Unload");
-			unload.Invoke(AssemblyLoadContext, new object[0]);
-		}
-	}
-
-	public void CosturaInit()
-	{
-#if Costura
-		CosturaUtility.Initialize();
-#endif
-	}
-}
-
-public class AssemblyLoader<T>: AssemblyLoader where T: class
-{
-	public const string NativeDllsFolder = "NativeDlls";
-
-	protected string assembliesPath = null;
-
-	T assemblyLoadContext = null;
-	public static AssemblyLoader<T> Init(T assemblyLoadContext, Assembly mainAssembly)
-	{
-		var guid = Guid.NewGuid();
-		var path = Path.Combine(Path.GetTempPath(), guid.ToString("D"));
-		var loader = new AssemblyLoader<T>() { assembliesPath = path, assemblyLoadContext = assemblyLoadContext };
-		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-		AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
-#if Costura
-		loader.SaveAssembliesToDisk();
-
-#if NETCOREAPP
-		var ctx = assemblyLoadContext as AssemblyLoadContext;
-		ctx.Resolving += (ctx, name) => loader.ResolveAssembly(ctx as T, name);
-#elif NETSTANDARD
-		if (IsCore)
-		{
-			var type = typeof(T);
-			var funcGeneric = typeof(Func<,,>);
-			var func = funcGeneric.MakeGenericType(type, typeof(AssemblyName), typeof(Assembly));
-			var resolve = loader.GetType().GetMethod("ResolveAssembly");
-			var resolving = type.GetEvent("Resolving");
-			var add = resolving.GetAddMethod();
-			add.Invoke(assemblyLoadContext, new object[] { Convert.ChangeType(resolve, func) });
-		}
-		else
 		{
 			AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => loader.ResolveAssembly(null, new AssemblyName(args.Name));
 		}
-#else
-		AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => loader.ResolveAssembly(null, new AssemblyName(args.Name));
-#endif
-#endif
+
 		return loader;
 	}
+
+#if NETCOREAPP
+	public void InitAssemblyLoadContext(string assembliesPath, Assembly mainAssembly)
+	{
+		AssembliesPath = assembliesPath;
+		MainAssembly = mainAssembly;
+		var ctx = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(mainAssembly);
+		ctx.Resolving += (loadContext, name) => ResolveAssembly(loadContext, name);
+		AssemblyLoadContext = ctx;
+	}
+#endif
 
 	public string ResolveAssemblyName(string assemblyName, CultureInfo culture)
 	{
 		var name = new AssemblyName(assemblyName).Name + ".dll";
-		var file = Path.Combine(assembliesPath, name);
+		var file = Path.Combine(AssembliesPath, name);
 		if (File.Exists(file)) return file;
 		if (culture != null && !culture.IsNeutralCulture)
 		{
-			file = Path.Combine(assembliesPath, culture.TwoLetterISOLanguageName.ToLower(), name);
+			file = Path.Combine(AssembliesPath, culture.TwoLetterISOLanguageName.ToLower(), name);
 			if (File.Exists(file)) return file;
-			file = Path.Combine(assembliesPath, culture.Name.ToLower(), name);
+			file = Path.Combine(AssembliesPath, culture.Name.ToLower(), name);
 			if (File.Exists(file)) return file;
 		}
 		return null;
 	}
-
-	public Assembly ResolveAssembly(T loadContext, AssemblyName name)
+	public Assembly ResolveAssembly(object loadContext, AssemblyName name)
 	{
-		if (loadContext == null) loadContext = assemblyLoadContext;
+		if (loadContext == null) loadContext = AssemblyLoadContext;
 		var file = ResolveAssemblyName(name.FullName, name.CultureInfo);
 		if (file != null)
 		{
@@ -152,7 +128,7 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 				return ctx.LoadFromAssemblyPath(file);
 #elif NETSTANDARD
 				var loadFromMethod = loadContext.GetType().GetMethod("LoadFromAssemblyPath");
-				return loadFromMethod.Invoke(assemblyLoadContext, new[] { file }) as Assembly;
+				return loadFromMethod.Invoke(AssemblyLoadContext, new[] { file }) as Assembly;
 #else
 				return Assembly.LoadFrom(file);
 #endif
@@ -181,7 +157,7 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 				var resname = tokens[0];
 				resourceNames.Add(resname);
 				var filename = tokens[3].Replace('/', Path.DirectorySeparatorChar);
-				filename = Path.Combine(assembliesPath, filename);
+				filename = Path.Combine(AssembliesPath, filename);
 				using (var resStream = asm.GetManifestResourceStream(resname))
 				{
 					if (resname.EndsWith(".compressed"))
@@ -208,7 +184,7 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 					IsMac && name.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase) ||
 					IsLinux && name.EndsWith(".so", StringComparison.OrdinalIgnoreCase))
 				{
-					var filename = Path.Combine(assembliesPath, name.Replace('/', Path.DirectorySeparatorChar));
+					var filename = Path.Combine(AssembliesPath, name.Replace('/', Path.DirectorySeparatorChar));
 					using (var src = asm.GetManifestResourceStream(resname))
 					using (var file = new FileStream(filename, FileMode.Create, FileAccess.Write))
 						src.CopyTo(file);
@@ -223,7 +199,7 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 			}
 		}
 
-		if (IsNetFX) AddEnvironmentPaths(assembliesPath, Path.Combine(assembliesPath, arch));
+		if (IsNetFX) AddEnvironmentPaths(AssembliesPath, Path.Combine(AssembliesPath, arch));
 	}
 
 	private void AddEnvironmentPaths(params IEnumerable<string> newpaths)
@@ -233,5 +209,25 @@ public class AssemblyLoader<T>: AssemblyLoader where T: class
 		var newpath = string.Join(Path.PathSeparator.ToString(), path.Concat(newpaths));
 
 		Environment.SetEnvironmentVariable("PATH", newpath);
+	}
+
+	public void Unload()
+	{
+		if (AssemblyLoadContext != null)
+		{
+			try
+			{
+				var unload = AssemblyLoadContext.GetType().GetMethod("Unload");
+				unload.Invoke(AssemblyLoadContext, new object[0]);
+			}
+			catch { }
+		}
+	}
+
+	public void CosturaInit()
+	{
+#if Costura
+		CosturaUtility.Initialize();
+#endif
 	}
 }

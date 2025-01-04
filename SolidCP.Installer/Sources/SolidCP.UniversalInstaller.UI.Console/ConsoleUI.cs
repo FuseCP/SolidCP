@@ -1184,7 +1184,8 @@ You have successfully installed the following components:
 		{
 			AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
 			{
-				Exit();
+				Console.Clear();
+				Console.CursorVisible = true;
 			};
 		}
 		bool exitCalled = false;

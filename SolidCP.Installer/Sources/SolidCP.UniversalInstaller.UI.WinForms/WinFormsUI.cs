@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Renci.SshNet.Messages;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller {
@@ -99,6 +100,7 @@ namespace SolidCP.UniversalInstaller {
 			}
 			public override bool Show()
 			{
+				UI.MainForm = Form;
 				Form.Wizard.LinkPages();
 				Form.Wizard.SelectedPage = Form.Wizard.Controls.OfType<WinForms.WizardPageBase>()
 					.FirstOrDefault();
@@ -157,7 +159,7 @@ namespace SolidCP.UniversalInstaller {
 
 		public override void ShowError(Exception ex)
 		{
-			throw new NotImplementedException();
+			MessageBox.Show($"Error: {ex}", "SolidCP Installer", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
 		public override void RunMainUI()
@@ -165,7 +167,7 @@ namespace SolidCP.UniversalInstaller {
 			try
 			{
 				var mainForm = new ApplicationForm();
-				MainForm = MainForm;
+				MainForm = mainForm;
 				mainForm.InitializeApplication();
 				Application.Run(mainForm);
 			}
@@ -227,6 +229,7 @@ namespace SolidCP.UniversalInstaller {
 			try
 			{
 				var form = new RootPasswordForm();
+				MainForm = form;
 				form.ShowDialog();
 				return form.Password;
 			} catch (Exception ex)

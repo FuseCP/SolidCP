@@ -42,7 +42,8 @@ namespace SolidCP.UniversalInstaller.WinForms
         public IntroductionPage()
         {
         }
-        public CommonSettings Settings { get; set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public CommonSettings Settings { get; set; }
 		protected override void InitializePageInternal()
 		{
 			string product = Settings.ComponentName;
@@ -77,7 +78,8 @@ namespace SolidCP.UniversalInstaller.WinForms
             }
         }
 
-        public string IntroductionText
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public string IntroductionText
         {
             get
             {

@@ -57,6 +57,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 		private Thread thread;
 		private List<ConfigurationCheck> checks;
 
+		private WebUtils WebUtils => Installer.Current.WebUtils;
+		private SecurityUtils SecurityUtils => Installer.Current.SecurityUtils;
+
 		public ConfigurationCheckPage()
 		{
 			InitializeComponent();

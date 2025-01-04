@@ -51,6 +51,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		public EnterpriseServerSettings Settings => Installer.Current.Settings.EnterpriseServer;
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public string NoteText
 		{
 			get { return lblNote.Text; }

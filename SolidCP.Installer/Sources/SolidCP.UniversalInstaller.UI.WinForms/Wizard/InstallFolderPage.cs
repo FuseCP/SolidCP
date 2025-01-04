@@ -51,6 +51,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			InitializeComponent();
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ComponentSettings Settings { get; set; }
 
 		private long spaceRequired = 0;

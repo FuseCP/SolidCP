@@ -49,6 +49,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			InitializeComponent();
 		}
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public ComponentSettings Settings { get; set; }
 		protected override void InitializePageInternal()
 		{

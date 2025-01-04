@@ -178,7 +178,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 		}
 
         [Browsable(false)]
-        public override Image BackgroundImage
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public override Image BackgroundImage
         {
             get
             {
@@ -246,7 +247,8 @@ namespace SolidCP.UniversalInstaller.WinForms
         }
 
         [Browsable(true)]
-        public override string Text
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public override string Text
         {
             get
             {
