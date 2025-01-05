@@ -36,177 +36,195 @@ using System.Collections;
 using System.Xml;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Loader;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SolidCP.UniversalInstaller;
 
-namespace SolidCP.Setup
+namespace SolidCP.Setup;
+
+public class BaseSetup
 {
-	public class BaseSetup
+	public bool IsJsonArguments => true;
+	public InstallerSettings Settings => Installer.Current.Settings;
+
+	static AssemblyLoader loader = null;
+	static BaseSetup()
 	{
-		public bool IsJsonArguments => true;
-		public InstallerSettings Settings => Installer.Current.Settings;
-
-		static AssemblyLoader loader;
-		static BaseSetup()
-		{
+		//loader = AssemblyLoader.Init();
+		AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+	}
+	public void InitCostura()
+	{
 #if Costura
-			CosturaUtility.Initialize();
+		CosturaUtility.Initialize();
 #endif
-			loader = AssemblyLoader.Init();
-			AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
-		}
-		public void Unload() => loader.Unload();
-		static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
-		{
-			Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
-		}
+	}
 
-		bool argsParsed = false;
-		public bool ParseArgs(object args)
+	public void Unload()
+	{
+		AppDomain.CurrentDomain.UnhandledException -= OnDomainUnhandledException;
+		loader?.Unload();
+	}
+	static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+	{
+		Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
+	}
+
+	bool argsParsed = false;
+	public bool ParseArgs(object args)
+	{
+		if (AssemblyLoadContext.GetLoadContext(Installer.Current.GetType().Assembly) ==
+			AssemblyLoadContext.Default) throw new NotSupportedException();
+
+		if (!argsParsed)
 		{
-			if (!argsParsed)
+			argsParsed = true;
+			string json;
+			json = args as string;
+			if (json == null)
 			{
-				argsParsed = true;
-				if (args is string)
-				{
-					Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>((string)args, new VersionConverter());
-					return true;
-				}
-				else
-				{
-					UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
-					return false;
-				}
+				var hashtable = args as Hashtable;
+				if (hashtable.Contains("ParametersJson")) json = hashtable["ParametersJson"] as string;
 			}
-			return true;
-		}
-		public virtual Version MinimalInstallerVersion => new Version("1.6.0");
-		public virtual string VersionsToUpgrade => "";
-		public bool CheckInstallerVersion()
-		{
-			if (Settings.Installer.Version < MinimalInstallerVersion)
+			if (json != null)
+			{
+				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(json, new VersionConverter(), new StringEnumConverter());
+				return true;
+			}
+			else
 			{
 				UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
 				return false;
 			}
-			else return true;
 		}
-		public virtual CommonSettings CommonSettings => null;
-		public virtual ComponentSettings ComponentSettings => (CommonSettings as ComponentSettings) ?? Installer.Current.Settings.Standalone;
-		public virtual ComponentInfo Component => null;
-		public virtual UI.SetupWizard Wizard(object args, bool installFolder = true,
-			bool urlWizard = true, bool userWizard = true)
+		return true;
+	}
+	public virtual Version MinimalInstallerVersion => new Version("1.6.0");
+	public virtual string VersionsToUpgrade => "";
+	public bool CheckInstallerVersion()
+	{
+		if (Settings.Installer.Version < MinimalInstallerVersion)
 		{
-			if (ParseArgs(args) && CheckInstallerVersion())
-			{
-				var wizard = UI.Current.Wizard
-					.Introduction(CommonSettings)
-					.CheckPrerequisites()
-					.LicenseAgreement();
-				if (CommonSettings != null)
-				{
-					if (installFolder) wizard = wizard
-						.InstallFolder(CommonSettings);
-
-					if (urlWizard) wizard = wizard
-						.Web(CommonSettings)
-						.InsecureHttpWarning(CommonSettings)
-						.Certificate(CommonSettings);
-
-					if (userWizard) wizard = wizard
-						.UserAccount(CommonSettings);
-				} else
-				{
-					wizard = wizard
-						.InstallFolder(Settings.Standalone)
-						.Web(Settings.WebPortal)
-						.InsecureHttpWarning(Settings.WebPortal)
-						.Certificate(Settings.WebPortal)
-						.UserAccount(Settings.WebPortal)
-						.Web(Settings.EnterpriseServer)
-						.InsecureHttpWarning(Settings.EnterpriseServer)
-						.Certificate(Settings.EnterpriseServer)
-						.UserAccount(Settings.EnterpriseServer)
-						.Database()
-						.Web(Settings.Server)
-						.InsecureHttpWarning(Settings.Server)
-						.Certificate(Settings.Server)
-						.UserAccount(Settings.Server);
-				}
-				return wizard;
-			}
-			return null;
+			UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
+			return false;
 		}
-		public virtual Result InstallOrSetup(object args, string title, Action installer, bool database = false, bool setup = false, int maxProgress = 100) {
-			var wizard = Wizard(args, true, true, true);
-			if (database) wizard = wizard.Database();
-			if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
-			else Installer.Current.Settings.Installer.Action = SetupActions.Install;
-			var res = wizard
+		else return true;
+	}
+	public virtual CommonSettings CommonSettings => null;
+	public virtual ComponentSettings ComponentSettings => (CommonSettings as ComponentSettings) ?? Installer.Current.Settings.Standalone;
+	public virtual ComponentInfo Component => null;
+	public virtual UI.SetupWizard Wizard(object args, bool installFolder = true,
+		bool urlWizard = true, bool userWizard = true)
+	{
+		if (ParseArgs(args) && CheckInstallerVersion())
+		{
+			var wizard = UI.Current.Wizard
+				.Introduction(CommonSettings)
+				.CheckPrerequisites()
+				.LicenseAgreement();
+			if (CommonSettings != null)
+			{
+				if (installFolder) wizard = wizard
+					.InstallFolder(CommonSettings);
+
+				if (urlWizard) wizard = wizard
+					.Web(CommonSettings)
+					.InsecureHttpWarning(CommonSettings)
+					.Certificate(CommonSettings);
+
+				if (userWizard) wizard = wizard
+					.UserAccount(CommonSettings);
+			} else
+			{
+				wizard = wizard
+					.InstallFolder(Settings.Standalone)
+					.Web(Settings.WebPortal)
+					.InsecureHttpWarning(Settings.WebPortal)
+					.Certificate(Settings.WebPortal)
+					.UserAccount(Settings.WebPortal)
+					.Web(Settings.EnterpriseServer)
+					.InsecureHttpWarning(Settings.EnterpriseServer)
+					.Certificate(Settings.EnterpriseServer)
+					.UserAccount(Settings.EnterpriseServer)
+					.Database()
+					.Web(Settings.Server)
+					.InsecureHttpWarning(Settings.Server)
+					.Certificate(Settings.Server)
+					.UserAccount(Settings.Server);
+			}
+			return wizard;
+		}
+		return null;
+	}
+	public virtual Result InstallOrSetup(object args, string title, Action installer, bool database = false, bool setup = false, int maxProgress = 100) {
+		var wizard = Wizard(args, true, true, true);
+		if (database) wizard = wizard.Database();
+		if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
+		else Installer.Current.Settings.Installer.Action = SetupActions.Install;
+		var res = wizard
+			.RunWithProgress(title, installer, ComponentSettings, maxProgress)
+			.Finish()
+			.Show() ? Result.OK : Result.Cancel;
+		Unload();
+		return res;
+	}
+
+	public bool CheckUpdate()
+	{
+		// Find out whether the version(s) are supported in that upgrade
+		var upgradeSupported = VersionsToUpgrade.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+			.Any(x => Component?.Version == new Version(x.Trim()));
+		// 
+		if (!upgradeSupported)
+		{
+			Log.WriteInfo(
+				String.Format("Could not find a suitable version to upgrade. Current version: {0}; Versions supported: {1};", Component?.Version.ToString() ?? "?", VersionsToUpgrade));
+			//
+			UI.Current.ShowWarning(
+				"Your current software version either is not supported or could not be upgraded at this time. Please send log file from the installer to the software vendor for further research on the issue.");
+			//
+		}
+
+		return upgradeSupported;
+	}
+	public virtual Result Update(object args, string title, Action installer, int maxProgress)
+	{
+		Result res;
+		if (ParseArgs(args))
+		{
+			Installer.Current.Settings.Installer.Action = SetupActions.Update;
+
+			res = CheckUpdate() && Wizard(args, false, true, true)
 				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 				.Finish()
 				.Show() ? Result.OK : Result.Cancel;
 			Unload();
 			return res;
 		}
-
-		public bool CheckUpdate()
+		Unload();
+		return Result.Cancel;
+	}
+			
+	public virtual Result Uninstall(object args, string title, Action installer, int maxProgress)
+	{
+		if (ParseArgs(args))
 		{
-			// Find out whether the version(s) are supported in that upgrade
-			var upgradeSupported = VersionsToUpgrade.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				.Any(x => Component?.Version == new Version(x.Trim()));
-			// 
-			if (!upgradeSupported)
-			{
-				Log.WriteInfo(
-					String.Format("Could not find a suitable version to upgrade. Current version: {0}; Versions supported: {1};", Component?.Version.ToString() ?? "?", VersionsToUpgrade));
-				//
-				UI.Current.ShowWarning(
-					"Your current software version either is not supported or could not be upgraded at this time. Please send log file from the installer to the software vendor for further research on the issue.");
-				//
-			}
+			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
 
-			return upgradeSupported;
-		}
-		public virtual Result Update(object args, string title, Action installer, int maxProgress)
-		{
-			Result res;
-			if (ParseArgs(args))
+			if (CheckInstallerVersion())
 			{
-				Installer.Current.Settings.Installer.Action = SetupActions.Update;
-
-				res = CheckUpdate() && Wizard(args, false, true, true)
+				var res = UI.Current.Wizard
+					.Introduction(CommonSettings)
+					.ConfirmUninstall(CommonSettings)
 					.RunWithProgress(title, installer, ComponentSettings, maxProgress)
 					.Finish()
 					.Show() ? Result.OK : Result.Cancel;
 				Unload();
 				return res;
 			}
-			Unload();
-			return Result.Cancel;
 		}
-				
-		public virtual Result Uninstall(object args, string title, Action installer, int maxProgress)
-		{
-			if (ParseArgs(args))
-			{
-				Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
-
-				if (CheckInstallerVersion())
-				{
-					var res = UI.Current.Wizard
-						.Introduction(CommonSettings)
-						.ConfirmUninstall(CommonSettings)
-						.RunWithProgress(title, installer, ComponentSettings, maxProgress)
-						.Finish()
-						.Show() ? Result.OK : Result.Cancel;
-					Unload();
-					return res;
-				}
-			}
-			Unload();
-			return Result.Cancel;
-		}
+		Unload();
+		return Result.Cancel;
 	}
 }

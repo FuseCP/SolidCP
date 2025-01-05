@@ -1356,9 +1356,9 @@ SolidCP cannot be installed on this System.
 
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
-			bool res = (bool)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
+			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
 
-			return res;
+			return res == Result.OK;
 		}
 	}
 }

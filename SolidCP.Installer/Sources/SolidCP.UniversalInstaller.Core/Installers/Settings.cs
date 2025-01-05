@@ -132,5 +132,10 @@ namespace SolidCP.UniversalInstaller
 		public string WebServiceUrl { get; set; }
 		public bool CheckForUpdate { get; set; }
 		public ProxySettings Proxy { get; set; }
+		public string UI
+		{
+			get => UniversalInstaller.UI.Current.GetType().Name;
+			set => UniversalInstaller.UI.SetCurrent(value);
+		}
 	}
 }

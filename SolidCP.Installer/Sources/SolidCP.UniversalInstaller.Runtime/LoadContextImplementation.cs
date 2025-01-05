@@ -47,7 +47,7 @@ namespace SolidCP.UniversalInstaller;
 [Serializable]
 public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 {
-
+	const bool AlwaysUseLoadContext = true;
 	const bool UseLocalSetupDllForDebugging = true;
 	public bool UseLocalSetupDll = false;
 
@@ -165,12 +165,12 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 		AssemblyLoadContext loadContext = null;
 		try
 		{
-			if (!Debugger.IsAttached) loadContext = AssemblyLoadContext = new AssemblyLoadContext("Setup Context", true);
+			if (!Debugger.IsAttached || AlwaysUseLoadContext) loadContext = AssemblyLoadContext = new SetupAssemblyLoadContext();
 			else loadContext = AssemblyLoadContext = AssemblyLoadContext.Default;
 			var res = RemoteRun(fileName, typeName, methodName, parameters);
-			if (!Debugger.IsAttached) loadContext.Unload();
+			if (!Debugger.IsAttached || AlwaysUseLoadContext) loadContext.Unload();
 			return res;
-		} catch
+		} catch (Exception ex)
 		{
 			if (loadContext != null && loadContext != AssemblyLoadContext.Default) loadContext.Unload();
 			return Result.Cancel;

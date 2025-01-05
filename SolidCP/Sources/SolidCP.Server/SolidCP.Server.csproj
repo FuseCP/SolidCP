@@ -97,6 +97,8 @@
         <PackageReference Include="CoreWCF.Primitives" Version="1.6.0" />
         <PackageReference Include="CoreWCF.WebHttp" Version="1.6.0" />
         <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
+        <!--<PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true"
+            IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
     <ItemGroup>
         <Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
@@ -137,4 +139,11 @@
         <RemoveDir Directories="bin\bin_dotnet;bin\WebServices" ContinueOnError="true" />
     </Target>
 
+    <!--<Target Name="CopySystemManagement" AfterTargets="Build">
+        <ItemGroup>
+            <Dll Include="$(PkgSystem_Managemenet)\runtimes\win\lib\net8.0\System.Management.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Dll)" DestinationFolder="$(OutputDir)" />
+    </Target>-->
+    
 </Project>

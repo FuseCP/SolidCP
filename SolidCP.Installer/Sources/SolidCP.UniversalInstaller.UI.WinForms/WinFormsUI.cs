@@ -104,6 +104,7 @@ namespace SolidCP.UniversalInstaller {
 				Form.Wizard.LinkPages();
 				Form.Wizard.SelectedPage = Form.Wizard.Controls.OfType<WinForms.WizardPageBase>()
 					.FirstOrDefault();
+				UI.EndWaitCursor();
 				var result = Form.ShowDialog() == DialogResult.OK;
 				if (result) Installer.Current.UpdateSettings();
 				return result;
@@ -315,17 +316,20 @@ namespace SolidCP.UniversalInstaller {
 		public override bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
 			//run installer
-			var res = (bool)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
+			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
 			Log.WriteInfo(string.Format("Installer returned {0}", res));
 			Log.WriteEnd("Installer finished");
 			((Form)MainForm).Update();
-			if (res)
+			if (res == Result.OK)
 			{
 				((ApplicationForm)MainForm).ReloadApplication();
 				return true;
 			}
 			return false;
 		}
+
+		public override void ShowWaitCursor() => Cursor.Current = Cursors.WaitCursor;
+		public override void EndWaitCursor() => Cursor.Current = Cursors.Default;
 	}
 }
 

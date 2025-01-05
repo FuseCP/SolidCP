@@ -26,7 +26,6 @@
       <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Management" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
@@ -42,6 +41,5 @@
     <PackageReference Include="SSH.NET" Version="2024.2.0" />
     <PackageReference Include="System.Collections.Immutable" Version="8.0.0" />
     <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-    <PackageReference Include="System.Management" Version="8.0.0" />
   </ItemGroup>
 </Project>

@@ -10,7 +10,7 @@
         <DefineConstants Condition="$(SupportOracle) == 'True'">$(DefineConstants);Oracle</DefineConstants>
         <OutputType>Exe</OutputType>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <OutputPath>..\..\Bin</OutputPath>
+        <OutputPath>bin\$(Configuration)</OutputPath>
         <EntityFramework6>6.5</EntityFramework6>
         <PackageId>SolidCP.EnterpriseServer.Data</PackageId>
         <!-- Use EntityFramework 6.4 or 6.5 -->

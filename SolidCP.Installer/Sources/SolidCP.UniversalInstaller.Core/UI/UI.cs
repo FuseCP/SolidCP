@@ -56,7 +56,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				if (winFormsUI == null)
 				{
-					var type = Type.GetType($"SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms.{
+					var type = Installer.Current.GetType($"SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms.{
 						(OSInfo.IsNetFX ? "NetFX" : "NetCore")}");
 					if (type != null) winFormsUI = Activator.CreateInstance(type) as UI;
 					else winFormsUI = NotAvailableUI;
@@ -70,7 +70,7 @@ namespace SolidCP.UniversalInstaller
 			get {
 				if (consoleUI == null)
 				{
-					var type = Type.GetType("SolidCP.UniversalInstaller.ConsoleUI, SolidCP.UniversalInstaller.UI.Console");
+					var type = Installer.Current.GetType("SolidCP.UniversalInstaller.ConsoleUI, SolidCP.UniversalInstaller.UI.Console");
 					if (type != null) consoleUI = Activator.CreateInstance(type) as UI;
 					else consoleUI = NotAvailableUI;
 				}
@@ -87,7 +87,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				if (avaloniaUI == null)
 				{
-					var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
+					var type = Installer.Current.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
 					if (type != null) avaloniaUI = Activator.CreateInstance(type) as UI;
 					else avaloniaUI = NotAvailableUI;
 				}
@@ -162,6 +162,8 @@ namespace SolidCP.UniversalInstaller
 		public abstract void ShowError(Exception ex);
 		public abstract void ShowInstallationSuccess(Packages packages);
 		public abstract void ShowLogFile();
+		public virtual void ShowWaitCursor() { }
+		public virtual void EndWaitCursor() { }
 		public virtual void PrintInstallerVersion()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
@@ -174,7 +176,16 @@ namespace SolidCP.UniversalInstaller
 
 		public abstract void ShowWarning(string msg);
 		public abstract bool DownloadSetup(string fileName);
-		public abstract bool ExecuteSetup(string path, string installerType, string method, object[] args);
+		public virtual bool ExecuteSetup(string path, string installerType, string method, object[] args)
+		{
+			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
+			Log.WriteInfo(string.Format("Installer returned {0}", res));
+			Log.WriteEnd("Installer finished");
+			
+			EndWaitCursor();
+			
+			return res == Result.OK;
+		}
 		public virtual object MainForm { get; set; }
 	}
 }

@@ -34,7 +34,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
-using System.Management;
 using System.Security.Principal;
 using Microsoft.Win32;
 using System.Text.RegularExpressions;
@@ -511,38 +510,6 @@ namespace SolidCP.Providers.OS
         {
             return Environment.GetEnvironmentVariable("windir");
         }
-        /// <summary>
-        /// Checks Whether the FSRM role services are installed
-        /// </summary>
-        /// <returns></returns>
-        public static bool CheckFileServicesInstallation()
-        {
-
-            ManagementClass objMC = new ManagementClass("Win32_ServerFeature");
-            ManagementObjectCollection objMOC = objMC.GetInstances();
-
-            // 01.09.2015 roland.breitschaft@x-company.de
-            // Problem: Method not work on German Systems, because the searched Feature-Name does not exist
-            // Fix: Add German String for FSRM-Feature            
-
-            //foreach (ManagementObject objMO in objMOC)
-            //    if (objMO.Properties["Name"].Value.ToString().ToLower().Contains("file server resource manager"))
-            //        return true;
-            foreach (ManagementObject objMO in objMOC)
-            {
-                var id = objMO.Properties["ID"].Value.ToString().ToLower();
-                var name = objMO.Properties["Name"].Value.ToString().ToLower();
-                if (id.Contains("72") || id.Contains("104"))
-                    return true;
-                else if (name.Contains("file server resource manager")
-                     || name.Contains("ressourcen-manager f�r dateiserver"))
-                    return true;
-            }
-
-            return false;
-        }
-
-
         public static string NetFXVersion
         {
             get

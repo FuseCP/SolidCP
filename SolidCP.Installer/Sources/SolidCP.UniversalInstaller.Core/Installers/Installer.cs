@@ -90,7 +90,7 @@ public abstract partial class Installer
 		if (File.Exists(path))
 		{
 			var settings = JsonConvert.DeserializeObject<InstallerSettings>(
-				File.ReadAllText(path), new VersionConverter());
+				File.ReadAllText(path), new VersionConverter(), new StringEnumConverter());
 			Settings = settings;
 		}
 		else SaveSettings();
@@ -98,7 +98,8 @@ public abstract partial class Installer
 	public void SaveSettings()
 	{
 		var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
-		var json = JsonConvert.SerializeObject(Settings, Formatting.Indented, new VersionConverter());
+		var json = JsonConvert.SerializeObject(Settings, Formatting.Indented, new VersionConverter(),
+			new StringEnumConverter());
 		File.WriteAllText(path, json);
 	}
 	public void UpdateSettings()
@@ -147,6 +148,7 @@ public abstract partial class Installer
 
 			if (UI.Current.DownloadSetup(fileName))
 			{
+				UI.Current.ShowWaitCursor();
 				string path = Path.Combine(tmpFolder, installerPath);
 				string method;
 				switch (Settings.Installer.Action)
@@ -159,10 +161,13 @@ public abstract partial class Installer
 				}
 				Log.WriteStart(string.Format("Running installer {0}.{1} from {2}", installerType, method, path));
 
-				var json = JsonConvert.SerializeObject(Settings, new VersionConverter());
+				var json = JsonConvert.SerializeObject(Settings, new VersionConverter(), new StringEnumConverter());
+
+				var hashtable = new Hashtable();
+				hashtable["ParametersJson"] = json;
 
 				//run installer
-				var res = (bool)LoadContext.Execute(path, installerType, method, new object[] { json });
+				var res = (bool)LoadContext.Execute(path, installerType, method, new object[] { hashtable });
 				FileUtils.DeleteTempDirectory();
 
 				if (res) UpdateSettings();
@@ -560,8 +565,8 @@ public abstract partial class Installer
 	public virtual ILoadContext LoadContext {
 		get
 		{
-			if (OSInfo.IsCore) return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.LoadContextImplementation, SolidCP.UniversalInstaller.Runtime.NetCore")) as ILoadContext;
-			else return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.LoadContextImplementation, SolidCP.UniversalInstaller.Runtime.NetFX")) as ILoadContext;
+			if (OSInfo.IsCore) return Activator.CreateInstance(GetType("SolidCP.UniversalInstaller.LoadContextImplementation, SolidCP.UniversalInstaller.Runtime.NetCore")) as ILoadContext;
+			else return Activator.CreateInstance(GetType("SolidCP.UniversalInstaller.LoadContextImplementation, SolidCP.UniversalInstaller.Runtime.NetFX")) as ILoadContext;
 		}
 	}
 
@@ -569,8 +574,8 @@ public abstract partial class Installer
 	{
 		get
 		{
-			if (OSInfo.IsCore) return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.SecurityUtils, SolidCP.UniversalInstaller.Runtime.NetCore")) as SecurityUtils;
-			else return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.SecurityUtils, SolidCP.UniversalInstaller.Runtime.NetFX")) as SecurityUtils;
+			if (OSInfo.IsCore) return Activator.CreateInstance(GetType("SolidCP.UniversalInstaller.Runtime.SecurityUtils, SolidCP.UniversalInstaller.Runtime.NetCore")) as SecurityUtils;
+			else return Activator.CreateInstance(GetType("SolidCP.UniversalInstaller.Runtime.SecurityUtils, SolidCP.UniversalInstaller.Runtime.NetFX")) as SecurityUtils;
 		}
 	}
 
@@ -578,9 +583,31 @@ public abstract partial class Installer
 	{
 		get
 		{
-			if (OSInfo.IsCore) return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.WebUtils, SolidCP.UniversalInstaller.Runtime.NetCore")) as WebUtils;
-			else return Activator.CreateInstance(Type.GetType("SolidCP.UniversalInstaller.Runtime.WebUtils, SolidCP.UniversalInstaller.Runtime.NetFX")) as WebUtils;
+			if (OSInfo.IsCore) return Activator.CreateInstance(GetType("SolidCP.UniversalInstaller.Runtime.WebUtils, SolidCP.UniversalInstaller.Runtime.NetCore")) as WebUtils;
+			else return Activator.CreateInstance(GetType("SolidCP.UniversalInstaller.Runtime.WebUtils, SolidCP.UniversalInstaller.Runtime.NetFX")) as WebUtils;
 		}
+	}
+
+	// Gets a Type by name. On NET Core it uses the custom AssemblyLoadContext.
+	public virtual Type GetType(string name)
+	{
+		if (OSInfo.IsCore)
+		{
+			var ctxType = Type.GetType("System.Runtime.Loader.AssemblyLoadContext, System.Runtime.Loader");
+			var ctx = ctxType.GetMethod("GetLoadContext").Invoke(null, new object[] { Assembly.GetExecutingAssembly() });
+			if (ctx.GetType().Name == "SetupAssemblyLoadContext")
+			{
+				var defaultCtx = ctxType.GetProperty("Default").GetValue(null);
+				var loadCustom = ctx.GetType().GetMethod("Load", BindingFlags.Instance | BindingFlags.NonPublic);
+				var loadDefault = defaultCtx.GetType().GetMethod("Load", BindingFlags.Instance | BindingFlags.NonPublic);
+				return Type.GetType(name, asmName =>
+					(loadCustom.Invoke(ctx, new object[] { asmName }) ??
+						loadDefault.Invoke(defaultCtx, new object[] { asmName })) as Assembly,
+					(Func<Assembly, string, bool, Type>)((asm, type, ignoreCase) =>
+						asm.GetType(type, true, ignoreCase)));
+			}
+		}
+		return Type.GetType(name);
 	}
 
 	static Installer current;

@@ -17,12 +17,52 @@ using System.Runtime.Loader;
 
 namespace SolidCP.UniversalInstaller;
 
-public class AssemblyLoader
+#if NETCOREAPP
+public class SetupAssemblyLoadContext : AssemblyLoadContext
+{
+	public AssemblyLoader Loader { get; set; } = null;
+
+	public SetupAssemblyLoadContext() : base("Setup Context", true) { }
+	protected override Assembly Load(AssemblyName name)
+	{
+		if (name.Name == "netstandard" || name.Name == "System.Runtime" || name.Name == "System.Runtime.Loader") return null;
+
+		lock (this)
+		{
+			if (Loader == null) Loader = AssemblyLoader.Init(Assemblies.Single());
+		}
+	
+		
+		var loadedAssembly = Assemblies.FirstOrDefault(a =>
+		{
+			var lname = a.GetName();
+			return lname.Name == name.Name && lname.Version >= name.Version;
+		});
+		if (loadedAssembly != null)
+			return loadedAssembly;
+		
+		return Loader?.ResolveAssembly(this, name);
+	}
+}
+#endif
+
+	// This class exists in SolidCP.UniversalInstaller, SolidCP.Setup and in
+	// SolidCP.UniversalInstaller.Runtime. It is responsible for loading the assemblies in the
+	// EmbeddedResources. The version in SolidCP.Setup is for NET Standard and relies on the
+	// version in SolidCP.UniversalInstaller.Runtime that is NetFX & NetCore specific.
+	public class AssemblyLoader
 {
 	public const string NativeDllsFolder = "NativeDlls";
+	public const string NativeDllsNetFXFolder = "NativeNetFXDlls";
+	public const string NativeDllsNetCoreFolder = "NativeNetCoreDlls";
+	public const string DllsFolder = "Dlls";
+	public const string DllsNetFXFolder = "DllsNetFX";
+	public const string DllsNetCoreFolder = "DllsNetCore";
+	public static AssemblyLoader Current { get; private set; } = null;
 	public string AssembliesPath { get; set; } = null;
 	public object AssemblyLoadContext { get; set; } = null;
 	public object LoaderRuntime { get; set; } = null;
+	public bool IsDefault { get; set; } = false;
 	public Assembly MainAssembly { get; set; }
 
 	[DllImport("kernel32", SetLastError = true, CharSet = CharSet.Unicode)]
@@ -49,9 +89,10 @@ public class AssemblyLoader
 	public static bool IsLinux => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
 	public static bool IsMac => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
 
-	public static AssemblyLoader Init()
+	public static AssemblyLoader Init(Assembly mainAssembly = null)
 	{
-		var mainAssembly = Assembly.GetExecutingAssembly();
+		bool isSetup = mainAssembly != null;
+		mainAssembly ??= Assembly.GetExecutingAssembly();
 
 #if Costura
 		var guid = Guid.NewGuid();
@@ -59,24 +100,32 @@ public class AssemblyLoader
 		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 		AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
 #else
-		var path = Path.Combine(Path.GetDirectoryName(mainAssembly.Location));
+		string path;
+		if (isSetup)
+		{
+			var guid = Guid.NewGuid();
+			path = Path.Combine(Path.GetTempPath(), guid.ToString("D"));
+			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+			AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
+		} else path = Path.Combine(Path.GetDirectoryName(mainAssembly.Location));
 #endif
 
-		var loader = new AssemblyLoader() { AssembliesPath = path, MainAssembly = Assembly.GetExecutingAssembly() };
+		var loader = Current = new AssemblyLoader() { AssembliesPath = path, MainAssembly = mainAssembly };
+
 #if Costura
 		loader.SaveAssembliesToDisk();
+#else
+		if (isSetup) loader.SaveAssembliesToDisk();
 #endif
 		if (IsCore)
 		{
 			var ctxType = Type.GetType("System.Runtime.Loader.AssemblyLoadContext, System.Runtime.Loader");
 			var getContext = ctxType.GetMethod("GetLoadContext", BindingFlags.Public | BindingFlags.Static);
 			var loadContext = getContext.Invoke(null, new[] { mainAssembly });
-			var defaultProp = ctxType.GetProperty("Default", BindingFlags.Public | BindingFlags.Static);
-			var defaultCtx = defaultProp.GetValue(null);
-			if (loadContext != defaultCtx) loader.AssemblyLoadContext = loadContext;
+			loader.AssemblyLoadContext = loadContext;
 
-			loader.ResolveAssembly(loader.AssemblyLoadContext, new AssemblyName("SolidCP.UniversalInstaller.Core"));
-			var runtime = loader.ResolveAssembly(loader.AssemblyLoadContext, new AssemblyName($"SolidCP.UniversalInstaller.Runtime.{(IsCore ? "NetCore" : "NetFX")}"));
+			var core = loader.ResolveAssembly(null, new AssemblyName("SolidCP.UniversalInstaller.Core"));
+			var runtime = loader.ResolveAssembly(null, new AssemblyName($"SolidCP.UniversalInstaller.Runtime.{(IsCore ? "NetCore" : "NetFX")}"));
 			var loaderRuntimeType = runtime.GetType("SolidCP.UniversalInstaller.AssemblyLoader");
 			loader.LoaderRuntime = Activator.CreateInstance(loaderRuntimeType);
 			var assCtx = loaderRuntimeType.GetMethod("InitAssemblyLoadContext");
@@ -92,10 +141,18 @@ public class AssemblyLoader
 #if NETCOREAPP
 	public void InitAssemblyLoadContext(string assembliesPath, Assembly mainAssembly)
 	{
+		Current = this;
 		AssembliesPath = assembliesPath;
 		MainAssembly = mainAssembly;
 		var ctx = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(mainAssembly);
-		ctx.Resolving += (loadContext, name) => ResolveAssembly(loadContext, name);
+		IsDefault = ctx == System.Runtime.Loader.AssemblyLoadContext.Default;
+		if (IsDefault) {
+			ctx.Resolving += (loadContext, name) => ResolveAssembly(loadContext, name);
+		}
+		else if (ctx is SetupAssemblyLoadContext setupCtx)
+		{
+			setupCtx.Loader = this;
+		}
 		AssemblyLoadContext = ctx;
 	}
 #endif
@@ -116,23 +173,27 @@ public class AssemblyLoader
 	}
 	public Assembly ResolveAssembly(object loadContext, AssemblyName name)
 	{
+		Assembly assembly;
 		if (loadContext == null) loadContext = AssemblyLoadContext;
 		var file = ResolveAssemblyName(name.FullName, name.CultureInfo);
 		if (file != null)
 		{
-			if (loadContext == null) return Assembly.LoadFrom(file);
+			if (loadContext == null) assembly = Assembly.LoadFrom(file);
 			else
 			{
 #if NETCOREAPP
 				var ctx = loadContext as AssemblyLoadContext;
-				return ctx.LoadFromAssemblyPath(file);
+				assembly = ctx.LoadFromAssemblyPath(file);
 #elif NETSTANDARD
 				var loadFromMethod = loadContext.GetType().GetMethod("LoadFromAssemblyPath");
-				return loadFromMethod.Invoke(AssemblyLoadContext, new[] { file }) as Assembly;
+				assembly = loadFromMethod.Invoke(AssemblyLoadContext, new[] { file }) as Assembly;
+				
 #else
-				return Assembly.LoadFrom(file);
+				assembly = Assembly.LoadFrom(file);
 #endif
 			}
+			if (assembly != null) Console.WriteLine($"Loaded assembly {file}.");
+			return assembly;
 		}
 		return null;
 	}
@@ -147,7 +208,7 @@ public class AssemblyLoader
 	public void SaveAssembliesToDisk()
 	{
 		var resourceNames = new HashSet<string>();
-		var asm = typeof(AssemblyLoader).Assembly;
+		var asm = MainAssembly;
 		using (StreamReader reader = new StreamReader(asm.GetManifestResourceStream("costura.metadata")))
 		{
 			var line = reader.ReadLine();
@@ -176,26 +237,41 @@ public class AssemblyLoader
 
 		foreach (var resname in asm.GetManifestResourceNames())
 		{
-			if (resname.StartsWith($"{NativeDllsFolder}/"))
+			if (resname.StartsWith(NativeDllsFolder + "/") ||
+				IsNetFX && resname.StartsWith(NativeDllsNetFXFolder + "/") ||
+				IsCore && resname.StartsWith(NativeDllsNetCoreFolder + "/"))
 			{
-				var name = resname.Substring($"{NativeDllsFolder}/".Length);
-				if ((name.StartsWith($"{arch}/") || !name.Contains("/")) &&
+				var slash = resname.IndexOf('/');
+				var name = resname.Substring(slash + 1)
+					.Replace('/', Path.DirectorySeparatorChar)
+					.Replace('\\', Path.DirectorySeparatorChar);
+				if (/*(name.StartsWith($"{arch}/") || !name.Contains("/")) && */
 					IsWindows && name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
 					IsMac && name.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase) ||
 					IsLinux && name.EndsWith(".so", StringComparison.OrdinalIgnoreCase))
 				{
-					var filename = Path.Combine(AssembliesPath, name.Replace('/', Path.DirectorySeparatorChar));
+					var filename = Path.Combine(AssembliesPath, name);
 					using (var src = asm.GetManifestResourceStream(resname))
-					using (var file = new FileStream(filename, FileMode.Create, FileAccess.Write))
-						src.CopyTo(file);
-					if (IsCore)
+						SaveToFile(src, filename);
+					/*if (IsCore)
 					{
 						//NativeLibrary.Load(filename);
 						var nativeLibType = Type.GetType("System.Runtime.InteropServices.NativeLinbrary, System.Runtime.InteropServices");
 						var load = nativeLibType.GetMethod("Load", BindingFlags.Static | BindingFlags.Public);
 						load.Invoke(null, new[] { filename });
-					}
+					}*/
 				}
+			} else if (resname.StartsWith(DllsFolder + "/") ||
+				IsNetFX && resname.StartsWith(DllsNetFXFolder + "/") ||
+				IsCore && resname.StartsWith(DllsNetCoreFolder + "/"))
+			{
+				var slash = resname.IndexOf('/');
+				var name = resname.Substring(slash + 1)
+					.Replace('/', Path.DirectorySeparatorChar)
+					.Replace('\\', Path.DirectorySeparatorChar);
+				var filename = Path.Combine(AssembliesPath, name);
+				using (var src = asm.GetManifestResourceStream(resname))
+					SaveToFile(src, filename);
 			}
 		}
 
@@ -213,7 +289,7 @@ public class AssemblyLoader
 
 	public void Unload()
 	{
-		if (AssemblyLoadContext != null)
+		if (AssemblyLoadContext != null && !IsDefault)
 		{
 			try
 			{

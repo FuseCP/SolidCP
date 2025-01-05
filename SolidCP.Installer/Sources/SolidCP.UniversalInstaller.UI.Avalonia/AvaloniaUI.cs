@@ -118,8 +118,5 @@ namespace SolidCP.UniversalInstaller
 		{
 			throw new NotImplementedException();
 		}
-		public override bool ExecuteSetup(string path, string fileName, string method, object[] args)
-			=> throw new NotSupportedException();
-
 	}
 }

@@ -66,9 +66,9 @@ namespace SolidCP.UniversalInstaller
 			//
 			Trace.Listeners.Clear();
 			//
-			FileStream fileLog = new FileStream(fileName, FileMode.Append);
+			//FileStream fileLog = new FileStream(fileName, FileMode.Append);
 			//
-			TextWriterTraceListener fileListener = new TextWriterTraceListener(fileLog);
+			TextWriterTraceListener fileListener = new TextWriterTraceListener(fileName);
 			fileListener.TraceOutputOptions = TraceOptions.DateTime;
 			Trace.Listeners.Add(fileListener);
 			//
