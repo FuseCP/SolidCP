@@ -59,10 +59,14 @@ namespace SolidCP.UniversalInstaller
 
 			InstallWebsite(dll, UnixServerServiceId, Settings.Server.Urls, "root", SolidCPUnixGroup,
 				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+
+			InstallLog($"Installed {UnixServerServiceId} service runnig the Server website.");
 		}
 		public virtual void AddUnixUser(string user, string group)
 		{
 			Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
+
+			InstallLog($"Added System User {user}.");
 		}
 		public override void InstallEnterpriseServerWebsite()
 		{
@@ -72,6 +76,8 @@ namespace SolidCP.UniversalInstaller
 
 			InstallWebsite(dll, UnixEnterpriseServerServiceId, Settings.Server.Urls, UnixEnterpriseServerServiceId, SolidCPUnixGroup,
 				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+
+			InstallLog($"Installed {UnixEnterpriseServerServiceId} service runnig the Enterprise Server website.");
 		}
 
 		public override void InstallWebPortalWebsite()
@@ -82,6 +88,8 @@ namespace SolidCP.UniversalInstaller
 
 			InstallWebsite(dll, UnixPortalServiceId, Settings.WebPortal.Urls, UnixPortalServiceId, SolidCPUnixGroup,
 				"SolidCP.Server service, the server management service for the SolidCP control panel.");
+
+			InstallLog($"Installed {UnixPortalServiceId} service runnig the WebPortal website.");
 		}
 		public virtual void RemoveWebsite(string serviceId, string urls)
 		{
@@ -96,15 +104,33 @@ namespace SolidCP.UniversalInstaller
 				RemoveFirewallRule(urls);
 			}
 		}
-		public override void RemoveServerWebsite() => RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
-		public override void RemoveEnterpriseServerWebsite() => RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
-		public override void RemoveWebPortalWebsite() => RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
+		public override void RemoveServerWebsite()
+		{
+			RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
 
+			InstallLog($"Removed {UnixServerServiceId} service & website.");
+		}
+
+		public override void RemoveEnterpriseServerWebsite()
+		{
+			RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
+
+			InstallLog($"Removed {UnixEnterpriseServerServiceId} service & website.");
+		}
+
+		public override void RemoveWebPortalWebsite()
+		{
+			RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
+
+			InstallLog($"Removed {UnixPortalServiceId} service & website.");
+		}
 		public override void OpenFirewall(int port)
 		{
 			if (Shell.Default.Find("ufw") != null)
 			{
 				Shell.Default.Exec($"ufw allow {port}/tcp");
+
+				InstallLog($"Opened firewall on port {port}.");
 			}
 		}
 
@@ -113,6 +139,8 @@ namespace SolidCP.UniversalInstaller
 			if (Shell.Default.Find("ufw") != null)
 			{
 				Shell.Default.Exec($"ufw delete allow {port}/tcp");
+
+				InstallLog($"Removed firewall rule for port {port}.");
 			}
 		}
 
@@ -222,6 +250,8 @@ namespace SolidCP.UniversalInstaller
 			{
 				ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
 			}));
+
+			InstallLog("Configured Server.");
 		}
 		public override void InstallServerPrerequisites()
 		{

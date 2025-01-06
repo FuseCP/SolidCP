@@ -106,15 +106,26 @@ public abstract partial class Installer
 	{
 		if (Settings.Installer.Component != null)
 		{
-			if (Settings.Installer.Action != SetupActions.Uninstall)
+			if (Settings.Installer.Action != SetupActions.Uninstall &&
+				Settings.Installer.Action != SetupActions.Setup)
 			{
 				Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
 			}
-			else
+			else if (Settings.Installer.Action == SetupActions.Uninstall)
 			{
 				var component = Settings.Installer.InstalledComponents
 					.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
 				if (component != null) Settings.Installer.InstalledComponents.Remove(component);
+			} else
+			{
+				var component = Settings.Installer.InstalledComponents
+					.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
+				var index = Settings.Installer.InstalledComponents.IndexOf(component);
+				if (index >= 0)
+				{
+					Settings.Installer.InstalledComponents.RemoveAt(index);
+					Settings.Installer.InstalledComponents.Insert(index, Settings.Installer.Component);
+				}
 			}
 			Settings.Installer.Component = null;
 			SaveSettings();
@@ -167,10 +178,13 @@ public abstract partial class Installer
 				hashtable["ParametersJson"] = json;
 
 				//run installer
-				var res = (bool)LoadContext.Execute(path, installerType, method, new object[] { hashtable });
+				var res = (Result)LoadContext.Execute(path, installerType, method, new object[] { hashtable }) == Result.OK;
 				FileUtils.DeleteTempDirectory();
 
 				if (res) UpdateSettings();
+
+				Log.WriteInfo(string.Format("Installer returned {0}", res));
+				Log.WriteEnd("Installer finished");
 
 				return res;
 			}
@@ -213,6 +227,9 @@ public abstract partial class Installer
 	{
 		if (NeedRemoveNet8Runtime) RemoveNet8NetRuntime();
 		if (NeedRemoveNet8AspRuntime) RemoveNet8AspRuntime();
+
+		if (NeedRemoveNet8Runtime || NeedRemoveNet8AspRuntime)
+			InstallLog("Removed .NET 8 Runtime");
 	}
 
 	public virtual void SetFilePermissions(string folder)

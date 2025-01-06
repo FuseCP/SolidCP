@@ -62,10 +62,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 			string component = Settings.ComponentName;
 			this.Description = string.Format("Enter the connection information for the {0} database.", component);
 			this.lblIntro.Text = "The connection information will be used by the Setup Wizard to install the database objects only. Click Next to continue.";
-			this.txtSqlServerDatabase.Text = Settings.DatabaseName;
-			this.txtSqlServerServer.Text = Settings.DatabaseServer;
-			this.txtMySqlDatabase.Text = Settings.DatabaseName;
-			this.txtSqliteDatabase.Text = Settings.DatabaseName;
+			this.txtSqlServerDatabase.Text = Settings.DatabaseName ?? "SolidCP";
+			this.txtSqlServerServer.Text = Settings.DatabaseServer == "localhost" ? "(local)" : Settings.DatabaseServer;
+			this.txtMySqlDatabase.Text = Settings.DatabaseName ?? "SolidCP";
+			this.txtSqliteDatabase.Text = Settings.DatabaseName ?? "SolidCP";
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
@@ -84,8 +84,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 				switch (dbType)
 				{
-					case "mssql":
-						txtSqlServerServer.Text = (string)(csb["server"] ?? "");
+					case "sqlserver":
+						var server = (string)(csb["server"] ?? "");
+						txtSqlServerServer.Text = server == "localhost" ? "(local)" : server;
 						windowsAuthentication = (csb["integrated security"] as string)?.Trim().ToLower() == "sspi";
 						cbSqlServerAuthentication.SelectedIndex = windowsAuthentication ? 0 : 1;
 						txtSqlServerLogin.Text = (string)(csb["user"] ?? csb["user id"] ?? csb["uid"] ?? "");

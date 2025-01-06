@@ -75,7 +75,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			string ip = Settings.WebSiteIp;
 			string domain = Settings.WebSiteDomain;
-			string port = Settings.WebSitePort;
+			string port = Settings.WebSitePort.ToString();
 			string url = GetApplicationUrl(ip, domain, port);
 			Process.Start(url);
 		}

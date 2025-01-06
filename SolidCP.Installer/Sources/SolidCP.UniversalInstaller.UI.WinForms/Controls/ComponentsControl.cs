@@ -91,11 +91,16 @@ namespace SolidCP.UniversalInstaller.Controls
             return Assembly.GetEntryAssembly().GetName().Version.ToString();
         }
 
-		private void StartInstaller(ComponentInfo info)
+		private void StartInstaller(ComponentInfo component)
         {
-            Installer.Current.Install(info);
-            return;
+            var res = Installer.Current.Install(component);
+			Update();
+			if (res)
+			{
+				AppContext.AppForm.ReloadApplication();
+			}
 
+            /*
             string applicationName = info.ApplicationName;
             string componentName = info.ComponentName;
             string componentCode = info.ComponentCode;
@@ -167,7 +172,7 @@ namespace SolidCP.UniversalInstaller.Controls
                 this.componentSettingsXml = null;
                 this.componentCode = null;
             }
-
+            */
         }
 
         /// <summary>

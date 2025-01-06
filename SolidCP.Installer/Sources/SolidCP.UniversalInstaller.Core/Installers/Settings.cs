@@ -37,7 +37,7 @@ namespace SolidCP.UniversalInstaller
 		public string Urls { get; set; }
 		public string WebSiteIp { get; set; }
 		public string WebSiteDomain { get; set; }
-		public string WebSitePort { get; set; }
+		public int WebSitePort { get; set; }
 		public bool UpdateWebSite { get; set; }
 		public string Username { get; set; }
 		public string Password { get; set; }
@@ -57,6 +57,7 @@ namespace SolidCP.UniversalInstaller
 		public ServerSettings()
 		{
 			Urls = "http://localhost:9003";
+			WebSitePort = 9003;
 		}
 		public string ServerPassword { get; set; }
 		public string ServerPasswordSHA { get; set; }
@@ -70,6 +71,7 @@ namespace SolidCP.UniversalInstaller
 		public EnterpriseServerSettings()
 		{
 			Urls = "http://localhost:9002";
+			WebSitePort = 9002;
 		}
 		public DbType DatabaseType { get; set; } = DbType.Unknown;
 		public string DatabaseServer { get; set; } = "localhost";
@@ -89,6 +91,11 @@ namespace SolidCP.UniversalInstaller
 
 	public class WebPortalSettings: CommonSettings
 	{
+		public WebPortalSettings()
+		{
+			Urls = "http://localhost:9001";
+			WebSitePort = 9001;
+		}
 		public string EnterpriseServerUrl { get; set; } = "assembly://SolidCP.EnterpriseServer";
 		public string EnterpriseServerPath { get; set; } = "..\\EnterpriseServer";
 		public bool EmbedEnterpriseServer { get; set; } = true;
@@ -99,6 +106,11 @@ namespace SolidCP.UniversalInstaller
 
 	public class WebDavPortalSettings: CommonSettings
 	{
+		public WebDavPortalSettings()
+		{
+			Urls = "http://localhost:9004";
+			WebSitePort = 9004;
+		}
 		public override string ComponentCode => Global.WebDavPortal.ComponentCode;
 		public override string ComponentName => Global.WebDavPortal.ComponentName;
 	}

@@ -75,7 +75,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// init fields
 			PopulateIPs();
 			this.txtWebSiteDomain.Text = Settings.WebSiteDomain;
-			this.txtWebSiteTcpPort.Text = Settings.WebSitePort;
+			this.txtWebSiteTcpPort.Text = Settings.WebSitePort.ToString();
 
 			/*if (SetupVariables.NewVirtualDirectory)
 			{
@@ -329,7 +329,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 					Settings.UpdateWebSite = true;
 					//load old settings from config
 					string ip = Settings.WebSiteIp;
-					string port = Settings.WebSitePort;
+					string port = Settings.WebSitePort.ToString();
 					string domain = Settings.WebSiteDomain;
 					//
 					/*string ip = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteIP");
@@ -402,9 +402,11 @@ namespace SolidCP.UniversalInstaller.WinForms
 				e.Cancel = true;
 				return;
 			}
-			Settings.WebSiteIp = this.cbWebSiteIP.Text;
-			Settings.WebSiteDomain = this.txtWebSiteDomain.Text;
-			Settings.WebSitePort = this.txtWebSiteTcpPort.Text;
+			Settings.WebSiteIp = cbWebSiteIP.Text;
+			Settings.WebSiteDomain = txtWebSiteDomain.Text;
+			int port = 0;
+			int.TryParse(txtWebSiteTcpPort.Text, out port);
+			Settings.WebSitePort = port;
 			//}
 			base.OnBeforeMoveNext(e);
 		}

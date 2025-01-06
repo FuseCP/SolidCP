@@ -1,3 +1,6 @@
 ﻿<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
-    <CosturaPortable LoadAtModuleInit="false" ExcludeAssemblies="" DisableCleanup="true" />
+    <CosturaPortable LoadAtModuleInit="false" DisableCleanup="true">
+        <ExcludeAssemblies>
+        </ExcludeAssemblies>
+    </CosturaPortable>
 </Weavers>

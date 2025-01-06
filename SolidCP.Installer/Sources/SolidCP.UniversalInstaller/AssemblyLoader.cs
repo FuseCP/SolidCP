@@ -25,13 +25,13 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	public SetupAssemblyLoadContext() : base("Setup Context", true) { }
 	protected override Assembly Load(AssemblyName name)
 	{
-		if (name.Name == "netstandard" || name.Name == "System.Runtime" || name.Name == "System.Runtime.Loader") return null;
+		if (name.Name == "netstandard" || name.Name == "System.Runtime" || name.Name == "System.Runtime.Loader" ||
+			name.Name == "System.Collections") return null;
 
 		lock (this)
 		{
 			if (Loader == null) Loader = AssemblyLoader.Init(Assemblies.Single());
 		}
-	
 		
 		var loadedAssembly = Assemblies.FirstOrDefault(a =>
 		{
@@ -58,6 +58,12 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	public const string DllsFolder = "Dlls";
 	public const string DllsNetFXFolder = "DllsNetFX";
 	public const string DllsNetCoreFolder = "DllsNetCore";
+	public const string DllsNetFXWinFolder = "DllsNetFXWin";
+	public const string DllsNetCoreWinFolder = "DllsNetCoreWin";
+	public const string DllsMonoUnixFolder = "DllsNetFXUnix";
+	public const string DllsNetCoreUnixFolder = "DllsNetCoreUnix";
+	public const string DllsUnixFolder = "DllsUnix";
+	public const string DllsWinFolder = "DllsWin";
 	public static AssemblyLoader Current { get; private set; } = null;
 	public string AssembliesPath { get; set; } = null;
 	public object AssemblyLoadContext { get; set; } = null;
@@ -155,12 +161,57 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		}
 		AssemblyLoadContext = ctx;
 	}
+	public string TryFile(string file)
+	{
+		var runtimeId = IsWindows ? "win-" :
+			(IsMac ? "osx-" : IsLinux ? "linux-" : "");
+		var arch = RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
+		runtimeId += arch;
+		file = Path.Combine(AssembliesPath, "runtimes", runtimeId, file);
+		if (File.Exists(file)) return file;
+		else return null;
+	}
+	public IntPtr ResolveNativeDll(string lib, Assembly assembly)
+	{
+		var dll = TryFile(lib) ??
+			(IsWindows ? TryFile(lib + ".dll") : null) ??
+			(IsLinux || IsMac ? (TryFile(lib + ".so") ?? TryFile($"lib{lib}.so")) : null) ??
+			(IsMac ? TryFile(lib + ".dylib") ?? TryFile($"lib{lib}.dylib") : null);
+		if (dll != null) return NativeLibrary.Load(dll);
+		else return IntPtr.Zero;
+	}
 #endif
 
-	public string ResolveAssemblyName(string assemblyName, CultureInfo culture)
+	public string ResolveAssemblyName(AssemblyName assemblyName)
 	{
-		var name = new AssemblyName(assemblyName).Name + ".dll";
-		var file = Path.Combine(AssembliesPath, name);
+		var name = assemblyName.Name + ".dll";
+		var culture = assemblyName.CultureInfo;
+		string file;
+		if (IsCore) {
+			if (IsWindows)
+			{
+				file = Path.Combine(AssembliesPath, "runtimes", "win", "lib", "net8.0", name);
+				if (File.Exists(file)) return file;
+			}
+			else if (IsMac || IsLinux)
+			{
+				if (IsMac)
+				{
+					file = Path.Combine(AssembliesPath, "runtimes", "osx", "lib", "net8.0", name);
+					if (File.Exists(file)) return file;
+				} else {
+					file = Path.Combine(AssembliesPath, "runtimes", "linux", "lib", "net8.0", name);
+					if (File.Exists(file)) return file;
+				}
+				file = Path.Combine(AssembliesPath, "runtimes", "unix", "lib", "net8.0", name);
+				if (File.Exists(file)) return file;
+			} else
+			{
+				file = Path.Combine(AssembliesPath, "runtimes", "unix", "lib", "net8.0", name);
+				if (File.Exists(file)) return file;
+			}
+		}
+		file = Path.Combine(AssembliesPath, name);
 		if (File.Exists(file)) return file;
 		if (culture != null && !culture.IsNeutralCulture)
 		{
@@ -175,7 +226,7 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	{
 		Assembly assembly;
 		if (loadContext == null) loadContext = AssemblyLoadContext;
-		var file = ResolveAssemblyName(name.FullName, name.CultureInfo);
+		var file = ResolveAssemblyName(name);
 		if (file != null)
 		{
 			if (loadContext == null) assembly = Assembly.LoadFrom(file);
@@ -192,7 +243,7 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 				assembly = Assembly.LoadFrom(file);
 #endif
 			}
-			if (assembly != null) Console.WriteLine($"Loaded assembly {file}.");
+			//if (assembly != null) Console.WriteLine($"Loaded assembly {file}.");
 			return assembly;
 		}
 		return null;
@@ -205,6 +256,19 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		using (var file = new FileStream(filename, FileMode.Create, FileAccess.Write))
 			src.CopyTo(file);
 	}
+
+	public HashSet<string> OmitAssembliesInNetCore = new()
+	{
+		"System.Memory.dll",
+		"System.Threading.dll",
+		"System.Threading.Tasks.dll",
+		"System.Diagnostics.DiagnosticSource.dll",
+		"System.IO.FileSystem.AccessControl.dll",
+		"System.Security.AccessControl.dll",
+		"System.Security.Principal.Windows.dll",
+		"System.Linq.dll",
+		"Microsoft.Win32.Registry.dll"
+	};
 	public void SaveAssembliesToDisk()
 	{
 		var resourceNames = new HashSet<string>();
@@ -217,16 +281,21 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 				var tokens = line.Split('|');
 				var resname = tokens[0];
 				resourceNames.Add(resname);
-				var filename = tokens[3].Replace('/', Path.DirectorySeparatorChar);
-				filename = Path.Combine(AssembliesPath, filename);
-				using (var resStream = asm.GetManifestResourceStream(resname))
+
+				// Special assemblies to omit in NET Core
+				if (!IsCore || !OmitAssembliesInNetCore.Contains(tokens[3]))
 				{
-					if (resname.EndsWith(".compressed"))
+					var filename = tokens[3].Replace('/', Path.DirectorySeparatorChar);
+					filename = Path.Combine(AssembliesPath, filename);
+					using (var resStream = asm.GetManifestResourceStream(resname))
 					{
-						using (var src = new DeflateStream(resStream, CompressionMode.Decompress))
-							SaveToFile(src, filename);
+						if (resname.EndsWith(".compressed"))
+						{
+							using (var src = new DeflateStream(resStream, CompressionMode.Decompress))
+								SaveToFile(src, filename);
+						}
+						else SaveToFile(resStream, filename);
 					}
-					else SaveToFile(resStream, filename);
 				}
 				line = reader.ReadLine();
 			}
@@ -263,7 +332,13 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 				}
 			} else if (resname.StartsWith(DllsFolder + "/") ||
 				IsNetFX && resname.StartsWith(DllsNetFXFolder + "/") ||
-				IsCore && resname.StartsWith(DllsNetCoreFolder + "/"))
+				IsCore && resname.StartsWith(DllsNetCoreFolder + "/") ||
+				IsNetFX && IsWindows && resname.StartsWith(DllsNetFXWinFolder + "/") ||
+				IsCore && IsWindows && resname.StartsWith(DllsNetCoreWinFolder + "/") ||
+				IsMono && !IsWindows && resname.StartsWith(DllsMonoUnixFolder + "/") ||
+				IsCore && !IsWindows && resname.StartsWith(DllsNetCoreUnixFolder + "/") ||
+				IsWindows && resname.StartsWith(DllsWinFolder + "/") ||
+				!IsWindows && resname.StartsWith(DllsUnixFolder + "/"))
 			{
 				var slash = resname.IndexOf('/');
 				var name = resname.Substring(slash + 1)
@@ -276,6 +351,16 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		}
 
 		if (IsNetFX) AddEnvironmentPaths(AssembliesPath, Path.Combine(AssembliesPath, arch));
+		else if (IsCore)
+		{
+			var runtimeId = IsWindows ? "win-" :
+				(IsMac ? "osx-" : IsLinux ? "linux-" : "");
+			if (IsLinux && IsLinuxMusl) runtimeId += "musl-";
+			var arc = RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
+			runtimeId += arc;
+			var path = Path.Combine(AssembliesPath, "runtimes", runtimeId, "native");
+			AddEnvironmentPaths(path);
+		}
 	}
 
 	private void AddEnvironmentPaths(params IEnumerable<string> newpaths)

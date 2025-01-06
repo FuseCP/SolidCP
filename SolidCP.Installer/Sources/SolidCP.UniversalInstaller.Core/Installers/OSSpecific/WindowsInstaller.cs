@@ -45,6 +45,8 @@ namespace SolidCP.UniversalInstaller
 
 				WinGet.Install("Microsoft.DotNet.AspNetCore.8;Microsoft.DotNet.Runtime.8");
 
+				InstallLog("Installed .NET 8 Runtime.");
+
 				ResetHasDotnet();
 			}
 		}
@@ -74,14 +76,14 @@ namespace SolidCP.UniversalInstaller
 				{
 					Shell.Exec($"\"{file}\" /q");
 				}
+
+				InstallLog("Installed .NET Framework 4.8.");
 			}
 		}
 
 		public override void InstallServerPrerequisites()
-		{
-			// NET 8 not needed, as server still runs on NET Framework on Windows.
-			// InstallNet8Runtime(); 
-
+		{			
+			InstallNet8Runtime(); 
 			InstallNet48();
 		}
 
@@ -92,6 +94,10 @@ namespace SolidCP.UniversalInstaller
 				Settings.Server.Urls ?? "",
 				Settings.Server.Username ?? $"{SolidCP}Server",
 				Settings.Server.Password ?? "");
+
+			InstallLog("Installed Server website, listening on the url(s):" +
+				$"{string.Join(NewLine, Settings.Server.Urls.Split(',', ';')
+					.Select(url => "  " + url))}");
 		}
 
 		public override void ReadServerConfiguration()
@@ -189,6 +195,8 @@ namespace SolidCP.UniversalInstaller
 			}
 
 			webconf.Save(confFile);
+
+			InstallLog("Configured Server.");
 		}
 
 		public override void ReadEnterpriseServerConfiguration()
@@ -307,6 +315,8 @@ namespace SolidCP.UniversalInstaller
 			}
 
 			webconf.Save(confFile);
+
+			InstallLog("Configured Enterprise Server.");
 		}
 
 		public override void ReadWebPortalConfiguration()
@@ -327,6 +337,8 @@ namespace SolidCP.UniversalInstaller
 			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
 			enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
 			conf.Save(confFile);
+
+			InstallLog("Configured Web Portal.");
 		}
 
 		public override bool IsRunningAsAdmin
