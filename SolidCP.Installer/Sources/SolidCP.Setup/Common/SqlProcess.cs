@@ -118,7 +118,11 @@ namespace SolidCP.Setup
 					while (null != (sql = ReadNextStatementFromStream(reader)))
 					{
 						sql = ProcessInstallVariables(sql);
-						command.CommandText = sql;
+                        if (string.IsNullOrEmpty(sql)) // 
+                        {
+                            continue; // skip an empty line in update_db.sql 
+                        }
+                        command.CommandText = sql;
 						try
 						{
 							command.ExecuteNonQuery();
