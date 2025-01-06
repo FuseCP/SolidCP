@@ -210,13 +210,31 @@ namespace SolidCP.Installer.Controls
 				ComponentConfigElement element = AppContext.ScopeNode.Tag as ComponentConfigElement;
 				string componentId = element.ID;
 				string componentName = element.GetStringSetting("ComponentName");
+				string componentCode = element.GetStringSetting("ComponentCode");
 
 				try
 				{
 					Log.WriteInfo(string.Format("Updating {0}", componentName));
-					//download installer
-					Loader form = new Loader(fileName, (e) => AppContext.AppForm.ShowError(e));
-					DialogResult result = form.ShowDialog(this);
+
+					string offlineFolder = FileUtils.GetOfflineDataDirectory();
+                    string versionedOfflineFolderPath = Path.Combine(offlineFolder, version);
+                    string localFileName = fileName.Substring(fileName.LastIndexOf('/') + 1);
+					string fullOfflineNamePath = Path.Combine(versionedOfflineFolderPath, localFileName);
+
+                    DialogResult result = DialogResult.None;
+
+                    if (File.Exists(fullOfflineNamePath)) {
+                        Log.WriteInfo("Use offline installer");
+                        Loader form = new Loader(localFileName, componentCode, version, (e) => AppContext.AppForm.ShowError(e), true);
+                        result = form.ShowDialog(this);
+                    }
+					else {
+                        //download installer
+                        Log.WriteInfo("Download installer");
+                        Loader form = new Loader(fileName, (e) => AppContext.AppForm.ShowError(e));
+                        result = form.ShowDialog(this);
+                    }                    
+					
 					if (result == DialogResult.OK)
 					{
 						//run installer
