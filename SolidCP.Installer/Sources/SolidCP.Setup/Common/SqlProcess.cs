@@ -115,30 +115,30 @@ namespace SolidCP.Setup
 					command.CommandType = System.Data.CommandType.Text;
 					command.CommandTimeout = 600;
 
-					while (null != (sql = ReadNextStatementFromStream(reader)))
-					{
-						sql = ProcessInstallVariables(sql);
+                    while (null != (sql = ReadNextStatementFromStream(reader)))
+                    {
+                        sql = ProcessInstallVariables(sql);
                         if (string.IsNullOrEmpty(sql)) // 
                         {
                             continue; // skip an empty line in update_db.sql 
                         }
                         command.CommandText = sql;
-						try
-						{
-							command.ExecuteNonQuery();
-						}
-						catch (Exception ex)
-						{
-							throw new Exception("Error executing SQL command: " + sql, ex);
-						}
+                        try
+                        {
+                            command.ExecuteNonQuery();
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception("Error executing SQL command: " + sql, ex);
+                        }
 
-						i++;
-						if (commandCount != 0)
-						{
-							OnProgressChange(Convert.ToInt32(i * 100 / commandCount));
-						}
-					}
-				}
+                        i++;
+                        if (commandCount != 0)
+                        {
+                            OnProgressChange(Convert.ToInt32(i * 100 / commandCount));
+                        }
+                    }
+                }
 			}
 			catch (Exception ex)
 			{
