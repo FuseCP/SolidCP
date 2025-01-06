@@ -39,81 +39,81 @@ using SolidCP.Setup.Actions;
 
 namespace SolidCP.Setup
 {
-	/// <summary>
-	/// Shows sql script process.
-	/// </summary>
-	public sealed class SqlProcess
-	{
-		private string scriptFile; 
-		private string connectionString;
-		private string database;
+    /// <summary>
+    /// Shows sql script process.
+    /// </summary>
+    public sealed class SqlProcess
+    {
+        private string scriptFile;
+        private string connectionString;
+        private string database;
 
-		public event EventHandler<ActionProgressEventArgs<int>> ProgressChange;
-		
-		/// <summary>
-		/// Initializes a new instance of the class.
-		/// </summary>
-		/// <param name="file">Sql script file</param>
-		/// <param name="connection">Sql connection string</param>
-		/// <param name="db">Sql server database name</param>
-		public SqlProcess(string file, string connection, string db)
-		{
-			this.scriptFile = file;
-			this.connectionString = connection;
-			this.database = db;
-		}
+        public event EventHandler<ActionProgressEventArgs<int>> ProgressChange;
 
-		private void OnProgressChange(int percentage)
-		{
-			if (ProgressChange == null)
-				return;
-			//
-			ProgressChange(this, new ActionProgressEventArgs<int>
-			{
-				EventData = percentage
-			});
-		}
+        /// <summary>
+        /// Initializes a new instance of the class.
+        /// </summary>
+        /// <param name="file">Sql script file</param>
+        /// <param name="connection">Sql connection string</param>
+        /// <param name="db">Sql server database name</param>
+        public SqlProcess(string file, string connection, string db)
+        {
+            this.scriptFile = file;
+            this.connectionString = connection;
+            this.database = db;
+        }
 
-		/// <summary>
-		/// Executes sql script file.
-		/// </summary>
-		internal void Run()
-		{
-			int commandCount = 0;
-			int i = 0;
-			string sql = string.Empty;
+        private void OnProgressChange(int percentage)
+        {
+            if (ProgressChange == null)
+                return;
+            //
+            ProgressChange(this, new ActionProgressEventArgs<int>
+            {
+                EventData = percentage
+            });
+        }
 
-			try
-			{
-				using (StreamReader sr = new StreamReader(scriptFile))
-				{
-					while( null != (sql = ReadNextStatementFromStream(sr))) 
-					{
-						commandCount++;
-					}					
-				}
-			}
-			catch(Exception ex)
-			{
-				throw new Exception("Can't read SQL script " + scriptFile, ex);
-			}
+        /// <summary>
+        /// Executes sql script file.
+        /// </summary>
+        internal void Run()
+        {
+            int commandCount = 0;
+            int i = 0;
+            string sql = string.Empty;
 
-			Log.WriteInfo(string.Format("Executing {0} database commands", commandCount));
-			//
-			OnProgressChange(0);
-			//
-			SqlConnection connection = new SqlConnection(connectionString);
+            try
+            {
+                using (StreamReader sr = new StreamReader(scriptFile))
+                {
+                    while (null != (sql = ReadNextStatementFromStream(sr)))
+                    {
+                        commandCount++;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Can't read SQL script " + scriptFile, ex);
+            }
 
-			try
-			{
-				// iterate through "GO" delimited command text
-				using (StreamReader reader = new StreamReader(scriptFile))
-				{
-					SqlCommand command = new SqlCommand();
-					connection.Open();
-					command.Connection = connection;
-					command.CommandType = System.Data.CommandType.Text;
-					command.CommandTimeout = 600;
+            Log.WriteInfo(string.Format("Executing {0} database commands", commandCount));
+            //
+            OnProgressChange(0);
+            //
+            SqlConnection connection = new SqlConnection(connectionString);
+
+            try
+            {
+                // iterate through "GO" delimited command text
+                using (StreamReader reader = new StreamReader(scriptFile))
+                {
+                    SqlCommand command = new SqlCommand();
+                    connection.Open();
+                    command.Connection = connection;
+                    command.CommandType = System.Data.CommandType.Text;
+                    command.CommandTimeout = 600;
 
                     while (null != (sql = ReadNextStatementFromStream(reader)))
                     {
@@ -139,54 +139,54 @@ namespace SolidCP.Setup
                         }
                     }
                 }
-			}
-			catch (Exception ex)
-			{
-				throw new Exception("Can't run SQL script " + scriptFile, ex);
-			}
-			finally
-			{
-				connection.Close();
-			}
-		}
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Can't run SQL script " + scriptFile, ex);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
 
-		private string ReadNextStatementFromStream(StreamReader reader)
-		{
-			StringBuilder sb = new StringBuilder();
-			string lineOfText;
-	
-			while(true) 
-			{
-				lineOfText = reader.ReadLine();
-				if( lineOfText == null ) 
-				{
-					if( sb.Length > 0 ) 
-					{
-						return sb.ToString();
-					}
-					else 
-					{
-						return null;
-					}
-				}
+        private string ReadNextStatementFromStream(StreamReader reader)
+        {
+            StringBuilder sb = new StringBuilder();
+            string lineOfText;
 
-				if(lineOfText.TrimEnd().ToUpper() == "GO") 
-				{
-					break;
-				}
-				
-				sb.Append(lineOfText + Environment.NewLine);
-			}
+            while (true)
+            {
+                lineOfText = reader.ReadLine();
+                if (lineOfText == null)
+                {
+                    if (sb.Length > 0)
+                    {
+                        return sb.ToString();
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
 
-			return sb.ToString();
-		}
+                if (lineOfText.TrimEnd().ToUpper() == "GO")
+                {
+                    break;
+                }
 
-		private string ProcessInstallVariables(string input)
-		{
-			//replace install variables
-			string output = input;
-			output = output.Replace("${install.database}", database);
-			return output;
-		}
-	}
+                sb.Append(lineOfText + Environment.NewLine);
+            }
+
+            return sb.ToString();
+        }
+
+        private string ProcessInstallVariables(string input)
+        {
+            //replace install variables
+            string output = input;
+            output = output.Replace("${install.database}", database);
+            return output;
+        }
+    }
 }
