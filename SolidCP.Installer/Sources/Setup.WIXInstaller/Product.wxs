@@ -1049,7 +1049,7 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="SolidCPFiles">
-            <Component Id ="comp_SolidCP_config" Directory="SCP_INSTALL_DIR" Guid="{28CD1ADB-562C-4E38-A3B6-325D3A2718B1}">
+            <Component Id ="comp_SolidCP_config" Directory="SCP_INSTALL_DIR" Guid="{28CD1ADB-562C-4E38-A3B6-325D3A2718B1}" NeverOverwrite="yes">
                 <File Id="file_SolidCP_config" KeyPath="yes" Source="SolidCP.config" />
             </Component>
             <Component Id="comp_SolidCP_reg_locator" Directory="SCP_INSTALL_DIR" Guid="{CC35E1B5-3E29-4AD1-991C-2904E4DCB099}">
