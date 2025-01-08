@@ -462,7 +462,8 @@ public abstract partial class Installer
 		})
 		.WithRollback(() => Directory.Delete(destinationPath, true));
 	}
-	
+
+	public virtual string GetUninstallLog(ComponentSettings settings) => "";
 	public void UnzipFromResource(string resourcePath, string destinationPath, Func<string, string> filter = null)
 	{
 		Transaction(() =>

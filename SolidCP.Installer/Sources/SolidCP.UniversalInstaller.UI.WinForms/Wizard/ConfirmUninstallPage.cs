@@ -62,8 +62,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		protected internal override void OnBeforeDisplay(EventArgs e)
 		{
 			base.OnBeforeDisplay(e);
-			//string componentCode = Settings.ComponentCode;
-			//this.txtActions.Text = GetUninstallActions(componentCode);
+			this.txtActions.Text = Installer.Current.GetUninstallLog(Settings);
 		}
 
 		/*

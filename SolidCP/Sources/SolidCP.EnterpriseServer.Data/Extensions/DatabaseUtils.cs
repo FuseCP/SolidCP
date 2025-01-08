@@ -62,15 +62,20 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 		}
 
-		public static string InstallScript(string scriptName)
+		public static Stream InstallScriptStream(string scriptName)
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
-			using (var scriptResource = resNames
+			return resNames
 				.Where(name => name.EndsWith(scriptName))
 				.Select(name => assembly.GetManifestResourceStream(name))
-				.FirstOrDefault())
-			using (var reader = new StreamReader(scriptResource)) return reader.ReadToEnd();
+				.FirstOrDefault();
+		}
+
+		public static string InstallScript(string scriptName)
+		{
+			using (var scriptStream = InstallScriptStream(scriptName))
+			using (var reader = new StreamReader(scriptStream)) return reader.ReadToEnd();
 		}
 
 		public static string InstallScriptSqlServer() => InstallScript("install.sqlserver.sql");
@@ -78,6 +83,11 @@ namespace SolidCP.EnterpriseServer.Data
 		public static string InstallScriptSqlite() => InstallScript("install.sqlite.sql");
 		public static string InstallScriptPostgreSql() => InstallScript("install.postgresql.sql");
 		public static string InstallScriptUpdateDb() => InstallScript("update_db.sql");
+		public static Stream InstallScriptUpdateDbStream() => InstallScriptStream("update_db.sql");
+		public static Stream InstallScriptStream(DbType type) => InstallScriptStream($"install.{type.ToString().ToLower()}.sql");
+		public static string InstallScript(DbType type) => InstallScript($"install.{type.ToString().ToLower()}.sql");
+
+
 
 		public static string BuildSqlServerMasterConnectionString(string dbServer, string dbLogin, string dbPassw)
 		{
@@ -1381,6 +1391,28 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 			DatabaseUtils.ExecuteQuery(connectionString, cmd);
 		}
+
+		public Version GetDatabaseVersion(string connectionString, string database)
+		{
+			try {
+				var set = ExecuteQuery(connectionString,
+	@$"USE {database}
+SELECT DatabaseVersion FROM Version");
+
+				return set.Tables[0].Rows.OfType<DataRow>()
+					.Select(row =>
+					{
+						var str = row["DatabaseVersion"] as string;
+						Version version = default;
+						Version.TryParse(str, out version);
+						return version;
+					})
+					.Max() ?? default;
+			} catch (Exception ex)
+			{
+				return default;
+			}
+		}
 		public static void RunSqlScript(string connectionString, Script script, int commandCount = 0,
 					Action<float> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null,
 					string database = null)
@@ -1480,7 +1512,25 @@ namespace SolidCP.EnterpriseServer.Data
 					else throw new InvalidOperationException($"Database user {user} already exists.");
 				}
 
-				using (installSqlStream)
+				RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
+					ProcessInstallVariables, dbFileName, databaseName);
+			}
+		}
+
+		public static void UpdateDatabase(string masterConnectionString, string databaseName,
+			string user, string password, Action<float> OnProgressChange = null,
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
+			string database = null)
+		{
+			DbType dbType;
+			string nativeConnectionString;
+			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
+
+			var sql = InstallScriptUpdateDbStream();
+			if (!string.IsNullOrEmpty(sql))
+			{
+
+				using (var installSqlScript = new Script()
 				{
 					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
 						ProcessInstallVariables, dbFileName, databaseName);

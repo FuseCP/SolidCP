@@ -4,6 +4,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
+using SolidCP.EnterpriseServer.Data;
 using System.Globalization;
 using System.Security.Policy;
 using System.Diagnostics.Contracts;
@@ -43,9 +44,33 @@ namespace SolidCP.UniversalInstaller
 			InstallEnterpriseServerWebsite();
 		}
 		public virtual void UpdateEnterpriseServerConfig() { }
-		public virtual void InstallDatabase() { }
-		public virtual void UpdateDatabase() { }
-		public virtual void DeleteDatabase() { }
+		public virtual void InstallDatabase()
+		{
+			var settings = Settings.EnterpriseServer;
+			var connstr = settings.DbInstallConnectionString;
+			if (string.IsNullOrEmpty(connstr) ||
+				!DatabaseUtils.CheckSqlConnection(connstr)) throw new DataException("Unable to connect to database.");
+			if (string.IsNullOrEmpty(settings.DatabaseUser))
+			{
+				settings.DatabaseUser = "SolidCP";
+				settings.DatabasePassword = Utils.GetRandomString(32);
+			}
+			var user = settings.DatabaseUser;
+			var password = settings.DatabasePassword;
+			var db = settings.DatabaseName;
+
+			DatabaseUtils.InstallFreshDatabase(connstr, db, user, password, progress => Log.WriteLine("."));
+		}
+		public virtual void UpdateDatabase() {
+			var settings = Settings.EnterpriseServer;
+			var connstr = settings.DbInstallConnectionString;
+
+		}
+		public virtual void DeleteDatabase() {
+			var settings = Settings.EnterpriseServer;
+			var connstr = settings.DbInstallConnectionString;
+			DatabaseUtils.DeleteDatabase(connstr, settings.DatabaseName);
+		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{
 			InstallWebsite($"{SolidCP}EnterpriseServer",
