@@ -1394,7 +1394,8 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public Version GetDatabaseVersion(string connectionString, string database)
 		{
-			try {
+			try
+			{
 				var set = ExecuteQuery(connectionString,
 	@$"USE {database}
 SELECT DatabaseVersion FROM Version");
@@ -1408,7 +1409,8 @@ SELECT DatabaseVersion FROM Version");
 						return version;
 					})
 					.Max() ?? default;
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				return default;
 			}
@@ -1527,15 +1529,18 @@ SELECT DatabaseVersion FROM Version");
 			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
 
 			var sql = InstallScriptUpdateDbStream();
-			if (!string.IsNullOrEmpty(sql))
+			using (var installSqlScript = new Script(sql, masterConnectionString))
 			{
-
-				using (var installSqlScript = new Script()
-				{
-					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
-						ProcessInstallVariables, dbFileName, databaseName);
-				}
+				RunSqlScript(masterConnectionString, installSqlScript, 100, OnProgressChange,
+					ProcessInstallVariables, databaseName);
 			}
+			sql = InstallScriptStream(dbType);
+			using (var installSqlScript = new Script(sql, masterConnectionString))
+			{
+				RunSqlScript(masterConnectionString, installSqlScript, 100, OnProgressChange,
+					ProcessInstallVariables, databaseName);
+			}
+
 		}
 
 		public static void RunSqlScript(string connectionString, Stream sql, Action<float> OnProgressChange = null,
