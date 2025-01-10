@@ -182,7 +182,7 @@ namespace SolidCP.Providers.Virtualization2012
         /// <remarks/>
         public VirtualizationServer2012()
         {
-            this.Url = "http://10.10.10.142:9003/VirtualizationServer2012.asmx";
+            this.Url = "http://127.0.0.1:9003/VirtualizationServer2012.asmx";
         }
 
         /// <remarks/>
