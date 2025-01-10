@@ -569,7 +569,7 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, PowerShellWithJobs, realVm, vm, ServerNameSettings);
+                HardDriveHelper.Update(PowerShell, wmi, realVm, vm, ServerNameSettings);
                 HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
@@ -1944,8 +1944,8 @@ namespace SolidCP.Providers.Virtualization
                 CreateFolder(destFolder);
             
             sourcePath = FileUtils.EvaluateSystemVariables(sourcePath);
-            destinationPath = FileUtils.EvaluateSystemVariables(destinationPath); 
-            
+            destinationPath = FileUtils.EvaluateSystemVariables(destinationPath);
+
             string fileExtension = Path.GetExtension(destinationPath);
             VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
 
@@ -1985,7 +1985,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
                 throw;
-            }
+            }           
 
             //try
             //{
@@ -2013,9 +2013,9 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                var result = HardDriveHelper.CreateVirtualHardDisk(PowerShellWithJobs, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
+                var result = HardDriveHelper.CreateVirtualHardDisk(wmi, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
 
-                return JobHelper.CreateResultFromPSResults(result);
+                return JobHelper.CreateJobResultFromWmiResults(wmi, result);
             }
             catch (Exception ex)
             {
