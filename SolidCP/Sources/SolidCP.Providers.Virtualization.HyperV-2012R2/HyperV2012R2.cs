@@ -1945,25 +1945,67 @@ namespace SolidCP.Providers.Virtualization
             sourcePath = FileUtils.EvaluateSystemVariables(sourcePath);
             destinationPath = FileUtils.EvaluateSystemVariables(destinationPath); 
             
+            string fileExtension = Path.GetExtension(destinationPath);
+            VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
+
             try
             {
-                Command cmd = new Command("Convert-VHD");
+                ManagementObject imageService = wmi.GetWmiObject("msvm_ImageManagementService");
+                ManagementClass settingsClass = wmi.GetWmiClass("Msvm_VirtualHardDiskSettingData");
 
-                cmd.Parameters.Add("Path", sourcePath);
-                cmd.Parameters.Add("DestinationPath", destinationPath);
-                cmd.Parameters.Add("VHDType", diskType.ToString());
-                if (blockSizeBytes > 0)
-                    cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
+                //TODO: remove this commented code if Remote Hyper-V works fine.
+                //ManagementPath path = new ManagementPath()
+                //{
+                //    Server = ServerNameSettings,
+                //    NamespacePath = imageService.Path.Path,
+                //    ClassName = "Msvm_VirtualHardDiskSettingData"
+                //};
+                //ManagementClass settingsClass = new ManagementClass(path);
 
-                //PowerShell.Execute(cmd, true, true);
-                //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
-                return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
+                ManagementObject settingsInstance = settingsClass.CreateInstance();
+                settingsInstance["Path"] = destinationPath;
+                settingsInstance["Type"] = diskType;
+                settingsInstance["Format"] = format;
+                settingsInstance["BlockSize"] = (blockSizeBytes > 0) ? blockSizeBytes : 0;
+                //settingsInstance["ParentPath"] = null;
+                //settingsInstance["MaxInternalSize"] = 0;
+                //settingsInstance["LogicalSectorSize"] = 0;
+                //settingsInstance["PhysicalSectorSize"] = 0;
+
+                ManagementBaseObject inParams = imageService.GetMethodParameters("ConvertVirtualHardDisk");
+                inParams["SourcePath"] = sourcePath;
+                inParams["VirtualDiskSettingData"] = settingsInstance.GetText(TextFormat.WmiDtd20);
+
+                ManagementBaseObject outParams = imageService.InvokeMethod("ConvertVirtualHardDisk", inParams, null);                
+
+                return JobHelper.CreateJobResultFromWmiResults(wmi, outParams);
             }
             catch (Exception ex)
             {
                 HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
                 throw;
             }
+
+            //try
+            //{
+            //    Command cmd = new Command("Convert-VHD");
+
+            //    cmd.Parameters.Add("Path", sourcePath);
+            //    cmd.Parameters.Add("DestinationPath", destinationPath);
+            //    cmd.Parameters.Add("VHDType", diskType.ToString());
+            //    if (blockSizeBytes > 0)
+            //        cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
+
+            //    //PowerShell.Execute(cmd, true, true);
+            //    //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+
+            //    return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
+            //}
+            //catch (Exception ex)
+            //{
+            //    HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
+            //    throw;
+            //}
         }
 
         public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
