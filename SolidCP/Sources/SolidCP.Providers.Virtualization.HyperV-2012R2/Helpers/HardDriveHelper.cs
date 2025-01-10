@@ -235,7 +235,6 @@ namespace SolidCP.Providers.Virtualization
 
             destinationPath = FileUtils.EvaluateSystemVariables(destinationPath);
 
-            const UInt64 Size1G = 0x40000000;
             string fileExtension = Path.GetExtension(destinationPath);
             VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
 
@@ -243,7 +242,7 @@ namespace SolidCP.Providers.Virtualization
             ManagementClass settingsClass = wmi.GetWmiClass("Msvm_VirtualHardDiskSettingData");
 
             ManagementObject settingsInstance = settingsClass.CreateInstance();
-            settingsInstance["MaxInternalSize"] = sizeGB * Size1G;
+            settingsInstance["MaxInternalSize"] = sizeGB * Constants.Size1G;
             settingsInstance["Path"] = destinationPath;
             settingsInstance["Type"] = diskType;
             settingsInstance["Format"] = format;
