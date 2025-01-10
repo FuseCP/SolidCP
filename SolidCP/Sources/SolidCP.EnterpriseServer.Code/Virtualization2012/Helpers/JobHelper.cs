@@ -11,7 +11,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
 {
     public static class JobHelper
     {        
-        public static bool TryJobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
+        public static bool TryJobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true, bool isPowerShellJob = false)
         {
             bool jobCompleted = false;
             short timeout = 5;
@@ -20,14 +20,14 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
                 timeout--;
                 try
                 {
-                    jobCompleted = JobCompleted(vs, job, resetProgressBarIndicatorAfterFinish);
+                    jobCompleted = JobCompleted(vs, job, resetProgressBarIndicatorAfterFinish, isPowerShellJob);
                 }
                 catch (ThreadAbortException) //https://github.com/FuseCP/SolidCP/issues/103
                 {
                     //maybe there need to use Thread.ResetAbort(); ???
 
                     TaskManager.Write("VPS_CREATE_TRY_JOB_COMPLETE_ATTEMPTS_LEFT_AFTER_THREAD_ABORT", timeout.ToString());
-                    job = vs.GetJob(job.Id); //get the last job state
+                    job = GetLastJobUpdate(vs, job, isPowerShellJob); //get the last job state
 
                     jobCompleted = (job.JobState == ConcreteJobState.Completed); //is job completed?                                      
                 }
@@ -41,7 +41,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return jobCompleted;
         }
 
-        public static bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true)
+        public static bool JobCompleted(VirtualizationServer2012 vs, ConcreteJob job, bool resetProgressBarIndicatorAfterFinish = true, bool isPowerShellJob = false)
         {
             TaskManager.IndicatorMaximum = 100;
             bool jobCompleted = true;
@@ -50,14 +50,14 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             {
                 timeout--;
                 Thread.Sleep(2000);
-                job = vs.GetJob(job.Id);
+                job = GetLastJobUpdate(vs, job, isPowerShellJob);
             }
 
             while (job.JobState == ConcreteJobState.Starting ||
                 job.JobState == ConcreteJobState.Running)
             {
                 Thread.Sleep(3000);
-                job = vs.GetJob(job.Id);
+                job = GetLastJobUpdate(vs, job, isPowerShellJob);
                 TaskManager.IndicatorCurrent = job.PercentComplete;
             }
 
@@ -70,9 +70,17 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
                 TaskManager.IndicatorCurrent = 0;   // reset indicator
             }
 
-            vs.ClearOldJobs();
+            if (isPowerShellJob)
+            {
+                vs.ClearOldPsJobs();
+            }
 
             return jobCompleted;
+        }
+
+        public static ConcreteJob GetLastJobUpdate(VirtualizationServer2012 vs, ConcreteJob job, bool isPowerShellJob = false)
+        {
+            return isPowerShellJob ? vs.GetPsJob(job.Id) : vs.GetJob(job.Id);
         }
     }
 }
