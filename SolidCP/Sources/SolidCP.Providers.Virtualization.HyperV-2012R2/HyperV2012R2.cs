@@ -57,6 +57,7 @@ using Vds = Microsoft.Storage.Vds;
 using System.Configuration;
 using System.Linq;
 using SolidCP.Providers.Virtualization.Extensions;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -2141,18 +2142,14 @@ namespace SolidCP.Providers.Virtualization
         #region Jobs
         public ConcreteJob GetJob(string jobId)
         {
-            if (!PowerShellWithJobs.IsStaticObj)
-                throw new Exception("GetJob error: You can't get jobs from non static object");
-
             HostedSolutionLog.LogStart("GetJob");
             HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
 
             ConcreteJob job;
-
             try
             {
-                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
-                job = JobHelper.CreateFromPSObject(result);
+                ManagementObject result = wmi.GetWmiObject("CIM_Job", "InstanceID = '{0}'", jobId);
+                job = JobHelper.CreateFromWmiObject(result);
             }
             catch (Exception ex)
             {
@@ -2164,15 +2161,49 @@ namespace SolidCP.Providers.Virtualization
             return job;
         }
 
-        public List<ConcreteJob> GetAllJobs()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ClearOldJobs()
+        ///<summary>
+        /// Use only if GetJob do not return any results.
+        ///</summary>
+        public ConcreteJob GetPsJob(string jobId)
         {
             if (!PowerShellWithJobs.IsStaticObj)
-                throw new Exception("GetJob error: You can't execute this method from non static object");
+                throw new Exception("GetPowerShellJob error: You can't get jobs from non static object");
+
+            HostedSolutionLog.LogStart("GetPowerShellJob");
+            HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
+
+            ConcreteJob job;
+
+            try
+            {
+                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
+                job = JobHelper.CreateFromPSObject(result);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetPowerShellJob", ex);
+                throw;
+            }
+
+            HostedSolutionLog.LogEnd("GetPowerShellJob");
+            return job;
+        }
+
+        public List<ConcreteJob> GetAllJobs()
+        {
+            List<ConcreteJob> jobs = new List<ConcreteJob>();
+
+            ManagementObjectCollection objJobs = wmi.GetWmiObjects("CIM_Job");
+            foreach (ManagementObject objJob in objJobs)
+                jobs.Add(JobHelper.CreateFromWmiObject(objJob));
+
+            return jobs;
+        }
+
+        public void ClearOldPsJobs()
+        {
+            if (!PowerShellWithJobs.IsStaticObj)
+                throw new Exception("ClearOldPsJobs error: You can't execute this method from non static object");
 
             PowerShellWithJobs.ClearOldJobs();
         }
@@ -2501,7 +2532,7 @@ namespace SolidCP.Providers.Virtualization
         }
 
 
-        private ConcreteJob CreateJobFromWmiObject(ManagementBaseObject objJob)
+        private ConcreteJob CreateJobFromWmiObject(ManagementBaseObject objJob) //TODO: remove, when will change all references to JobHelper.CreateFromWmiObject
         {
             if (objJob == null || objJob.Properties.Count == 0)
                 return null;

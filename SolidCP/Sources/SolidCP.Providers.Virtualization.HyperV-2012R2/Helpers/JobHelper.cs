@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class JobHelper
+    internal static class JobHelper
     {
         public static JobResult CreateSuccessResult(ReturnCode returnCode = ReturnCode.OK)
         {
@@ -33,6 +34,18 @@ namespace SolidCP.Providers.Virtualization
             };
         }
 
+        public static JobResult CreateJobResultFromWmiResults(Wmi wmi,ManagementBaseObject outParams)
+        {
+            JobResult result = new JobResult();
+
+            result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams["ReturnValue"]);
+
+            ManagementObject objJob = wmi.GetWmiObjectByPath((string)outParams["Job"]);
+            result.Job = CreateFromWmiObject(objJob);
+
+            return result;
+        }
+
         public static JobResult CreateResultFromPSResults(Collection<PSObject> objJob)
         {
             if (objJob == null || objJob.Count == 0)
@@ -53,13 +66,32 @@ namespace SolidCP.Providers.Virtualization
             return result;
         }
 
+        public static ConcreteJob CreateFromWmiObject(ManagementObject objJob)
+        {
+            if (objJob == null || objJob.Properties.Count == 0)
+                return null;
+
+            ConcreteJob job = new ConcreteJob();
+            job.Id = (string)objJob["InstanceID"];
+            job.JobState = (ConcreteJobState)Convert.ToInt32(objJob["JobState"]);
+            job.Caption = (string)objJob["Caption"];
+            job.Description = (string)objJob["Description"];
+            job.StartTime = Wmi.ToDateTime((string)objJob["StartTime"]);
+            // TODO proper parsing of WMI time spans, e.g. 00000000000001.325247:000
+            job.ElapsedTime = DateTime.Now; //wmi.ToDateTime((string)objJob["ElapsedTime"]);
+            job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"]);
+            job.ErrorDescription = (string)objJob["ErrorDescription"];
+            job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"]);
+            return job;
+        }
+
         public static ConcreteJob CreateFromPSObject(Collection<PSObject> objJob)
         {
             if (objJob == null || objJob.Count == 0)
                 return null;
 
             ConcreteJob job = new ConcreteJob();
-            job.Id = objJob[0].GetProperty<int>("Id").ToString();
+            job.Id = objJob[0].GetProperty<Guid>("InstanceId").ToString();
             job.JobState = objJob[0].GetEnum<ConcreteJobState>("JobStateInfo");
             job.ChildJobs = GetChildJobs(objJob[0].GetProperty<List<Job>>("ChildJobs"));
             job.Caption = objJob[0].GetProperty<string>("Name");
