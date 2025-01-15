@@ -1294,6 +1294,18 @@ namespace SolidCP.EnterpriseServer.Data
 
 				return sb.ToString();
 			}
+
+			public int StatementCount
+			{
+				get
+				{
+					int count = 0;
+					Reset();
+					while (ReadNextStatement() != null) count++;
+					Reset();
+					return count;
+				}
+			}
 		}
 		public static System.Data.Common.DbConnection SqlServerConnection(string connectionString)
 		{
@@ -1528,16 +1540,18 @@ SELECT DatabaseVersion FROM Version");
 			string nativeConnectionString;
 			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
 
-			var sql = InstallScriptUpdateDbStream();
-			using (var installSqlScript = new Script(sql, masterConnectionString))
+			var updateSql = InstallScriptUpdateDbStream();
+			var installSql = InstallScriptStream(dbType);
+			using (var updateSqlScript = new Script(updateSql, masterConnectionString))
+			using (var installSqlScript = new Script(installSql, masterConnectionString))
 			{
-				RunSqlScript(masterConnectionString, installSqlScript, 100, OnProgressChange,
+				var updateCount = updateSqlScript.StatementCount;
+				var installCount = installSqlScript.StatementCount;
+				ReportCommandCount?.Invoke(updateCount + installCount);
+				RunSqlScript(masterConnectionString, updateSqlScript, updateCount, OnProgressChange,
 					ProcessInstallVariables, databaseName);
-			}
-			sql = InstallScriptStream(dbType);
-			using (var installSqlScript = new Script(sql, masterConnectionString))
-			{
-				RunSqlScript(masterConnectionString, installSqlScript, 100, OnProgressChange,
+
+				RunSqlScript(masterConnectionString, installSqlScript, installCount, OnProgressChange,
 					ProcessInstallVariables, databaseName);
 			}
 
