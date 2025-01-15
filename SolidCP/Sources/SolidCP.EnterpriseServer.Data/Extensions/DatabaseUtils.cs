@@ -1539,7 +1539,7 @@ SELECT DatabaseVersion FROM Version");
 			DbType dbType;
 			string nativeConnectionString;
 			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
-
+			//
 			var updateSql = InstallScriptUpdateDbStream();
 			var installSql = InstallScriptStream(dbType);
 			using (var updateSqlScript = new Script(updateSql, masterConnectionString))
