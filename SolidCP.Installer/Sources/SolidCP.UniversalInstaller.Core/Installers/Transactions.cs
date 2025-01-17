@@ -36,6 +36,7 @@ namespace SolidCP.UniversalInstaller
 	}
 	public partial class Installer
 	{
+		public CancellationTokenSource Cancel { get; set; } = new CancellationTokenSource();
 		public ExceptionDispatchInfo Error { get; set; } = null;
 		public IEnumerable<Action> Undos { get; set; } = Enumerable.Empty<Action>();
 		public Transaction Transaction(params IEnumerable<Action> actions)
@@ -44,7 +45,12 @@ namespace SolidCP.UniversalInstaller
 			{
 				try
 				{
-					action?.Invoke();
+					if (!Cancel.Token.IsCancellationRequested)
+					{
+						action?.Invoke();
+					}
+
+					Cancel.Token.ThrowIfCancellationRequested();
 				}
 				catch (Exception ex)
 				{

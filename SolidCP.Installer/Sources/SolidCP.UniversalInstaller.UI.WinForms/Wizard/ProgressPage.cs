@@ -40,6 +40,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Collections.Specialized;
@@ -47,6 +48,7 @@ using System.Data.SqlClient;
 
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.UniversalInstaller;
 using SolidCP.UniversalInstaller.Web;
@@ -66,6 +68,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		public ProgressPage()
 		{
 			InitializeComponent();
+			Maximum = 1000;
 			//
 			this.CustomCancelHandler = true;
 		}
@@ -83,6 +86,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			}
 			else
 			{
+				value = (int)(Maximum * (1 - Math.Exp(-2 * value / Installer.Current.EstimatedOutputLines)));
 				progressBar.Value = value;
 				Update();
 			}
@@ -134,8 +138,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{
 			base.OnAfterDisplay(e);
-			thread = new Thread(new ThreadStart(this.Start));
-			thread.Start();
+			Task.Run(Start, Installer.Current.Cancel.Token);
 		}
 
 		/// <summary>
@@ -147,13 +150,19 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 			string componentName = Settings.ComponentName;
 
+			int n = 0;
 			try
 			{
 				SetProgressText("Creating installation script...");
 
+				var reportProgress = () => SetProgressValue(n++);
+				Installer.Current.Log.OnWrite += reportProgress;
+
 				Action?.Invoke();
 
-				this.progressBar.Value = 100;
+				Installer.Current.Log.OnWrite -= reportProgress;
+
+				this.progressBar.Value = 1000;
 			}
 			catch (Exception ex)
 			{
@@ -196,14 +205,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		private void AbortProcess()
 		{
-			if (this.thread != null)
-			{
-				if (this.thread.IsAlive)
-				{
-					this.thread.Abort();
-				}
-				this.thread.Join();
-			}
+			Installer.Current.Cancel.Cancel();
 		}
 	}
 }
