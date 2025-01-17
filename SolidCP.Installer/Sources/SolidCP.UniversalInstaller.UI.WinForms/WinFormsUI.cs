@@ -80,7 +80,7 @@ namespace SolidCP.UniversalInstaller {
 			}
 			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress)
 			{
-				Add(new WinForms.ProgressPage() { Maximum = maxProgress, Settings = settings });
+				Add(new WinForms.ProgressPage() { Maximum = maxProgress, Settings = settings, Action = action });
 				return this;
 			}
 			public override UI.SetupWizard ServerPassword()

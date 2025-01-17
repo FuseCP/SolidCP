@@ -54,7 +54,7 @@ namespace SolidCP.Setup
             Installer.Current.UpdateEnterpriseServerMaxProgress);
 
         public Result Setup(object args) => base.InstallOrSetup(args, "Setup EnterpriseServer",
-            Installer.Current.ConfigureEnterpriseServer, true, true,
+			Installer.Current.ConfigureEnterpriseServer, false, true,
             Installer.Current.SetupEnterpriseServerMaxProgress);
 
         public Result Uninstall(object args) => base.Uninstall(args, "Uninstall EnterpriseServer",

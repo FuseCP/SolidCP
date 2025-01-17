@@ -97,9 +97,9 @@ namespace SolidCP.Server
 
 		public Shell PowerShell => WinProvider.PowerShell;
 
-		public Shell DefaultShell => WinProvider.DefaultShell;
+		public Shell DefaultShell => OSProvider.DefaultShell;
 
-		public Installer DefaultInstaller => WinProvider.DefaultInstaller;
+		public Installer DefaultInstaller => OSProvider.DefaultInstaller;
 
 		public Shell Sh => UnixProvider.Sh;
 
@@ -1328,10 +1328,10 @@ namespace SolidCP.Server
 		}
 		#endregion
 
-		public Providers.Web.IWebServer WebServer => WinProvider.WebServer;
-		public ServiceController ServiceController => WinProvider.ServiceController;
+		public Providers.Web.IWebServer WebServer => OSProvider.WebServer;
+		public ServiceController ServiceController => OSProvider.ServiceController;
 		public WSLShell WSL => WinProvider.WSL;
-		public bool IsSystemd => UnixProvider.IsSystemd;
+		public bool IsSystemd => Provider is IUnixOperatingSystem && UnixProvider.IsSystemd;
 		public TraceListener DefaultTraceListener => OSProvider.DefaultTraceListener;
 
 	}

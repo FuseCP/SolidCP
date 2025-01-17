@@ -1,9 +1,5 @@
-﻿// Copyright (c) 2016, SolidCP
+// Copyright (c) 2023, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
-// 
-// SolidCP is a fork of WebsitePanel:
-// Copyright (c) 2015, Outercurve Foundation.
-// All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without modification,
 // are permitted provided that the following conditions are met:
@@ -15,7 +11,7 @@
 //   this list of conditions  and  the  following  disclaimer in  the documentation
 //   and/or other materials provided with the distribution.
 //
-// - Neither  the  name  of  the  Outercurve Foundation  nor   the   names  of  its
+// - Neither  the  name  of  SolidCP  nor   the   names  of  its
 //   contributors may be used to endorse or  promote  products  derived  from  this
 //   software without specific prior written permission.
 //
@@ -30,14 +26,17 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
-// Setting ComVisible to false makes the types in this assembly not visible 
-// to COM components.  If you need to access a type in this assembly from 
-// COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(false)]
-
-// The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("cd752c42-c2c3-491f-8fb6-a8e6449a7dd3")]
+namespace SolidCP.Providers.Database
+{
+	public class MsSqlServer2025 : MsSqlServer2022
+	{
+		public override bool IsInstalled()
+		{
+			return CheckVersion("17.");
+		}
+	}
+}

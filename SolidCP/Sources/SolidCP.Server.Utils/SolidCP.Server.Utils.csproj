@@ -5,11 +5,10 @@
         <OutputPath>..\..\Bin\</OutputPath>
         <ServerPath>..\SolidCP.Server\bin\netstandard</ServerPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <WarningsAsErrors>618</WarningsAsErrors>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <LangVersion>11</LangVersion>
         <Nullable>disable</Nullable>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

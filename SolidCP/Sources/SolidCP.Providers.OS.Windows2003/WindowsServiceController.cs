@@ -52,6 +52,6 @@ namespace SolidCP.Providers.OS
 			Shell.Standard.Exec($"sc.exe delete {serviceId}");
 		}
 
-		public override void SystemReboot() => Shell.Standard.Exec("shutdown.exe -r -t 0");
+		public override void SystemReboot() => Shell.Standard.Exec("shutdown.exe /r /f /t 0");
 	}
 }

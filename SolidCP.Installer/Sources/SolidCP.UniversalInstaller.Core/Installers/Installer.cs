@@ -400,7 +400,7 @@ public abstract partial class Installer
 			if (filter != null && source.StartsWith(root))
 			{
 				int len = root.Length;
-				if (!root.EndsWith(Path.DirectorySeparatorChar.ToString())) len++;
+				if (!root.EndsWith(Path.DirectorySeparatorChar.ToString()) && len < source.Length) len++;
 				var file = source.Substring(len)
 					.Replace(Path.DirectorySeparatorChar, '/');
 				var dest = filter(file);
@@ -415,7 +415,7 @@ public abstract partial class Installer
 				foreach (var file in Directory.GetFiles(source))
 				{
 					var name = Path.GetFileName(file);
-					File.Copy(file, Path.Combine(destination, name));
+					File.Copy(file, Path.Combine(destination, name), true);
 					Shell.Log?.Invoke($"Copied {name}{NewLine}");
 				}
 				foreach (var dir in Directory.GetDirectories(source))

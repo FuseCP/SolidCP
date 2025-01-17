@@ -24,7 +24,6 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallEnterpriseServer()
 		{
 			InstallEnterpriseServerPrerequisites();
-			ReadEnterpriseServerConfiguration();
 			CopyEnterpriseServer();
 			SetEnterpriseServerFilePermissions();
 			SetEnterpriseServerFileOwner();
@@ -35,12 +34,12 @@ namespace SolidCP.UniversalInstaller
 		public virtual void UpdateEnterpriseServer()
 		{
 			InstallEnterpriseServerPrerequisites();
-			ReadEnterpriseServerConfiguration();
 			CopyEnterpriseServer(ConfigAndSetupFilter);
 			SetEnterpriseServerFilePermissions();
 			SetEnterpriseServerFileOwner();
 			UpdateEnterpriseServerConfig();
 			ConfigureEnterpriseServer();
+			UpdateDatabase();
 			InstallEnterpriseServerWebsite();
 		}
 		public virtual void UpdateEnterpriseServerConfig() { }

@@ -107,8 +107,25 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			base.OnBeforeDisplay(e);
 			string name = Settings.ComponentName;
-			this.Text = string.Format("Installing {0}", name);
-			this.Description = string.Format("Please wait while {0} is being installed.", name);
+			switch (Installer.Current.Settings.Installer.Action)
+			{
+				case SetupActions.Install:
+					this.Text = string.Format("Installing {0}", name);
+					this.Description = string.Format("Please wait while {0} is being installed.", name);
+					break;
+				case SetupActions.Setup:
+					this.Text = string.Format("Configuring {0}", name);
+					this.Description = string.Format("Please wait while {0} is being configured.", name);
+					break;
+				case SetupActions.Update:
+					this.Text = string.Format("Updating {0}", name);
+					this.Description = string.Format("Please wait while {0} is being updated.", name);
+					break;
+				case SetupActions.Uninstall:
+					this.Text = string.Format("Uninstalling {0}", name);
+					this.Description = string.Format("Please wait while {0} is being uninstalled.", name);
+					break;
+			}
 			this.AllowMoveBack = false;
 			this.AllowMoveNext = false;
 			this.AllowCancel = false;

@@ -404,6 +404,7 @@ public class WindowsInstaller : Installer
 				return
 @"- Remove SolidCP EnterpriseServer website.
 - Delete SolidCP EnterpriseServer folder.
+- Remove SolidCP Database.
 - Remove firewall rule.";
 			case Global.WebPortal.ComponentCode:
 				return

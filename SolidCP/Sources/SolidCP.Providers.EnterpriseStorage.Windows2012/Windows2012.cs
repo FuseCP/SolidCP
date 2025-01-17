@@ -370,7 +370,7 @@ namespace SolidCP.Providers.EnterpriseStorage
 
         public bool CheckFileServicesInstallation()
         {
-            return OSInfo.IsWindows && WindowsOSInfo.CheckFileServicesInstallation();
+            return OSInfo.IsWindows && OSInfo.Windows.CheckFileServicesInstallation();
         }
 
         #endregion

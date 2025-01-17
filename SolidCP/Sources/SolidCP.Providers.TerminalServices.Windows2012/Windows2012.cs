@@ -181,8 +181,7 @@ namespace SolidCP.Providers.RemoteDesktopServices
         public override bool IsInstalled()
         {            
             var version = OSInfo.WindowsVersion;
-            return version == WindowsVersion.WindowsServer2012 || version == WindowsVersion.WindowsServer2012R2 ||
-            version == WindowsVersion.WindowsServer2016;
+            return version == WindowsVersion.WindowsServer2012 || version == WindowsVersion.WindowsServer2012R2;
         }
 
         public override string[] Install()
