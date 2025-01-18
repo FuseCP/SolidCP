@@ -859,7 +859,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion ODBC DSNs
 
+		#region Unix Permissions
 		[WebMethod, SoapHeader("settings")]
 		public Providers.OS.UnixFileMode GetUnixPermissions(string path)
 		{
@@ -908,7 +910,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion Unix Permissions
 
+		#region Terminal Services
 		[WebMethod, SoapHeader("settings")]
 		public TerminalSession[] GetTerminalServicesSessions()
 		{
@@ -941,7 +945,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion Terminal Services
 
+		#region Event Log
 		[WebMethod, SoapHeader("settings")]
 		public List<string> GetLogNames()
 		{
@@ -1009,7 +1015,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion Event Log
 
+		#region OS Processes & Services
 		[WebMethod, SoapHeader("settings")]
 		public OSProcess[] GetOSProcesses()
 		{
@@ -1091,7 +1099,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion
 
+		#region OS Info
 		[WebMethod, SoapHeader("settings")]
 		public Memory GetMemory()
 		{
@@ -1108,6 +1118,7 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion
 
 		[WebMethod, SoapHeader("settings")]
 		public string ExecuteSystemCommand(string user, string password, string path, string args)
@@ -1126,6 +1137,7 @@ namespace SolidCP.Server
 			}
 		}
 
+		#region Web Platform Installer
 		[WebMethod, SoapHeader("settings")]
 		public WPIProduct[] GetWPIProducts(string tabId, string keywordId)
 		{
@@ -1327,6 +1339,10 @@ namespace SolidCP.Server
 			}
 		}
 		#endregion
+
+		[WebMethod, SoapHeader("settings")]
+		public List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause)
+			=> OSProvider.GetDomainDnsRecords(domain, dnsServer, recordType, pause);
 
 		public Providers.Web.IWebServer WebServer => OSProvider.WebServer;
 		public ServiceController ServiceController => OSProvider.ServiceController;

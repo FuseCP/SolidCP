@@ -6,7 +6,7 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <LangVersion>12</LangVersion>
+        <LangVersion>13</LangVersion>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>

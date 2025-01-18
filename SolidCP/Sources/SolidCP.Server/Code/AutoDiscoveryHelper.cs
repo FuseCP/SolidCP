@@ -107,8 +107,8 @@ namespace SolidCP.Server.Code
 			    return typeof(AutoDiscoveryHelper).Assembly.GetName().Version.ToString(3);
         }
         public static string OS => OSInfo.IsWindows ? "Windows" :
-				(OSInfo.IsMac ? "Mac" : "Unix");
-
-        public static bool IsServerPasswordSHA256 => Cryptor.IsSHA256(Settings.Password);
+			(OSInfo.IsMac ? "Mac" :
+			(OSInfo.IsLinux ? "Linux" : "Unix"));
+		public static bool IsServerPasswordSHA256 => Cryptor.IsSHA256(Settings.Password);
 	}
 }

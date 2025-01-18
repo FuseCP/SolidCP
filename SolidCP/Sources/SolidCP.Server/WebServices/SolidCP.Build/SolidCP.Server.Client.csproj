@@ -28,7 +28,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
         <ProjectReference Include="..\..\..\SolidCP.Server\SolidCP.Server.csproj" Condition="'$(AnyServices)' == ''"
-		 ReferenceOutputAssembly="false" PrivateAssets="All" />
+			ReferenceOutputAssembly="false" PrivateAssets="All" />
     </ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<Reference Include="System.ServiceModel" />

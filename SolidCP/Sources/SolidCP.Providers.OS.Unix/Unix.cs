@@ -8,10 +8,12 @@ using System.Text;
 using Mono.Unix;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 using System.IO.Compression;
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
-using System.Diagnostics;
+using SolidCP.Providers.DomainLookup;
+using SolidCP.Providers.DNS;
 
 namespace SolidCP.Providers.OS
 {
@@ -753,6 +755,9 @@ namespace SolidCP.Providers.OS
 				throw;
 			}
 		}
+
+		public List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause)
+			=> throw new NotImplementedException();
 
 		public bool IsUnix() => true;
 

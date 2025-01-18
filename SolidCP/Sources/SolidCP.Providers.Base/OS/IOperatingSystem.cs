@@ -109,6 +109,9 @@ namespace SolidCP.Providers.OS
 		// execute command
 		string ExecuteSystemCommand(string user, string password, string path, string args);
 
+		// DNS lookup
+		List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause);
+
 		OSPlatformInfo GetOSPlatform();
 
 		Shell DefaultShell { get; }

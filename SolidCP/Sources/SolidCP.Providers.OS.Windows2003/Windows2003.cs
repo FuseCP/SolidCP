@@ -34,20 +34,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Win32;
-
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers.DomainLookup;
-using SolidCP.Providers.DNS;
-using SolidCP.Server.Code;
-using SolidCP.Server.WPIService;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting;
-using SolidCP.Server;
 using System.Diagnostics;
 using System.Collections;
 using System.Security;
@@ -55,7 +46,16 @@ using System.Web;
 using System.Management;
 using System.ServiceProcess;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 using Microsoft.Web.PlatformInstaller;
+
+using SolidCP.Server.Utils;
+using SolidCP.Providers.Utils;
+using SolidCP.Providers.DomainLookup;
+using SolidCP.Providers.DNS;
+using SolidCP.Server.Code;
+using SolidCP.Server.WPIService;
+using System.Threading;
 
 namespace SolidCP.Providers.OS
 {
@@ -952,6 +952,82 @@ namespace SolidCP.Providers.OS
 			{
 				throw;
 			}
+		}
+
+		public List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause)
+		{
+			const string DnsTimeOutMessage = @"dns request timed out";
+			const int DnsTimeOutRetryCount = 3;
+
+			Thread.Sleep(pause);
+
+			//nslookup -type=mx google.com 195.46.39.39
+			var command = $"nslookup -type={recordType} {domain} {dnsServer}";
+
+			// execute system command
+			string raw = string.Empty;
+			int triesCount = 0;
+
+			do
+			{
+				raw = Shell.Standard.Exec(command).Output().Result;
+			}
+			while (raw.ToLowerInvariant().Contains(DnsTimeOutMessage) && ++triesCount < DnsTimeOutRetryCount);
+
+			//timeout check 
+			if (raw.ToLowerInvariant().Contains(DnsTimeOutMessage))
+			{
+				return null;
+			}
+
+			var records = ParseNsLookupResult(raw, dnsServer, recordType);
+
+			return records.ToList();
+		}
+
+		private IEnumerable<DnsRecordInfo> ParseNsLookupResult(string raw, string dnsServer, DnsRecordType recordType)
+		{
+			const string MxRecordPattern = @"mail exchanger = (.+)";
+			const string NsRecordPattern = @"nameserver = (.+)";
+
+			var records = new List<DnsRecordInfo>();
+
+			var recordTypePattern = string.Empty;
+
+			switch (recordType)
+			{
+				case DnsRecordType.NS:
+					{
+						recordTypePattern = NsRecordPattern;
+						break;
+					}
+				case DnsRecordType.MX:
+					{
+						recordTypePattern = MxRecordPattern;
+						break;
+					}
+			}
+
+			var regex = new Regex(recordTypePattern, RegexOptions.IgnoreCase);
+
+			foreach (Match match in regex.Matches(raw))
+			{
+				if (match.Groups.Count != 2)
+				{
+					continue;
+				}
+
+				var dnsRecord = new DnsRecordInfo
+				{
+					Value = match.Groups[1].Value != null ? match.Groups[1].Value.Replace("\r\n", "").Replace("\r", "").Replace("\n", "").ToLowerInvariant().Trim() : null,
+					RecordType = recordType,
+					DnsServer = dnsServer
+				};
+
+				records.Add(dnsRecord);
+			}
+
+			return records;
 		}
 
 		#region Web Platform Installer

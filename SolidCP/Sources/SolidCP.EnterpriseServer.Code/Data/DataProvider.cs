@@ -6907,7 +6907,7 @@ RETURN
 		public int AddServer(string serverName, string serverUrl,
 			 string password, string comments, bool virtualServer, string instantDomainAlias,
 			 int primaryGroupId, bool adEnabled, string adRootDomain, string adUsername, string adPassword,
-			 string adAuthenticationType, OSPlatform osPlatform, bool? isCore, bool PasswordIsSHA256)
+			 string adAuthenticationType, OSPlatform osPlatform, bool? isCore, bool passwordIsSHA256)
 		{
 			if (UseEntityFramework)
 			{
@@ -6997,7 +6997,7 @@ RETURN
 					ADAuthenticationType = adAuthenticationType,
 					OSPlatform = osPlatform,
 					IsCore = isCore,
-					PasswordIsSHA256 = PasswordIsSHA256
+					PasswordIsSHA256 = passwordIsSHA256
 				};
 				Servers.Add(server);
 
@@ -7027,7 +7027,7 @@ RETURN
 					 new SqlParameter("@AdAuthenticationType", adAuthenticationType),
 					 new SqlParameter("@OSPlatform", osPlatform),
 					 new SqlParameter("@IsCore", isCore),
-					 new SqlParameter("@PasswordIsSHA256", PasswordIsSHA256));
+					 new SqlParameter("@PasswordIsSHA256", passwordIsSHA256));
 
 				return Convert.ToInt32(prmServerId.Value);
 			}

@@ -1,6 +1,7 @@
 ﻿@page "/"
 @using System.Reflection
 @using SolidCP.Providers.OS
+@using SolidCP.Server.Code
 
 @functions {
     string Version {get; set; }
@@ -11,15 +12,11 @@
 
 @{
     // set version
-    object[] attrs = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-    if(attrs.Length > 0)
-        Version = ((AssemblyFileVersionAttribute)attrs[0]).Version;
+    Version = AutoDiscoveryHelper.GetServerVersion();
 
     // asp.net mode
     Bitness = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
-    OS = OSInfo.IsWindows ? "Windows" :
-	    (OSInfo.IsMac ? "Mac" : 
-        (OSInfo.IsLinux ? "Linux" :"Unix"));
+    OS = AutoDiscoveryHelper.OS;
 }
 
 <!DOCTYPE html>

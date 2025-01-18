@@ -39,6 +39,7 @@ using System.Configuration;
 using System.Collections;
 using System.Web.UI;
 using SolidCP.Providers.OS;
+using SolidCP.Server.Code;
 
 namespace SolidCP.Server
 {
@@ -51,15 +52,11 @@ namespace SolidCP.Server
             litUrl.Text = url.Substring(0, url.LastIndexOf("/"));
 
             // set version
-            object[] attrs = Assembly.GetExecutingAssembly().GetCustomAttributes(typeof(AssemblyFileVersionAttribute), true);
-            if(attrs.Length > 0)
-                litVersion.Text = ((AssemblyFileVersionAttribute)attrs[0]).Version;
+            litVersion.Text = AutoDiscoveryHelper.GetServerVersion();
 
             // asp.net mode
             litAspNetMode.Text = (IntPtr.Size == 8) ? "64-bit" : "32-bit";
-            litOS.Text = OSInfo.IsWindows ? "Windows" :
-                (OSInfo.IsMac ? "Mac" :
-                (OSInfo.IsLinux ? "Linux" : "Unix"));
+            litOS.Text = AutoDiscoveryHelper.OS;
         }
     }
 }
