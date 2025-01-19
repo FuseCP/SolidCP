@@ -30,6 +30,6 @@ namespace SolidCP.UniversalInstaller {
 		public override void CheckPrerequisites() => throw new NotImplementedException();
 		public override void ShowWarning(string msg) => throw new NotImplementedException();
 		public override void ShowError(Exception ex) => throw new NotImplementedException();
-		public override bool DownloadSetup(string fileName) => throw new NotImplementedException();
+		public override bool DownloadSetup(RemoteFile file) => throw new NotImplementedException();
 	}
 }

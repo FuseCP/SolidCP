@@ -2010,11 +2010,23 @@ namespace SolidCP.Providers.OS
 			IsCore = OSInfo.IsCore
 		};
 
+		protected virtual Type WebServerType => Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60");
 		protected Web.IWebServer webServer = null;
-		public virtual Web.IWebServer WebServer =>
-			webServer ??
-			(webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60")));
-		
+		public virtual Web.IWebServer WebServer
+			=> webServer ??= ApplySettings((IHostingServiceProvider)Activator.CreateInstance(WebServerType));
+
+		protected virtual Web.IWebServer ApplySettings<T>(T provider) where T: IHostingServiceProvider
+		{
+			var settings = provider.GetProviderDefaultSettings();
+			var hosting = provider as HostingServiceProviderBase;
+			hosting.ProviderSettings = new ServiceProviderSettings();
+			foreach (var setting in settings)
+			{
+				hosting.ProviderSettings.Settings.Add(setting.Name, setting.Value);
+			}
+			return provider as Web.IWebServer;
+		}
+
 		ServiceController serviceController = null;
 		public virtual ServiceController ServiceController => serviceController ??= new WindowsServiceController();
 

@@ -38,26 +38,30 @@ using SolidCP.UniversalInstaller;
 namespace SolidCP.Setup
 {
     /// <summary>
-    /// Release 1.6.0
+    /// Release 2.0.0
     /// </summary>
-    public class Server160 : Server
+    public class StandaloneServerSetup200 : StandaloneServerSetup
     {
-		public override Version MinimalInstallerVersion => new Version("1.6.0");
+		public override Version MinimalInstallerVersion => new Version("2.0.0");
 		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
-		public Result Install(object args) => base.InstallOrSetup(args, "Install Server",
-			Installer.Current.InstallServer, false, false,
-			Installer.Current.InstallServerMaxProgress);
+		public Result Install(object args) => base.InstallOrSetup(args, "Install Standalone Server",
+			() =>
+			{
+				Installer.Current.InstallEnterpriseServer();
+				Installer.Current.InstallServer();
+				Installer.Current.InstallWebPortal();
+			}, true, false);
+		public Result Update(object args) => base.Update(args, "Update Standalone Server",
+			() =>
+			{
+				Installer.Current.InstallEnterpriseServer();
+				Installer.Current.InstallServer();
+				Installer.Current.InstallWebPortal();
+			});
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Standalone Server",
+			Installer.Current.ConfigureServer, false, true);
 
-		public Result Update(object args) => base.Update(args, "Update Server",
-			Installer.Current.UpdateServer,
-			Installer.Current.UpdateServerMaxProgress);
-
-		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Server",
-			Installer.Current.ConfigureServer, false, true,
-			Installer.Current.SetupServerMaxProgress);
-
-		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Server",
-			Installer.Current.RemoveServer,
-			Installer.Current.UninstallServerMaxProgress);
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Standalone Server",
+			Installer.Current.RemoveServer);
 	}
 }

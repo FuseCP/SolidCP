@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -9,8 +10,41 @@ namespace SolidCP.UniversalInstaller
 	[Flags]
 	public enum Platforms { Undefined = 0, None = 0, Windows = 1, Unix = 2, All = 3 };
 
+	public class ElementJson
+	{
+		public string application { get; set; }
+		public string name { get; set; }
+		public string code { get; set; }
+		public string description { get; set; }
+		public string platforms { get; set; }
+		public int id { get; set; }
+		public string fullFilePath { get; set; }
+		public string upgradeFilePath { get; set; }
+		public string installerPath { get; set; }
+		public string installerType { get; set; }
+		public string version { get; set; }
+		public bool beta { get; set; }
+	}
+
 	public class ElementInfo
 	{
+		public ElementInfo() { }
+		public ElementInfo(ElementJson json)
+		{
+			ReleaseFileId = json.id;
+			ApplicationName = json.application;
+			Component = $"{json.application} {json.name}";
+			Version = json.version;
+			Beta = json.beta;
+			ComponentDescription = json.description;
+			ComponentCode = json.code;
+			ComponentName = json.name;
+			FullFilePath = json.fullFilePath;
+			UpgradeFilePath = json.upgradeFilePath;
+			InstallerPath = json.installerPath;
+			InstallerType = json.installerType;
+			Platforms = json.platforms;
+		}
 		public int ReleaseFileId { get; set; }
 		public string ApplicationName { get; set; }
 		public string Component { get; set; }
@@ -52,18 +86,46 @@ namespace SolidCP.UniversalInstaller
 		public string InstallerPath { get; set; }
 		public string InstallerType { get; set; }
 		public Platforms Platforms { get; set; }
+		public bool GitHub { get; set; }
+	}
+
+	public class RemoteFile
+	{
+		public RemoteFile(ReleaseFileInfo release, bool fullFile)
+		{
+			Release = release;
+			FullFile = fullFile;
+		}
+		public ReleaseFileInfo Release { get; set; }
+		public bool FullFile { get; set; }
+		public string File => FullFile ? Release.FullFilePath : Release.UpgradeFilePath;
 	}
 
 	public class ComponentUpdateInfo: ReleaseFileInfo
 	{
 		public ComponentUpdateInfo() { }
+		public ComponentUpdateInfo(ComponentInfo info)
+		{
+			this.Beta = info.Beta;
+			this.FullFilePath = info.FullFilePath;
+			this.InstallerPath = info.InstallerPath;
+			this.InstallerType = info.InstallerType;
+			this.Platforms = info.Platforms;
+			this.ReleaseFileId = info.ReleaseFileId;
+			this.UpgradeFilePath = info.UpgradeFilePath;
+			this.Version = info.Version;
+			this.VersionName = info.VersionName;
+		}
 		public ComponentUpdateInfo(ElementInfo raw): base(raw)
 		{
+			VersionName = raw.Version;
 			Version version;
-			if (Version.TryParse(raw.Version, out version)) Version = version;
+			var m = Regex.Match(raw.Version, "[0-9.]+");
+			if (m.Success && Version.TryParse(m.Value, out version)) Version = version;
 			else Version = default;
 			Beta = raw.Beta;
 		}
+		public string VersionName { get; set; }
 		public Version Version { get; set; }
 		public bool Beta { get; set; }
 	}

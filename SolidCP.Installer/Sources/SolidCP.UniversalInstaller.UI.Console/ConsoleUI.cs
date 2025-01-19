@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
@@ -773,8 +774,8 @@ Password: [!ProxyPassword                           ]
 			str.AppendLine("====================");
 			str.AppendLine();
 			//load components via web service
-			var webService = Installer.Current.InstallerWebService;
-			var components = webService.GetAvailableComponents();
+			var releases = Installer.Current.Releases;
+			var components = releases.GetAvailableComponents();
 
 			//remove already installed components or components not available on this platform
 			foreach (var component in components.ToArray())
@@ -1324,9 +1325,9 @@ SolidCP cannot be installed on this System.
 		}
 
 		bool downloadComplete = false;
-		public override bool DownloadSetup(string fileName)
+		public override bool DownloadSetup(RemoteFile file)
 		{
-			var loader = Core.SetupLoaderFactory.CreateFileLoader(fileName);
+			var loader = Core.SetupLoaderFactory.CreateFileLoader(file);
 			loader.ProgressChanged += DownloadProgressChanged;
 			ShowInstallationProgress("Download and Extract Component");
 			loader.OperationCompleted += DownloadAndUnzipCompleted;

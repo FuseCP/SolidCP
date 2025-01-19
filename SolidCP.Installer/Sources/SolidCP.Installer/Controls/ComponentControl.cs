@@ -237,6 +237,8 @@ namespace SolidCP.Installer.Controls
 						args["IISVersion"] = Global.IISVersion;
 						args["ParentForm"] = FindForm();
 
+						var thread = Thread.CurrentThread;
+
 						result = (DialogResult)AssemblyLoader.Execute(installerPath, type, method, new object[] { args });
 						Log.WriteInfo(string.Format("Installer returned {0}", result));
 						Log.WriteEnd("Installer finished");

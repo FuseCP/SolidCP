@@ -23,6 +23,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCP.ToLower());
 		public virtual void InstallEnterpriseServer()
 		{
+			ResetEstimatedOutputLines();
+			CountInstallDatabaseStatements();
 			InstallEnterpriseServerPrerequisites();
 			CopyEnterpriseServer();
 			SetEnterpriseServerFilePermissions();
@@ -33,6 +35,8 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void UpdateEnterpriseServer()
 		{
+			ResetEstimatedOutputLines();
+			CountUpdateDatabaseStatements();
 			InstallEnterpriseServerPrerequisites();
 			CopyEnterpriseServer(ConfigAndSetupFilter);
 			SetEnterpriseServerFilePermissions();
@@ -43,15 +47,18 @@ namespace SolidCP.UniversalInstaller
 			InstallEnterpriseServerWebsite();
 		}
 		public virtual void UpdateEnterpriseServerConfig() { }
+
+		public virtual string DefaultDatabaseUser => SolidCP;
 		public virtual void InstallDatabase()
 		{
+			Info("Install Database...");
 			var settings = Settings.EnterpriseServer;
 			var connstr = settings.DbInstallConnectionString;
 			if (string.IsNullOrEmpty(connstr) ||
 				!DatabaseUtils.CheckSqlConnection(connstr)) throw new DataException("Unable to connect to database.");
 			if (string.IsNullOrEmpty(settings.DatabaseUser))
 			{
-				settings.DatabaseUser = "SolidCP";
+				settings.DatabaseUser = DefaultDatabaseUser;
 				settings.DatabasePassword = Utils.GetRandomString(32);
 			}
 			var user = settings.DatabaseUser;
@@ -59,16 +66,48 @@ namespace SolidCP.UniversalInstaller
 			var db = settings.DatabaseName;
 
 			DatabaseUtils.InstallFreshDatabase(connstr, db, user, password, progress => Log.WriteLine("."));
+			InstallLog("Installed Database");
 		}
+
+
 		public virtual void UpdateDatabase() {
+			Info("Update Database");
 			var settings = Settings.EnterpriseServer;
 			var connstr = settings.DbInstallConnectionString;
-
+			InstallLog("Updated Database");
 		}
 		public virtual void DeleteDatabase() {
+			Info("Delete Database");
 			var settings = Settings.EnterpriseServer;
 			var connstr = settings.DbInstallConnectionString;
 			DatabaseUtils.DeleteDatabase(connstr, settings.DatabaseName);
+			InstallLog("Deleted Database");
+		}
+		public virtual void CountInstallDatabaseStatements()
+		{
+			var settings = Settings.EnterpriseServer;
+			var connstr = settings.DbInstallConnectionString;
+			var user = settings.DatabaseUser;
+			var password = settings.DatabasePassword;
+			var db = settings.DatabaseName;
+			DatabaseUtils.InstallFreshDatabase(connstr, db, user, password, null,
+				count => DatabaseStatements = count, null, "", true);
+		}
+		public virtual void CountUpdateDatabaseStatements()
+		{
+			var settings = Settings.EnterpriseServer;
+			var connstr = settings.DbInstallConnectionString;
+			var user = settings.DatabaseUser;
+			var password = settings.DatabasePassword;
+			var db = settings.DatabaseName;
+			DatabaseUtils.UpdateDatabase(connstr, db, user, password, null,
+				count => DatabaseStatements = count, null, "", true);
+		}
+		public virtual void ResetEstimatedOutputLines(Func<int> calculateEstimatedOutputLines = null)
+		{
+			DatabaseStatements = 0;
+			estimatedOutputLines = null;
+			CalculateEstimateOutputLines = calculateEstimatedOutputLines;
 		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{

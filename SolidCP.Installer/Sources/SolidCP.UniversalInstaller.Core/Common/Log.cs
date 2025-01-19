@@ -51,6 +51,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		public LogWriter()
 		{
+			Installer.Current.Shell.Log += WriteLine;
 		}
 
 		/// <summary>

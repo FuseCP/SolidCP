@@ -8,7 +8,7 @@
         <UseSkia>true</UseSkia>
 		<UseEntityFramework>true</UseEntityFramework>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
-		<LangVersion>11</LangVersion>
+		<LangVersion>13</LangVersion>
         <EntityFramework6>6.5</EntityFramework6> <!-- Use EntityFramework 6.4 or 6.5 -->
     </PropertyGroup>
 

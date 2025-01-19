@@ -38,6 +38,7 @@ using System.Drawing;
 using System.Data;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
 using SolidCP.Providers.OS;
@@ -65,10 +66,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.AllowMoveBack = false;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
-			
+
 			UpdateSpaceRequiredInformation();
 
-			if ( !string.IsNullOrEmpty(Settings.InstallFolder))
+			if (!string.IsNullOrEmpty(Settings.InstallFolder))
 			{
 				txtFolder.Text = Settings.InstallFolder;
 			}
@@ -105,11 +106,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 			FolderBrowserDialog dialog = new FolderBrowserDialog();
 			dialog.RootFolder = Environment.SpecialFolder.MyComputer;
 			dialog.SelectedPath = txtFolder.Text;
-
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
 				txtFolder.Text = dialog.SelectedPath;
-			
 			}
 		}
 
@@ -141,7 +140,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		private void OnFolderChanged(object sender, EventArgs e)
 		{
 			UpdateFreeSpaceInformation();
-			
+
 		}
 
 		private void UpdateFreeSpaceInformation()
@@ -151,7 +150,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.AllowMoveNext = false;
 			try
 			{
-				if ( string.IsNullOrEmpty(txtFolder.Text))
+				if (string.IsNullOrEmpty(txtFolder.Text))
 					return;
 				string path = Path.GetFullPath(txtFolder.Text);
 				string drive = Path.GetPathRoot(path);

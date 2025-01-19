@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Collections;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller
@@ -164,6 +165,8 @@ namespace SolidCP.UniversalInstaller
 		public abstract void ShowLogFile();
 		public virtual void ShowWaitCursor() { }
 		public virtual void EndWaitCursor() { }
+		public virtual void PassArguments(Hashtable args) { }
+		public virtual void ReadArguments(Hashtable args) { }
 		public virtual void PrintInstallerVersion()
 		{
 			var assembly = Assembly.GetExecutingAssembly();
@@ -175,7 +178,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract void CheckPrerequisites();
 
 		public abstract void ShowWarning(string msg);
-		public abstract bool DownloadSetup(string fileName);
+		public abstract bool DownloadSetup(RemoteFile file);
 		public virtual bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
 			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });

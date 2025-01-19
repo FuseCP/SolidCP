@@ -40,6 +40,7 @@ using System.Runtime.Loader;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SolidCP.UniversalInstaller;
+using OS = SolidCP.Providers.OS;
 
 namespace SolidCP.Setup;
 
@@ -71,11 +72,16 @@ public class BaseSetup
 		Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
 	}
 
-	bool argsParsed = false;
-	public bool ParseArgs(object args)
+	public void AssertLoadContext()
 	{
 		if (AssemblyLoadContext.GetLoadContext(Installer.Current.GetType().Assembly) ==
 			AssemblyLoadContext.Default) throw new NotSupportedException();
+	}
+
+	bool argsParsed = false;
+	public bool ParseArgs(object args)
+	{
+		if (OS.OSInfo.IsCore) AssertLoadContext();
 
 		if (!argsParsed)
 		{
@@ -90,17 +96,17 @@ public class BaseSetup
 			if (json != null)
 			{
 				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(json, new VersionConverter(), new StringEnumConverter());
-				return true;
 			}
 			else
 			{
 				UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
 				return false;
 			}
+			if (args is Hashtable hash) UI.Current.ReadArguments(hash);
 		}
 		return true;
 	}
-	public virtual Version MinimalInstallerVersion => new Version("1.6.0");
+	public virtual Version MinimalInstallerVersion => new Version("2.0.0");
 	public virtual string VersionsToUpgrade => "";
 	public bool CheckInstallerVersion()
 	{
@@ -157,13 +163,14 @@ public class BaseSetup
 		}
 		return null;
 	}
-	public virtual Result InstallOrSetup(object args, string title, Action installer, bool database = false, bool setup = false, int maxProgress = 100) {
+	public virtual Result InstallOrSetup(object args, string title, Action installer, bool database = false, bool setup = false) {
 		var wizard = Wizard(args, true, true, true);
+		if (wizard == null) return Result.Abort;
 		if (database) wizard = wizard.Database();
 		if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
 		else Installer.Current.Settings.Installer.Action = SetupActions.Install;
 		var res = wizard
-			.RunWithProgress(title, installer, ComponentSettings, maxProgress)
+			.RunWithProgress(title, installer, ComponentSettings)
 			.Finish()
 			.Show() ? Result.OK : Result.Cancel;
 		Unload();
@@ -188,7 +195,7 @@ public class BaseSetup
 
 		return upgradeSupported;
 	}
-	public virtual Result Update(object args, string title, Action installer, int maxProgress)
+	public virtual Result Update(object args, string title, Action installer)
 	{
 		Result res;
 		if (ParseArgs(args))
@@ -196,7 +203,7 @@ public class BaseSetup
 			Installer.Current.Settings.Installer.Action = SetupActions.Update;
 
 			res = CheckUpdate() && Wizard(args, false, true, true)
-				.RunWithProgress(title, installer, ComponentSettings, maxProgress)
+				.RunWithProgress(title, installer, ComponentSettings)
 				.Finish()
 				.Show() ? Result.OK : Result.Cancel;
 			Unload();
@@ -206,7 +213,7 @@ public class BaseSetup
 		return Result.Cancel;
 	}
 			
-	public virtual Result Uninstall(object args, string title, Action installer, int maxProgress)
+	public virtual Result Uninstall(object args, string title, Action installer)
 	{
 		if (ParseArgs(args))
 		{
@@ -217,7 +224,7 @@ public class BaseSetup
 				var res = UI.Current.Wizard
 					.Introduction(CommonSettings)
 					.ConfirmUninstall(CommonSettings)
-					.RunWithProgress(title, installer, ComponentSettings, maxProgress)
+					.RunWithProgress(title, installer, ComponentSettings)
 					.Finish()
 					.Show() ? Result.OK : Result.Cancel;
 				Unload();

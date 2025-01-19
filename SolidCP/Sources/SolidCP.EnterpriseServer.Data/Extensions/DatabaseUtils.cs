@@ -1499,8 +1499,8 @@ SELECT DatabaseVersion FROM Version");
 
 		public static void InstallFreshDatabase(string masterConnectionString, string databaseName,
 			string user, string password, Action<float> OnProgressChange = null,
-			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
-			string database = null)
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null,
+			string scriptFile = "", bool countOnly = false)
 		{
 			DbType dbType;
 			string nativeConnectionString;
@@ -1517,29 +1517,46 @@ SELECT DatabaseVersion FROM Version");
 				.FirstOrDefault();
 			if (installSqlStream != null)
 			{
-				if (!DatabaseExists(masterConnectionString, databaseName)) CreateDatabase(masterConnectionString, databaseName);
-				else throw new InvalidOperationException($"Database {databaseName} already exists.");
-
-				if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
+				using (var installSqlScript = new Script(installSqlStream, masterConnectionString))
 				{
-					if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
-					else throw new InvalidOperationException($"Database user {user} already exists.");
-				}
+					if (countOnly)
+					{
+						ReportCommandCount(installSqlScript.StatementCount);
+						return;
+					}
 
-				RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
-					ProcessInstallVariables, dbFileName, databaseName);
+					if (!DatabaseExists(masterConnectionString, databaseName)) CreateDatabase(masterConnectionString, databaseName);
+					else throw new InvalidOperationException($"Database {databaseName} already exists.");
+
+					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
+					{
+						if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
+						else AddUserToDatabase(masterConnectionString, databaseName, user);
+					}
+
+					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
+						ProcessInstallVariables, dbFileName, databaseName);
+				}
 			}
 		}
 
 		public static void UpdateDatabase(string masterConnectionString, string databaseName,
 			string user, string password, Action<float> OnProgressChange = null,
-			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
-			string database = null)
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null,
+			string scriptFile = "", bool countOnly = false)
 		{
 			DbType dbType;
 			string nativeConnectionString;
 			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
 			//
+			if (!countOnly)
+			{
+				if (!DatabaseExists(masterConnectionString, databaseName))
+					throw new InvalidOperationException($"Database {databaseName} does not exist.");
+
+				if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
+				else AddUserToDatabase(masterConnectionString, databaseName, user);
+			}
 			var updateSql = InstallScriptUpdateDbStream();
 			var installSql = InstallScriptStream(dbType);
 			using (var updateSqlScript = new Script(updateSql, masterConnectionString))
@@ -1548,13 +1565,15 @@ SELECT DatabaseVersion FROM Version");
 				var updateCount = updateSqlScript.StatementCount;
 				var installCount = installSqlScript.StatementCount;
 				ReportCommandCount?.Invoke(updateCount + installCount);
-				RunSqlScript(masterConnectionString, updateSqlScript, updateCount, OnProgressChange,
-					ProcessInstallVariables, databaseName);
+				if (!countOnly)
+				{
+					RunSqlScript(masterConnectionString, updateSqlScript, updateCount, OnProgressChange,
+						ProcessInstallVariables, databaseName);
 
-				RunSqlScript(masterConnectionString, installSqlScript, installCount, OnProgressChange,
-					ProcessInstallVariables, databaseName);
+					RunSqlScript(masterConnectionString, installSqlScript, installCount, OnProgressChange,
+						ProcessInstallVariables, databaseName);
+				}
 			}
-
 		}
 
 		public static void RunSqlScript(string connectionString, Stream sql, Action<float> OnProgressChange = null,

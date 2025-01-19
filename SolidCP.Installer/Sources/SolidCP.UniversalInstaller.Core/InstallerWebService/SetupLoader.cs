@@ -44,6 +44,7 @@ using System.Collections;
 using System.Threading.Tasks;
 using System.Reflection;
 using System.Diagnostics;
+using System.Runtime.InteropServices.ComTypes;
 
 namespace SolidCP.UniversalInstaller.Core
 {
@@ -61,11 +62,9 @@ namespace SolidCP.UniversalInstaller.Core
 		/// </summary>
 		/// <param name="remoteFile"></param>
 		/// <returns></returns>
-		public static SetupLoader CreateFileLoader(string remoteFile)
+		public static SetupLoader CreateFileLoader(RemoteFile remoteFile)
 		{
-			Debug.Assert(!String.IsNullOrEmpty(remoteFile), "Remote file is empty");
-
-			if (remoteFile.StartsWith("http://installer.solidcp.com/"))
+			if (remoteFile.File.StartsWith("http://installer.solidcp.com/"))
 			{
 				return new CodeplexLoader(remoteFile);
 			}
@@ -82,7 +81,7 @@ namespace SolidCP.UniversalInstaller.Core
 
 		private WebClient fileLoader;
 
-		internal CodeplexLoader(string remoteFile)
+		internal CodeplexLoader(RemoteFile remoteFile)
 			: base(remoteFile)
 		{
 			InitFileLoader();
@@ -95,7 +94,7 @@ namespace SolidCP.UniversalInstaller.Core
 			fileLoader.Headers.Add("User-Agent", String.Format(WEB_PI_USER_AGENT_HEADER, Assembly.GetExecutingAssembly().FullName));
 		}
 
-		protected override Task GetDownloadFileTask(string remoteFile, string tmpFile, CancellationToken ct)
+		protected override Task GetDownloadFileTask(RemoteFile remoteFile, string tmpFile, CancellationToken ct)
 		{
 			var downloadFileTask = new Task(() =>
 			{
@@ -145,7 +144,7 @@ namespace SolidCP.UniversalInstaller.Core
 						autoEvent.Set();
 					};
 
-					fileLoader.DownloadFileAsync(new Uri(remoteFile), tmpFile);
+					fileLoader.DownloadFileAsync(new Uri(remoteFile.File), tmpFile);
 					RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage);
 
 					autoEvent.WaitOne();
@@ -169,7 +168,7 @@ namespace SolidCP.UniversalInstaller.Core
 		public const string PrepareSetupProgressMessage = "{0}%";
 
 		public const int ChunkSize = 262144;
-		private string remoteFile;
+		private RemoteFile remoteFile;
 		private CancellationTokenSource cts;
 
 		public event EventHandler<LoaderEventArgs<String>> StatusChanged;
@@ -178,7 +177,7 @@ namespace SolidCP.UniversalInstaller.Core
 		public event EventHandler<EventArgs> DownloadComplete;
 		public event EventHandler<EventArgs> OperationCompleted;
 
-		internal SetupLoader(string remoteFile)
+		internal SetupLoader(RemoteFile remoteFile)
 		{
 			this.remoteFile = remoteFile;
 		}
@@ -267,7 +266,7 @@ namespace SolidCP.UniversalInstaller.Core
 				// Initialize storage
 				InitializeLocalStorage(dataFolder, tmpFolder);
 
-				string fileToDownload = Path.GetFileName(remoteFile);
+				string fileToDownload = Path.GetFileName(remoteFile.File);
 
 				string destinationFile = Path.Combine(dataFolder, fileToDownload);
 				string tmpFile = Path.Combine(tmpFolder, fileToDownload);
@@ -350,53 +349,33 @@ namespace SolidCP.UniversalInstaller.Core
 			}
 		}
 
-		protected virtual Task GetDownloadFileTask(string sourceFile, string tmpFile, CancellationToken ct)
+		protected virtual Task GetDownloadFileTask(RemoteFile sourceFile, string tmpFile, CancellationToken ct)
 		{
-			var downloadFileTask = new Task(() =>
+			var downloadFileTask = new Task(async () =>
 			{
 				if (!File.Exists(tmpFile))
 				{
-					var service = Installer.Current.InstallerWebService;
-
 					RaiseOnProgressChangedEvent(0);
 					RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage);
 
 					Log.WriteStart("Downloading file");
-					Log.WriteInfo(string.Format("Downloading file \"{0}\" to \"{1}\"", sourceFile, tmpFile));
+					Log.WriteInfo(string.Format("Downloading file \"{0}\" to \"{1}\"", sourceFile.File, tmpFile));
 
-					long downloaded = 0;
-					long fileSize = service.GetFileSize(sourceFile);
-					if (fileSize == 0)
-					{
-						throw new FileNotFoundException("Service returned empty file.", sourceFile);
-					}
+					long downloadedSize = 0;
 
-					byte[] content;
-
-					while (downloaded < fileSize)
-					{
-						// Throw OperationCancelledException if there is an incoming cancel request
-						ct.ThrowIfCancellationRequested();
-
-						content = service.GetFileChunk(sourceFile, (int)downloaded, ChunkSize);
-						if (content == null)
+					await Installer.Current.Releases.GetFileAsync(remoteFile, tmpFile,
+						(downloaded, fileSize) =>
 						{
-							throw new FileNotFoundException("Service returned NULL file content.", sourceFile);
-						}
-						FileUtils.AppendFileContent(tmpFile, content);
-						downloaded += content.Length;
-						// Update download progress
-						RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage,
-							string.Format(DownloadProgressMessage, downloaded / 1024, fileSize / 1024));
+							downloadedSize = downloaded;
+							// Update download progress
+							RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage,
+								string.Format(DownloadProgressMessage, downloaded / 1024, fileSize / 1024));
 
-						RaiseOnProgressChangedEvent(Convert.ToInt32((downloaded * 100) / fileSize));
-
-						if (content.Length < ChunkSize)
-							break;
-					}
+							RaiseOnProgressChangedEvent(Convert.ToInt32((downloaded * 100) / fileSize));
+						});	
 
 					RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage, "100%");
-					Log.WriteEnd(string.Format("Downloaded {0} bytes", downloaded));
+					Log.WriteEnd(string.Format("Downloaded {0} bytes", downloadedSize));
 				}
 			}, ct);
 
@@ -445,7 +424,9 @@ namespace SolidCP.UniversalInstaller.Core
 				{
 					long zipSize = file.Length;
 					long unzipped = 0;
-					
+
+					int files = 0;
+
 					foreach (var entry in zip.Entries)
 					{
 						if (string.IsNullOrEmpty(entry.Name))
@@ -455,6 +436,7 @@ namespace SolidCP.UniversalInstaller.Core
 						else
 						{
 							entry.ExtractToFile(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)), true);
+							files++;
 						}
 
 						unzipped += entry.CompressedLength;
@@ -477,6 +459,9 @@ namespace SolidCP.UniversalInstaller.Core
 							RaiseOnProgressChangedEvent(val, false);
 						}
 					}
+
+					Installer.Current.Settings.Installer.Files = files;
+
 					// Notify client the operation can be cancelled at this time
 					RaiseOnProgressChangedEvent(100);
 					//

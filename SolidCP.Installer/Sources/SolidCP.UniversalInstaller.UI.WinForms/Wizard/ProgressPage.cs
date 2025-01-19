@@ -86,9 +86,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 			}
 			else
 			{
-				value = (int)(Maximum * (1 - Math.Exp(-2 * value / Installer.Current.EstimatedOutputLines)));
-				progressBar.Value = value;
-				Update();
+				if (value > 0) value = (int)(Maximum * (1 - Math.Exp(-2 * value / Installer.Current.EstimatedOutputLines)));
+				if (progressBar.Value != value)
+				{
+					progressBar.Value = value;
+					Update();
+				}
 			}
 		}
 
@@ -157,12 +160,14 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 				var reportProgress = () => SetProgressValue(n++);
 				Installer.Current.Log.OnWrite += reportProgress;
+				Installer.Current.OnInfo += SetProgressText;
 
 				Action?.Invoke();
 
 				Installer.Current.Log.OnWrite -= reportProgress;
+				Installer.Current.OnInfo -= SetProgressText;
 
-				this.progressBar.Value = 1000;
+				this.progressBar.Value = Maximum;
 			}
 			catch (Exception ex)
 			{

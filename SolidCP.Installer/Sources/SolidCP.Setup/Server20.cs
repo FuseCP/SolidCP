@@ -31,34 +31,29 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.Collections.Generic;
+using System.Text;
+using SolidCP.UniversalInstaller;
 
-namespace SolidCP.Providers.OS
+namespace SolidCP.Setup
 {
-    public class Windows2008 : Windows2003
+    /// <summary>
+    /// Release 2.0.0
+    /// </summary>
+    public class Server200 : Server
     {
-        public override bool IsInstalled()
-        {            
-            var version = OSInfo.WindowsVersion;
-            return version == WindowsVersion.WindowsServer2008
-                || version == WindowsVersion.WindowsServer2008R2
-                || version == WindowsVersion.Vista
-                || version == WindowsVersion.Windows7;
-        }
+		public override Version MinimalInstallerVersion => new Version("2.0.0");
+		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public Result Install(object args) => base.InstallOrSetup(args, "Install Server",
+			Installer.Current.InstallServer, false, false);
 
-        protected override Type WebServerType
-        {
-            get
-            {
-                var ver = OSInfo.WindowsVersion;
-                if (ver == WindowsVersion.WindowsServer2008 ||
-                    ver == WindowsVersion.Vista)
-                {
-                    return Type.GetType("SolidCP.Providers.Web.IIs70, SolidCP.Providers.Web.IIs70");
-                } else
-                {
-                    return Type.GetType("SolidCP.Providers.Web.IIs80, SolidCP.Providers.Web.IIs80");
-                }
-            }
-        }
-    }
+		public Result Update(object args) => base.Update(args, "Update Server",
+			Installer.Current.UpdateServer);
+
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Server",
+			Installer.Current.ConfigureServer, false, true);
+
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Server",
+			Installer.Current.RemoveServer);
+	}
 }

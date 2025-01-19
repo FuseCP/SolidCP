@@ -6,8 +6,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\..\SolidCP\build.xml = ..\..\SolidCP\build.xml
 		..\..\LICENSE.txt = ..\..\LICENSE.txt
+		..\..\SolidCP.WebSite\Sources\SolidCP.WebSite\Data\ProductReleasesFeed.xml = ..\..\SolidCP.WebSite\Sources\SolidCP.WebSite\Data\ProductReleasesFeed.xml
 		..\..\Readme.htm = ..\..\Readme.htm
 		..\..\ReleaseNotes.htm = ..\..\ReleaseNotes.htm
+		Release.json = Release.json
 		VersionInfo.cs = VersionInfo.cs
 	EndProjectSection
 EndProject

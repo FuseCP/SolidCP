@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Text;
+using Newtonsoft.Json;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer.Data;
 
@@ -134,14 +135,16 @@ namespace SolidCP.UniversalInstaller
 		public ComponentInfo Component { get; set; }
 		public SetupActions Action { get; set; }
 		public string TempPath { get; set; }
+		public int Files { get; set; } = 0;
 		public bool IsUnattended { get; set; }
 
 		Version? installerVersion = null;
 		public Version Version {
 			get => installerVersion ??= Assembly.GetEntryAssembly().GetName().Version;
 			set => installerVersion = value;
-		} 
+		}
 		public string WebServiceUrl { get; set; }
+		public string GitHubUrl { get; set; }
 		public bool CheckForUpdate { get; set; }
 		public ProxySettings Proxy { get; set; }
 		public string UI

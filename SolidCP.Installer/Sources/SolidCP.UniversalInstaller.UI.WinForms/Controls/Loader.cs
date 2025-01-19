@@ -57,20 +57,20 @@ namespace SolidCP.UniversalInstaller.Controls
             DialogResult = DialogResult.Cancel;
         }
 
-        public Loader(string remoteFile, Action<Exception> callback)
+        public Loader(RemoteFile remoteFile, Action<Exception> callback)
             : this()
         {
             Start(remoteFile, callback);
         }
 
-        public Loader(string localFile, string componentCode, string version, Action<Exception> callback)
+        /*public Loader(string localFile, string componentCode, string version, Action<Exception> callback)
             : this()
         {
             Start(componentCode, version, callback);
-        }
+        }*/
 
 
-
+        /*
         /// <summary>
         /// Resolves URL of the component's distributive and initiates download process.
         /// </summary>
@@ -81,13 +81,13 @@ namespace SolidCP.UniversalInstaller.Controls
             string remoteFile = Utils.GetDistributiveLocationInfo(componentCode, version);
 
             Start(remoteFile, callback);
-        }
+        }*/
 
         /// <summary>
         /// Initializes and starts the app distributive download process.
         /// </summary>
         /// <param name="remoteFile">URL of the file to be downloaded</param>
-        private void Start(string remoteFile, Action<Exception> callback)
+        private void Start(RemoteFile remoteFile, Action<Exception> callback)
         {
             appLoader = Core.SetupLoaderFactory.CreateFileLoader(remoteFile);
 

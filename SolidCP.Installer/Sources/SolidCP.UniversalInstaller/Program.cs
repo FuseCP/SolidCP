@@ -13,6 +13,7 @@ namespace SolidCP.UniversalInstaller
 			Loader = AssemblyLoader.Init();
 		}
 
+		[STAThread]
 		public static void Main(string[] args)
 		{
 			try

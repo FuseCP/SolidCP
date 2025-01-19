@@ -11,7 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+        <Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
         <Compile Include="..\SolidCP.UniversalInstaller\AssemblyLoader.cs" />
     </ItemGroup>
 

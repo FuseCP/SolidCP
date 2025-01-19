@@ -55,7 +55,21 @@ public abstract partial class Installer
 	public virtual string InstallWebRootPath { get; set; } = null;
 	public virtual string InstallExeRootPath { get; set; } = null;
 	public abstract string WebsiteLogsPath { get; }
-	public int EstimatedOutputLines = 0;
+
+	int? estimatedOutputLines = null;
+	public virtual Func<int> CalculateEstimateOutputLines { get; set; } = null;
+	public virtual int EstimatedOutputLines
+	{
+		get => estimatedOutputLines ??= CalculateEstimateOutputLines != null ?
+			CalculateEstimateOutputLines() : Files + DatabaseStatements + 50;
+		set => estimatedOutputLines = value;
+	}
+	public int Files {
+		get => Settings.Installer.Files;
+		set => Settings.Installer.Files = value;
+	}
+	public int DatabaseStatements { get; set; } = 0;
+
 	public InstallerSettings Settings { get; set; } = new InstallerSettings()
 	{
 		Server = new ServerSettings(),
@@ -73,17 +87,21 @@ public abstract partial class Installer
 	public UI UI => UI.Current;
 	LogWriter log = null;
 	public virtual LogWriter Log => log ??= new LogWriter();
-	/* public virtual void Log(string msg)
-	{
-		Debug.WriteLine(msg);
-		Trace.WriteLine(msg);
-		Shell.Log?.Invoke(msg);
-		LogWriter?.WriteLine(msg);
-	} */
 
 	public List<string> InstallLogs { get; private set; } = new List<string>();
-	public void InstallLog(string msg) => InstallLogs.Add(msg);
+	public void InstallLog(string msg)
+	{
+		InstallLogs.Add(msg);
+		Log.WriteLine(msg);
+	}
+	public Action<string> OnInfo { get; set; }
+	public void Info(string message)
+	{
+		OnInfo?.Invoke(message);
+		Log.WriteLine(message);
+	}
 
+	public virtual string Version => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyVersionAttribute>()?.Version;
 	public void LoadSettings()
 	{
 		var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
@@ -91,6 +109,8 @@ public abstract partial class Installer
 		{
 			var settings = JsonConvert.DeserializeObject<InstallerSettings>(
 				File.ReadAllText(path), new VersionConverter(), new StringEnumConverter());
+			settings.Installer.Version = null;
+			settings.Installer.TempPath = null;
 			Settings = settings;
 		}
 		else SaveSettings();
@@ -98,8 +118,12 @@ public abstract partial class Installer
 	public void SaveSettings()
 	{
 		var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
+		var tempPath = Settings.Installer.TempPath;
+		Settings.Installer.TempPath = null;
+		Settings.Installer.Version = null;
 		var json = JsonConvert.SerializeObject(Settings, Formatting.Indented, new VersionConverter(),
 			new StringEnumConverter());
+		Settings.Installer.TempPath = tempPath;
 		File.WriteAllText(path, json);
 	}
 	public void UpdateSettings()
@@ -136,10 +160,11 @@ public abstract partial class Installer
 		Settings.Installer.Component = info;
 		Settings.Installer.Action = action;
 
-		info.FullFilePath = info.FullFilePath.Replace('\\', Path.DirectorySeparatorChar);
-		info.InstallerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
+		info.FullFilePath = info.FullFilePath?.Replace('\\', Path.DirectorySeparatorChar);
+		info.UpgradeFilePath = info.UpgradeFilePath?.Replace('\\', Path.DirectorySeparatorChar);
+		info.InstallerPath = info.InstallerPath?.Replace('\\', Path.DirectorySeparatorChar);
 
-		string fileName = info.FullFilePath;
+		RemoteFile file = new RemoteFile(info, action != SetupActions.Update);
 		string installerPath = info.InstallerPath;
 		string installerType = info.InstallerType;
 
@@ -157,7 +182,7 @@ public abstract partial class Installer
 			// download installer
 			var tmpFolder = Settings.Installer.TempPath = FileUtils.GetTempDirectory();
 
-			if (UI.Current.DownloadSetup(fileName))
+			if (UI.Current.DownloadSetup(file))
 			{
 				UI.Current.ShowWaitCursor();
 				string path = Path.Combine(tmpFolder, installerPath);
@@ -176,6 +201,7 @@ public abstract partial class Installer
 
 				var hashtable = new Hashtable();
 				hashtable["ParametersJson"] = json;
+				UI.PassArguments(hashtable);
 
 				//run installer
 				var res = (Result)LoadContext.Execute(path, installerType, method, new object[] { hashtable }) == Result.OK;
@@ -238,10 +264,12 @@ public abstract partial class Installer
 
 		if (!OSInfo.IsWindows)
 		{
+			Info("Grant file permissions...");
 			OSInfo.Unix.GrantUnixPermissions(folder,
 				UnixFileMode.UserWrite | UnixFileMode.GroupWrite |
 				UnixFileMode.UserRead | UnixFileMode.GroupRead | UnixFileMode.OtherRead |
 				UnixFileMode.UserExecute | UnixFileMode.GroupExecute, true);
+			InstallLog($"Granted file permissions on {folder}.");
 		}
 	}
 	public virtual void SetFileOwner(string folder, string owner, string group)
@@ -250,7 +278,9 @@ public abstract partial class Installer
 
 		if (!OSInfo.IsWindows)
 		{
+			Info("Set file owner...");
 			OSInfo.Unix.ChangeUnixFileOwner(folder, owner, group, true);
+			InstallLog($"Chaned file owner in {folder}.");
 		}
 	}
 
@@ -267,28 +297,32 @@ public abstract partial class Installer
 	public virtual void RemoveFirewallRule(int port) { }
 	public virtual void OpenFirewall(params IEnumerable<int> ports)
 	{
+		Info("Configure firewall...");
 		foreach (int port in ports) OpenFirewall(port);
+		InstallLog($"Opened firewall on {string.Join(",", ports.OfType<object>().ToArray())}");
 	}
 	public virtual void RemoveFirewallRule(params IEnumerable<int> ports)
 	{
+		Info("Configure firewall...");
 		foreach (int port in ports) RemoveFirewallRule(port);
+		InstallLog($"Closed firewall on {string.Join(",", ports.OfType<object>().ToArray())}");
 	}
 
 	public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
 	{
-			/* var remoteServerSettings = new RemoteServerSettings() { ADEnabled = false };
-			// Create web users group
-			if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, remoteServerSettings, ""))
-			{
-				var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup, Description = "SolidCP Website User Group" };
-				SecurityUtils.CreateGroup(group, remoteServerSettings, "", "");
-			} */
+		/* var remoteServerSettings = new RemoteServerSettings() { ADEnabled = false };
+		// Create web users group
+		if (!SecurityUtils.GroupExists(SolidCPWebUsersGroup, remoteServerSettings, ""))
+		{
+			var group = new SystemGroup() { GroupName = SolidCPWebUsersGroup, Name = SolidCPWebUsersGroup, Description = "SolidCP Website User Group" };
+			SecurityUtils.CreateGroup(group, remoteServerSettings, "", "");
+		} */
 
 		var site = new WebSite()
 		{
 			ContentPath = path,
 			GroupName = SolidCPWebUsersGroup,
-			AspNetInstalled = "v4.0",
+			AspNetInstalled = "4I",
 			AnonymousUsername = username,
 			AnonymousUserPassword = password,
 			ApplicationPool = name,
@@ -314,9 +348,12 @@ public abstract partial class Installer
 
 		Transaction(() =>
 		{
+			Info($"Install Website {name}");
+
 			((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
 
 			WebServer.CreateSite(site);
+			InstallLog($"Installed Website {name}");
 		})
 		.WithRollback(() => WebServer.DeleteSite(site.SiteId));
 		
@@ -325,31 +362,37 @@ public abstract partial class Installer
 			.Where(binding => binding.IP != "127.0.0.1" && binding.IP != "::1" && binding.Host != "localhost")
 			.Select(binding => int.TryParse(binding.Port, out p) ? p : 0);
 		OpenFirewall(ports);
+
 	}
 
 	public void InstallService(ServiceDescription description)
 	{
 		Transaction(() =>
 		{
+			Info($"Install service {description.ServiceId}");
 			var service = ServiceController.Install(description);
 			service.Enable();
 			var status = service.Info;
 			if (status != null && status.Status == OSServiceStatus.Running) service.Stop();
 			service.Start();
+			InstallLog($"Installed service {description.ServiceId}");
 		})
 		.WithRollback(() => RemoveService(description.ServiceId));
 	}
 	public void RemoveService(string serviceId)
 	{
+		Info($"Remove service {serviceId}");
 		var service = ServiceController[serviceId];
 		service.Stop();
 		service.Disable();
 		service.Remove();
+		InstallLog($"Removed service {serviceId}.");
 	}
 	public virtual Func<string, string> UnzipFilter => null;
 
 	public async Task<string> DownloadFileAsync(string url)
 	{
+		Info($"Download {url}.");
 		var web = new HttpClient();
 		var tmp = Path.GetTempFileName();
 		tmp = Path.ChangeExtension(tmp, Path.GetExtension(url));
@@ -362,7 +405,7 @@ public abstract partial class Installer
 			}
 		}
 		var name = Regex.Replace(url, @"(.*?/)|(?:\?.*$)", "", RegexOptions.Singleline);
-		Log.WriteLine($"Downloaded file {name}");
+		InstallLog($"Downloaded file {name}");
 		return tmp;
 	}
 	public string DownloadFile(string url) => DownloadFileAsync(url).Result;
@@ -392,6 +435,7 @@ public abstract partial class Installer
 	{
 		if (root == null && destroot == null)
 		{
+			Info("Copy files...");
 			Transaction(() => CopyFiles(source, destination, filter, source, destination))
 				.WithRollback(() => Directory.Delete(destination, true));
 		}
@@ -416,7 +460,7 @@ public abstract partial class Installer
 				{
 					var name = Path.GetFileName(file);
 					File.Copy(file, Path.Combine(destination, name), true);
-					Shell.Log?.Invoke($"Copied {name}{NewLine}");
+					Log.ProgressOne();
 				}
 				foreach (var dir in Directory.GetDirectories(source))
 				{
@@ -426,7 +470,7 @@ public abstract partial class Installer
 			else if (File.Exists(source))
 			{
 				File.Copy(source, destination);
-				Shell.Log?.Invoke($"Copied {Path.GetFileName(source)}{NewLine}");
+				Log.ProgressOne();
 			}
 		}
 	}
@@ -435,6 +479,8 @@ public abstract partial class Installer
 	{
 		Transaction(() =>
 		{
+			Info($"Unizp {Path.GetFileName(destinationPath)}");
+
 			Directory.CreateDirectory(destinationPath);
 
 			if (filter == null) filter = name => name;
@@ -543,6 +589,7 @@ public abstract partial class Installer
 			Console.Read();
 		}
 	}
+
 	bool exitCalled = false;
 	public virtual void Exit(int errorCode = 0)
 	{

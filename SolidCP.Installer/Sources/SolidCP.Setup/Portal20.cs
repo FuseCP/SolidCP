@@ -36,29 +36,24 @@ using System.Text;
 using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
-
 {
     /// <summary>
-    /// Release 1.6.0
+    /// Release 2.0.0
     /// </summary>
-    public class EnterpriseServer160 : EnterpriseServer
+    public class Portal200 : Portal
     {
-        public override Version MinimalInstallerVersion => new Version("1.6.0");
-        public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
-		public Result Install(object args) => base.InstallOrSetup(args, "Install EnterpriseServer",
-            Installer.Current.InstallEnterpriseServer, true, false,
-            Installer.Current.InstallEnterpriseServerMaxProgress);
+		public override Version MinimalInstallerVersion => new Version("2.0.0");
+		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public Result Install(object args) => base.InstallOrSetup(args, "Install WebPortal",
+			Installer.Current.InstallWebPortal, false, false);
 
-        public Result Update(object args) => base.Update(args, "Update EnterpriseServer",
-            Installer.Current.UpdateEnterpriseServer,
-            Installer.Current.UpdateEnterpriseServerMaxProgress);
+		public Result Update(object args) => base.Update(args, "Update WebPortal",
+			Installer.Current.UpdateWebPortal);
 
-        public Result Setup(object args) => base.InstallOrSetup(args, "Setup EnterpriseServer",
-			Installer.Current.ConfigureEnterpriseServer, false, true,
-            Installer.Current.SetupEnterpriseServerMaxProgress);
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebPortal",
+			Installer.Current.ConfigureWebPortal, false, true);
 
-        public Result Uninstall(object args) => base.Uninstall(args, "Uninstall EnterpriseServer",
-            Installer.Current.RemoveEnterpriseServer,
-            Installer.Current.UninstallEnterpriseServerMaxProgress);
-    }
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebPortal",
+			Installer.Current.RemoveWebPortal);
+	}
 }

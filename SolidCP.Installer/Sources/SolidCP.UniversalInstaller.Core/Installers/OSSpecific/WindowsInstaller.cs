@@ -134,7 +134,7 @@ public class WindowsInstaller : Installer
 	public override void ConfigureServer()
 	{
 		var settings = Settings.Server;
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
+		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
 		var webconf = XElement.Load(confFile);
 		var configuration = webconf.Element("configuration");
 
@@ -237,9 +237,8 @@ public class WindowsInstaller : Installer
 	public override void ConfigureEnterpriseServer()
 	{
 		var settings = Settings.EnterpriseServer;
-		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "web.config");
-		var webconf = XElement.Load(confFile);
-		var configuration = webconf.Element("configuration");
+		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "web.config");
+		var configuration = XElement.Load(confFile);
 
 		// server certificate
 		var serviceModel = configuration.Element("system.serviceModel");
@@ -310,11 +309,10 @@ public class WindowsInstaller : Installer
 		var versionInfo = swagsetting?.Elements("setting").FirstOrDefault(e => e.Attribute("name")?.Value == "InfoVersion");
 		if (versionInfo != null)
 		{
-			var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyVersionAttribute>()?.Version;
-			versionInfo.Attribute("value").SetValue(version);
+			versionInfo.Attribute("value").SetValue(Version);
 		}
 
-		webconf.Save(confFile);
+		configuration.Save(confFile);
 
 		InstallLog("Configured Enterprise Server.");
 	}
@@ -366,7 +364,7 @@ public class WindowsInstaller : Installer
 	{
 		if (RunAsAdmin)
 		{
-			var currentp = Process.GetCurrentProcess();
+			//var currentp = Process.GetCurrentProcess();
 			ProcessStartInfo procInfo = new ProcessStartInfo();
 			procInfo.UseShellExecute = true;
 			var assemblyFile = Assembly.GetEntryAssembly().Location;
@@ -374,7 +372,8 @@ public class WindowsInstaller : Installer
 			else if (assemblyFile.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) procInfo.FileName = assemblyFile;
 			else if (OSInfo.IsCore) procInfo.FileName = "dotnet";
 			procInfo.WorkingDirectory = Environment.CurrentDirectory;
-			procInfo.Arguments = currentp.StartInfo.Arguments;
+			procInfo.Arguments = string.Join(" ", Environment.GetCommandLineArgs()
+				.Select(arg => arg.Contains(' ') ? $"\"{arg}\"" : arg));
 			procInfo.Verb = "runas";
 			try
 			{

@@ -42,7 +42,7 @@ using System.Data;
 using System.Text;
 using System.Linq;
 using System.Windows.Forms;
-
+using System.Threading.Tasks;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller.Controls
@@ -203,21 +203,21 @@ namespace SolidCP.UniversalInstaller.Controls
         {
             //load list of available components in the separate thread
             AppContext.AppForm.StartAsyncProgress("Connecting...", true);
-            ThreadPool.QueueUserWorkItem(o => LoadComponents());
+            Task.Run(LoadComponents);
         }
 
 		/// <summary>
 		/// Loads list of available components via web service
 		/// </summary>
-		private void LoadComponents()
+		private async Task LoadComponents()
         {
             try
             {
                 Log.WriteStart("Loading list of available components");
                 lblDescription.Text = string.Empty;
                 //load components via web service
-                var webService = Installer.Current.InstallerWebService;
-                var dsComponents = webService.GetAvailableComponents();
+                var releases = Installer.Current.Releases;
+                var dsComponents = await releases.GetAvailableComponentsAsync();
 
                 //remove already installed components or components not available on this platform
                 foreach (var component in dsComponents.ToArray())

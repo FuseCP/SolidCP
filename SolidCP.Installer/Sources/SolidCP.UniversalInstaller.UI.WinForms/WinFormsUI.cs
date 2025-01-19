@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -100,12 +101,12 @@ namespace SolidCP.UniversalInstaller {
 			}
 			public override bool Show()
 			{
-				UI.MainForm = Form;
 				Form.Wizard.LinkPages();
 				Form.Wizard.SelectedPage = Form.Wizard.Controls.OfType<WinForms.WizardPageBase>()
 					.FirstOrDefault();
 				UI.EndWaitCursor();
-				var result = Form.ShowDialog() == DialogResult.OK;
+				IWin32Window owner = UI.MainForm as IWin32Window;
+				var result = Form.ShowModal(owner) == DialogResult.OK;
 				if (result) Installer.Current.UpdateSettings();
 				return result;
 			}
@@ -163,6 +164,16 @@ namespace SolidCP.UniversalInstaller {
 			MessageBox.Show($"Error: {ex}", "SolidCP Installer", MessageBoxButtons.OK, MessageBoxIcon.Error);
 		}
 
+		public override void PassArguments(Hashtable args)
+		{
+			base.PassArguments(args);
+			args["ParentForm"] = MainForm as IWin32Window;
+		}
+		public override void ReadArguments(Hashtable args)
+		{
+			base.ReadArguments(args);
+			MainForm = args["ParentForm"];
+		}
 		public override void RunMainUI()
 		{
 			try
@@ -295,15 +306,14 @@ namespace SolidCP.UniversalInstaller {
 			throw new NotImplementedException();
 		}
 
-		public object MainForm { get; set; }
 		public override void ShowWarning(string msg)
 		{
 			MessageBox.Show((Form)MainForm, msg, ((Form)MainForm).Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
-		public override bool DownloadSetup(string fileName)
+		public override bool DownloadSetup(RemoteFile file)
 		{
-			Controls.Loader loader = new Controls.Loader(fileName, (e) => ShowError(e));
+			Controls.Loader loader = new Controls.Loader(file, (e) => ShowError(e));
 			DialogResult result = loader.ShowDialog();
 
 			if (result == DialogResult.OK)
@@ -319,7 +329,7 @@ namespace SolidCP.UniversalInstaller {
 			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
 			Log.WriteInfo(string.Format("Installer returned {0}", res));
 			Log.WriteEnd("Installer finished");
-			((Form)MainForm).Update();
+			(MainForm as Form)?.Update();
 			if (res == Result.OK)
 			{
 				((ApplicationForm)MainForm).ReloadApplication();

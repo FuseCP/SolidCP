@@ -175,6 +175,7 @@ namespace SolidCP.Setup
 				wizard.LinkPages();
 				wizard.SelectedPage = introPage;
 
+				var thread = System.Threading.Thread.CurrentThread;
 				//show wizard
 				IWin32Window owner = args["ParentForm"] as IWin32Window;
 				return form.ShowModal(owner);

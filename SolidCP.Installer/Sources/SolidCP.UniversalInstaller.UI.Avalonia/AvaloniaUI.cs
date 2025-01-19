@@ -114,7 +114,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public override void ShowWarning(string msg) => throw new NotImplementedException();
 
-		public override bool DownloadSetup(string fileName)
+		public override bool DownloadSetup(RemoteFile file)
 		{
 			throw new NotImplementedException();
 		}

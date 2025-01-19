@@ -93,5 +93,9 @@ namespace SolidCP.UniversalInstaller
 				return webService;
 			}
 		}
+
+		public const string GitHubUrl = "https://github.com/FuseCP/SolidCP";
+ 		public GitHubReleases GitHub => new GitHubReleases(Settings.Installer.GitHubUrl ?? GitHubUrl);
+		public Releases Releases => new Releases();
 	}
 }
