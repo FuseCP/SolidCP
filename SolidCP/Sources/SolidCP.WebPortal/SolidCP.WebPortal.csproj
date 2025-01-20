@@ -3,6 +3,8 @@
         <RootNamespace>SolidCP.WebPortal</RootNamespace>
         <AssemblyName>SolidCP.WebPortal</AssemblyName>
         <TargetFrameworks>net8.0;net48</TargetFrameworks>
+        <LangVersion>13</LangVersion>
+        <Nullable>disable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -80,16 +82,16 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.5" ExcludeAssets="runtime" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.2.5" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.5" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.6" ExcludeAssets="runtime" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.6" />
 
         <!-- .NET 9 for SolidCP.EnterpriseServer.Data -->
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
@@ -115,6 +117,7 @@
         <Content Include="**\*.ashx" Exclude="DesktopModules\**\*.ashx" />
         <None Remove="DesktopModules\**\*.*" />
         <EmbeddedResource Remove="DesktopModules\**\*.resx" />
+        <EmbeddedResource Remove="Properties\PublishProfiles\**" />
         <Compile Include="Code\**\*.cs" />
     </ItemGroup>
 
@@ -134,6 +137,7 @@
         <Compile Include="*.cs" />
         <Compile Include="..\VersionInfo.cs" Link="Code\VersionInfo.cs" />
         <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" Link="Code\ES.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Update="Default.aspx.cs">
             <SubType>ASPXCodeBehind</SubType>
             <DependentUpon>Default.aspx</DependentUpon>
@@ -180,6 +184,7 @@
     <ItemGroup>
         <None Remove="obj\**\*.*" />
         <None Remove="bin_dotnet\**\*.*" />
+        <None Remove="Properties\PublishProfiles\**" />
         <None Remove="appsettings.json" />
         <None Update="SolidCP.WebPortal.deps.json.old">
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -187,6 +192,9 @@
         <AspNetControls Remove="DesktopModules\**\*.ascx" />
         <AspNetControls Remove="DesktopModules\**\*.aspx" />
         <AspNetControls Remove="DesktopModules\**\*.master" />
+        <AspNetControls Remove="Properties\PublishProfiles\**" />
+        <Compile Remove="Properties\PublishProfiles\**" />
+        <Content Remove="Properties\PublishProfiles\**" />
     </ItemGroup>
 
     <Target Name="ChangeAliasesOfNugetRefs" Condition="$(TargetFramework) != 'net48'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
@@ -201,6 +209,26 @@
     <Target Name="CopyCoreWebConfig" AfterTargets="Build">
         <Copy SourceFiles="Core.Web.config" DestinationFiles="bin_dotnet\Web.config" />
     </Target>
+
+    <ItemGroup>
+      <Compile Remove="C:\Users\simon\.nuget\packages\corewcf.primitives\1.6.0\buildTransitive\/../contentFiles/CoreWCFWebApplicationExtensions.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="C:\Users\simon\.nuget\packages\corewcf.primitives\1.6.0\buildTransitive\/../contentFiles/CoreWCFWebApplicationExtensions.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="C:\Users\simon\.nuget\packages\corewcf.primitives\1.6.0\buildTransitive\/../contentFiles/CoreWCFWebApplicationExtensions.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="C:\Users\simon\.nuget\packages\corewcf.primitives\1.6.0\buildTransitive\/../contentFiles/CoreWCFWebApplicationExtensions.cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AspNetDocuments Remove="Properties\PublishProfiles\**" />
+    </ItemGroup>
     
     <!--<Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
         
