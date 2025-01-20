@@ -41,7 +41,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-        <PackageReference Include="DotNetZip" Version="1.16.0" />
         <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
@@ -85,7 +84,11 @@
         <PackageReference Include="Azure.Identity" Version="1.13.1" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.4.9" />
     </ItemGroup>
-  
+
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <PackageReference Include="System.IO.Compression" Version="4.3.0" />
+    </ItemGroup>
+
     <!-- hack for SkiaSharp, so the native dlls go in the right place -->
     <Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" Condition="'$(TargetFramework)' != ''" />
     <Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" Condition="'$(TargetFramework)' != ''" />

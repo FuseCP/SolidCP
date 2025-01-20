@@ -32,62 +32,50 @@
 
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Collections.Generic;
 using System.Text;
-using Ionic.Zip;
 
-namespace SolidCP.EnterpriseServer
-{
+namespace SolidCP.EnterpriseServer;
+
     public class FileUtils
     {
-        #region Zip/Unzip Methods
+	#region Zip/Unzip Methods
 
-        public static void ZipFiles(string zipFile, string rootPath, string[] files)
-        {
-			using (ZipFile zip = new ZipFile())
+	public static void ZipFiles(string zipFile, string rootPath, string[] files)
+	{
+		using (var stream = new FileStream(zipFile, FileMode.Truncate, FileAccess.Write))
+		using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, false, Encoding.UTF8))
+		{
+			foreach (string file in files)
 			{
-				//use unicode if necessary
-				zip.AlternateEncoding = Encoding.UTF8;
-				zip.AlternateEncodingUsage = ZipOption.AsNecessary;
-				//zip.UseUnicodeAsNecessary = true;
-				//skip locked files
-				zip.ZipErrorAction = ZipErrorAction.Skip;
-				foreach (string file in files)
+				string fullPath = Path.Combine(rootPath, file);
+				if (Directory.Exists(fullPath))
 				{
-					string fullPath = Path.Combine(rootPath, file);
-					if (Directory.Exists(fullPath))
-					{
-						//add directory with the same directory name
-						zip.AddDirectory(fullPath, file);
-					}
-					else if (File.Exists(fullPath))
-					{
-						//add file to the root folder
-						zip.AddFile(fullPath, "");
-					}
+					//add directory with the same directory name
+					zip.CreateEntry(file.Replace('\\', '/') + "/", CompressionLevel.Optimal);
 				}
-				zip.Save(zipFile);
-			}
-        }
-
-        public static List<string> UnzipFiles(string zipFile, string destFolder)
-        {
-			using (ZipFile zip = ZipFile.Read(zipFile))
-			{
-				foreach (ZipEntry e in zip)
+				else if (File.Exists(fullPath))
 				{
-					e.Extract(destFolder, ExtractExistingFileAction.OverwriteSilently);
+					//add file to the root folder
+					zip.CreateEntryFromFile(fullPath, file.Replace('\\', '/'), CompressionLevel.Optimal);
 				}
 			}
+		}
+	}
 
-			// return extracted files names
-			return GetFileNames(destFolder);
-        }
+	public static List<string> UnzipFiles(string zipFile, string destFolder)
+	{
+		ZipFile.ExtractToDirectory(zipFile, destFolder);
 
-        #endregion
+		// return extracted files names
+		return GetFileNames(destFolder);
+	}
 
-        #region Copy
-        public static void CopyDirectoryContentUNC(string sourceDirectory, string destinationDirectory) {
+	#endregion
+
+	#region Copy
+	public static void CopyDirectoryContentUNC(string sourceDirectory, string destinationDirectory) {
             foreach(string dir in Directory.GetDirectories(sourceDirectory, "*", SearchOption.AllDirectories)) {
                 string destinationPath = dir.Replace(sourceDirectory, destinationDirectory);
                 if(!Directory.Exists(destinationPath)) { 
@@ -114,32 +102,31 @@ namespace SolidCP.EnterpriseServer
         /// Empty, when no files and directories are or path does not exists.
         /// </returns>
         public static List<string> GetFileNames(string direcrotyPath)
+	{
+		List<string> items = new List<string>();
+
+		DirectoryInfo root = new DirectoryInfo(direcrotyPath);
+		if (root.Exists)
 		{
-			List<string> items = new List<string>();
-
-			DirectoryInfo root = new DirectoryInfo(direcrotyPath);
-			if (root.Exists)
+			// list directories
+			foreach (DirectoryInfo dir in root.GetDirectories())
 			{
-				// list directories
-				foreach (DirectoryInfo dir in root.GetDirectories())
-				{
-					items.Add(
-						System.IO.Path.Combine(direcrotyPath, dir.Name)
-						);
-				}
-
-				// list files
-				foreach (FileInfo file in root.GetFiles())
-				{
-					items.Add(
-						System.IO.Path.Combine(direcrotyPath, file.Name)
-						);
-				}
+				items.Add(
+					System.IO.Path.Combine(direcrotyPath, dir.Name)
+					);
 			}
 
-			return items;
+			// list files
+			foreach (FileInfo file in root.GetFiles())
+			{
+				items.Add(
+					System.IO.Path.Combine(direcrotyPath, file.Name)
+					);
+			}
 		}
 
-		#endregion
+		return items;
 	}
+
+	#endregion
 }
