@@ -7054,16 +7054,12 @@ namespace SolidCP.EnterpriseServer
                 {
                     ExchangeServer exchange = GetExchangeServer(exchangeServiceId, org.ServiceId);
 
-                    if (picture == null)
-                    {
-                        res = exchange.SetPicture(account.AccountName, null);
-                    }
-                    else
+                    if (picture != null)
                     {
                         picture = ResizeImage(picture, MAX_THUMBNAILPHOTO_SIZE, MAX_THUMBNAILPHOTO_SIZE);
-
-                        res = exchange.SetPicture(account.AccountName, picture);
                     }
+
+					res = exchange.SetPicture(account.AccountName, picture);
                 }
             }
             catch (Exception ex)
