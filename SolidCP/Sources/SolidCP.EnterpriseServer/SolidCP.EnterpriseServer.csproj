@@ -103,10 +103,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Properties\PublishProfiles\Default Settings %282%29.pubxml" />
-        <None Include="Properties\PublishProfiles\Default Settings %283%29.pubxml" />
-        <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
-        <None Include="Properties\PublishProfiles\Enterprise Server.pubxml" />
         <None Include="TaskEventHandlers.config" />
         <None Include="WsePolicyCache.Config" />
     </ItemGroup>
