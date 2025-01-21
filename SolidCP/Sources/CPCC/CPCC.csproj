@@ -24,7 +24,7 @@
         <Reference Include="System.Net.Http" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.6" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.7" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="Properties\VersionInfo.cs" />

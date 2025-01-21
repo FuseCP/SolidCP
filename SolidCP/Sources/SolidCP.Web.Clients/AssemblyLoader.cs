@@ -328,7 +328,7 @@ namespace SolidCP.Web.Clients
                 .Select(p =>
                 {
                     var relativename = Path.Combine(p, $"{name}.dll");
-                    var fullName = new DirectoryInfo(Path.Combine(ExePath, relativename)).FullName;
+                    var fullName = Path.GetFullPath(Path.Combine(ExePath, relativename));
                     return new
                     {
                         FullName = fullName,
