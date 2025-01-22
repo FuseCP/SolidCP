@@ -9722,12 +9722,10 @@ BEGIN
 	(
 		ItemId INT NOT NULL,
 		SettingsName nvarchar(100)  NOT NULL,
-		Xml nvarchar(max) NOT NULL
+		Xml nvarchar(max) NOT NULL,
+        CONSTRAINT [PK_ExchangeOrganizationSettings] PRIMARY KEY ([ItemId], [SettingsName]),
+        CONSTRAINT [FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId] FOREIGN KEY ([ItemId]) REFERENCES [ExchangeOrganizations] ([ItemID]) ON DELETE CASCADE
 	);
-
-	ALTER TABLE [dbo].[ExchangeOrganizationSettings]  WITH CHECK ADD  CONSTRAINT [FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId] FOREIGN KEY([ItemId])
-	REFERENCES [dbo].[ExchangeOrganizations] ([ItemId])
-	ON DELETE CASCADE;
 END
 
 
