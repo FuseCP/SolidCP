@@ -270,4 +270,7 @@
   <data name="btnDiscoverServices.Text" xml:space="preserve">
     <value>Suche installierte Software</value>
   </data>
+  <data name="btnDiscoverServices.OnClientClick" xml:space="preserve">
+    <value>ShowProgressDialog('Suche installierte Software...')</value>
+  </data>
 </root>
