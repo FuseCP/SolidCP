@@ -16,7 +16,7 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class WebDavAccessTokenConfiguration: EntityTypeConfiguration<WebDavAccessToken>
 {
     public override void Configure() {
-        HasKey(e => e.Id).HasName("PK__WebDavAc__3214EC2700DDFA20");
+        HasKey(e => e.Id).HasName("PK__WebDavAc__3214EC27293CFD19");
 
         HasOne(d => d.Account).WithMany(p => p.WebDavAccessTokens).HasConstraintName("FK_WebDavAccessTokens_UserId");
     }

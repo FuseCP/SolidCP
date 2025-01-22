@@ -5,7 +5,7 @@
 <#@ assembly name="Microsoft.Extensions.DependencyInjection.Abstractions" #>
 <#@ assembly name="System.Text.RegularExpressions" #>
 <#@ assembly name="System.Runtime" #>
-<#@ assembly name="SolidCP.EnterpriseServer.Data" #>
+<#@ assembly name="SolidCP.EnterpriseServer.Data.NetCore" #>
 <#@ parameter name="EntityType" type="Microsoft.EntityFrameworkCore.Metadata.IEntityType" #>
 <#@ parameter name="Options" type="Microsoft.EntityFrameworkCore.Scaffolding.ModelCodeGenerationOptions" #>
 <#@ parameter name="NamespaceHint" type="System.String" #>
