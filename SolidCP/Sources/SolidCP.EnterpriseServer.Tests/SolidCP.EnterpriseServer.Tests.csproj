@@ -22,7 +22,7 @@
     <ItemGroup>
         <PackageReference Include="EntityFramework" Version="6.5.1" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
-        <PackageReference Include="Azure.Identity" Version="1.13.1" />
+        <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.4.9" />
         <PackageReference Include="EntityFramework.DynamicLinq" Version="1.4.9" Condition="'$(TargetFramework)' == 'net48'" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.4.5" Condition="'$(TargetFramework)' != 'net48'" />

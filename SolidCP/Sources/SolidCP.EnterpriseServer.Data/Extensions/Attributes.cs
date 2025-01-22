@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer.Data
 {
+
+#if Attributes
 	public class DbContextAttribute: Attribute
 	{
 		public DbContextAttribute(Type type) { }
@@ -14,4 +16,5 @@ namespace SolidCP.EnterpriseServer.Data
 	{
 		public MigrationAttribute(string id) { }
 	}
+#endif
 }

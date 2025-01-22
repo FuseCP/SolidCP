@@ -8200,7 +8200,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241208071543_InitialCreate', '9.0.0');
+VALUES ('20250122144205_InitialCreate', '9.0.1');
 
 COMMIT;
 

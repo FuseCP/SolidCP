@@ -10,1042 +10,1553 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
-		/// <inheritdoc />
 		#region Stored Procedures
 		protected void StoredProceduresUp(MigrationBuilder migrationBuilder)
 		{
 			StoredProceduresDown(migrationBuilder);
 
 			if (migrationBuilder.IsSqlServer())
-				migrationBuilder.SafeSql(DatabaseUtils.InstallScript("20241208071618_InitialCreate_StoredProcedures.sql"));
+				migrationBuilder.SafeSql(DatabaseUtils.InstallScript("20250122203047_InitialCreate_StoredProcedures.sql"));
 		}
 
 		protected void StoredProceduresDown(MigrationBuilder migrationBuilder)
 		{
 			if (migrationBuilder.IsSqlServer()) migrationBuilder.SafeSql(@"
-DROP VIEW IF EXISTS [dbo].[UsersDetailed]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateWhoisDomainInfo]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateWhoisDomainInfo]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateWhoisDomainInfo]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateWebDavPortalUsersSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateWebDavPortalUsersSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateWebDavPortalUsersSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateVirtualGroups]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateVirtualGroups]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateVirtualGroups]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserThemeSetting]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateUserThemeSetting]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserThemeSetting]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateUserSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserPinSecret]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateUserPinSecret]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserPinSecret]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserMfaMode]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateUserMfaMode]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserMfaMode]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserFailedLoginAttempt]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateUserFailedLoginAttempt]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUserFailedLoginAttempt]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSupportServiceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateSupportServiceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSupportServiceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateStorageSpaceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateStorageSpaceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateStorageSpaceFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateStorageSpaceFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpaceFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateStorageSpace]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateStorageSpace]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateStorageSpace]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSfBUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateSfBUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSfBUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateSfBUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSfBUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServiceProperties]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateServiceProperties]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceProperties]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServiceItem]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateServiceItem]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceItem]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServiceFully]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateServiceFully]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServiceFully]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSchedule]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateSchedule]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateSchedule]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSServerSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateRDSServerSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServerSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateRDSServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSCollectionSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateRDSCollectionSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollectionSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateRDSCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateRDSCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePrivateNetworVLAN]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePrivateNetworVLAN]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageQuotas]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageQuotas]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageDiskSpace]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageDiskSpace]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageDiskSpace]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageBandwidthUpdate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageBandwidthUpdate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidthUpdate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageBandwidth]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageBandwidth]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageBandwidth]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageAddon]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackageAddon]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackageAddon]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdatePackage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdatePackage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateLyncUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateLyncUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateLyncUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateLyncUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateLyncUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateHostingPlanQuotas]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateHostingPlanQuotas]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlanQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateHostingPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateHostingPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateHostingPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeRetentionPolicyTag]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeRetentionPolicyTag]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeOrganizationSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeOrganizationSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeOrganizationSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeMailboxPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeMailboxPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeMailboxPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeDisclaimer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeDisclaimer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeDisclaimer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeAccountUserPrincipalName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeAccountUserPrincipalName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountUserPrincipalName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeAccountSLSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeAccountSLSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccountSLSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeAccount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateExchangeAccount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateExchangeAccount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateEnterpriseFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateEnterpriseFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateEnterpriseFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateEntepriseFolderStorageSpaceFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateEntepriseFolderStorageSpaceFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateEntepriseFolderStorageSpaceFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainLastUpdateDate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateDomainLastUpdateDate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainLastUpdateDate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainExpirationDate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateDomainExpirationDate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainExpirationDate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainDates]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateDomainDates]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainDates]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainCreationDate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateDomainCreationDate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomainCreationDate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDnsRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateDnsRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateDnsRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateCRMUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateCRMUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateCRMUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateBackgroundTask]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateBackgroundTask]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateBackgroundTask]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateAdditionalGroup]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateAdditionalGroup]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[UpdateAdditionalGroup]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SfBUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SfBUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SfBUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetUserOneTimePassword]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetUserOneTimePassword]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetUserOneTimePassword]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetSystemSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetSystemSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetSystemSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetSfBUserSfBUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetSfBUserSfBUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetSfBUserSfBUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetOrganizationDefaultSfBUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetOrganizationDefaultSfBUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultSfBUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetOrganizationDefaultLyncUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetOrganizationDefaultLyncUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultLyncUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetOrganizationDefaultExchangeMailboxPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetOrganizationDefaultExchangeMailboxPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetOrganizationDefaultExchangeMailboxPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetLyncUserLyncUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetLyncUserLyncUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetLyncUserLyncUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetItemPrivatePrimaryIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetItemPrivatePrimaryIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemPrivatePrimaryIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetItemPrimaryIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetItemPrimaryIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemPrimaryIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetItemDmzPrimaryIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetItemDmzPrimaryIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountMailboxplan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetExchangeAccountMailboxplan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetExchangeAccountMailboxplan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetExchangeAccountDisclaimerId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetExchangeAccountDisclaimerId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetExchangeAccountDisclaimerId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetAccessTokenSmsResponse]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetAccessTokenSmsResponse]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SetAccessTokenSmsResponse]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchServiceItemsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchServiceItemsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SearchServiceItemsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchOrganizationAccounts]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchOrganizationAccounts]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SearchOrganizationAccounts]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccountsByTypes]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchExchangeAccountsByTypes]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SearchExchangeAccountsByTypes]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccounts]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchExchangeAccounts]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SearchExchangeAccounts]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SearchExchangeAccount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchExchangeAccount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[SearchExchangeAccount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveStorageSpaceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[RemoveStorageSpaceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpaceFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveStorageSpaceFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[RemoveStorageSpaceFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveStorageSpace]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveStorageSpace]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[RemoveStorageSpace]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSUserFromRDSCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveRDSUserFromRDSCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[RemoveRDSUserFromRDSCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveRDSServerFromOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[RemoveRDSServerFromOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[RemoveRDSServerFromCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveRDSServerFromCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[RemoveRDSServerFromCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[OrganizationUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrganizationUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[OrganizationUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[OrganizationExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrganizationExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[OrganizationExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[MoveServiceItem]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[MoveServiceItem]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[MoveServiceItem]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[LyncUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[LyncUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[LyncUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpaceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InsertStorageSpaceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[InsertStorageSpaceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertStorageSpace]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InsertStorageSpace]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[InsertStorageSpace]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[InsertCRMUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InsertCRMUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[InsertCRMUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavPortalUsersSettingsByAccountId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetWebDavPortalUsersSettingsByAccountId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetWebDavPortalUsersSettingsByAccountId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetWebDavAccessTokenById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetWebDavAccessTokenById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetWebDavAccessTokenByAccessToken]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetWebDavAccessTokenByAccessToken]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetWebDavAccessTokenByAccessToken]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServices]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualServices]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetVirtualServices]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualServers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualServers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetVirtualServers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedProxmox]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPagedProxmox]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetVirtualMachinesPagedProxmox]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPagedForPC]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPagedForPC]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetVirtualMachinesPagedForPC]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged2012]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPaged2012]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetVirtualMachinesPaged2012]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetVirtualMachinesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetVirtualMachinesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsersSummary]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUsersSummary]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUsersSummary]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsersPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUsersPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUsersPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserServiceID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserServiceID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserServiceID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserPeers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserPeers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserPeers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserParents]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserParents]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserParents]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserPackagesServerUrls]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserPackagesServerUrls]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserPackagesServerUrls]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserEnterpriseFolderWithOwaEditPermission]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserDomainsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserDomainsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserDomainsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsernameInternally]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByUsernameInternally]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserByUsernameInternally]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByUsername]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByUsername]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserByUsername]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByIdInternally]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByIdInternally]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserByIdInternally]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserByExchangeOrganizationIdInternally]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByExchangeOrganizationIdInternally]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserByExchangeOrganizationIdInternally]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingPlans]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserAvailableHostingPlans]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserAvailableHostingPlans]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUserAvailableHostingAddons]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserAvailableHostingAddons]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserAvailableHostingAddons]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedVLANs]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUnallottedVLANs]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUnallottedVLANs]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetUnallottedIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUnallottedIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUnallottedIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThreadBackgroundTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThreadBackgroundTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetThreadBackgroundTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemeSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThemeSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetThemeSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemeSetting]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThemeSetting]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetThemeSetting]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetThemes]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThemes]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetThemes]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSystemSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSystemSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSystemSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevels]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSupportServiceLevels]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSupportServiceLevels]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSupportServiceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSupportServiceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSupportServiceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpacesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpacesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByResourceGroupName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpacesByResourceGroupName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpacesByResourceGroupName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpacesByLevelId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpacesByLevelId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpacesByLevelId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceLevelsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpaceLevelsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceLevelById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceLevelById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpaceLevelById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFoldersByStorageSpaceId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceFoldersByStorageSpaceId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpaceFoldersByStorageSpaceId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceFolderById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceFolderById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpaceFolderById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceByServiceAndPath]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceByServiceAndPath]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpaceByServiceAndPath]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetStorageSpaceById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetStorageSpaceById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSSLCertificateByID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSSLCertificateByID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSSLCertificateByID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSiteCert]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSiteCert]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSiteCert]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUsersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSfBUsersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsersByPlanId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUsersByPlanId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSfBUsersByPlanId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSfBUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlans]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUserPlans]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSfBUserPlans]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlanByAccountId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUserPlanByAccountId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSfBUserPlanByAccountId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSfBUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSfBUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerIDGroupName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByServerIDGroupName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServicesByServerIDGroupName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByServerID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByServerID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServicesByServerID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByGroupName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServicesByGroupName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServicesByGroupID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByGroupID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServicesByGroupID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceProperties]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceProperties]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceProperties]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemTypes]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemTypes]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemTypes]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemType]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemType]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemType]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsForStatistics]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsForStatistics]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsForStatistics]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCountByNameAndServiceId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsCountByNameAndServiceId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsCountByNameAndServiceId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsByService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsByService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByPackage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsByPackage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsByPackage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemsByName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsByName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemsByName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItems]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItems]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItems]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItemByName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemByName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItemByName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServiceItem]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItem]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServiceItem]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerShortDetails]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServerShortDetails]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServerShortDetails]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerInternal]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServerInternal]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServerInternal]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServerByName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServerByName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServerByName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchTableByColumns]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSearchTableByColumns]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSearchTableByColumns]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchObject]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSearchObject]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSearchObject]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSearchableServiceItemTypes]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSearchableServiceItemTypes]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSearchableServiceItemTypes]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskViewConfigurations]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTaskViewConfigurations]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleTaskViewConfigurations]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTaskEmailTemplate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTaskEmailTemplate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleTaskEmailTemplate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleTask]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTask]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleTask]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedulesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSchedulesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSchedulesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedules]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSchedules]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSchedules]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleParameters]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleParameters]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleParameters]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleInternal]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleInternal]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleInternal]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetScheduleBackgroundTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleBackgroundTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetScheduleBackgroundTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetSchedule]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSchedule]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetSchedule]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroups]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResourceGroups]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetResourceGroups]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroupByName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResourceGroupByName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetResourceGroupByName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResourceGroup]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResourceGroup]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetResourceGroup]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetResellerDomains]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResellerDomains]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetResellerDomains]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServersPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSServersPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServerSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSServerSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByItemId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServersByItemId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSServersByItemId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServersByCollectionId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServersByCollectionId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSServersByCollectionId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSServers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSServerById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServerById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSServerById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSMessages]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSMessages]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSMessages]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSControllerServiceIDbyFQDN]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSControllerServiceIDbyFQDN]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSControllerServiceIDbyFQDN]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionUsersByRDSCollectionId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionUsersByRDSCollectionId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCollectionUsersByRDSCollectionId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCollectionsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionSettingsByCollectionId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionSettingsByCollectionId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCollectionSettingsByCollectionId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionsByItemId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionsByItemId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCollectionsByItemId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionByName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionByName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCollectionByName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCollectionById]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionById]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCollectionById]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRDSCertificateByServiceId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCertificateByServiceId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRDSCertificateByServiceId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetRawServicesByServerID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRawServicesByServerID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetRawServicesByServerID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetQuotas]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetQuotas]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviderServiceQuota]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviderServiceQuota]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetProviderServiceQuota]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviders]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviders]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetProviders]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProviderByServiceID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviderByServiceID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetProviderByServiceID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProvider]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProvider]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetProvider]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetProcessBackgroundTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProcessBackgroundTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetProcessBackgroundTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLANsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPrivateNetworVLANsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPrivateNetworVLANsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPrivateNetworVLAN]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPrivateNetworVLAN]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPrivateNetworVLAN]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPendingSSLForWebsite]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPendingSSLForWebsite]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPendingSSLForWebsite]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetParentPackageQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetParentPackageQuotas]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetParentPackageQuotas]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageUnassignedIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageUnassignedIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageUnassignedIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageServiceID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageServiceID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageServiceID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesDiskspacePaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagesDiskspacePaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagesDiskspacePaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagesBandwidthPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagesBandwidthPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagesBandwidthPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackages]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackages]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackages]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotasForEdit]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageQuotasForEdit]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageQuotasForEdit]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageQuotas]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageQuotas]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageQuota]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageQuota]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageQuota]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateNetworkVLANs]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePrivateNetworkVLANs]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagePrivateNetworkVLANs]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddressesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePrivateIPAddressesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagePrivateIPAddressesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePrivateIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePrivateIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagePrivateIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackagePackages]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePackages]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackagePackages]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddressesCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageIPAddressesCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageIPAddressesCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDiskspace]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDmzNetworkVLANs]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageDmzNetworkVLANs]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidthUpdate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDmzIPAddressesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageDmzIPAddressesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageBandwidth]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDmzIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageDmzIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddons]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDiskspace]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageDiskspace]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageAddon]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageBandwidthUpdate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageBandwidthUpdate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageBandwidth]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageBandwidth]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpacesFolderByType]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAddons]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageAddons]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStoragSpaceFolders]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAddon]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackageAddon]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationStatistics]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetPackage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsUsersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationStoragSpacesFolderByType]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationStoragSpacesFolderByType]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsServersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationStoragSpaceFolders]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationStoragSpaceFolders]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationRdsCollectionsCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationStatistics]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationStatistics]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationObjectsByDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationRdsUsersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationRdsUsersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationGroupsByDisplayName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationRdsServersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationRdsServersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationDeletedUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationRdsCollectionsCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationRdsCollectionsCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOrganizationCRMUserCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationObjectsByDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationObjectsByDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationGroupsByDisplayName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationGroupsByDisplayName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetOCSUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationDeletedUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationDeletedUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNextSchedule]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationCRMUserCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOrganizationCRMUserCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesSummary]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOCSUsersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOCSUsersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetNestedPackagesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOCSUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetOCSUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetMyPackages]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetNextSchedule]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetNextSchedule]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetNestedPackagesSummary]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetNestedPackagesSummary]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsersByPlanId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetNestedPackagesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetNestedPackagesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetMyPackages]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetMyPackages]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlans]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUsersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLyncUsersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlanByAccountId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUsersByPlanId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLyncUsersByPlanId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLyncUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLyncUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetLevelResourceGroups]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUserPlans]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLyncUserPlans]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemPrivateIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUserPlanByAccountId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLyncUserPlanByAccountId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLyncUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemIdByOrganizationId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLevelResourceGroups]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetLevelResourceGroups]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddressesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemPrivateIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetItemPrivateIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetItemIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemIdByOrganizationId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetItemIdByOrganizationId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetInstanceID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemDmzIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetItemDmzIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlans]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetIPAddressesPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetIPAddressesPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlanQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetHostingAddons]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetInstanceID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetInstanceID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetGroupProviders]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingPlans]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetHostingPlans]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetFilterURLByHostingPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingPlanQuotas]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetHostingPlanQuotas]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetFilterURL]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetHostingPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTags]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingAddons]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetHostingAddons]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeRetentionPolicyTag]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetGroupProviders]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetGroupProviders]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationStatistics]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetFilterURLByHostingPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetFilterURLByHostingPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetFilterURL]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetFilterURL]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganizationDomains]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeRetentionPolicyTags]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeRetentionPolicyTags]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeRetentionPolicyTag]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlans]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganizationStatistics]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeOrganizationStatistics]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganizationSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeOrganizationSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganizationDomains]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeOrganizationDomains]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeMailboxes]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxPlans]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeMailboxPlans]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeDisclaimer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxPlanRetentionPolicyTags]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeMailboxPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccounts]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxes]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeMailboxes]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountEmailAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeDisclaimers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeDisclaimers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountDisclaimerId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeDisclaimer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeDisclaimer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByMailboxPlanId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccountsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountNameWithoutItemId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccounts]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccounts]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccountByAccountName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountEmailAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccountEmailAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetExchangeAccount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountDisclaimerId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccountDisclaimerId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFoldersPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountByMailboxPlanId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccountByMailboxPlanId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolders]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountByAccountNameWithoutItemId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccountByAccountNameWithoutItemId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderOwaUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountByAccountName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccountByAccountName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolderId]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetExchangeAccount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetEnterpriseFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFoldersPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetEnterpriseFoldersPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolders]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetEnterpriseFolders]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByZoneID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolderOwaUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetEnterpriseFolderOwaUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainsByDomainItemID]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolderId]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetEnterpriseFolderId]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomains]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetEnterpriseFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainDnsRecords]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomainsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainByName]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainsByZoneID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomainsByZoneID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomainAllDnsRecords]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainsByDomainItemID]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomainsByDomainItemID]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomains]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomains]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsTotal]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainDnsRecords]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomainDnsRecords]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainByName]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomainByName]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainAllDnsRecords]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomainAllDnsRecords]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByPackage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecordsByGroup]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsTotal]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDnsRecordsTotal]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetDnsRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDnsRecordsByService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDnsRecordsByServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByPackage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDnsRecordsByPackage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByGroup]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDnsRecordsByGroup]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCRMOrganizationUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetDnsRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetComments]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMUsersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetCRMUsersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetClusters]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetCRMUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetCertificatesForSite]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetCRMUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsersCount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMOrganizationUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetCRMOrganizationUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBlackBerryUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetComments]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetComments]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTopTask]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetClusters]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetClusters]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCertificatesForSite]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetCertificatesForSite]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskParams]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBlackBerryUsersCount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBlackBerryUsersCount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTaskLogs]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBlackBerryUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBlackBerryUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetBackgroundTask]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTopTask]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBackgroundTopTask]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAvailableVirtualServices]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBackgroundTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTaskParams]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBackgroundTaskParams]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogSources]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTaskLogs]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBackgroundTaskLogs]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecordsPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTask]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetBackgroundTask]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAuditLogRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAvailableVirtualServices]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAvailableVirtualServices]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAllServers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAuditLogTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAllPackages]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogSources]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAuditLogSources]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAdditionalGroups]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogRecordsPaged]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAuditLogRecordsPaged]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetAccessTokenByAccessToken]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAuditLogRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAllServers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAllServers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeOrganizationDomainExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAllPackages]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAllPackages]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAdditionalGroups]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAdditionalGroups]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ExchangeAccountEmailAddressExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAccessTokenByAccessToken]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetAccessTokenByAccessToken]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DistributePackageServices]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeOrganizationExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ExchangeOrganizationExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteVirtualServices]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeOrganizationDomainExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ExchangeOrganizationDomainExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUserThemeSetting]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeAccountExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ExchangeAccountExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUserEmailAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeAccountEmailAddressExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ExchangeAccountEmailAddressExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DistributePackageServices]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DistributePackageServices]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSupportServiceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteVirtualServices]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteVirtualServices]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteUserThemeSetting]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteUserThemeSetting]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSfBUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteUserEmailAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteUserEmailAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteServiceItem]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSupportServiceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteSupportServiceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSfBUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteSfBUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteSchedule]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSfBUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteSfBUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServerSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteServiceItem]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteServiceItem]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollectionSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteRDSCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSchedule]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteSchedule]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePrivateNetworkVLAN]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSServerSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteRDSServerSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePackageAddon]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteRDSServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeletePackage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSCollectionSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteRDSCollectionSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteRDSCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationStoragSpacesFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeletePrivateNetworkVLAN]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeletePrivateNetworkVLAN]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOrganizationDeletedUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeletePackageAddon]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeletePackageAddon]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteOCSUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeletePackage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeletePackage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOrganizationUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteOrganizationUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLyncUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOrganizationStoragSpacesFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteOrganizationStoragSpacesFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteLevelResourceGroups]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOrganizationDeletedUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteOrganizationDeletedUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOCSUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteOCSUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemPrivateIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteLyncUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteLyncUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteLyncUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteLyncUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteLevelResourceGroups]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteLevelResourceGroups]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemPrivateIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteItemPrivateIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteHostingPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemPrivateIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteItemPrivateIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredWebDavAccessTokens]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteItemIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExpiredAccessTokenTokens]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteItemIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeRetentionPolicyTag]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemDmzIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteItemDmzIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganizationDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemDmzIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteItemDmzIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteHostingPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteHostingPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeMailboxPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExpiredWebDavAccessTokens]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExpiredWebDavAccessTokens]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeDisclaimer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExpiredAccessTokenTokens]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExpiredAccessTokenTokens]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccountEmailAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeRetentionPolicyTag]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteExchangeAccount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeOrganizationDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeOrganizationDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteEnterpriseFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDomainDnsRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeMailboxPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeMailboxPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteDnsRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeDisclaimer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeDisclaimer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCRMOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeAccountEmailAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeAccountEmailAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteComment]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeAccount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteExchangeAccount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCluster]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteEnterpriseFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteEnterpriseFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteCertificate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteDomainDnsRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteDomainDnsRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBlackBerryUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTasks]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteDnsRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteDnsRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTaskParams]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteCRMOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteCRMOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteBackgroundTask]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteComment]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteComment]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecordsComplete]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteCluster]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteCluster]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAuditLogRecords]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteCertificate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteCertificate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAllLogRecords]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBlackBerryUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteBlackBerryUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAllEnterpriseFolderOwaUsers]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBackgroundTasks]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteBackgroundTasks]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAdditionalGroup]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBackgroundTaskParams]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteBackgroundTaskParams]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteAccessToken]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBackgroundTask]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteBackgroundTask]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageVLAN]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAuditLogRecordsComplete]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteAuditLogRecordsComplete]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeallocatePackageIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAuditLogRecords]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteAuditLogRecords]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CreateStorageSpaceFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAllLogRecords]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteAllLogRecords]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ConvertToExchangeOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAllEnterpriseFolderOwaUsers]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteAllEnterpriseFolderOwaUsers]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CompleteSSLRequest]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAdditionalGroup]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteAdditionalGroup]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAccessToken]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeleteAccessToken]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSSLExistsForWebsite]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeallocatePackageVLAN]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeallocatePackageVLAN]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSSL]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeallocatePackageIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[DeallocatePackageIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckSfBUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CreateStorageSpaceFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CreateStorageSpaceFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceLevelUsage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ConvertToExchangeOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ConvertToExchangeOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExistsInService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CompleteSSLRequest]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CompleteSSLRequest]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckServiceItemExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckRDSServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckSSLExistsForWebsite]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckSSLExistsForWebsite]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckOCSUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckSSL]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckSSL]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckLyncUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckSfBUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckSfBUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckDomainUsedByHostedOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckServiceLevelUsage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckServiceLevelUsage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckServiceItemExistsInService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckServiceItemExistsInService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CheckBlackBerryUserExists]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckServiceItemExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckServiceItemExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangeUserPassword]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckRDSServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckRDSServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangePackageUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckOCSUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckOCSUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[ChangeExchangeAcceptedDomainType]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckLyncUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckLyncUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[CanChangeMfa]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckDomainUsedByHostedOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckDomainUsedByHostedOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageVLANs]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AllocatePackageIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckBlackBerryUserExists]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CheckBlackBerryUserExists]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddWebDavPortalUsersSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChangeUserPassword]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ChangeUserPassword]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddWebDavAccessToken]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChangePackageUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ChangePackageUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddVirtualServices]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChangeExchangeAcceptedDomainType]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[ChangeExchangeAcceptedDomainType]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddUserToRDSCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanChangeMfa]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[CanChangeMfa]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AllocatePackageVLANs]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AllocatePackageVLANs]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSupportServiceLevel]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AllocatePackageIPAddresses]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AllocatePackageIPAddresses]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSSLRequest]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddWebDavPortalUsersSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddWebDavPortalUsersSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSfBUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddWebDavAccessToken]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddWebDavAccessToken]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSfBUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddVirtualServices]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddVirtualServices]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddServiceItem]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddUserToRDSCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddUserToRDSCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddService]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSupportServiceLevel]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddSupportServiceLevel]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddSchedule]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSSLRequest]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddSSLRequest]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSfBUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddSfBUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServerToCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSfBUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddSfBUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSServer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddServiceItem]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddServiceItem]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSMessage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddService]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddService]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollectionSettings]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCollection]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSchedule]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddSchedule]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddRDSCertificate]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSServerToOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSServerToOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPrivateNetworkVlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSServerToCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSServerToCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPFX]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSServer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSServer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPackageAddon]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSMessage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSMessage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddPackage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSCollectionSettings]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSCollectionSettings]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationStoragSpacesFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSCollection]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSCollection]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOrganizationDeletedUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSCertificate]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddRDSCertificate]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddOCSUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPrivateNetworkVlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddPrivateNetworkVlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLyncUserPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPFX]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddPFX]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLyncUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPackageAddon]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddPackageAddon]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddLevelResourceGroups]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPackage]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddPackage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemPrivateIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddOrganizationStoragSpacesFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddOrganizationStoragSpacesFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddOrganizationDeletedUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddOrganizationDeletedUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddOCSUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddOCSUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddHostingPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddLyncUserPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddLyncUserPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeRetentionPolicyTag]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddLyncUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddLyncUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganizationDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddLevelResourceGroups]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddLevelResourceGroups]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeOrganization]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddItemPrivateIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddItemPrivateIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlanRetentionPolicyTag]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddItemIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddItemIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeMailboxPlan]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddItemDmzIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddItemDmzIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeDisclaimer]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddIPAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddIPAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccountEmailAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddHostingPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddHostingPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddExchangeAccount]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeRetentionPolicyTag]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolderOwaUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeOrganizationDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeOrganizationDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddEnterpriseFolder]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeOrganization]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeOrganization]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDomainDnsRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeMailboxPlanRetentionPolicyTag]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeMailboxPlanRetentionPolicyTag]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDomain]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeMailboxPlan]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeMailboxPlan]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddDnsRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeDisclaimer]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeDisclaimer]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddComment]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeAccountEmailAddress]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeAccountEmailAddress]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddCluster]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeAccount]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddExchangeAccount]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBlackBerryUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddEnterpriseFolderOwaUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddEnterpriseFolderOwaUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskStack]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddEnterpriseFolder]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddEnterpriseFolder]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskParam]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddDomainDnsRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddDomainDnsRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTaskLog]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddDomain]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddDomain]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddBackgroundTask]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddDnsRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddDnsRecord]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAuditLogRecord]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddComment]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddComment]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAdditionalGroup]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddCluster]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddCluster]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddAccessToken]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBlackBerryUser]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddBlackBerryUser]
 GO
-DROP FUNCTION IF EXISTS [dbo].[UsersTree]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTaskStack]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddBackgroundTaskStack]
 GO
-DROP FUNCTION IF EXISTS [dbo].[UserParents]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTaskParam]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddBackgroundTaskParam]
 GO
-DROP FUNCTION IF EXISTS [dbo].[SplitString]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTaskLog]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddBackgroundTaskLog]
 GO
-DROP FUNCTION IF EXISTS [dbo].[PackagesTree]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTask]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddBackgroundTask]
 GO
-DROP FUNCTION IF EXISTS [dbo].[PackageParents]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddAuditLogRecord]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddAuditLogRecord]
 GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageServiceLevelResource]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddAdditionalGroup]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddAdditionalGroup]
 GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageExceedingQuotas]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddAccessToken]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[AddAccessToken]
 GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedResource]
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[UsersDetailed]'))
+DROP VIEW [dbo].[UsersDetailed]
 GO
-DROP FUNCTION IF EXISTS [dbo].[GetPackageAllocatedQuota]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UsersTree]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[UsersTree]
 GO
-DROP FUNCTION IF EXISTS [dbo].[GetItemComments]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserParents]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[UserParents]
 GO
-DROP FUNCTION IF EXISTS [dbo].[GetFullIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SplitString]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[SplitString]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckUserParent]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PackagesTree]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[PackagesTree]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckPackageParent]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PackageParents]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[PackageParents]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckIsUserAdmin]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageServiceLevelResource]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GetPackageServiceLevelResource]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckExceedingQuota]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageExceedingQuotas]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GetPackageExceedingQuotas]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorUserRights]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAllocatedResource]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GetPackageAllocatedResource]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorParentPackageRights]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAllocatedQuota]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GetPackageAllocatedQuota]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CheckActorPackageRights]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemComments]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GetItemComments]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CanUpdateUserDetails]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetFullIPAddress]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[GetFullIPAddress]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CanUpdatePackageDetails]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckUserParent]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckUserParent]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CanGetUserPassword]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckPackageParent]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckPackageParent]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CanGetUserDetails]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckIsUserAdmin]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckIsUserAdmin]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CanCreateUser]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckExceedingQuota]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckExceedingQuota]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CanChangeMfaFunc]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckActorUserRights]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckActorUserRights]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CalculateQuotaUsage]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckActorParentPackageRights]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckActorParentPackageRights]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CalculatePackageDiskspace]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckActorPackageRights]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CheckActorPackageRights]
 GO
-DROP FUNCTION IF EXISTS [dbo].[CalculatePackageBandwidth]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanUpdateUserDetails]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CanUpdateUserDetails]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzNetworkVLANs]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanUpdatePackageDetails]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CanUpdatePackageDetails]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanGetUserPassword]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CanGetUserPassword]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetItemDmzIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanGetUserDetails]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CanGetUserDetails]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[DeleteItemDmzIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanCreateUser]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CanCreateUser]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[SetItemDmzPrimaryIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanChangeMfaFunc]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CanChangeMfaFunc]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[AddItemDmzIPAddress]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CalculateQuotaUsage]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CalculateQuotaUsage]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddressesPaged]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CalculatePackageDiskspace]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CalculatePackageDiskspace]
 GO
-DROP PROCEDURE IF EXISTS [dbo].[GetPackageDmzIPAddresses]
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CalculatePackageBandwidth]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
+DROP FUNCTION [dbo].[CalculatePackageBandwidth]
+GO
 			");
 		}
 		#endregion
 
+		/// <inheritdoc />
 		protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
