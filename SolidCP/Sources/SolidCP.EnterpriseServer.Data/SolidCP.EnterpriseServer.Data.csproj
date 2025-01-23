@@ -159,6 +159,13 @@
     </ItemGroup>
 
     <ItemGroup>
+      <None Remove="Migrations\MySql\install.mysql.sql" />
+      <None Remove="Migrations\PostgreSql\install.postgresql.sql" />
+      <None Remove="Migrations\Sqlite\install.sqlite.sql" />
+      <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
+    </ItemGroup>
+
+    <ItemGroup>
         <None Update="CodeTemplates\EFCore\EntityType.t4">
             <Generator></Generator>
         </None>
@@ -169,18 +176,17 @@
 
     <ItemGroup>
       <EmbeddedResource Include="LegacyScripts\update_db.sql" />
+      <EmbeddedResource Include="Migrations\MySql\install.mysql.sql" />
+      <EmbeddedResource Include="Migrations\PostgreSql\install.postgresql.sql" />
+      <EmbeddedResource Include="Migrations\Sqlite\install.sqlite.sql" />
       <EmbeddedResource Include="Migrations\SqlServer\InitialCreate_StoredProcedures.sql" />
+      <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
     </ItemGroup>
 
     <ItemGroup>
         <Compile Update="Extensions\EntityDataTable.cs">
             <SubType>Component</SubType>
         </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Migrations\PostgreSql\" />
-      <Folder Include="Migrations\Sqlite\" />
     </ItemGroup>
 
 </Project>
