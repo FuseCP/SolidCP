@@ -223,7 +223,7 @@ namespace SolidCP.Providers.OS
 							case WindowsVersion.WindowsServer2003:
 							case WindowsVersion.WindowsXP:
 							case WindowsVersion.WindowsNT4:
-								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2003")) as Providers.OS.IOperatingSystem;
+								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2003, SolidCP.Providers.OS.Windows2003")) as Providers.OS.IOperatingSystem;
 								break;
 						}
 					}
