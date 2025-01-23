@@ -2852,6 +2852,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 1704, null, "Microsoft SQL Server 2017", "MSSQL", 72, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer" },
                     { 1705, null, "Microsoft SQL Server 2019", "MSSQL", 74, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer" },
                     { 1706, null, "Microsoft SQL Server 2022", "MSSQL", 75, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2022, SolidCP.Providers.Database.SqlServer" },
+                    { 1707, null, "Microsoft SQL Server 2025", "MSSQL", 76, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2025, SolidCP.Providers.Database.SqlServer" },
                     { 1711, null, "Hosted SharePoint 2019", "HostedSharePoint30", 73, "HostedSharePoint2019", "SolidCP.Providers.HostedSolution.HostedSharePointServer2019, SolidCP.Providers.HostedSolution.SharePoint2019" },
                     { 1800, null, "Windows Server 2019", "Windows2012", 1, "Windows2019", "SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019" },
                     { 1801, true, "Microsoft Hyper-V 2019", "HyperV2012R2", 33, "HyperV2019", "SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019" },
@@ -3463,7 +3464,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                     { 200, true, false, true, "SharePointFoundationSiteCollection", true, 20, true, true, false, "SolidCP.Providers.SharePoint.SharePointSiteCollection, SolidCP.Providers.Base", 25 },
                     { 202, true, false, true, "MariaDBDatabase", true, 50, true, true, false, "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base", 1 },
                     { 203, true, false, false, "MariaDBUser", true, 50, true, true, false, "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", 1 },
-                    { 204, true, false, true, "SharePointEnterpriseSiteCollection", true, 73, true, true, false, "SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base", 100 }
+                    { 204, true, false, true, "SharePointEnterpriseSiteCollection", true, 73, true, true, false, "SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base", 100 },
+                    { 205, true, false, true, "MsSQL2025Database", true, 76, true, true, false, "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base", 1 },
+                    { 206, true, false, false, "MsSQL2025User", true, 76, true, true, false, "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -4669,11 +4672,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                 name: "WebDavPortalUsersSettingsIdx_AccountId",
                 table: "WebDavPortalUsersSettings",
                 column: "AccountId");
+
+            StoredProceduresUp(migrationBuilder);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            StoredProceduresDown(migrationBuilder);
+
             migrationBuilder.DropTable(
                 name: "AccessTokens");
 

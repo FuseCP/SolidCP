@@ -5116,6 +5116,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         },
                         new
                         {
+                            ProviderId = 1707,
+                            DisplayName = "Microsoft SQL Server 2025",
+                            EditorControl = "MSSQL",
+                            GroupId = 76,
+                            ProviderName = "MsSQL",
+                            ProviderType = "SolidCP.Providers.Database.MsSqlServer2025, SolidCP.Providers.Database.SqlServer"
+                        },
+                        new
+                        {
                             ProviderId = 1711,
                             DisplayName = "Hosted SharePoint 2019",
                             EditorControl = "HostedSharePoint30",
@@ -14762,6 +14771,36 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                             Suspendable = false,
                             TypeName = "SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base",
                             TypeOrder = 100
+                        },
+                        new
+                        {
+                            ItemTypeId = 205,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = true,
+                            DisplayName = "MsSQL2025Database",
+                            Disposable = true,
+                            GroupId = 76,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base",
+                            TypeOrder = 1
+                        },
+                        new
+                        {
+                            ItemTypeId = 206,
+                            Backupable = true,
+                            CalculateBandwidth = false,
+                            CalculateDiskspace = false,
+                            DisplayName = "MsSQL2025User",
+                            Disposable = true,
+                            GroupId = 76,
+                            Importable = true,
+                            Searchable = true,
+                            Suspendable = false,
+                            TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base",
+                            TypeOrder = 1
                         });
                 });
 

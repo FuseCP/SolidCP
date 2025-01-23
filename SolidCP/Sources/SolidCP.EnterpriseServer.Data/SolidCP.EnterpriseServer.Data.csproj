@@ -43,7 +43,7 @@
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.1" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.3" />
-        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.1" />
+        <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
         <PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.60" Condition="$(SupportOracle) == 'True'" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="9.103.7" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
@@ -146,11 +146,9 @@
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
-        <Compile Remove="Migrations\SqlServer\InitialCreate.cs" />
         <!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
         <None Include="DbContextBase.Source.cs" />
-        <None Include="Migrations\SqlServer\InitialCreate.cs" />
         <Compile Remove="DbContextBase.Source.cs" />
         <None Include="Migrations\Backup\**\*.*" />
         <Compile Remove="Migrations\Backup\**\*.cs" />

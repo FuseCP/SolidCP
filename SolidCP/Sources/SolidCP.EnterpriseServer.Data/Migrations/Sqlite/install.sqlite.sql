@@ -3377,6 +3377,10 @@ VALUES (1706, NULL, 'Microsoft SQL Server 2022', 'MSSQL', 75, 'MsSQL', 'SolidCP.
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1707, NULL, 'Microsoft SQL Server 2025', 'MSSQL', 76, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2025, SolidCP.Providers.Database.SqlServer');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
 VALUES (1711, NULL, 'Hosted SharePoint 2019', 'HostedSharePoint30', 73, 'HostedSharePoint2019', 'SolidCP.Providers.HostedSolution.HostedSharePointServer2019, SolidCP.Providers.HostedSolution.SharePoint2019');
 SELECT changes();
 
@@ -5327,6 +5331,14 @@ SELECT changes();
 
 INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
 VALUES (204, 1, 0, 1, 'SharePointEnterpriseSiteCollection', 1, 73, 1, 1, 0, 'SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base', 100);
+SELECT changes();
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (205, 1, 0, 1, 'MsSQL2025Database', 1, 76, 1, 1, 0, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1);
+SELECT changes();
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (206, 1, 0, 0, 'MsSQL2025User', 1, 76, 1, 1, 0, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1);
 SELECT changes();
 
 
@@ -8233,7 +8245,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20250123133656_InitialCreate', '9.0.1');
+VALUES ('20250123141952_InitialCreate', '9.0.1');
 
 COMMIT;
 
