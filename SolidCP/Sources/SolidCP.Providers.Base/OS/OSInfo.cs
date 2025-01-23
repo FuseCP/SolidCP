@@ -193,6 +193,9 @@ namespace SolidCP.Providers.OS
 						var version = WindowsOSInfo.GetVersion();
 						switch (version)
 						{
+							case WindowsVersion.WindowsServer2025:
+								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025")) as Providers.OS.IOperatingSystem;
+								break;
 							case WindowsVersion.WindowsServer2022:
 							case WindowsVersion.Windows11:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022")) as Providers.OS.IOperatingSystem;
@@ -214,7 +217,7 @@ namespace SolidCP.Providers.OS
 							case WindowsVersion.WindowsServer2008R2:
 							case WindowsVersion.Vista:
 							case WindowsVersion.Windows7:
-								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2008m SolidCP.Providers.OS.Windows2008")) as Providers.OS.IOperatingSystem;
+								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2008, SolidCP.Providers.OS.Windows2008")) as Providers.OS.IOperatingSystem;
 								break;
 
 							case WindowsVersion.WindowsServer2003:
