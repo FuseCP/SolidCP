@@ -2562,6 +2562,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 });
 
             migrationBuilder.InsertData(
+                table: "Quotas",
+                columns: new[] { "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota" },
+                values: new object[] { 750, 36, null, null, null, "DMZ Network", "VPS2012.DMZNetworkEnabled", 22, 1, false });
+
+            migrationBuilder.InsertData(
                 table: "ResourceGroups",
                 columns: new[] { "GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup" },
                 values: new object[,]
@@ -2603,6 +2608,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { 73, "SolidCP.EnterpriseServer.HostedSharePointServerEntController", "Sharepoint Enterprise Server", 15, true },
                     { 74, "SolidCP.EnterpriseServer.DatabaseServerController", "MsSQL2019", 10, true },
                     { 75, "SolidCP.EnterpriseServer.DatabaseServerController", "MsSQL2022", 10, true },
+                    { 76, "SolidCP.EnterpriseServer.DatabaseServerController", "MsSQL2025", 10, true },
                     { 90, "SolidCP.EnterpriseServer.DatabaseServerController", "MySQL8", 12, true },
                     { 91, "SolidCP.EnterpriseServer.DatabaseServerController", "MySQL9", 12, true },
                     { 167, null, "Proxmox", 20, true }
@@ -2821,7 +2827,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { 1550, null, "MariaDB 10.1", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB101, SolidCP.Providers.Database.MariaDB" },
                     { 1552, null, "Hosted SharePoint Enterprise 2013", "HostedSharePoint30", 73, "HostedSharePoint2013Ent", "SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent" },
                     { 1560, null, "MariaDB 10.2", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB" },
-                    { 1570, true, "MariaDB 10.3", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB" },
+                    { 1570, null, "MariaDB 10.3", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB" },
                     { 1571, null, "MariaDB 10.4", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
                     { 1572, null, "MariaDB 10.5", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB" },
                     { 1573, null, "MariaDB 10.6", "MariaDB", 50, "MariaDB", "SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB" },
@@ -2843,15 +2849,15 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { 1701, null, "Microsoft SQL Server 2016", "MSSQL", 71, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2016, SolidCP.Providers.Database.SqlServer" },
                     { 1702, null, "Hosted SharePoint Enterprise 2016", "HostedSharePoint30", 73, "HostedSharePoint2016Ent", "SolidCP.Providers.HostedSolution.HostedSharePointServer2016Ent, SolidCP.Providers.HostedSolution.SharePoint2016Ent" },
                     { 1703, null, "SimpleDNS Plus 6.x", "SimpleDNS", 7, "SimpleDNS", "SolidCP.Providers.DNS.SimpleDNS6, SolidCP.Providers.DNS.SimpleDNS60" },
-                    { 1704, true, "Microsoft SQL Server 2017", "MSSQL", 72, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer" },
-                    { 1705, true, "Microsoft SQL Server 2019", "MSSQL", 74, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer" },
+                    { 1704, null, "Microsoft SQL Server 2017", "MSSQL", 72, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer" },
+                    { 1705, null, "Microsoft SQL Server 2019", "MSSQL", 74, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer" },
                     { 1706, null, "Microsoft SQL Server 2022", "MSSQL", 75, "MsSQL", "SolidCP.Providers.Database.MsSqlServer2022, SolidCP.Providers.Database.SqlServer" },
                     { 1711, null, "Hosted SharePoint 2019", "HostedSharePoint30", 73, "HostedSharePoint2019", "SolidCP.Providers.HostedSolution.HostedSharePointServer2019, SolidCP.Providers.HostedSolution.SharePoint2019" },
                     { 1800, null, "Windows Server 2019", "Windows2012", 1, "Windows2019", "SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019" },
                     { 1801, true, "Microsoft Hyper-V 2019", "HyperV2012R2", 33, "HyperV2019", "SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019" },
                     { 1802, null, "Windows Server 2022", "Windows2012", 1, "Windows2022", "SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022" },
                     { 1803, true, "Microsoft Hyper-V 2022", "HyperV2012R2", 33, "HyperV2022", "SolidCP.Providers.Virtualization.HyperV2022, SolidCP.Providers.Virtualization.HyperV2022" },
-                    { 1804, true, "Windows Server 2025", "Windows2012", 1, "Windows2025", "SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025" },
+                    { 1804, null, "Windows Server 2025", "Windows2012", 1, "Windows2025", "SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025" },
                     { 1805, true, "Microsoft Hyper-V 2025", "HyperV2012R2", 33, "HyperV2025", "SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025" },
                     { 1901, null, "SimpleDNS Plus 8.x", "SimpleDNS", 7, "SimpleDNS", "SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80" },
                     { 1902, null, "Microsoft DNS Server 2016", "MSDNS", 7, "MSDNS.2016", "SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016" },
@@ -3147,10 +3153,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { 736, 75, null, null, null, "Database Restores", "MsSQL2022.Restore", 6, 1, false },
                     { 737, 75, null, null, null, "Database Truncate", "MsSQL2022.Truncate", 7, 1, false },
                     { 738, 75, null, null, null, "Max Log Size", "MsSQL2022.MaxLogSize", 4, 3, false },
-                    { 750, 33, null, null, null, "DMZ Network", "VPS2012.DMZNetworkEnabled", 22, 1, false },
                     { 751, 33, null, null, null, "Number of DMZ IP addresses per VPS", "VPS2012.DMZIPAddressesNumber", 23, 3, false },
                     { 752, 33, null, null, null, "Number of DMZ Network VLANs", "VPS2012.DMZVLANsNumber", 24, 2, false },
-                    { 753, 7, null, null, null, "Allow editing TTL in DNS Editor", "DNS.EditTTL", 2, 1, false }
+                    { 753, 7, null, null, null, "Allow editing TTL in DNS Editor", "DNS.EditTTL", 2, 1, false },
+                    { 762, 76, null, null, null, "Max Database Size", "MsSQL2025.MaxDatabaseSize", 3, 3, false },
+                    { 763, 76, null, null, null, "Database Backups", "MsSQL2025.Backup", 5, 1, false },
+                    { 764, 76, null, null, null, "Database Restores", "MsSQL2025.Restore", 6, 1, false },
+                    { 765, 76, null, null, null, "Database Truncate", "MsSQL2025.Truncate", 7, 1, false },
+                    { 766, 76, null, null, null, "Max Log Size", "MsSQL2025.MaxLogSize", 4, 3, false }
                 });
 
             migrationBuilder.InsertData(
@@ -3652,7 +3662,9 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { 721, 74, null, 77, null, "Databases", "MsSQL2019.Databases", 1, 2, false },
                     { 722, 74, null, 78, null, "Users", "MsSQL2019.Users", 2, 2, false },
                     { 732, 75, null, 79, null, "Databases", "MsSQL2022.Databases", 1, 2, false },
-                    { 733, 75, null, 80, null, "Users", "MsSQL2022.Users", 2, 2, false }
+                    { 733, 75, null, 80, null, "Users", "MsSQL2022.Users", 2, 2, false },
+                    { 760, 76, null, 79, null, "Databases", "MsSQL2025.Databases", 1, 2, false },
+                    { 761, 76, null, 80, null, "Users", "MsSQL2025.Users", 2, 2, false }
                 });
 
             migrationBuilder.InsertData(

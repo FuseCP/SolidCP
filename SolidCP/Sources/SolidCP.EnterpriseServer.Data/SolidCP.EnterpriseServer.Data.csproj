@@ -146,9 +146,11 @@
     <ItemGroup>
         <None Include="CodeTemplates\EFCore\Aliases.cs" />
         <Compile Remove="CodeTemplates\EFCore\Aliases.cs" />
+        <Compile Remove="Migrations\SqlServer\InitialCreate.cs" />
         <!--<Compile Remove="Configuration\**\*.cs" />
 		<None Include="Configuration\**\*.cs" />-->
         <None Include="DbContextBase.Source.cs" />
+        <None Include="Migrations\SqlServer\InitialCreate.cs" />
         <Compile Remove="DbContextBase.Source.cs" />
         <None Include="Migrations\Backup\**\*.*" />
         <Compile Remove="Migrations\Backup\**\*.cs" />
@@ -168,11 +170,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="Migrations\SqlServer\20250122203047_InitialCreate_StoredProcedures.sql" />
-      <None Remove="Migrations\SqlServer\install.sqlserver.sql" />
       <EmbeddedResource Include="LegacyScripts\update_db.sql" />
-      <EmbeddedResource Include="Migrations\SqlServer\20250122203047_InitialCreate_StoredProcedures.sql" />
-      <EmbeddedResource Include="Migrations\SqlServer\install.sqlserver.sql" />
+      <EmbeddedResource Include="Migrations\SqlServer\InitialCreate_StoredProcedures.sql" />
     </ItemGroup>
 
     <ItemGroup>

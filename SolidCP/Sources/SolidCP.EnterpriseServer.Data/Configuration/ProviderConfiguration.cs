@@ -192,7 +192,7 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1552, DisplayName = "Hosted SharePoint Enterprise 2013", EditorControl = "HostedSharePoint30", GroupId = 73, ProviderName = "HostedSharePoint2013Ent", ProviderType = "SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Provider" +
 				"s.HostedSolution.SharePoint2013Ent" },
 			new Provider() { ProviderId = 1560, DisplayName = "MariaDB 10.2", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB" },
-			new Provider() { ProviderId = 1570, DisableAutoDiscovery = true, DisplayName = "MariaDB 10.3", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB",
+			new Provider() { ProviderId = 1570, DisplayName = "MariaDB 10.3", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB",
 				ProviderType = "SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1571, DisplayName = "MariaDB 10.4", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB" },
 			new Provider() { ProviderId = 1572, DisplayName = "MariaDB 10.5", EditorControl = "MariaDB", GroupId = 50, ProviderName = "MariaDB", ProviderType = "SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB" },
@@ -218,11 +218,12 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1702, DisplayName = "Hosted SharePoint Enterprise 2016", EditorControl = "HostedSharePoint30", GroupId = 73, ProviderName = "HostedSharePoint2016Ent", ProviderType = "SolidCP.Providers.HostedSolution.HostedSharePointServer2016Ent, SolidCP.Provider" +
 				"s.HostedSolution.SharePoint2016Ent" },
 			new Provider() { ProviderId = 1703, DisplayName = "SimpleDNS Plus 6.x", EditorControl = "SimpleDNS", GroupId = 7, ProviderName = "SimpleDNS", ProviderType = "SolidCP.Providers.DNS.SimpleDNS6, SolidCP.Providers.DNS.SimpleDNS60" },
-			new Provider() { ProviderId = 1704, DisableAutoDiscovery = true, DisplayName = "Microsoft SQL Server 2017", EditorControl = "MSSQL", GroupId = 72, ProviderName = "MsSQL",
+			new Provider() { ProviderId = 1704, DisplayName = "Microsoft SQL Server 2017", EditorControl = "MSSQL", GroupId = 72, ProviderName = "MsSQL",
 				ProviderType = "SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer" },
-			new Provider() { ProviderId = 1705, DisableAutoDiscovery = true, DisplayName = "Microsoft SQL Server 2019", EditorControl = "MSSQL", GroupId = 74, ProviderName = "MsSQL",
+			new Provider() { ProviderId = 1705, DisplayName = "Microsoft SQL Server 2019", EditorControl = "MSSQL", GroupId = 74, ProviderName = "MsSQL",
 				ProviderType = "SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer" },
 			new Provider() { ProviderId = 1706, DisplayName = "Microsoft SQL Server 2022", EditorControl = "MSSQL", GroupId = 75, ProviderName = "MsSQL", ProviderType = "SolidCP.Providers.Database.MsSqlServer2022, SolidCP.Providers.Database.SqlServer" },
+			new Provider() { ProviderId = 1707, DisplayName = "Microsoft SQL Server 2025", EditorControl = "MSSQL", GroupId = 76, ProviderName = "MsSQL", ProviderType = "SolidCP.Providers.Database.MsSqlServer2025, SolidCP.Providers.Database.SqlServer" },
 			new Provider() { ProviderId = 1711, DisplayName = "Hosted SharePoint 2019", EditorControl = "HostedSharePoint30", GroupId = 73, ProviderName = "HostedSharePoint2019", ProviderType = "SolidCP.Providers.HostedSolution.HostedSharePointServer2019, SolidCP.Providers.H" +
 				"ostedSolution.SharePoint2019" },
 			new Provider() { ProviderId = 1800, DisplayName = "Windows Server 2019", EditorControl = "Windows2012", GroupId = 1, ProviderName = "Windows2019", ProviderType = "SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019" },
@@ -233,7 +234,7 @@ public partial class ProviderConfiguration: EntityTypeConfiguration<Provider>
 			new Provider() { ProviderId = 1803, DisableAutoDiscovery = true, DisplayName = "Microsoft Hyper-V 2022", EditorControl = "HyperV2012R2", GroupId = 33, ProviderName = "HyperV2022",
 				ProviderType = "SolidCP.Providers.Virtualization.HyperV2022, SolidCP.Providers.Virtualization.Hy" +
 				"perV2022" },
-			new Provider() { ProviderId = 1804, DisableAutoDiscovery = true, DisplayName = "Windows Server 2025", EditorControl = "Windows2012", GroupId = 1, ProviderName = "Windows2025",
+			new Provider() { ProviderId = 1804, DisplayName = "Windows Server 2025", EditorControl = "Windows2012", GroupId = 1, ProviderName = "Windows2025",
 				ProviderType = "SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025" },
 			new Provider() { ProviderId = 1805, DisableAutoDiscovery = true, DisplayName = "Microsoft Hyper-V 2025", EditorControl = "HyperV2012R2", GroupId = 33, ProviderName = "HyperV2025",
 				ProviderType = "SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.Hy" +

@@ -136,7 +136,12 @@ public partial class ServiceItemTypeConfiguration: EntityTypeConfiguration<Servi
 				GroupId = 50, Importable = true, Searchable = true, Suspendable = false, TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", TypeOrder = 1 },
 			new ServiceItemType() { ItemTypeId = 204, Backupable = true, CalculateBandwidth = false, CalculateDiskspace = true, DisplayName = "SharePointEnterpriseSiteCollection", Disposable = true,
 				GroupId = 73, Importable = true, Searchable = true, Suspendable = false, TypeName = "SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Provide" +
-				"rs.Base", TypeOrder = 100 }
+				"rs.Base", TypeOrder = 100 },
+			new ServiceItemType() { ItemTypeId = 205, Backupable = true, CalculateBandwidth = false, CalculateDiskspace = true, DisplayName = "MsSQL2025Database", Disposable = true,
+				GroupId = 76, Importable = true, Searchable = true, Suspendable = false, TypeName = "SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base", TypeOrder = 1 },
+			new ServiceItemType() { ItemTypeId = 206, Backupable = true, CalculateBandwidth = false, CalculateDiskspace = false, DisplayName = "MsSQL2025User", Disposable = true,
+				GroupId = 76, Importable = true, Searchable = true, Suspendable = false, TypeName = "SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base", TypeOrder = 1 },
+
 		});
 		#endregion
 	}

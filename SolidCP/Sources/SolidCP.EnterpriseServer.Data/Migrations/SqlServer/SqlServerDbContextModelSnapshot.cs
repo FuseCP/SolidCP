@@ -4993,7 +4993,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         new
                         {
                             ProviderId = 1570,
-                            DisableAutoDiscovery = true,
                             DisplayName = "MariaDB 10.3",
                             EditorControl = "MariaDB",
                             GroupId = 50,
@@ -5194,7 +5193,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         new
                         {
                             ProviderId = 1704,
-                            DisableAutoDiscovery = true,
                             DisplayName = "Microsoft SQL Server 2017",
                             EditorControl = "MSSQL",
                             GroupId = 72,
@@ -5204,7 +5202,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         new
                         {
                             ProviderId = 1705,
-                            DisableAutoDiscovery = true,
                             DisplayName = "Microsoft SQL Server 2019",
                             EditorControl = "MSSQL",
                             GroupId = 74,
@@ -5270,7 +5267,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         new
                         {
                             ProviderId = 1804,
-                            DisableAutoDiscovery = true,
                             DisplayName = "Windows Server 2025",
                             EditorControl = "Windows2012",
                             GroupId = 1,
@@ -8728,7 +8724,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         new
                         {
                             QuotaId = 750,
-                            GroupId = 33,
+                            GroupId = 36,
                             QuotaDescription = "DMZ Network",
                             QuotaName = "VPS2012.DMZNetworkEnabled",
                             QuotaOrder = 22,
@@ -8763,6 +8759,78 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             QuotaName = "DNS.EditTTL",
                             QuotaOrder = 2,
                             QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 760,
+                            GroupId = 76,
+                            ItemTypeId = 79,
+                            QuotaDescription = "Databases",
+                            QuotaName = "MsSQL2025.Databases",
+                            QuotaOrder = 1,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 761,
+                            GroupId = 76,
+                            ItemTypeId = 80,
+                            QuotaDescription = "Users",
+                            QuotaName = "MsSQL2025.Users",
+                            QuotaOrder = 2,
+                            QuotaTypeId = 2,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 762,
+                            GroupId = 76,
+                            QuotaDescription = "Max Database Size",
+                            QuotaName = "MsSQL2025.MaxDatabaseSize",
+                            QuotaOrder = 3,
+                            QuotaTypeId = 3,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 763,
+                            GroupId = 76,
+                            QuotaDescription = "Database Backups",
+                            QuotaName = "MsSQL2025.Backup",
+                            QuotaOrder = 5,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 764,
+                            GroupId = 76,
+                            QuotaDescription = "Database Restores",
+                            QuotaName = "MsSQL2025.Restore",
+                            QuotaOrder = 6,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 765,
+                            GroupId = 76,
+                            QuotaDescription = "Database Truncate",
+                            QuotaName = "MsSQL2025.Truncate",
+                            QuotaOrder = 7,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 766,
+                            GroupId = 76,
+                            QuotaDescription = "Max Log Size",
+                            QuotaName = "MsSQL2025.MaxLogSize",
+                            QuotaOrder = 4,
+                            QuotaTypeId = 3,
                             ServiceQuota = false
                         });
                 });
@@ -9347,6 +9415,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             GroupId = 75,
                             GroupController = "SolidCP.EnterpriseServer.DatabaseServerController",
                             GroupName = "MsSQL2022",
+                            GroupOrder = 10,
+                            ShowGroup = true
+                        },
+                        new
+                        {
+                            GroupId = 76,
+                            GroupController = "SolidCP.EnterpriseServer.DatabaseServerController",
+                            GroupName = "MsSQL2025",
                             GroupOrder = 10,
                             ShowGroup = true
                         },
