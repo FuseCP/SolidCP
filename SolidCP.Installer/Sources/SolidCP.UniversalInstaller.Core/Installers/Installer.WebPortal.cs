@@ -10,6 +10,7 @@ using System.Diagnostics.Contracts;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
+using System.Xml.Linq;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -23,11 +24,14 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, WebPortalFolder), Settings.WebPortal.Urls ?? "", "", "");
 		}
+		public virtual string WebPortalInstallFilter(string file) => SetupFilter(file);
+		public virtual string WebPortalSetupFilter(string file) => ConfigAndSetupFilter(file);
+
 		public virtual void InstallWebPortal()
 		{
 			InstallWebPortalPrerequisites();
 			ReadWebPortalConfiguration();
-			CopyWebPortal();
+			CopyWebPortal(WebPortalInstallFilter);
 			SetWebPortalFilePermissions();
 			SetWebPortalFileOwner();
 			ConfigureWebPortal();
@@ -37,7 +41,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void UpdateWebPortal() {
 			InstallWebPortalPrerequisites();
 			ReadWebPortalConfiguration();
-			CopyWebPortal(ConfigAndSetupFilter);
+			CopyWebPortal(WebPortalSetupFilter);
 			SetWebPortalFilePermissions();
 			SetWebPortalFileOwner();
 			UpdateWebPortalConfig();
@@ -53,13 +57,27 @@ namespace SolidCP.UniversalInstaller
 		{
 			Directory.Delete(Path.Combine(InstallWebRootPath, WebPortalFolder), true);
 		}
-
 		public virtual void ReadWebPortalConfiguration()
 		{
 			Settings.WebPortal = new WebPortalSettings();
+
+			var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
+			var conf = XElement.Load(confFile);
+			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
+			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
+		}
+		public virtual void ConfigureWebPortal()
+		{
+			var settings = Settings.WebPortal;
+			var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
+			var conf = XElement.Load(confFile);
+			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
+			enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
+			conf.Save(confFile);
+
+			InstallLog("Configured Web Portal.");
 		}
 		public virtual void UpdateWebPortalConfig() { }
-		public virtual void ConfigureWebPortal() { }
 		public virtual void CopyWebPortal(Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;

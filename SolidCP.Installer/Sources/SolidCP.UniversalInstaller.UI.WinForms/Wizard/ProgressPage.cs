@@ -64,6 +64,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public Action Action { get; set; }
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
 		public int Maximum { get => progressBar.Maximum; set => progressBar.Maximum = value; }
 		public ProgressPage()
 		{
@@ -161,23 +162,33 @@ namespace SolidCP.UniversalInstaller.WinForms
 				var reportProgress = () => SetProgressValue(n++);
 				Installer.Current.Log.OnWrite += reportProgress;
 				Installer.Current.OnInfo += SetProgressText;
+				Installer.Current.OnError += ShowError;
 
 				Action?.Invoke();
 
 				Installer.Current.Log.OnWrite -= reportProgress;
 				Installer.Current.OnInfo -= SetProgressText;
+				Installer.Current.OnError -= ShowError;
 
 				this.progressBar.Value = Maximum;
+
+				SetProgressText("Completed. Click Next to continue.");
+				ParentForm.DialogResult = DialogResult.OK;
 			}
 			catch (Exception ex)
 			{
-				if (Utils.IsThreadAbortException(ex))
-					return;
-
-				return;
+				if (Installer.Current.Error == null)
+				{
+					Installer.Current.Error = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex);
+				} else
+				{
+					ShowError(ex);
+				}
+				this.progressBar.Value = 0;
+				SetProgressText("Installation failed. Click Next to continue.");
+				ParentForm.DialogResult = DialogResult.Abort;
 			}
 
-			SetProgressText("Completed. Click Next to continue.");
 			this.AllowMoveNext = true;
 			this.AllowCancel = false;
 			//unattended setup
@@ -211,6 +222,34 @@ namespace SolidCP.UniversalInstaller.WinForms
 		private void AbortProcess()
 		{
 			Installer.Current.Cancel.Cancel();
+		}
+
+		/// <summary>
+		/// Displays an error message box with the specified text.
+		/// </summary>
+		/// <param name="text">The text to display in the message box.</param>
+		protected void ShowError(string text)
+		{
+			MessageBox.Show(this, text, FindForm().Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+		protected void ShowError()
+		{
+			ShowError("An unexpected error has occurred. We apologize for this inconvenience.\n" +
+				"Please contact Technical Support at support@solidcp.com.\n\n" +
+				"Make sure you include a copy of the Installer.log file from the\n" +
+				"SolidCP Installer home directory.");
+			SetProgressText("Rollback ...");
+		}
+
+		bool errorShown = false;
+		protected void ShowError(Exception ex)
+		{
+			if (!errorShown)
+			{
+				errorShown = true;
+				ShowError();
+			}
 		}
 	}
 }

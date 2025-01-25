@@ -51,7 +51,7 @@
         <!--<PackageReference Include="ZstdSharp.Port" Version="0.8.0" />-->
     </ItemGroup>
     <ItemGroup Condition="$(EmbeddReferences) == 'true'">
-        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
+        <PackageReference Include="PortableCostura.Fody" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
         </PackageReference>

@@ -13,12 +13,13 @@ using System.Xml.Linq;
 using System.Text.RegularExpressions;
 using System.Security.Policy;
 using System.Security.Principal;
+using Microsoft.Win32;
 
 namespace SolidCP.UniversalInstaller;
 
 public class WindowsInstaller : Installer
 {
-	const bool Net8RuntimeNeededOnWindows = false;
+	const bool Net8RuntimeNeededOnWindows = true;
 
 	public override string InstallExeRootPath
 	{
@@ -28,9 +29,14 @@ public class WindowsInstaller : Installer
 	}
 	public override string InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }
 	public override string WebsiteLogsPath => InstallExeRootPath ?? "";
-
 	WinGet WinGet => (WinGet)((IWindowsOperatingSystem)OSInfo.Current).WinGet;
-	public override Func<string, string> UnzipFilter => Net48Filter;
+	public override string Net8Filter(string file)
+	{
+		file = SetupFilter(file);
+		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
+			!Regex.IsMatch(file, "(?:^|/)(?<!(?:^|/)bin_dotnet/)web.config", RegexOptions.IgnoreCase) &&
+			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
+	}
 
 	public override void InstallNet8Runtime()
 	{
@@ -64,26 +70,169 @@ public class WindowsInstaller : Installer
 		ResetHasDotnet();
 	}
 
+	private static List<string> GetInstalledNetFX1To45VersionFromRegistry()
+	{
+		var list = new List<string>();
+		// Opens the registry key for the .NET Framework entry.
+		using (RegistryKey ndpKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\"))
+		{
+			foreach (string versionKeyName in ndpKey.GetSubKeyNames())
+			{
+				// Skip .NET Framework 4.5 version information.
+				if (versionKeyName == "v4")
+				{
+					continue;
+				}
+
+				if (versionKeyName.StartsWith("v"))
+				{
+
+					RegistryKey versionKey = ndpKey.OpenSubKey(versionKeyName);
+					// Get the .NET Framework version value.
+					string name = (string)versionKey.GetValue("Version", "");
+					// Get the service pack (SP) number.
+					string sp = versionKey.GetValue("SP", "").ToString();
+
+					// Get the installation flag, or an empty string if there is none.
+					string install = versionKey.GetValue("Install", "").ToString();
+					if (string.IsNullOrEmpty(install)) // No install info; it must be in a child subkey.
+						list.Add(name);
+					else
+					{
+						if (!(string.IsNullOrEmpty(sp)) && install == "1")
+						{
+							list.Add(name);
+						}
+					}
+					if (!string.IsNullOrEmpty(name))
+					{
+						continue;
+					}
+					foreach (string subKeyName in versionKey.GetSubKeyNames())
+					{
+						RegistryKey subKey = versionKey.OpenSubKey(subKeyName);
+						name = (string)subKey.GetValue("Version", "");
+						if (!string.IsNullOrEmpty(name))
+							sp = subKey.GetValue("SP", "").ToString();
+
+						install = subKey.GetValue("Install", "").ToString();
+						if (string.IsNullOrEmpty(install)) //No install info; it must be later.
+							list.Add(name);
+						else
+						{
+							if (!(string.IsNullOrEmpty(sp)) && install == "1")
+							{
+								list.Add(name);
+							}
+							else if (install == "1")
+							{
+								list.Add(name);
+							}
+						}
+					}
+				}
+			}
+		}
+		return list;
+	}
+	private static List<string> GetInstalledNetFX45PlusFromRegistry()
+	{
+		var list = new List<string>();
+
+		const string subkey = @"SOFTWARE\Microsoft\NET Framework Setup\NDP\v4\Full\";
+
+		using (RegistryKey ndpKey = Registry.LocalMachine.OpenSubKey(subkey))
+		{
+			if (ndpKey == null)
+				return list;
+			//First check if there's an specific version indicated
+			if (ndpKey.GetValue("Version") != null)
+			{
+				list.Add(ndpKey.GetValue("Version").ToString());
+			}
+			else
+			{
+				if (ndpKey != null && ndpKey.GetValue("Release") != null)
+				{
+					list.Add(CheckFor45PlusVersion((int)ndpKey.GetValue("Release")));
+				}
+			}
+			return list;
+		}
+
+		// Checking the version using >= enables forward compatibility.
+		string CheckFor45PlusVersion(int releaseKey)
+		{
+			if (releaseKey >= 533320)
+				return "4.8.1";
+			if (releaseKey >= 528040)
+				return "4.8";
+			if (releaseKey >= 461808)
+				return "4.7.2";
+			if (releaseKey >= 461308)
+				return "4.7.1";
+			if (releaseKey >= 460798)
+				return "4.7";
+			if (releaseKey >= 394802)
+				return "4.6.2";
+			if (releaseKey >= 394254)
+				return "4.6.1";
+			if (releaseKey >= 393295)
+				return "4.6";
+			if (releaseKey >= 379893)
+				return "4.5.2";
+			if (releaseKey >= 378675)
+				return "4.5.1";
+			if (releaseKey >= 378389)
+				return "4.5";
+			// This code should never execute. A non-null release key should mean
+			// that 4.5 or later is installed.
+			return "";
+		}
+	}
+
+	public virtual bool IsNet48Installed
+	{
+		get
+		{
+			if (OSInfo.IsWindows)
+			{
+				var versions = GetInstalledNetFX45PlusFromRegistry()
+					.Select(ver =>
+					{
+						Version version = default;
+						System.Version.TryParse(ver, out version);
+						return version;
+					});
+
+				return versions.Any(ver => ver >= new System.Version(4, 8));
+			}
+			else return false;
+		}
+	}
 	public void InstallNet48()
 	{
-		if (!OSInfo.IsNet48)
+		if (!IsNet48Installed)
 		{
-
 			Log.WriteLine("Installing NET Framework 4.8");
 
-			var file = DownloadFile("https://download.visualstudio.microsoft.com/ndp48-web.exe");
-			if (file != null)
+			try
 			{
-				Shell.Exec($"\"{file}\" /q");
-			}
+				var file = DownloadFile("https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net48-web-installer");
+				if (file != null)
+				{
+					Shell.Exec($"\"{file}\" /q");
+				}
 
-			InstallLog("Installed .NET Framework 4.8.");
+				InstallLog("Installed .NET Framework 4.8.");
+			}
+			catch (Exception ex) { }
 		}
 	}
 
 	public override void InstallServerPrerequisites()
-	{			
-		InstallNet8Runtime(); 
+	{
+		InstallNet8Runtime();
 		InstallNet48();
 	}
 
@@ -100,245 +249,6 @@ public class WindowsInstaller : Installer
 				.Select(url => "  " + url))}");
 	}
 
-	public override void ReadServerConfiguration()
-	{
-		Settings.Server = new ServerSettings();
-
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
-
-		if (File.Exists(confFile))
-		{
-			var webconf = XElement.Load(confFile);
-			var configuration = webconf.Element("configuration");
-
-			// server certificate
-			var cert = configuration?.Element("system.serviceModel/behaviors/serviceBehaviors/behavior/serviceCredentials/serviceCertificate");
-			if (cert != null)
-			{
-				Settings.Server.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
-				Settings.Server.CertificateStoreName = cert.Attribute("storeName")?.Value;
-				Settings.Server.CertificateFindType = cert.Attribute("X509FindType")?.Value;
-				Settings.Server.CertificateFindValue = cert.Attribute("findValue")?.Value;
-			}
-
-			Settings.Server.ServerPasswordSHA = Settings.Server.ServerPassword = "";
-			// server password
-			var password = configuration?.Element("SolidCP.server/security/password");
-			if (password != null)
-			{
-				Settings.Server.ServerPasswordSHA = password.Attribute("value")?.Value;
-			}
-		}
-	}
-
-	public override void ConfigureServer()
-	{
-		var settings = Settings.Server;
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
-		var webconf = XElement.Load(confFile);
-		var configuration = webconf.Element("configuration");
-
-		// server certificate
-		var serviceModel = configuration.Element("system.serviceModel");
-		if (serviceModel == null)
-		{
-			serviceModel = new XElement("system.serviceModel");
-			configuration.Add(serviceModel);
-		}
-		var behaviors = serviceModel.Element("behaviors");
-		if (behaviors == null)
-		{
-			behaviors = new XElement("behaviors");
-			serviceModel.Add(behaviors);
-		}
-		var serviceBehaiors = behaviors.Element("serviceBehaviors");
-		if (serviceBehaiors == null)
-		{
-			serviceBehaiors = new XElement("serviceBehaviors");
-			behaviors.Add(serviceBehaiors);
-		}
-		var behavior = serviceBehaiors.Element("behavior");
-		if (behavior == null)
-		{
-			behavior = new XElement("behavior");
-			serviceBehaiors.Add(behavior);
-		}
-		var serviceCredentials = behavior.Element("serviceCredentials");
-		if (serviceCredentials == null)
-		{
-			serviceCredentials = new XElement("serviceCredentials");
-			behavior.Add(serviceCredentials);
-		}
-		var cert = serviceCredentials.Element("serviceCertificate");
-		if (cert != null) cert.Remove();
-		cert = new XElement("serviceCertificate", new XAttribute("storeName", settings.CertificateStoreName),
-			new XAttribute("storeLocation", settings.CertificateStoreLocation),
-			new XAttribute("X509FindType", settings.CertificateFindType),
-			new XAttribute("findValue", settings.CertificateFindValue));
-		serviceCredentials.Add(cert);
-
-		// Server password
-		var server = configuration.Element("SolidCP.server");
-		var security = server?.Element("security");
-		var password = security?.Element("password");
-		var pwsha1 = string.IsNullOrEmpty(settings.ServerPassword) ? settings.ServerPasswordSHA : CryptoUtils.ComputeSHAServerPassword(settings.ServerPassword);
-		password.Attribute("value").SetValue(pwsha1);
-
-		// Swagger Version
-		var swaggerwcf = configuration.Element("swaggerWcf");
-		var swagsetting = swaggerwcf?.Element("settings");
-		var versionInfo = swagsetting?.Elements("setting").FirstOrDefault(e => e.Attribute("name")?.Value == "InfoVersion");
-		if (versionInfo != null)
-		{
-			var version = Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyVersionAttribute>()?.Version;
-			versionInfo.Attribute("value").SetValue(version);
-		}
-
-		webconf.Save(confFile);
-
-		InstallLog("Configured Server.");
-	}
-
-	public override void ReadEnterpriseServerConfiguration()
-	{
-		Settings.EnterpriseServer = new EnterpriseServerSettings();
-
-		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "web.config");
-		var webconf = XElement.Load(confFile);
-		var configuration = webconf.Element("configuration");
-
-		// server certificate
-		var cert = configuration?.Element("system.serviceModel/behaviors/serviceBehaviors/behavior/serviceCredentials/serviceCertificate");
-		if (cert != null)
-		{
-			Settings.EnterpriseServer.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
-			Settings.EnterpriseServer.CertificateStoreName = cert.Attribute("storeName")?.Value;
-			Settings.EnterpriseServer.CertificateFindType = cert.Attribute("X509FindType")?.Value;
-			Settings.EnterpriseServer.CertificateFindValue = cert.Attribute("findValue")?.Value;
-		}
-
-		// connection string
-		var cstring = configuration?.Element("connectionStrings").Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-
-		string server, user, password;
-		bool windowsAuthentication;
-		ParseConnectionString(cstring?.Attribute("value")?.Value, out server, out user, out password, out windowsAuthentication);
-
-		Settings.EnterpriseServer.DatabaseServer = server;
-		Settings.EnterpriseServer.DatabaseUser = user;
-		Settings.EnterpriseServer.DatabasePassword = password;
-		Settings.EnterpriseServer.WindowsAuthentication = windowsAuthentication;
-
-		// CryptoKey
-		var cryptoKey = configuration?.Elements("appSettings/add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
-		Settings.EnterpriseServer.CryptoKey = cryptoKey?.Attribute("value")?.Value;
-	}
-
-	public override void ConfigureEnterpriseServer()
-	{
-		var settings = Settings.EnterpriseServer;
-		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "web.config");
-		var configuration = XElement.Load(confFile);
-
-		// server certificate
-		var serviceModel = configuration.Element("system.serviceModel");
-		if (serviceModel == null)
-		{
-			serviceModel = new XElement("system.serviceModel");
-			configuration.Add(serviceModel);
-		}
-		var behaviors = serviceModel.Element("behaviors");
-		if (behaviors == null)
-		{
-			behaviors = new XElement("behaviors");
-			serviceModel.Add(behaviors);
-		}
-		var serviceBehaiors = behaviors.Element("serviceBehaviors");
-		if (serviceBehaiors == null)
-		{
-			serviceBehaiors = new XElement("serviceBehaviors");
-			behaviors.Add(serviceBehaiors);
-		}
-		var behavior = serviceBehaiors.Element("behavior");
-		if (behavior == null)
-		{
-			behavior = new XElement("behavior");
-			serviceBehaiors.Add(behavior);
-		}
-		var serviceCredentials = behavior.Element("serviceCredentials");
-		if (serviceCredentials == null)
-		{
-			serviceCredentials = new XElement("serviceCredentials");
-			behavior.Add(serviceCredentials);
-		}
-		var cert = serviceCredentials.Element("serviceCertificate");
-		if (cert != null) cert.Remove();
-		cert = new XElement("serviceCertificate", new XAttribute("storeName", settings.CertificateStoreName),
-			new XAttribute("storeLocation", settings.CertificateStoreLocation),
-			new XAttribute("X509FindType", settings.CertificateFindType),
-			new XAttribute("findValue", settings.CertificateFindValue));
-		serviceCredentials.Add(cert);
-
-		// CryptoKey
-		if (string.IsNullOrEmpty(settings.CryptoKey))
-		{
-			// generate random crypto key
-			settings.CryptoKey = CryptoUtils.GetRandomString(20);
-		}
-		var appSettings = configuration.Element("appSettings");
-		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
-		if (cryptoKey == null)
-		{
-			cryptoKey = new XElement("add", new XAttribute("key", "CryptoKey"), new XAttribute("value", settings.CryptoKey));
-			appSettings.Add(cryptoKey);
-		}
-		else
-		{
-			cryptoKey.Attribute("CryptoKey").SetValue(settings.CryptoKey);
-		}
-
-		// Connection String
-		var connectionStrings = configuration.Element("connectionStrings");
-		var cstring = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-		var authentication = settings.WindowsAuthentication ? "Integrated Security=true" : $"User ID={settings.DatabaseUser};Password={settings.DatabasePassword}";
-		cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database=SolidCP;{authentication}");
-
-		// Swagger Version
-		var swaggerwcf = configuration.Element("swaggerWcf");
-		var swagsetting = swaggerwcf?.Element("settings");
-		var versionInfo = swagsetting?.Elements("setting").FirstOrDefault(e => e.Attribute("name")?.Value == "InfoVersion");
-		if (versionInfo != null)
-		{
-			versionInfo.Attribute("value").SetValue(Version);
-		}
-
-		configuration.Save(confFile);
-
-		InstallLog("Configured Enterprise Server.");
-	}
-
-	public override void ReadWebPortalConfiguration()
-	{
-		Settings.WebPortal = new WebPortalSettings();
-
-		var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
-		var conf = XElement.Load(confFile);
-		var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-		Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
-	}
-
-	public override void ConfigureWebPortal()
-	{
-		var settings = Settings.WebPortal;
-		var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
-		var conf = XElement.Load(confFile);
-		var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-		enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
-		conf.Save(confFile);
-
-		InstallLog("Configured Web Portal.");
-	}
-
 	public override bool IsRunningAsAdmin
 		=> new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 
@@ -352,7 +262,7 @@ public class WindowsInstaller : Installer
 		catch { }
 	}
 
-	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.WindowsServer2003;
+	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;
 
 	public override bool CheckIISVersionSupported() => CheckOSSupported();
 

@@ -14,6 +14,7 @@
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <DefineConstants Condition="$(EmbedReferences) == 'true'">$(DefineConstants);Costura</DefineConstants>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
+        <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -35,7 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="installer.settings.json" />
+        <None Remove="installer.settings.json" />
     </ItemGroup>
 
     <ItemGroup>
@@ -72,7 +73,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="$(EmbedReferences) == 'true'">
-        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
+        <PackageReference Include="PortableCostura.Fody" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
         </PackageReference>
@@ -83,9 +84,9 @@
     </ItemGroup>
 
     <ItemGroup Condition="$(Configuration) == 'Debug'">
-      <Content Include="installer.settings.json">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <Content Include="installer.settings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>

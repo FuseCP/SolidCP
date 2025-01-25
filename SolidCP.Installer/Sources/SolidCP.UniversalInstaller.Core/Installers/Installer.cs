@@ -39,14 +39,24 @@ public abstract partial class Installer
 	public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
 	public virtual bool CanInstallPortal => OSInfo.IsWindows;
 	public virtual string InstallerSettingsFile => "installer.settings.json";
+	public virtual string CertificateFolder => "Certificates";
 	public virtual bool IsWindows => OSInfo.IsWindows;
 	public virtual bool IsUnix => OSInfo.IsUnix;
 	public Action OnExit { get; set; }
+	public Action<Exception> OnError { get; set; }
 
 	static bool? hasDotnet = null;
 	public virtual bool HasDotnet
 	{
-		get => hasDotnet ?? (hasDotnet = Shell.Find("dotnet") != null).Value;
+		get
+		{
+			if (hasDotnet == null)
+			{
+				var find = Shell.Find("dotnet");
+				hasDotnet = find != null && !Regex.IsMatch(find, "^/mnt/[a-zA-Z]/");
+			}
+			return hasDotnet.Value;
+		}
 		set => hasDotnet = value;
 	}
 	public void ResetHasDotnet() => hasDotnet = null;
@@ -121,8 +131,8 @@ public abstract partial class Installer
 		var tempPath = Settings.Installer.TempPath;
 		Settings.Installer.TempPath = null;
 		Settings.Installer.Version = null;
-		var json = JsonConvert.SerializeObject(Settings, Formatting.Indented, new VersionConverter(),
-			new StringEnumConverter());
+		var json = JsonConvert.SerializeObject(Settings, Formatting.Indented,
+			new VersionConverter(), new StringEnumConverter());
 		Settings.Installer.TempPath = tempPath;
 		File.WriteAllText(path, json);
 	}
@@ -133,7 +143,7 @@ public abstract partial class Installer
 			if (Settings.Installer.Action != SetupActions.Uninstall &&
 				Settings.Installer.Action != SetupActions.Setup)
 			{
-				Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
+				if (Error == null) Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
 			}
 			else if (Settings.Installer.Action == SetupActions.Uninstall)
 			{
@@ -152,6 +162,7 @@ public abstract partial class Installer
 				}
 			}
 			Settings.Installer.Component = null;
+			Error = null;
 			SaveSettings();
 		}
 	}
@@ -207,7 +218,7 @@ public abstract partial class Installer
 				var res = (Result)LoadContext.Execute(path, installerType, method, new object[] { hashtable }) == Result.OK;
 				FileUtils.DeleteTempDirectory();
 
-				if (res) UpdateSettings();
+				LoadSettings();
 
 				Log.WriteInfo(string.Format("Installer returned {0}", res));
 				Log.WriteEnd("Installer finished");
@@ -227,22 +238,23 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
-
-	bool firstCheck = true;
+	protected bool? Net8RuntimeInstalled { get; set; }
 	public bool CheckNet8RuntimeInstalled()
 	{
-		if (!firstCheck) return true;
-		firstCheck = false;
+		if (Net8RuntimeInstalled != null) return Net8RuntimeInstalled.Value;
 
 		if (HasDotnet)
 		{
 			var output = Shell.Exec("dotnet --info").Output().Result ?? "";
 			NeedRemoveNet8AspRuntime = !output.Contains("Microsoft.AspNetCore.App 8.");
 			NeedRemoveNet8Runtime = !output.Contains("Microsoft.NETCore.App 8.");
-			return !NeedRemoveNet8Runtime && !NeedRemoveNet8AspRuntime;
+			var installed = !NeedRemoveNet8Runtime && !NeedRemoveNet8AspRuntime;
+			Net8RuntimeInstalled = installed;
+			return installed;
 		}
 		else {
 			NeedRemoveNet8Runtime = NeedRemoveNet8AspRuntime = true;
+			Net8RuntimeInstalled = false;
 			return false;
 		}
 	}
@@ -409,27 +421,27 @@ public abstract partial class Installer
 		return tmp;
 	}
 	public string DownloadFile(string url) => DownloadFileAsync(url).Result;
+	public string SetupFilter(string file) => file != null && !file.StartsWith("Setup/") ? file : null;
 	public string Net48Filter(string file)
 	{
-		return (!file.StartsWith("Setup/") && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$")) ? file : null;
+		file = SetupFilter(file); 
+		return (file != null && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
-	public string Net8Filter(string file)
+	public virtual string Net8Filter(string file)
 	{
-		return (!file.StartsWith("Setup/") && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-			!file.EndsWith(".config", StringComparison.OrdinalIgnoreCase) && file != "appsettings.json" &&
+		file = SetupFilter(file);
+		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
+			!Regex.IsMatch(file, "(?:^|/)web.config", RegexOptions.IgnoreCase) &&
 			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 	}
-
 	public string ConfigAndSetupFilter(string file)
 	{
-		return !file.StartsWith("Setup/") && !file.EndsWith("/web.config", StringComparison.OrdinalIgnoreCase) &&
-			!file.EndsWith("/appsettings.json", StringComparison.OrdinalIgnoreCase) ? file : null;
+		file = SetupFilter(file);
+		return (file != null && !file.EndsWith("/web.config", StringComparison.OrdinalIgnoreCase) &&
+			!Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
-	public string SetupFilter(string file)
-	{
-		return !file.StartsWith("Setup/") ? file : null;
-	}
-
+	public virtual string StandardInstallFilter(string file) => SetupFilter(file);
+	public virtual string StandardUpdateFilter(string file) => ConfigAndSetupFilter(file);
 	public void CopyFiles(string source, string destination,
 		Func<string, string> filter = null, string root = null, string destroot = null)
 	{
@@ -602,25 +614,28 @@ public abstract partial class Installer
 			Environment.Exit(errorCode);
 		}
 	}
-	protected void ParseConnectionString(string connectionString, out string server, out string user, out string password,
-		out bool windowsAuthentication)
+	protected void ParseConnectionString(string connectionString, out EnterpriseServer.Data.DbType dbType, out string server, out string user, out string password,
+		out bool windowsAuthentication, out bool trustCertificate)
 	{
 		server = user = password = "";
 		windowsAuthentication = false;
-		
-		var matches = Regex.Matches(connectionString, @"(?:Server\s*=\s*(?<server>.*?)\s*(?:;|$))|(?:(?:uid|User ID)\s*=\s*(?<user>.*?)\s*(?:;|$))|(?:(?:pwd|Password)\s*=\s*(?<password>.*?)\s*(?:;|$))|(?:Integrated Security\s*=\s*(?<windowsAuth>.*?)\s*(?:;|$))", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-		foreach (Match match in matches)
-		{
-			if (match.Groups["server"].Success) server = match.Groups["server"].Value;
-			if (match.Groups["user"].Success) user = match.Groups["user"].Value;
-			if (match.Groups["password"].Success) password = match.Groups["password"].Value;
-			if (match.Groups["windowsAuth"].Success)
-			{
-				var win = match.Groups["windowsAuth"].Value;
-				windowsAuthentication = string.Equals(win, "true", StringComparison.OrdinalIgnoreCase) ||
-					string.Equals(win, "SSPI", StringComparison.OrdinalIgnoreCase);
-			}
-		}
+		dbType = EnterpriseServer.Data.DbType.Unknown;
+
+		var csb = new System.Data.Common.DbConnectionStringBuilder();
+		csb.ConnectionString = connectionString;
+
+		string get(string key) => csb.ContainsKey(key) ? csb[key] as string : null;
+
+		string type = get("dbtype");
+		Enum.TryParse<EnterpriseServer.Data.DbType>(type, out dbType);
+		server = get("server");
+		user = get("uid") ?? get("user id") ?? get("username") ?? get("user");
+		password = get("pwd") ?? get("password");
+		var security = get("integrated sceurity");
+		windowsAuthentication = security.Equals("true", StringComparison.OrdinalIgnoreCase) ||
+			security.Equals("sspi");
+		var tc = get("trustservercertificate");
+		trustCertificate = tc != null && tc.Equals("true", StringComparison.OrdinalIgnoreCase);
 	}
 	public abstract bool CheckOSSupported();
 	public abstract bool CheckSystemdSupported();

@@ -17,15 +17,24 @@ public class Releases
 		=> GetComponentUpdateAsync(componentCode, release).Result;
 	public async Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string release)
 	{
-		var info = await GitHub.GetComponentUpdateAsync(componentCode, release);
-		if (info == null) return await WebService.GetComponentUpdateAsync(componentCode, release);
+		var infos = new[] {
+			GitHub.GetComponentUpdateAsync(componentCode, release),
+			WebService.GetComponentUpdateAsync(componentCode, release)
+		};
+		var info = await infos[0];
+		if (info == null) return await infos[1];
 		return info;
 	}
 	public List<ComponentInfo> GetAvailableComponents() => GetAvailableComponentsAsync().Result;
 	public async Task<List<ComponentInfo>> GetAvailableComponentsAsync()
 	{
-		var ghcomponents = await GitHub.GetAvailableComponentsAsync();
-		var wscomponents = await WebService.GetAvailableComponentsAsync();
+		var components = new[]
+		{
+			GitHub.GetAvailableComponentsAsync(),
+			WebService.GetAvailableComponentsAsync()
+		};
+		var ghcomponents = await components[0];
+		var wscomponents = await components[1];
 		if (ghcomponents != null && ghcomponents.Count > 0 &&
 			(wscomponents == null || wscomponents.Count == 0 ||
 			ghcomponents[0].Version > wscomponents[0].Version)) return ghcomponents;
@@ -35,8 +44,13 @@ public class Releases
 		=> GetLatestComponentUpdateAsync(componentCode).Result;
 	public async Task<ComponentUpdateInfo> GetLatestComponentUpdateAsync(string componentCode)
 	{
-		var ghinfo = await GitHub.GetLatestComponentUpdateAsync(componentCode);
-		var wsinfo = await WebService.GetLatestComponentUpdateAsync(componentCode);
+		var infos = new[]
+		{
+			GitHub.GetLatestComponentUpdateAsync(componentCode),
+			WebService.GetLatestComponentUpdateAsync(componentCode)
+		};
+		var ghinfo = await infos[0];
+		var wsinfo = await infos[1];
 		if (ghinfo != null &&
 			(wsinfo == null || ghinfo.Version > wsinfo.Version)) return ghinfo;
 		else return wsinfo;
@@ -45,9 +59,12 @@ public class Releases
 		=> GetReleaseFileInfoAsync(componentCode, version).Result;
 	public async Task<ReleaseFileInfo> GetReleaseFileInfoAsync(string componentCode, string version)
 	{
-		var ghinfo = await GitHub.GetReleaseFileInfoAsync(componentCode, version);
-		if (ghinfo != null) return ghinfo;
-		else return await WebService.GetReleaseFileInfoAsync(componentCode, version);
+		var infos = new[]
+		{
+			GitHub.GetReleaseFileInfoAsync(componentCode, version),
+			WebService.GetReleaseFileInfoAsync(componentCode, version)
+		};
+		return await infos[0] ?? await infos[1];
 	}
 	public void GetFile(RemoteFile file, string destinationFile, Action<long, long> progress = null)
 		=> Task.Run(() => GetFileAsync(file, destinationFile, progress)).Wait();

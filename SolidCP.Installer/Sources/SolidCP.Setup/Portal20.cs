@@ -44,14 +44,15 @@ namespace SolidCP.Setup
     {
 		public override Version MinimalInstallerVersion => new Version("2.0.0");
 		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public override CommonSettings CommonSettings => Settings.WebPortal;
 		public Result Install(object args) => base.InstallOrSetup(args, "Install WebPortal",
-			Installer.Current.InstallWebPortal, false, false);
+			Installer.Current.InstallWebPortal, false);
 
 		public Result Update(object args) => base.Update(args, "Update WebPortal",
 			Installer.Current.UpdateWebPortal);
 
 		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebPortal",
-			Installer.Current.ConfigureWebPortal, false, true);
+			Installer.Current.ConfigureWebPortal, true);
 
 		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebPortal",
 			Installer.Current.RemoveWebPortal);

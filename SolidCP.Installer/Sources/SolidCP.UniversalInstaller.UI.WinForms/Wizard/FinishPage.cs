@@ -56,6 +56,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.Description = "Click Finish to exit the wizard.";
 			this.AllowMoveBack = false;
 			this.AllowCancel = false;
+			var logs = Installer.Current.InstallLogs;
+			logs.Insert(0, "The Installer has:");
 			this.txtLog.Text = string.Join(Environment.NewLine, Installer.Current.InstallLogs
 				.Select(log => "- " + log));
 		}

@@ -120,8 +120,14 @@ public class BaseSetup
 	public virtual CommonSettings CommonSettings => null;
 	public virtual ComponentSettings ComponentSettings => (CommonSettings as ComponentSettings) ?? Installer.Current.Settings.Standalone;
 	public virtual ComponentInfo Component => null;
-	public virtual UI.SetupWizard Wizard(object args, bool installFolder = true,
-		bool urlWizard = true, bool userWizard = true)
+
+	public virtual bool IsServer => ComponentSettings is ServerSettings;
+	public virtual bool IsEnterpriseServer => ComponentSettings is EnterpriseServerSettings;
+	public virtual bool IsStandalone => ComponentSettings is StandaloneSettings;
+	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
+	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
+
+	public virtual UI.SetupWizard Wizard(object args)
 	{
 		if (ParseArgs(args) && CheckInstallerVersion())
 		{
@@ -129,18 +135,20 @@ public class BaseSetup
 				.Introduction(CommonSettings)
 				.CheckPrerequisites()
 				.LicenseAgreement();
-			if (CommonSettings != null)
+			if (!IsStandalone)
 			{
-				if (installFolder) wizard = wizard
-					.InstallFolder(CommonSettings);
-
-				if (urlWizard) wizard = wizard
+				wizard = wizard
+					.InstallFolder(CommonSettings)
 					.Web(CommonSettings)
 					.InsecureHttpWarning(CommonSettings)
-					.Certificate(CommonSettings);
-
-				if (userWizard) wizard = wizard
+					.Certificate(CommonSettings)
 					.UserAccount(CommonSettings);
+
+				if (IsServer) wizard = wizard
+					.ServerPassword();
+
+				if (IsEnterpriseServer) wizard = wizard
+					.ServerAdminPassword();
 			} else
 			{
 				wizard = wizard
@@ -149,24 +157,18 @@ public class BaseSetup
 					.InsecureHttpWarning(Settings.WebPortal)
 					.Certificate(Settings.WebPortal)
 					.UserAccount(Settings.WebPortal)
-					.Web(Settings.EnterpriseServer)
-					.InsecureHttpWarning(Settings.EnterpriseServer)
-					.Certificate(Settings.EnterpriseServer)
-					.UserAccount(Settings.EnterpriseServer)
 					.Database()
-					.Web(Settings.Server)
-					.InsecureHttpWarning(Settings.Server)
-					.Certificate(Settings.Server)
-					.UserAccount(Settings.Server);
+					.ServerAdminPassword()
+					.ServerPassword();
 			}
 			return wizard;
 		}
 		return null;
 	}
-	public virtual Result InstallOrSetup(object args, string title, Action installer, bool database = false, bool setup = false) {
-		var wizard = Wizard(args, true, true, true);
+	public virtual Result InstallOrSetup(object args, string title, Action installer, bool setup = false) {
+		var wizard = Wizard(args);
 		if (wizard == null) return Result.Abort;
-		if (database) wizard = wizard.Database();
+		if (IsEnterpriseServer) wizard = wizard.Database();
 		if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
 		else Installer.Current.Settings.Installer.Action = SetupActions.Install;
 		var res = wizard
@@ -202,7 +204,7 @@ public class BaseSetup
 		{
 			Installer.Current.Settings.Installer.Action = SetupActions.Update;
 
-			res = CheckUpdate() && Wizard(args, false, true, true)
+			res = CheckUpdate() && Wizard(args)
 				.RunWithProgress(title, installer, ComponentSettings)
 				.Finish()
 				.Show() ? Result.OK : Result.Cancel;

@@ -21,6 +21,8 @@ namespace SolidCP.UniversalInstaller
 			Undos = actions = actions.Concat(Undos);
 			if (Error != null)
 			{
+				Installer.OnError?.Invoke(Error.SourceException);
+
 				foreach (var action in actions)
 				{
 					try

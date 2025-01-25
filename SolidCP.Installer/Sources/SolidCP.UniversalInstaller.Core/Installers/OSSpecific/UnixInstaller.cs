@@ -5,10 +5,11 @@ using System.Text;
 using System.Reflection;
 using System.Diagnostics;
 using System.Security.Cryptography.X509Certificates;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json.Converters;
 using SolidCP.EnterpriseServer;
-using System.Text.RegularExpressions;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -21,7 +22,6 @@ public abstract class UnixInstaller : Installer
 	public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
 	public virtual string UnixPortalServiceId => "solidcp-portal";
 	public virtual string SolidCPUnixGroup => "solidcp";
-	public virtual string CertificateFolder => "Certificates";
 	public UnixInstaller() : base() { }
 
 	public void InstallWebsite(string dll, string serviceId, string urls, string user, string group, string description)
@@ -149,7 +149,8 @@ public abstract class UnixInstaller : Installer
 		var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 		if (File.Exists(appsettingsfile))
 		{
-			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
+			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)
+				, new VersionConverter(), new StringEnumConverter()) ?? new AppSettings();
 			Settings.Server.Urls = appsettings.applicationUrls;
 			Settings.Server.ServerPasswordSHA = appsettings.Server?.Password ?? "";
 			Settings.Server.ServerPassword = "";
@@ -164,95 +165,6 @@ public abstract class UnixInstaller : Installer
 		}
 	}
 
-	public override void ConfigureServer()
-	{
-		AppSettings appsettings = null;
-            var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
-		if (File.Exists(appsettingsfile))
-		{
-			appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)) ?? new AppSettings();
-		}
-		else
-		{
-			appsettings = new AppSettings();
-		}
-
-		appsettings.applicationUrls = Settings.Server.Urls;
-		var allowedHosts = (Settings.Server?.Urls ?? "").Split(',', ';')
-			.Select(url => new Uri(url.Trim()).Host)
-			.ToList();
-		if (allowedHosts.Any(host => host == "localhost"))
-		{
-			allowedHosts.Add("127.0.0.1");
-			allowedHosts.Add("::1");
-		}
-		if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
-		else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
-
-		if (!string.IsNullOrEmpty(Settings.Server.ServerPassword) || !string.IsNullOrEmpty(Settings.Server.ServerPasswordSHA))
-		{
-			string pwsha1;
-			if (!string.IsNullOrEmpty(Settings.Server.ServerPassword))
-			{
-				pwsha1 = CryptoUtils.ComputeSHAServerPassword(Settings.Server.ServerPassword);
-			} else
-			{
-				pwsha1 = Settings.Server.ServerPasswordSHA;
-			}
-			appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha1 };
-		}
-
-		if (!string.IsNullOrEmpty(Settings.Server.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(Settings.Server.LetsEncryptCertificateDomains))
-		{
-			appsettings.LettuceEncrypt = new AppSettings.LettuceEncryptSetting()
-			{
-				AcceptTermOfService = true,
-				EmailAddress = Settings.Server.LetsEncryptCertificateEmail,
-				DomainNames = Settings.Server.LetsEncryptCertificateDomains
-					?.Split(',', ';')
-					.Select(domain => domain.Trim())
-					.ToArray() ?? new string[0]
-			};
-		}
-		else if (!string.IsNullOrEmpty(Settings.Server.CertificateFile) && !string.IsNullOrEmpty(Settings.Server.CertificatePassword))
-		{
-			// create a local copy of the certificate file
-			var certFile = Settings.Server.CertificateFile;
-			var certFolder = Path.Combine(InstallWebRootPath, CertificateFolder);
-			if (!Directory.Exists(certFolder)) Directory.CreateDirectory(certFolder);
-			var shadowFileName = $"{Guid.NewGuid()}.{Path.GetFileName(certFile)}";
-			var shadowFile = Path.Combine(certFolder, shadowFileName);
-			File.Copy(certFile, shadowFile);
-			OSInfo.Unix.GrantUnixPermissions(shadowFile, UnixFileMode.UserRead | UnixFileMode.UserWrite);
-
-			appsettings.Certificate = new AppSettings.CertificateSetting()
-			{
-				File = shadowFile,
-				Password = Settings.Server.CertificatePassword
-			};
-		}
-		else if (!string.IsNullOrEmpty(Settings.Server.CertificateStoreLocation) && !string.IsNullOrEmpty(Settings.Server.CertificateStoreName))
-		{
-			appsettings.Certificate = new AppSettings.CertificateSetting()
-			{
-				FindValue = Settings.Server.CertificateFindValue
-			};
-			Enum.TryParse<StoreLocation>(Settings.Server.CertificateStoreLocation, out appsettings.Certificate.StoreLocation);
-			Enum.TryParse<StoreName>(Settings.Server.CertificateStoreName, out appsettings.Certificate.StoreName);
-			Enum.TryParse<X509FindType>(Settings.Server.CertificateFindType, out appsettings.Certificate.FindType);
-		}
-
-		if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
-
-		var path = Path.GetDirectoryName(appsettingsfile);
-		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-		File.WriteAllText(appsettingsfile, JsonConvert.SerializeObject(appsettings, Formatting.Indented, new JsonSerializerSettings()
-		{
-			ContractResolver = new AppSettings.IgnoreAllowedHostsResolver()
-		}));
-
-		InstallLog("Configured Server.");
-	}
 	public override void InstallServerPrerequisites()
 	{
 		InstallNet8Runtime();
@@ -300,6 +212,9 @@ public abstract class UnixInstaller : Installer
 		}
 		catch { }
 	}
+
+	public override string StandardInstallFilter(string file) => Net8Filter(base.StandardInstallFilter(file));
+	public override string StandardUpdateFilter(string file) => Net8Filter(base.StandardUpdateFilter(file));
 
 	public override string GetUninstallLog(ComponentSettings settings)
 	{

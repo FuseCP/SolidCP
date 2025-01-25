@@ -8,6 +8,7 @@
         <LangVersion>13</LangVersion>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <GenerateDependencyFile>false</GenerateDependencyFile>
+        <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
     </PropertyGroup>
 
     <ItemGroup>
@@ -23,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup Condition="$(EmbedReferences) == 'true'">
-        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
+        <PackageReference Include="PortableCostura.Fody" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
         </PackageReference>
@@ -99,5 +100,5 @@
         </ItemGroup>
         <Copy SourceFiles="@(MgmtDll)" DestinationFolder="$(OutputPath)" />
     </Target>-->
-    
+
 </Project>

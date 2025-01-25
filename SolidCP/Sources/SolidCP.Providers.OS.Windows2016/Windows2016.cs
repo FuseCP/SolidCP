@@ -519,6 +519,5 @@ namespace SolidCP.Providers.OS
         #endregion
 
         protected override Type WebServerType => Type.GetType("SolidCP.Providers.Web.IIs100, SolidCP.Providers.Web.IIs100");
-
     }
 }

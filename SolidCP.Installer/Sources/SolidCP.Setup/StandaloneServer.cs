@@ -31,37 +31,20 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Collections.Generic;
+using System.Xml;
+using System.Configuration;
+using System.Collections;
 using System.Text;
+using System.Linq;
 using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
 {
-    /// <summary>
-    /// Release 2.0.0
-    /// </summary>
-    public class StandaloneServerSetup200 : StandaloneServerSetup
-    {
-		public override Version MinimalInstallerVersion => new Version("2.0.0");
-		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
-		public Result Install(object args) => base.InstallOrSetup(args, "Install Standalone Server",
-			() =>
-			{
-				Installer.Current.InstallEnterpriseServer();
-				Installer.Current.InstallServer();
-				Installer.Current.InstallWebPortal();
-			}, true, false);
-		public Result Update(object args) => base.Update(args, "Update Standalone Server",
-			() =>
-			{
-				Installer.Current.InstallEnterpriseServer();
-				Installer.Current.InstallServer();
-				Installer.Current.InstallWebPortal();
-			});
-		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Standalone Server",
-			Installer.Current.ConfigureServer, false, true);
-
-		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Standalone Server",
-			Installer.Current.RemoveServer);
+	public class StandaloneServer : BaseSetup
+	{
+		public override CommonSettings CommonSettings => null;
+		public override ComponentInfo Component => Settings.Installer.InstalledComponents
+			.FirstOrDefault(component => component.ComponentCode == Global.StandaloneServer.ComponentCode);
 	}
 }
+ 

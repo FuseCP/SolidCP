@@ -17,12 +17,15 @@ namespace SolidCP.UniversalInstaller
 	public class ConsoleUI : UI
 	{
 		public override bool IsAvailable => true;
+
+		public string NewLine => Environment.NewLine;
 		public new class SetupWizard : UI.SetupWizard
 		{
 
 			List<Action> Pages = new();
 
 			int CurrentPage = 0;
+			public string NewLine => Environment.NewLine;
 
 			protected void Next()
 			{
@@ -634,7 +637,7 @@ Successful Installation:
 ========================
 
 SolidCP Installer successfully has:
-{string.Join(Environment.NewLine, Installer.Current.InstallLogs
+{string.Join(NewLine, Installer.Current.InstallLogs
 	.Select(line => $"- {line}"))}
 
 [  Finish  ]")
@@ -1310,9 +1313,32 @@ SolidCP cannot be installed on this System.
 		public override void ShowLogFile()
 		{
 			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log.File);
-			if (Shell.Standard.Find("nano") != null) Shell.Standard.Exec($"nano \"{path}\"");
-			else if (Installer.IsUnix) Shell.Standard.Exec($"less \"{path}\"");
-			else throw new NotImplementedException();
+
+			var txt = File.ReadAllText(path);
+			txt = new ConsoleForm().Wrap(txt);
+			var reader = new StringReader(txt);
+			var lines = new List<string>();
+			string line = reader.ReadLine();
+			while (line != null)
+			{
+				lines.Add(line);
+				line = reader.ReadLine();
+			}
+
+			var height = Console.WindowHeight - 1;
+			int Y = 0;
+			ConsoleForm form;
+			do
+			{
+				var window = lines
+					.Skip(Y)
+					.Take(height)
+					.Concat(new[] { "  [  Up  ]  [  Down  ]  [  Exit  ]" });
+				form = new ConsoleForm(string.Join(NewLine, window))
+					.ShowDialog();
+				if (form["Up"].Clicked) Y = Math.Max(0, Y - height);
+				else if (form["Down"].Clicked) Y = Math.Min(lines.Count, Y + height);
+			} while (!form["Exit"].Clicked); 
 		}
 
 		public override void ShowWarning(string msg)

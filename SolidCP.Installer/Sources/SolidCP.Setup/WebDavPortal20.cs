@@ -44,14 +44,15 @@ namespace SolidCP.Setup
     {
 		public override Version MinimalInstallerVersion => new Version("2.0.0");
 		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public override CommonSettings CommonSettings => Settings.WebDavPortal;
 		public Result Install(object args) => base.InstallOrSetup(args, "Install WebDavPortal",
-			Installer.Current.InstallWebDavPortal, false, false);
+			Installer.Current.InstallWebDavPortal, false);
 
 		public Result Update(object args) => base.Update(args, "Update WebDavPortal",
 			Installer.Current.UpdateWebDavPortal);
 
 		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebDavPortal",
-			Installer.Current.ConfigureWebDavPortal, false, true);
+			Installer.Current.ConfigureWebDavPortal, true);
 
 		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebDavPortal",
 			Installer.Current.RemoveWebDavPortal);

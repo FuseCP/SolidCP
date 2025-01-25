@@ -80,11 +80,12 @@ namespace SolidCP.UniversalInstaller
 		public string DatabaseUser { get; set; }
 		public string DatabasePassword { get; set; }
 		public string DatabaseName { get; set; }
+		public bool DatabaseTrustServerCertificate { get; set; }
 		public string DbInstallConnectionString { get; set; }
 		public string ServerAdminPassword { get; set; }
 		public bool UpdateServerAdminPassword { get; set; }
 		public bool TrustDatabaseServerCertificate { get; set; } = false;
-		public bool WindowsAuthentication { get; set; } = false;
+		public bool DatabaseWindowsAuthentication { get; set; } = false;
 		public string CryptoKey { get; set; }
 		public override string ComponentCode => Global.EntServer.ComponentCode;
 		public override string ComponentName => Global.EntServer.ComponentName;

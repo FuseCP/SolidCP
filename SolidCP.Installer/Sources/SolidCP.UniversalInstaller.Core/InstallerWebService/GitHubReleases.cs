@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Octokit;
 
 namespace SolidCP.UniversalInstaller
@@ -41,7 +42,7 @@ namespace SolidCP.UniversalInstaller
 					using (var httpClient = new HttpClient())
 					{
 						var json = await httpClient.GetStringAsync(releaseJsonAsset.Url);
-						return JsonConvert.DeserializeObject<ElementJson[]>(json)
+						return JsonConvert.DeserializeObject<ElementJson[]>(json, new VersionConverter(), new StringEnumConverter())
 							.Select(e =>
 							{
 								e.version = release.Name;

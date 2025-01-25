@@ -55,7 +55,7 @@
         <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" OutputItemType="EmbeddedResource" />
     </ItemGroup>
     <ItemGroup Condition="$(EmbeddReferences) == 'true'">
-        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
+        <PackageReference Include="PortableCostura.Fody" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
         </PackageReference>

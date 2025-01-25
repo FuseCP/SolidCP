@@ -4,7 +4,7 @@
   <xs:element name="Weavers">
     <xs:complexType>
       <xs:all>
-        <xs:element name="CosturaPortable" minOccurs="0" maxOccurs="1">
+        <xs:element name="PortableCostura" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:all>
               <xs:element minOccurs="0" maxOccurs="1" name="ExcludeAssemblies" type="xs:string">

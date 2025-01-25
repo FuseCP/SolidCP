@@ -36,6 +36,7 @@ using System.Text;
 using System.IO;
 using System.Reflection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -58,7 +59,8 @@ namespace SolidCP.UniversalInstaller
 			//
 			var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfigFileName);
 			//
-			Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(File.ReadAllText(file));
+			Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(File.ReadAllText(file),
+				new VersionConverter(), new StringEnumConverter());
 			//
 			Log.WriteEnd("Application configuration loaded");
 		}
@@ -72,7 +74,8 @@ namespace SolidCP.UniversalInstaller
 			{
 				Log.WriteStart("Saving application configuration");
 				var file = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, AppConfigFileName);
-				File.WriteAllText(file, JsonConvert.SerializeObject(Installer.Current.Settings));
+				File.WriteAllText(file, JsonConvert.SerializeObject(Installer.Current.Settings,
+					new VersionConverter(), new StringEnumConverter()));
 				Log.WriteEnd("Application configuration saved");
 				if (showAlert)
 				{
