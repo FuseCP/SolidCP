@@ -115,6 +115,7 @@ namespace SolidCP.UniversalInstaller
 			this.UpgradeFilePath = info.UpgradeFilePath;
 			this.Version = info.Version;
 			this.VersionName = info.VersionName;
+			this.GitHub = info.GitHub;
 		}
 		public ComponentUpdateInfo(ElementInfo raw): base(raw)
 		{
@@ -132,6 +133,25 @@ namespace SolidCP.UniversalInstaller
 	public class ComponentInfo : ComponentUpdateInfo
 	{
 		public ComponentInfo(): base() { }
+	
+		public ComponentInfo(ComponentInfo component, ComponentUpdateInfo update): base(component)
+		{
+			this.Beta = update.Beta;
+			this.FullFilePath = update.FullFilePath;
+			this.InstallerPath = update.InstallerPath;
+			this.InstallerType = update.InstallerType;
+			this.Platforms = update.Platforms;
+			this.ReleaseFileId = update.ReleaseFileId;
+			this.UpgradeFilePath = update.UpgradeFilePath;
+			this.Version = update.Version;
+			this.VersionName = update.VersionName;
+			this.GitHub = update.GitHub;
+			this.ApplicationName = component.ApplicationName;
+			this.Component = component.Component;
+			this.ComponentCode = component.ComponentCode;
+			this.ComponentDescription = component.ComponentDescription;
+			this.ComponentName = component.ComponentName;
+		}
 		public ComponentInfo(ElementInfo raw): base(raw)
 		{
 			ApplicationName = raw.ApplicationName;

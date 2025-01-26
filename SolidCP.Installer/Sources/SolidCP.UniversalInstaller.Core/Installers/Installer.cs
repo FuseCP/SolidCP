@@ -36,8 +36,8 @@ public abstract partial class Installer
 	public virtual string UnixAppRootPath => "/usr";
 	public virtual string NewLine => Environment.NewLine;
 	public virtual bool CanInstallServer => true;
-	public virtual bool CanInstallEnterpriseServer => OSInfo.IsWindows;
-	public virtual bool CanInstallPortal => OSInfo.IsWindows;
+	public virtual bool CanInstallEnterpriseServer => true;
+	public virtual bool CanInstallPortal => true;
 	public virtual string InstallerSettingsFile => "installer.settings.json";
 	public virtual string CertificateFolder => "Certificates";
 	public virtual bool IsWindows => OSInfo.IsWindows;
@@ -238,6 +238,7 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
+	public bool UpdateInstaller(ComponentUpdateInfo info) => false;
 	protected bool? Net8RuntimeInstalled { get; set; }
 	public bool CheckNet8RuntimeInstalled()
 	{
@@ -542,65 +543,6 @@ public abstract partial class Installer
 	public virtual void InstallWinAcme() => Shell.Exec("dotnet tool install win-acme --global");
 	public virtual bool IsRunningAsAdmin => true;
 	public virtual void RestartAsAdmin() { }
-	public void InstallAll()
-	{
-		const int EstimatedOutputLinesPerSite = 200;
-
-		Shell.LogFile = "SolidCP.Installer.log";
-
-		if (!IsRunningAsAdmin && !Debugger.IsAttached) RestartAsAdmin();
-
-		UI.CheckPrerequisites();
-
-		var packages = UI.GetPackagesToInstall();
-
-		bool installServer = false, installEnterpriseServer = false, installPortal = false;
-
-		try
-		{
-			if (CanInstallServer && packages.HasFlag(Packages.Server))
-			{
-				ReadServerConfiguration();
-				Settings.Server = UI.GetServerSettings();
-				EstimatedOutputLines += EstimatedOutputLinesPerSite;
-				installServer = true;
-			}
-
-			if (CanInstallEnterpriseServer && packages.HasFlag(Packages.EnterpriseServer))
-			{
-				ReadEnterpriseServerConfiguration();
-				Settings.EnterpriseServer = UI.GetEnterpriseServerSettings();
-				EstimatedOutputLines += EstimatedOutputLinesPerSite;
-				installEnterpriseServer = true;
-			}
-			if (CanInstallPortal && packages.HasFlag(Packages.WebPortal))
-			{
-				ReadWebPortalConfiguration();
-				Settings.WebPortal = UI.GetWebPortalSettings();
-				EstimatedOutputLines += EstimatedOutputLinesPerSite;
-				installPortal = true;
-			}
-
-			if (installServer || installPortal || installEnterpriseServer) UI.ShowInstallationProgress();
-
-			if (installServer) InstallServer();
-			if (installEnterpriseServer) InstallEnterpriseServer();
-			if (installPortal) InstallWebPortal();
-
-			if (installServer || installPortal || installEnterpriseServer) UI.CloseInstallationProgress();
-
-			UI.ShowInstallationSuccess(packages);
-		}
-		catch (Exception ex)
-		{
-			UI.ShowError(ex);
-
-			Shell.Log($"Exception: {ex}");
-
-			Console.WriteLine("Press any key to exit...");
-			Console.Read();
-		}
-	}
 
 	bool exitCalled = false;
 	public virtual void Exit(int errorCode = 0)

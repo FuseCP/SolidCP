@@ -52,6 +52,7 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	// version in SolidCP.UniversalInstaller.Runtime that is NetFX & NetCore specific.
 	public class AssemblyLoader
 {
+	public const string TmpFolder = "SolidCPInstallerAssemblyLoaderDlls";
 	public const string NativeDllsFolder = "NativeDlls";
 	public const string NativeDllsNetFXFolder = "NativeNetFXDlls";
 	public const string NativeDllsNetCoreFolder = "NativeNetCoreDlls";
@@ -102,15 +103,22 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 
 #if Costura
 		var guid = Guid.NewGuid();
-		var path = Path.Combine(Path.GetTempPath(), guid.ToString("D"));
+		var path = Path.Combine(Path.GetTempPath(), TmpFolder, guid.ToString("D"));
 		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-		AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
+		AppDomain.CurrentDomain.DomainUnload += (sender, args) =>
+		{
+			try
+			{
+				Directory.Delete(path, true);
+			}
+			catch { }
+		};
 #else
 		string path;
 		if (isSetup)
 		{
 			var guid = Guid.NewGuid();
-			path = Path.Combine(Path.GetTempPath(), guid.ToString("D"));
+			path = Path.Combine(Path.GetTempPath(), TmpFolder, guid.ToString("D"));
 			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
 			AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
 		} else path = Path.Combine(Path.GetDirectoryName(mainAssembly.Location));
@@ -350,16 +358,33 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 			}
 		}
 
+		var runtimeId = IsWindows ? "win-" :
+			(IsMac ? "osx-" : IsLinux ? "linux-" : "");
+		if (IsLinux && IsLinuxMusl) runtimeId += "musl-";
+		var arc = RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
+		runtimeId += arc;
+
 		if (IsNetFX) AddEnvironmentPaths(AssembliesPath, Path.Combine(AssembliesPath, arch));
 		else if (IsCore)
 		{
-			var runtimeId = IsWindows ? "win-" :
-				(IsMac ? "osx-" : IsLinux ? "linux-" : "");
-			if (IsLinux && IsLinuxMusl) runtimeId += "musl-";
-			var arc = RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
-			runtimeId += arc;
 			var path = Path.Combine(AssembliesPath, "runtimes", runtimeId, "native");
 			AddEnvironmentPaths(path);
+		}
+
+		CopyRuntimeLibFiles(runtimeId);
+	}
+
+	private void CopyRuntimeLibFiles(string runtimeId)
+	{
+		if (runtimeId.Contains('-')) CopyRuntimeLibFiles(runtimeId.Substring(0, runtimeId.IndexOf('-')));
+
+		var runtimeLibPath = Path.Combine(AssembliesPath, "runtimes", runtimeId, "lib", "netstandard2.0");
+		if (Directory.Exists(runtimeLibPath))
+		{
+			foreach (var src in Directory.EnumerateFiles(runtimeLibPath))
+			{
+				File.Copy(src, Path.Combine(AssembliesPath, Path.GetFileName(src)));
+			}
 		}
 	}
 
@@ -374,12 +399,20 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 
 	public void Unload()
 	{
-		if (AssemblyLoadContext != null && !IsDefault)
+		if (AssemblyLoadContext != null)
 		{
+			if (!IsDefault)
+			{
+				try
+				{
+					var unload = AssemblyLoadContext.GetType().GetMethod("Unload");
+					unload.Invoke(AssemblyLoadContext, new object[0]);
+				}
+				catch { }
+			}
 			try
 			{
-				var unload = AssemblyLoadContext.GetType().GetMethod("Unload");
-				unload.Invoke(AssemblyLoadContext, new object[0]);
+				Directory.Delete(AssembliesPath, true);
 			}
 			catch { }
 		}

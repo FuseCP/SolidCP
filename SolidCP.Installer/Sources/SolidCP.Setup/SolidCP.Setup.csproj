@@ -19,6 +19,7 @@
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
         <!--<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
         <!--<PackageReference Include="System.DirectoryServices" Version="8.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
@@ -70,6 +71,10 @@
         <EmbeddedResource Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll">
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
             <Link>DllsNetCore\System.Management.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll">
+            <LogicalName>Dlls/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+            <Link>Dlls\runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
         </EmbeddedResource>
         <!--<EmbeddedResource Include="$(PkgSystem_DirectoryServices)\runtimes\win\lib\net8.0\System.DirectoryServices.dll">
             <LogicalName>DllsNetCore/System.DirectoryServices.dll</LogicalName>

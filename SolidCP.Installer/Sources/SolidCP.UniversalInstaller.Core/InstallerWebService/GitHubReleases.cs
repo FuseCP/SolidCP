@@ -56,96 +56,105 @@ namespace SolidCP.UniversalInstaller
 			catch (Exception ex) { }
 			return null;
 		}
+
+		public async Task<IEnumerable<Release>> GetAllAsync()
+		{
+			return (await Repository.Release.GetAll(Owner, Repo))
+				.Where(release => release.Assets.Any(asset => asset.Name.Equals("release.json", StringComparison.OrdinalIgnoreCase)));
+		}
+		public async Task<Release> GetLatestAsync()
+		{
+			return (await GetAllAsync())
+				.Select(release =>
+				{
+					var vm = Regex.Match(release.Name, "[0-9][0-9.]+");
+					if (vm.Success)
+					{
+						return new
+						{
+							Release = release,
+							Version = Version.Parse(vm.Value)
+						};
+					}
+					else return null;
+				})
+				.Where(r => r != null)
+				.OrderByDescending(r => r.Version)
+				.FirstOrDefault()
+				?.Release;
+		}
+		public async Task<Release> GetReleaseAsync(string release)
+		{
+			Version version = default;
+			var vm = Regex.Match(release, "[0-9][0-9.]+");
+			if (vm.Success) version = Version.Parse(vm.Value);
+			else return null;
+			var releases = await GetAllAsync();
+
+			return releases
+				.FirstOrDefault(release =>
+				{
+					vm = Regex.Match(release.Name, "[0-9][0-9.]+");
+					return vm.Success && Version.Parse(vm.Value) == version;
+				});
+	 
+		}
+
 		public async Task<List<ComponentInfo>> GetAvailableComponentsAsync()
 		{
 			try
 			{
-				var latest = await Repository.Release.GetLatest(Owner, Repo);
+				var latest = await GetLatestAsync();
+					
 				if (latest != null)
 				{
 					return (await ReleaseComponentsAsync(latest))
-						.Select(c =>
-						{
-							var component = c.Component;
-							if (component != null) component.GitHub = true;
-							return component;
-						})
+						.Select(c => c.Component)
 						.ToList();
 				}
 			} catch (Exception ex) { }
 			return null;
 		}
 
-		public async Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string release)
+		public async Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string version)
 		{
-			Version version = default;
-			var vm = Regex.Match(release, "[0-9][0-9.]+");
-			if (vm.Success) version = Version.Parse(vm.Value);
-			var releases = (await Repository.Release.GetAll(Owner, Repo)).ToList();
-			var ghrelease = releases
-				.FirstOrDefault(release =>
-				{
-					vm = Regex.Match(release.Name, "[0-9][0-9.]+");
-					return vm.Success && Version.Parse(vm.Value) == version;
-				});
-			var index = releases.IndexOf(ghrelease);
-			if (index == 0) return null;
-			ghrelease = releases[index - 1];
-			var component = (await ReleaseComponentsAsync(ghrelease))
-				.Where(component => component.Component.ComponentCode == componentCode)
-				.Select(component => new ComponentUpdateInfo(component.Component))
-				.FirstOrDefault();
-			if (component != null) component.GitHub = true;
-			return component;
+			//Version version = default;
+			//var vm = Regex.Match(release, "[0-9][0-9.]+");
+			//if (vm.Success) version = Version.Parse(vm.Value);
+			var release = await GetReleaseAsync(version);
+
+			if (release != null)
+			{
+				var component = (await ReleaseComponentsAsync(release))
+					.Where(component => component.Component.ComponentCode == componentCode)
+					.Select(component => new ComponentUpdateInfo(component.Component))
+					.FirstOrDefault();
+				return component;
+			}
+			else return null;
 		}
 
 		public async Task<ComponentUpdateInfo> GetLatestComponentUpdateAsync(string componentCode)
 		{
-			var releases = (await Repository.Release.GetAll(Owner, Repo))
-				.Select(r =>
-				{
-					var vm = Regex.Match(r.Name, "[0-9][0-9.]+");
-					if (vm.Success)
-					{
-						return new
-						{
-							Release = r,
-							Version = Version.Parse(vm.Value)
-						};
-					}
-					else return null;
-				})
-				.Where(r => r != null);
+			var release = await GetLatestAsync();
 
-			var release = releases
-				.OrderByDescending(r => r.Version)
-				.FirstOrDefault()
-				?.Release;
-
-			var component = (await ReleaseComponentsAsync(release))
-				.Where(component => component.Component.ComponentCode == componentCode)
-				.Select(component => new ComponentUpdateInfo(component.Component))
-				.FirstOrDefault();
-			if (component != null) component.GitHub = true;
-			return component;
+			if (release != null)
+			{
+				var component = (await ReleaseComponentsAsync(release))
+					.Where(component => component.Component.ComponentCode == componentCode)
+					.Select(component => new ComponentUpdateInfo(component.Component))
+					.FirstOrDefault();
+				return component;
+			}
+			return null;
 		}
 
 		public async Task<ReleaseFileInfo> GetReleaseFileInfoAsync(string componentCode, string release)
 		{
-			Version version = default;
-			var vm = Regex.Match(release, "[0-9][0-9.]+");
-			if (vm.Success) version = Version.Parse(vm.Value);
-			var releases = (await Repository.Release.GetAll(Owner, Repo)).ToList();
-			var ghrelease = releases
-				.FirstOrDefault(release =>
-				{
-					vm = Regex.Match(release.Name, "[0-9][0-9.]+");
-					return vm.Success && Version.Parse(vm.Value) == version;
-				});
+			var ghrelease = await GetReleaseAsync(release);
 			var component = (await ReleaseComponentsAsync(ghrelease))
 				.Where(component => component.Component.ComponentCode == componentCode)
 				.FirstOrDefault().Component;
-			if (component != null) component.GitHub = true;
 			return component;
 		}
 

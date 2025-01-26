@@ -11,10 +11,11 @@
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <ApplicationIcon>Resources\SolidCP.ico</ApplicationIcon>
         <EmbedReferences>true</EmbedReferences>
-        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <GenerateRuntimeConfigurationFiles>false</GenerateRuntimeConfigurationFiles>
         <DefineConstants Condition="$(EmbedReferences) == 'true'">$(DefineConstants);Costura</DefineConstants>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
+        <GenerateDependencyFile>false</GenerateDependencyFile>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -37,9 +38,11 @@
 
     <ItemGroup>
         <None Remove="installer.settings.json" />
+        <None Remove="SolidCP.UniversalInstaller.runtimeconfig.json" />
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj">
@@ -61,13 +64,14 @@
         <FrameworkReference Include="Microsoft.WindowsDesktop.App" />
     </ItemGroup>
 
-    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+    <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <PackageReference Include="System.Runtime.Serialization.Formatters">
             <Version>9.0.0</Version>
         </PackageReference>
         <PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0"  GeneratePathProperty="true" />
     </ItemGroup>
-
+    
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
@@ -90,9 +94,26 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Content Include="SolidCP.UniversalInstaller.runtimeconfig.json">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
+    <ItemGroup>
         <None Include="FodyWeavers.xsd" />
     </ItemGroup>
 
+    <ItemGroup>
+        <!--<EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\lib\net40\*.dll">
+            <LogicalName>DllsNetFX/%(Filename)%(Extension)</LogicalName>
+            <Link>DllsNetFX\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </EmbeddedResource>-->
+        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll">
+            <LogicalName>Dlls/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
+            <Link>Dlls\runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </EmbeddedResource>
+    </ItemGroup>
+        
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <EmbeddedResource Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll">
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>

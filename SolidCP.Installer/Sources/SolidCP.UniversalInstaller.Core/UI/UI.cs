@@ -26,6 +26,7 @@ namespace SolidCP.UniversalInstaller
 					if (!ui.IsAvailable) ui = ConsoleUI;
 					if (!ui.IsAvailable) ui = naUI;
 					current = ui;
+					Installer.Current.Settings.Installer.UI = ui.GetType().Name;
 				}
 				return current;
 			}
@@ -45,6 +46,7 @@ namespace SolidCP.UniversalInstaller
 				default:
 				case nameof(ConsoleUI): Current = ConsoleUI; break;
 			}
+			Installer.Current.Settings.Installer.UI = name;
 			return Current;
 		}
 
@@ -153,11 +155,6 @@ namespace SolidCP.UniversalInstaller
 		public abstract void Exit();
 		public abstract void RunMainUI();
 		public abstract string GetRootPassword();
-		public abstract ServerSettings GetServerSettings();
-		public abstract EnterpriseServerSettings GetEnterpriseServerSettings();
-		public abstract WebPortalSettings GetWebPortalSettings();
-		public abstract void GetCommonSettings(CommonSettings settings);
-		public abstract Packages GetPackagesToInstall();
 		public abstract void ShowInstallationProgress(string title = null, int maxProgress = 100);
 		public abstract void CloseInstallationProgress();
 		public abstract void ShowError(Exception ex);

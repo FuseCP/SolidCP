@@ -302,6 +302,11 @@ namespace SolidCP.UniversalInstaller
 		}
 	}
 
+	public class LabelField: TextField
+	{
+		public override bool Editable => false;
+		public override bool CanFocus => false;
+	}
 	public class PasswordField : TextField
 	{
 		public PasswordField() : base() { }
@@ -499,7 +504,10 @@ namespace SolidCP.UniversalInstaller
 						}
 					}
 					break;
-				default: break;
+				default:
+					Console.SetCursorPosition(Math.Max(0, Console.CursorLeft - 1), Console.CursorTop);
+					Focus.Show();
+					break;
 			}
 			return false;
 		}

@@ -13,12 +13,24 @@ namespace SolidCP.UniversalInstaller
 			Loader = AssemblyLoader.Init();
 		}
 
+
+		public static void ImportDlls()
+		{
+#if NETCOREAPP
+			// Import Mono.Posix.NETStandard
+			var dummy = Mono.Unix.Native.FilePermissions.ACCESSPERMS;
+#endif
+			// Import SolidCP.Providers.Base
+			SolidCP.Providers.Common.BoolResult dummy2 = null;
+		}
+
 		[STAThread]
 		public static void Main(string[] args)
 		{
 			try
 			{
 				//if (!Debugger.IsAttached && !OSInfo.IsMono) Debugger.Launch();
+				ImportDlls();
 				StartMain(args);
 			} catch { }
 		}

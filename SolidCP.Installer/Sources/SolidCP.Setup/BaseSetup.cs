@@ -96,6 +96,8 @@ public class BaseSetup
 			if (json != null)
 			{
 				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(json, new VersionConverter(), new StringEnumConverter());
+
+				UI.SetCurrent(Installer.Current.Settings.Installer.UI);
 			}
 			else
 			{

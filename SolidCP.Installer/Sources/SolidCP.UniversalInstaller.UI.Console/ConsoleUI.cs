@@ -764,7 +764,7 @@ Password: [!ProxyPassword                           ]
 			}
 			else if (form["Check for Updates"].Clicked)
 			{
-				CheckForUpdate();
+				CheckForInstallerUpdate();
 			}
 			
 			RunMainUI();
@@ -827,11 +827,130 @@ Password: [!ProxyPassword                           ]
 		}
 		public void InstalledComponents()
 		{
+			var str = new StringBuilder();
+			str.AppendLine("Installed Components");
+			str.AppendLine("====================");
+			str.AppendLine();
+			//load components via web service.
+			var components = Settings.Installer.InstalledComponents;
 
+			//remove already installed components or components not available on this platform
+			foreach (var component in components)
+			{
+				str.AppendLine($"[  {component.ComponentName}, {component.Version}  ]");
+			}
+			str.AppendLine();
+			str.AppendLine("[  Back  ]");
+			var form = new ConsoleForm(str.ToString())
+				.ShowDialog();
+			if (form["Back"].Clicked) RunMainUI();
+			else
+			{
+				for (int i = 0; i < components.Count; i++)
+				{
+					if (form[i].Clicked)
+					{
+						ShowInstalledComponentDetails(components[i]);
+						break;
+					}
+				}
+			}
 		}
 
-		public void CheckForUpdate()
+		public void ShowInstalledComponentDetails(ComponentInfo component)
 		{
+			var str = new StringBuilder();
+			var title = $"{component.ComponentName}, {component.Version}";
+			str.AppendLine(title);
+			str.AppendLine(new string('=', title.Length));
+			str.AppendLine();
+			str.AppendLine(component.ComponentDescription);
+			str.AppendLine();
+			str.AppendLine("[  Back  ]  [  Check for Updates  ]  [  Uninstall  ]  [  Settings  ]");
+			var form = new ConsoleForm(str.ToString())
+				.ShowDialog();
+			if (form["Back"].Clicked) AvailableComponents();
+			else if (form["Check for Updates"].Clicked)
+			{
+				CheckForUpdate(component);
+			} else if (form["Unintsall"].Clicked)
+			{
+				Installer.Current.Uninstall(component);
+			} else if (form["Settings"].Clicked)
+			{
+				Installer.Current.Setup(component);
+			}
+			{
+				Installer.Current.Install(component);
+			}
+		}
+
+
+		public void CheckForUpdate(ComponentInfo component)
+		{
+			var release = Installer.Current.Releases;
+			var update = release.GetComponentUpdate(component.ComponentCode, component.VersionName);
+			if (update == null)
+			{
+				var title = $"{component.ComponentName}, {component.Version}";
+				var form = new ConsoleForm($@"{title}
+{new string('=', title.Length)}
+
+Component is already the newest version, there are no updates available;
+
+[  Back  ]
+")
+					.ShowDialog();
+				ShowInstalledComponentDetails(component);
+			}
+			else
+			{
+				var title = $"{component.ComponentName}, {update.Version}";
+				var form = new ConsoleForm($@"{title}
+{new string('=', title.Length)}
+
+There is a new version {component.ComponentName}, {update.VersionName} available that can be installed.
+
+[  Install  ]  [  Back  ]
+")
+					.ShowDialog();
+				if (form["Back"].Clicked) ShowInstalledComponentDetails(component);
+				else Installer.Current.Update(new ComponentInfo(component, update));
+			}
+		}
+
+		public void CheckForInstallerUpdate()
+		{
+			var release = Installer.Current.Releases;
+			var version = Settings.Installer.Version;
+			var update = release.GetLatestComponentUpdate("cfg core");
+			if (update == null || update.Version == version)
+			{
+				var title = $"SolidCP Installer, {version}";
+				var form = new ConsoleForm($@"{title}
+{new string('=', title.Length)}
+
+Component is already the newest version, there are no updates available;
+
+[  Back  ]
+")
+					.ShowDialog();
+				ApplicationSettings();
+			}
+			else
+			{
+				var title = $"SolidCP Installer, {update.Version}";
+				var form = new ConsoleForm($@"{title}
+{new string('=', title.Length)}
+
+There is a new version SolidCP Installer, {update.VersionName} available that can be installed.
+
+[  Install  ]  [  Back  ]
+")
+					.ShowDialog();
+				if (form["Back"].Clicked) ApplicationSettings();
+				else Installer.Current.UpdateInstaller(update);
+			}
 		}
 
 		public override string GetRootPassword()
@@ -842,17 +961,17 @@ SolidCP Installer
 =================
 
 SolidCP Installer must run as {rootUser}.
-Please enter {rootUser} password:
+Please restart SolidCP Installer as {rootUser}.
 
-[!Password                                      ]
-
-[    Ok    ]
+[    Exit    ]
 ")
 				.ShowDialog();
-			return form["Password"].Text;
+			//return form["Password"].Text;
+			Exit();
+			return null;
 		}
 
-		public override ServerSettings GetServerSettings()
+		public ServerSettings GetServerSettings()
 		{
 			var form = new ConsoleForm(@"
 Server Settings:
@@ -908,7 +1027,7 @@ Do you want to proceed?
 
 			return Settings.Server;
 		}
-		public override EnterpriseServerSettings GetEnterpriseServerSettings()
+		public EnterpriseServerSettings GetEnterpriseServerSettings()
 		{
 			var form = new ConsoleForm(@"
 Enterprise Server Settings
@@ -942,7 +1061,7 @@ Database Password: [!DatabasePassword                                           
 
 			return uri.Scheme == "https" && (host == "localhost" || host == "127.0.0.1" || host == "::1" || Regex.IsMatch(host, @"^192\.168\.[0-9]{1,3}\.[0-9]{1,3}$"));
 		}
-		public override WebPortalSettings GetWebPortalSettings()
+		public WebPortalSettings GetWebPortalSettings()
 		{
 			var esurls = Settings.EnterpriseServer.Urls;
 			if (!string.IsNullOrEmpty(esurls))
@@ -970,33 +1089,7 @@ Enterprise Server Url: [?EnterpriseServerUrl http://localhost:9002              
 
 			return Settings.WebPortal;
 		}
-		public override Packages GetPackagesToInstall()
-		{
-			Packages packages = 0;
-			if (OSInfo.IsWindows)
-			{
-				var form = new ConsoleForm(@"
-Components to Install
-=====================
 
-[x] Install Server
-[x] Install Enterprise Server
-[x] Install Web Portal   
-
-[    Ok    ] [    Cancel    ]
-")
-					.ShowDialog();
-				if (form[4].Clicked) Exit();
-				if (form[0].Checked) packages |= Packages.Server;
-				if (form[1].Checked) packages |= Packages.EnterpriseServer;
-				if (form[2].Checked) packages |= Packages.WebPortal;
-			}
-			else
-			{
-				packages |= Packages.Server;
-			}
-			return packages;
-		}
 		public override void ShowError(Exception ex)
 		{
 			Console.Clear();
@@ -1023,7 +1116,7 @@ Components to Install
 			if (InstallationProgress != null) InstallationProgress.Close();
 		}
 
-		public override void GetCommonSettings(CommonSettings settings)
+		public void GetCommonSettings(CommonSettings settings)
 		{
 			if (settings.Urls!.Split(';', ',').Any(url =>
 				url.StartsWith("https:", StringComparison.OrdinalIgnoreCase) ||
@@ -1188,7 +1281,7 @@ You have successfully installed the following components:
 		{
 			AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
 			{
-				Console.Clear();
+				//Console.Clear();
 				Console.CursorVisible = true;
 			};
 		}
@@ -1198,7 +1291,7 @@ You have successfully installed the following components:
 			if (!exitCalled)
 			{
 				exitCalled = true;
-				Console.Clear();
+				//if (Installer.Error == null) Console.Clear();
 				Console.CursorVisible = true;
 				Installer.Exit();
 			}
@@ -1314,7 +1407,9 @@ SolidCP cannot be installed on this System.
 		{
 			var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, Log.File);
 
-			var txt = File.ReadAllText(path);
+			string txt = "";
+
+			if (File.Exists(path)) txt = File.ReadAllText(path);
 			txt = new ConsoleForm().Wrap(txt);
 			var reader = new StringReader(txt);
 			var lines = new List<string>();
@@ -1325,17 +1420,28 @@ SolidCP cannot be installed on this System.
 				line = reader.ReadLine();
 			}
 
-			var height = Console.WindowHeight - 1;
+			var height = Console.WindowHeight - 4;
 			int Y = 0;
 			ConsoleForm form;
 			do
 			{
+				var template = string.Join(NewLine, new[] { "SolidCP Installer Log", "=====================" }
+					.Concat(Enumerable.Repeat("", height + 1))
+					.Concat(new[] { "  [  Down  ]  [  Up  ]  [  Exit  ]" }));
+				form = new ConsoleForm(template);
 				var window = lines
 					.Skip(Y)
-					.Take(height)
-					.Concat(new[] { "  [  Up  ]  [  Down  ]  [  Exit  ]" });
-				form = new ConsoleForm(string.Join(NewLine, window))
-					.ShowDialog();
+					.Take(height);
+				var count = window.Count();
+				if (count < height)
+				{
+					window = window.Concat(Enumerable.Repeat("", height - count));
+				}
+				form.Template = string.Join(NewLine, new[] { "SolidCP Installer Log", "=====================" }
+					.Concat(window)
+					.Concat(new[] { "", "  [  Down  ]  [  Up  ]  [  Exit  ]" }));
+				form.ShowDialog();
+
 				if (form["Up"].Clicked) Y = Math.Max(0, Y - height);
 				else if (form["Down"].Clicked) Y = Math.Min(lines.Count, Y + height);
 			} while (!form["Exit"].Clicked); 
