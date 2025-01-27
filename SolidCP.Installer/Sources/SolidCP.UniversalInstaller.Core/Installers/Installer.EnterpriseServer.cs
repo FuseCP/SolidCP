@@ -255,7 +255,7 @@ namespace SolidCP.UniversalInstaller
 			var versionInfo = swagsetting?.Elements("setting").FirstOrDefault(e => e.Attribute("name")?.Value == "InfoVersion");
 			if (versionInfo != null)
 			{
-				versionInfo.Attribute("value").SetValue(Version);
+				versionInfo.Attribute("value").SetValue(Settings.EnterpriseServer.Version.ToString());
 			}
 
 			configuration.Save(confFile);

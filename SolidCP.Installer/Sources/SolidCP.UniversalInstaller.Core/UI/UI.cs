@@ -142,7 +142,7 @@ namespace SolidCP.UniversalInstaller
 			public virtual SetupWizard LicenseAgreement() => this;
 			public virtual SetupWizard ServerAdminPassword() => this;
 			public virtual SetupWizard ServerPassword() => this;
-			public virtual SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress = 100) => this;
+			public virtual SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings) => this;
 			public virtual SetupWizard UserAccount(CommonSettings settings) => this;
 			public virtual SetupWizard Web(CommonSettings settings) => this;
 			public abstract bool Show();
@@ -155,10 +155,7 @@ namespace SolidCP.UniversalInstaller
 		public abstract void Exit();
 		public abstract void RunMainUI();
 		public abstract string GetRootPassword();
-		public abstract void ShowInstallationProgress(string title = null, int maxProgress = 100);
-		public abstract void CloseInstallationProgress();
 		public abstract void ShowError(Exception ex);
-		public abstract void ShowInstallationSuccess(Packages packages);
 		public abstract void ShowLogFile();
 		public virtual void ShowWaitCursor() { }
 		public virtual void EndWaitCursor() { }
@@ -166,13 +163,10 @@ namespace SolidCP.UniversalInstaller
 		public virtual void ReadArguments(Hashtable args) { }
 		public virtual void PrintInstallerVersion()
 		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var version = assembly.GetName().Version;
+			var version = Installer.Current.Version;
 			Console.WriteLine($"SolidCP UniversalInstaller {version}");
 			Log.WriteLine($"SolidCP UniversalInstaller {version}");
 		}
-
-		public abstract void CheckPrerequisites();
 
 		public abstract void ShowWarning(string msg);
 		public abstract bool DownloadSetup(RemoteFile file);

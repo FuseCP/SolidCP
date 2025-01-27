@@ -135,7 +135,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 			{
 				Pages.Add(() =>
 				{
-					UI.CheckPrerequisites();
+					((ConsoleUI)UI).CheckPrerequisites();
 					Next();
 				});
 				return this;
@@ -648,12 +648,40 @@ SolidCP Installer successfully has:
 				return this;
 			}
 
-			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress)
+			private void SetProgressValue(int value)
+			{
+				if (value > 0) value = (int)(ProgressMaximum * (1 - Math.Exp(-2 * value / Installer.Current.EstimatedOutputLines)));
+				var ui = UI as ConsoleUI;
+				if (ui.InstallationProgress.Progress.Value != value)
+				{
+					ui.InstallationProgress.Progress.Value = value;
+				}
+			}
+
+			private void SetProgressText(string text) {
+				var ui = UI as ConsoleUI;
+				ui.ShowInstallationProgress(null, text);
+			}
+
+			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings)
 			{
 				Pages.Add(() =>
 				{
-					UI.ShowInstallationProgress(title, maxProgress);
+					int n = 0;
+					((ConsoleUI)UI).ShowInstallationProgress(title, null, ProgressMaximum);
+
+					var reportProgress = () => SetProgressValue(n++);
+					Installer.Current.Log.OnWrite += reportProgress;
+					Installer.Current.OnInfo += SetProgressText;
+					Installer.Current.OnError += UI.ShowError;
+
 					action();
+
+					Installer.Current.Log.OnWrite -= reportProgress;
+					Installer.Current.OnInfo -= SetProgressText;
+					Installer.Current.OnError -= UI.ShowError;
+
+					Next();
 				});
 				return this;
 			}
@@ -778,7 +806,10 @@ Password: [!ProxyPassword                           ]
 			str.AppendLine();
 			//load components via web service
 			var releases = Installer.Current.Releases;
+			
+			ShowWaitCursor();
 			var components = releases.GetAvailableComponents();
+			EndWaitCursor();
 
 			//remove already installed components or components not available on this platform
 			foreach (var component in components.ToArray())
@@ -1097,21 +1128,26 @@ Enterprise Server Url: [?EnterpriseServerUrl http://localhost:9002              
 			Console.WriteLine(ex.ToString());
 		}
 
-		ConsoleForm InstallationProgress = null;
-		public override void ShowInstallationProgress(string title = null, int maxProgress = 100)
+		const int ProgressMaximum = 1000;
+		public ConsoleForm InstallationProgress = null;
+		public string ProgressTitle = null;
+		public void ShowInstallationProgress(string title = null, string task = null, int maxProgress = ProgressMaximum)
 		{
-			title ??= "Installation Progress";
-			InstallationProgress = new ConsoleForm(@$"
-{title}:
-{new string('=', title.Length)}=
+			float progress = InstallationProgress?.Progress.Value ?? 0;
+			title ??= (ProgressTitle ??= "Installation Progress");
+			var form = InstallationProgress = new ConsoleForm(@$"
+{title}
+{new string('=', title.Length)}
+
+{task ?? ""}
 
 [%Progress                                                                      ]
-")
-			.ShowProgress(Installer.Shell, maxProgress)
-			.Show();
+");
+			form.Progress.Value = progress;
+			form.Show();
 		}
 
-		public override void CloseInstallationProgress()
+		public void CloseInstallationProgress()
 		{
 			if (InstallationProgress != null) InstallationProgress.Close();
 		}
@@ -1254,29 +1290,6 @@ Email:     [?LetsEncryptCertificateEmail                                        
 				else throw new NotSupportedException("Internal error");
 			}
 		}
-		public override void ShowInstallationSuccess(Packages packages)
-		{
-			var pckgStr = new StringBuilder();
-			if (packages.HasFlag(Packages.Server)) pckgStr.AppendLine("SolidCP Server");
-			if (packages.HasFlag(Packages.EnterpriseServer)) pckgStr.AppendLine("SolidCP Enterprise Server");
-			if (packages.HasFlag(Packages.WebPortal)) pckgStr.AppendLine("SolidCP Web Portal");
-			var template = @"
-Installation Successful
-=======================
-
-You have successfully installed the following components:
-
-@
-
-[    Ok    ]
-";
-			template = template.Replace("@", pckgStr.ToString());
-			var form = new ConsoleForm(template)
-				.ShowDialog();
-
-			Exit();
-		}
-
 		public override void Init()
 		{
 			AppDomain.CurrentDomain.ProcessExit += (sender, args) =>
@@ -1297,7 +1310,7 @@ You have successfully installed the following components:
 			}
 		}
 
-		public override void CheckPrerequisites()
+		public void CheckPrerequisites()
 		{
 			bool ok = true;
 			if (OSInfo.IsWindows)
@@ -1492,6 +1505,49 @@ SolidCP cannot be installed on this System.
 			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
 
 			return res == Result.OK;
+		}
+
+		const string CancelFileName = "WaitCursor.cancel";
+		string CancelFile => Path.Combine(Settings.Installer.TempPath, CancelFileName);
+
+		public CancellationTokenSource CancelWaitCursor = new CancellationTokenSource();
+		private bool CursorVisibleAfterWaitCursor;
+		public override void ShowWaitCursor()
+		{
+			Console.Clear();
+			var write = (string txt) =>
+			{
+				if (CancelWaitCursor.Token.IsCancellationRequested || File.Exists(CancelFile)) throw new Exception();
+				Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
+				Console.Write(txt);
+				Thread.Sleep(333);
+			};
+			write("|");
+			CursorVisibleAfterWaitCursor = false; // Console.CursorVisible;
+			Console.CursorVisible = false;
+			Task.Run(() =>
+			{
+				try
+				{
+					while (true)
+					{
+						write("/");
+						write("-");
+						write("\\");
+						write("|");
+					}
+				}
+				catch {
+					CancelWaitCursor = new CancellationTokenSource();
+					File.Delete(CancelFile);
+				}
+			});
+		}
+
+		public override void EndWaitCursor()
+		{
+			File.WriteAllText(CancelFile, "");
+			CancelWaitCursor.Cancel();
 		}
 	}
 }

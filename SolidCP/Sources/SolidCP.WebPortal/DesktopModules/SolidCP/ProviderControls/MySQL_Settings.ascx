@@ -3,7 +3,7 @@
     <legend>
         <asp:Label runat="server" CssClass="NormalBold" meta:resourcekey="lblFtuNote" />
     </legend>
-    <div runat="server" id="lblFirsttimeUserNote" />
+    <%--<div runat="server" id="lblFirsttimeUserNote" /> --%>
 </fieldset>
 
 <fieldset>

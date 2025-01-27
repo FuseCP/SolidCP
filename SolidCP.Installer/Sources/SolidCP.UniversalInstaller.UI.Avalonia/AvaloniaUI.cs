@@ -34,16 +34,6 @@ namespace SolidCP.UniversalInstaller
 
 		public override UI.SetupWizard Wizard => new SetupWizard(this);
 
-		public override void CheckPrerequisites()
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void CloseInstallationProgress()
-		{
-			throw new NotImplementedException();
-		}
-
 		public override void Exit()
 		{
 		}
@@ -69,16 +59,6 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public override void ShowError(Exception ex)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void ShowInstallationProgress(string title = null, int maxProgress = 100)
-		{
-			throw new NotImplementedException();
-		}
-
-		public override void ShowInstallationSuccess(Packages packages)
 		{
 			throw new NotImplementedException();
 		}

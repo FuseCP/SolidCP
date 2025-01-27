@@ -51,18 +51,18 @@ namespace SolidCP.Portal.ProviderControls
         {
 			if (!IsPostBack)
 			{
-				RenderFtuNote();
+				//RenderFtuNote();
 			}
         }
 
-		private void RenderFtuNote()
+		/*private void RenderFtuNote()
 		{
 			string ftuNote = GetLocalizedString("FirsttimeUserNote");
 			//
 			ServerInfo serverInfo = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
 			//
 			lblFirsttimeUserNote.InnerHtml = String.Format(ftuNote, serverInfo.ServerName);
-		}
+		}*/
 
         public void BindSettings(StringDictionary settings)
         {

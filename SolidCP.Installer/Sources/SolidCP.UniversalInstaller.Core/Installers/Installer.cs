@@ -110,8 +110,14 @@ public abstract partial class Installer
 		OnInfo?.Invoke(message);
 		Log.WriteLine(message);
 	}
-
-	public virtual string Version => Assembly.GetExecutingAssembly().GetCustomAttribute<AssemblyVersionAttribute>()?.Version;
+	public virtual bool IsSetup => !Assembly.GetEntryAssembly().GetName().Name.Contains("Installer");
+	public virtual Version Version {
+		get
+		{
+			if (!IsSetup) return Assembly.GetEntryAssembly().GetName().Version;
+			else return Settings.Installer.Version;
+		}
+	}
 	public void LoadSettings()
 	{
 		var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
@@ -119,8 +125,9 @@ public abstract partial class Installer
 		{
 			var settings = JsonConvert.DeserializeObject<InstallerSettings>(
 				File.ReadAllText(path), new VersionConverter(), new StringEnumConverter());
-			settings.Installer.Version = null;
-			settings.Installer.TempPath = null;
+			settings.Installer.Version = Version;
+			settings.Installer.TempPath = FileUtils.GetTempDirectory();
+			settings.Installer.UI = UI.Current.GetType().Name;
 			Settings = settings;
 		}
 		else SaveSettings();
@@ -131,9 +138,12 @@ public abstract partial class Installer
 		var tempPath = Settings.Installer.TempPath;
 		Settings.Installer.TempPath = null;
 		Settings.Installer.Version = null;
+		Settings.Installer.UI = null;
 		var json = JsonConvert.SerializeObject(Settings, Formatting.Indented,
 			new VersionConverter(), new StringEnumConverter());
 		Settings.Installer.TempPath = tempPath;
+		Settings.Installer.UI = UI.Current.GetType().Name;
+		Settings.Installer.Version = Version;
 		File.WriteAllText(path, json);
 	}
 	public void UpdateSettings()
@@ -191,7 +201,7 @@ public abstract partial class Installer
 		try
 		{
 			// download installer
-			var tmpFolder = Settings.Installer.TempPath = FileUtils.GetTempDirectory();
+			var tmpFolder = Settings.Installer.TempPath;
 
 			if (UI.Current.DownloadSetup(file))
 			{
@@ -293,7 +303,7 @@ public abstract partial class Installer
 		{
 			Info("Set file owner...");
 			OSInfo.Unix.ChangeUnixFileOwner(folder, owner, group, true);
-			InstallLog($"Chaned file owner in {folder}.");
+			InstallLog($"Changed file owner in {folder}.");
 		}
 	}
 
@@ -449,7 +459,11 @@ public abstract partial class Installer
 		if (root == null && destroot == null)
 		{
 			Info("Copy files...");
-			Transaction(() => CopyFiles(source, destination, filter, source, destination))
+			Transaction(() =>
+			{
+				CopyFiles(source, destination, filter, source, destination);
+				InstallLog("Unzipped & installed distribution files");
+			})
 				.WithRollback(() => Directory.Delete(destination, true));
 		}
 		else

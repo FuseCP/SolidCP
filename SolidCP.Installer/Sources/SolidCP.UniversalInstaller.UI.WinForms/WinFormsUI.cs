@@ -79,9 +79,9 @@ namespace SolidCP.UniversalInstaller {
 				Add(new WinForms.ServerAdminPasswordPage());
 				return this;
 			}
-			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings, int maxProgress)
+			public override UI.SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings)
 			{
-				Add(new WinForms.ProgressPage() { Maximum = maxProgress, Settings = settings, Action = action });
+				Add(new WinForms.ProgressPage() { Maximum = 1000, Settings = settings, Action = action });
 				return this;
 			}
 			public override UI.SetupWizard ServerPassword()
@@ -127,15 +127,6 @@ namespace SolidCP.UniversalInstaller {
 		}
 		public override UI.SetupWizard Wizard => new SetupWizard(this);
         
-        public override void ShowInstallationProgress(string title = null, int maxProgress = 100) {
-            throw new NotImplementedException();
-        }
-
-		public override void CloseInstallationProgress()
-		{
-			throw new NotImplementedException();
-		}
-
 		public override void ShowError(Exception ex)
 		{
 			MessageBox.Show($"Error: {ex}", "SolidCP Installer", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -236,11 +227,6 @@ namespace SolidCP.UniversalInstaller {
 			}
 		}
 
-		public override void ShowInstallationSuccess(Packages packages)
-		{
-			throw new NotImplementedException();
-		}
-
 		bool initCalled = false;
 		public override void Init()
 		{
@@ -271,11 +257,6 @@ namespace SolidCP.UniversalInstaller {
 				Application.Exit();
 				Installer.Exit(0);
 			}
-		}
-
-		public override void CheckPrerequisites()
-		{
-			throw new NotSupportedException();
 		}
 
 		public override void ShowLogFile()

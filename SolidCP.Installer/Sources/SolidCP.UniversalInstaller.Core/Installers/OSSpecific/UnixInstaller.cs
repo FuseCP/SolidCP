@@ -60,7 +60,7 @@ public abstract class UnixInstaller : Installer
 		InstallWebsite(dll, UnixServerServiceId, Settings.Server.Urls, "root", SolidCPUnixGroup,
 			"SolidCP.Server service, the server management service for the SolidCP control panel.");
 
-		InstallLog($"Installed {UnixServerServiceId} service runnig the Server website.");
+		//InstallLog($"Installed {UnixServerServiceId} service runnig the Server website.");
 	}
 	public virtual void AddUnixUser(string user, string group)
 	{
@@ -77,7 +77,7 @@ public abstract class UnixInstaller : Installer
 		InstallWebsite(dll, UnixEnterpriseServerServiceId, Settings.Server.Urls, UnixEnterpriseServerServiceId, SolidCPUnixGroup,
 			"SolidCP.Server service, the server management service for the SolidCP control panel.");
 
-		InstallLog($"Installed {UnixEnterpriseServerServiceId} service runnig the Enterprise Server website.");
+		//InstallLog($"Installed {UnixEnterpriseServerServiceId} service runnig the Enterprise Server website.");
 	}
 
 	public override void InstallWebPortalWebsite()
@@ -89,7 +89,7 @@ public abstract class UnixInstaller : Installer
 		InstallWebsite(dll, UnixPortalServiceId, Settings.WebPortal.Urls, UnixPortalServiceId, SolidCPUnixGroup,
 			"SolidCP.Server service, the server management service for the SolidCP control panel.");
 
-		InstallLog($"Installed {UnixPortalServiceId} service runnig the WebPortal website.");
+		//InstallLog($"Installed {UnixPortalServiceId} service runnig the WebPortal website.");
 	}
 	public virtual void RemoveWebsite(string serviceId, string urls)
 	{
@@ -108,21 +108,21 @@ public abstract class UnixInstaller : Installer
 	{
 		RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
 
-		InstallLog($"Removed {UnixServerServiceId} service & website.");
+		//InstallLog($"Removed {UnixServerServiceId} service & website.");
 	}
 
 	public override void RemoveEnterpriseServerWebsite()
 	{
 		RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
 
-		InstallLog($"Removed {UnixEnterpriseServerServiceId} service & website.");
+		//InstallLog($"Removed {UnixEnterpriseServerServiceId} service & website.");
 	}
 
 	public override void RemoveWebPortalWebsite()
 	{
 		RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
 
-		InstallLog($"Removed {UnixPortalServiceId} service & website.");
+		//InstallLog($"Removed {UnixPortalServiceId} service & website.");
 	}
 	public override void OpenFirewall(int port)
 	{
@@ -130,7 +130,7 @@ public abstract class UnixInstaller : Installer
 		{
 			Shell.Default.Exec($"ufw allow {port}/tcp");
 
-			InstallLog($"Opened firewall on port {port}.");
+			//InstallLog($"Opened firewall on port {port}.");
 		}
 	}
 
@@ -164,7 +164,8 @@ public abstract class UnixInstaller : Installer
 			Settings.Server.CertificateFindValue = appsettings.Certificate?.FindValue;
 		}
 	}
-
+	public override void ConfigureEnterpriseServerNetFX() { }
+	public override void ConfigureServerNetFX() { }
 	public override void InstallServerPrerequisites()
 	{
 		InstallNet8Runtime();

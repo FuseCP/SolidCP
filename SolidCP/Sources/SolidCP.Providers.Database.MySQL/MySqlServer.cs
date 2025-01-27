@@ -53,6 +53,7 @@ namespace SolidCP.Providers.Database
 	public class MySqlServer : HostingServiceProviderBase, IDatabaseServer
 	{
 		#region Properties
+		public const bool UseMySqlConnector = false;
 		protected string BackupTempFolder
 		{
 			get { return Path.GetTempPath(); }
@@ -150,7 +151,7 @@ namespace SolidCP.Providers.Database
 
 		static MySqlServer()
 		{
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			if (UseMySqlConnector) AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 		}
 
 		static bool isLoading = false;

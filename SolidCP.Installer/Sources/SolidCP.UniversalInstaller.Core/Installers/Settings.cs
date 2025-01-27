@@ -52,6 +52,7 @@ namespace SolidCP.UniversalInstaller
 		public string LetsEncryptCertificateDomains { get; set; }
 		public string LetsEncryptCertificateEmail { get; set; }
 		public bool ConfigureCertificateManually { get; set; }
+		public Version Version { get; set; }
 	}
 	public class ServerSettings: CommonSettings
 	{
@@ -139,11 +140,7 @@ namespace SolidCP.UniversalInstaller
 		public int Files { get; set; } = 0;
 		public bool IsUnattended { get; set; }
 
-		Version? installerVersion = null;
-		public Version Version {
-			get => installerVersion ??= Assembly.GetEntryAssembly().GetName().Version;
-			set => installerVersion = value;
-		}
+		public Version Version { get; set; }
 		public string WebServiceUrl { get; set; }
 		public string GitHubUrl { get; set; }
 		public bool CheckForUpdate { get; set; }
