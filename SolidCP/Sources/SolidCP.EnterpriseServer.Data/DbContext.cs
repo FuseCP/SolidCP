@@ -253,6 +253,26 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+                public TimeSpan Timeout
+        {
+            get
+            {
+#if NETFRAMEWORK
+                return TimeSpan.FromSeconds((double)Database.CommandTimeout);
+#elif NETCOREAPP
+                return TimeSpan.FromSeconds((double)Database.GetCommandTimeout());
+#endif
+
+			}
+			set {
+#if NETFRAMEWORK
+                Database.CommandTimeout = (int)(value.TotalMilliseconds / 1000 + 0.5);
+#elif NETCOREAPP
+				Database.SetCommandTimeout((int)(value.TotalMilliseconds / 1000 + 0.5));
+#endif
+            }
+        }
+
         public IGenericDbContext BaseContext = null;
 
         public DbContext()
@@ -265,11 +285,8 @@ namespace SolidCP.EnterpriseServer.Data
 			var context = new Context.DbContextBase(this);
 			BaseContext = context;
 #endif
-#if NETFRAMEWORK
-            Database.CommandTimeout = 60;
-#elif NETCOREAPP
-            Database.SetCommandTimeout(60);
-#endif
+
+            Timeout = TimeSpan.FromMinutes(2);
 
             BaseContext.Log += WriteToLog;
 		}
@@ -290,11 +307,9 @@ namespace SolidCP.EnterpriseServer.Data
 #else
             BaseContext = new Context.DbContextBase(this);
 #endif
-#if NETFRAMEWORK
-            Database.CommandTimeout = 120;
-#elif NETCOREAPP
-            Database.SetCommandTimeout(120);
-#endif
+
+            Timeout = TimeSpan.FromMinutes(2);
+
             BaseContext.Log += WriteToLog;
         }
 
