@@ -18,6 +18,7 @@
 	<ItemGroup>
 		<PackageReference Include="MySql.Data" Version="9.2.0" GeneratePathProperty="true" />
         <PackageReference Include="System.Security.Permissions" Verison="8.0.0" GeneratePathProperty="true" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" GeneratePathProperty="true" />
     </ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
@@ -29,11 +30,16 @@
 
     <Target Name="CopyPackageReferences" AfterTargets="Build">
         <ItemGroup>
-            <CopyToOutputFiles Include="$(PkgMySql_Data)\lib\netstandard2.0\**\*.*" />
-            <CopyToOutputFiles Include="$(PkgSystem_Security_Permissions)\lib\netstandard2.0\**\*.*" />
+            <CopyToNetFX Include="$(PkgMySql_Data)\lib\net48\**\*.*" />
+            <CopyToNetCore Include="$(PkgMySql_Data)\lib\net8.0\**\*.*" />
+            <CopyToNetCore Include="$(PkgSystem_Security_Permissions)\lib\net8.0\**\*.*" />
+            <CopyToNetFX Include="$(PkgSystem_Security_Permissions)\lib\net462\**\*.*" />
+            <CopyToNetFX Include="$(PkgSystem_Runtime_Loader)\lib\netstandard1.5\**\*.*" />
         </ItemGroup>
 
         <Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
+        <Copy SourceFiles="@(CopyToNetCore)" DestinationFolder="$(OutputPath)\..\..\bin_dotnet\%(RecursiveDir)" />
+        <Copy SourceFiles="@(CopyToNetFX)" DestinationFolder="$(OutputPath)\..\%(RecursiveDir)" />
     </Target>
 
 </Project>
