@@ -18,18 +18,18 @@ namespace SolidCP.Portal.ProviderControls {
     public partial class MariaDB_Settings : SolidCPControlBase, IHostingServiceProviderSettings {
         protected void Page_Load(object sender, EventArgs e) {
             if(!IsPostBack) {
-                RenderFtuNote();
+                //RenderFtuNote();
             }
         }
 
 
-        private void RenderFtuNote() {
+        /*private void RenderFtuNote() {
             string ftuNote = GetLocalizedString("FirsttimeUserNote");
             //
             ServerInfo serverInfo = ES.Services.Servers.GetServerById(PanelRequest.ServerId);
             //
             lblFirsttimeUserNote.InnerHtml = String.Format(ftuNote, serverInfo.ServerName);
-        }
+        }*/
 
         public void BindSettings(StringDictionary settings) {
             txtInternalAddress.Text = settings["InternalAddress"];

@@ -16,8 +16,9 @@
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.1.0" GeneratePathProperty="true" />
-	</ItemGroup>
+		<PackageReference Include="MySql.Data" Version="9.2.0" GeneratePathProperty="true" />
+        <PackageReference Include="System.Security.Permissions" Verison="8.0.0" GeneratePathProperty="true" />
+    </ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
@@ -29,6 +30,7 @@
     <Target Name="CopyPackageReferences" AfterTargets="Build">
         <ItemGroup>
             <CopyToOutputFiles Include="$(PkgMySql_Data)\lib\netstandard2.0\**\*.*" />
+            <CopyToOutputFiles Include="$(PkgSystem_Security_Permissions)\lib\netstandard2.0\**\*.*" />
         </ItemGroup>
 
         <Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
