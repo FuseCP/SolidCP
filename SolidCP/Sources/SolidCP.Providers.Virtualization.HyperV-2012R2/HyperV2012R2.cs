@@ -2146,7 +2146,9 @@ namespace SolidCP.Providers.Virtualization
         public int GetProcessorCoresNumber()
         {
             int coreCount = 0;
-            foreach (var item in new System.Management.ManagementObjectSearcher("Select * from Win32_Processor").Get())
+            Wmi cimv2 = new Wmi(ServerNameSettings, Constants.WMI_CIMV2_NAMESPACE);
+
+            foreach (var item in cimv2.ExecuteWmiQuery("Select * from Win32_Processor"))
             {
                 coreCount += int.Parse(item["NumberOfLogicalProcessors"].ToString());
             }
