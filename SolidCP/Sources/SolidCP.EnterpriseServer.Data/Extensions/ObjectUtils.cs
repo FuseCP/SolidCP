@@ -136,7 +136,7 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void FillCollectionFromDataSet<T>(List<T> list, DataSet ds)
 		{
-			if (ds.Tables.Count == 0)
+			if (ds == null || ds.Tables.Count == 0)
 				return;
 
 			FillCollectionFromDataTable<T>(list, ds.Tables[0]);

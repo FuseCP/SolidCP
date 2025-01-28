@@ -67,6 +67,32 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	public const string DllsWinFolder = "DllsWin";
 	public static AssemblyLoader Current { get; private set; } = null;
 	public string AssembliesPath { get; set; } = null;
+
+	public int NetVersion = 8;
+	static string desktopRuntimePath = null;
+	public string DesktopRuntimePath {
+		get
+		{
+			if (desktopRuntimePath == null)
+			{
+				var dir = Directory.EnumerateDirectories(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles),
+					"dotnet", "shared", "Microsoft.WindowsDesktop.App"))
+					.Select(dir =>
+					{
+						Version version = default;
+						Version.TryParse(Path.GetFileName(dir), out version);
+						return new { Directory = dir, Version = version };
+					})
+					.Where(dir => dir.Version?.Major == NetVersion)
+					.OrderByDescending(dir => dir.Version)
+					.FirstOrDefault()
+					?.Directory;
+				desktopRuntimePath = dir;
+			}
+			return desktopRuntimePath;
+		}
+	}
+
 	public object AssemblyLoadContext { get; set; } = null;
 	public object LoaderRuntime { get; set; } = null;
 	public bool IsDefault { get; set; } = false;
@@ -190,7 +216,7 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	}
 #endif
 
-	public string ResolveAssemblyName(AssemblyName assemblyName)
+	public string ResolveAssemblyName(AssemblyName assemblyName, bool defaultContext)
 	{
 		var name = assemblyName.Name + ".dll";
 		var culture = assemblyName.CultureInfo;
@@ -228,13 +254,24 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 			file = Path.Combine(AssembliesPath, culture.Name.ToLower(), name);
 			if (File.Exists(file)) return file;
 		}
+
+		if (IsCore && IsWindows && defaultContext)
+		{
+			file = Path.Combine(DesktopRuntimePath, name);
+			if (File.Exists(file)) return file;
+		}
+
 		return null;
 	}
 	public Assembly ResolveAssembly(object loadContext, AssemblyName name)
 	{
 		Assembly assembly;
 		if (loadContext == null) loadContext = AssemblyLoadContext;
-		var file = ResolveAssemblyName(name);
+#if NETCOREAPP
+		var file = ResolveAssemblyName(name, loadContext == System.Runtime.Loader.AssemblyLoadContext.Default);
+#else
+		var file = ResolveAssemblyName(name, false);
+#endif
 		if (file != null)
 		{
 			if (loadContext == null) assembly = Assembly.LoadFrom(file);

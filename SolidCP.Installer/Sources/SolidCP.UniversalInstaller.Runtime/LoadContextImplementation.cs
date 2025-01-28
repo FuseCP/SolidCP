@@ -58,40 +58,18 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 	public virtual object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
 	{
 		Assembly assembly = null;
-#if DEBUG
-		if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup.dll", StringComparison.OrdinalIgnoreCase) &&
-			(Debugger.IsAttached || UseLocalSetupDll))
-		{
-			var exe = Assembly.GetEntryAssembly();
-			var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup.dll");
+
+		var exe = Assembly.GetEntryAssembly();
+		var localSetup = Path.Combine(Path.GetDirectoryName(exe.Location), Path.GetFileName(fileName));
+		if (File.Exists(localSetup)) fileName = localSetup;
+
 #if NETCOREAPP
-			assembly = AssemblyLoadContext.LoadFromAssemblyPath(path);
-#else
-			assembly = Assembly.LoadFrom(path);
-#endif
-		}
-		else if (UseLocalSetupDllForDebugging && fileName.EndsWith("Setup2.dll", StringComparison.OrdinalIgnoreCase) &&
-			(Debugger.IsAttached || UseLocalSetupDll))
-		{
-			var exe = Assembly.GetEntryAssembly();
-			var path = Path.Combine(Path.GetDirectoryName(exe.Location), "Setup2.dll");
-#if NETCOREAPP
-			assembly = AssemblyLoadContext.LoadFromAssemblyPath(path);
-#else
-			assembly = Assembly.LoadFrom(path);
-#endif
-		}
-		else
-#endif
-		{
-#if NETCOREAPP
-			assembly = AssemblyLoadContext.LoadFromAssemblyPath(fileName);
+		assembly = AssemblyLoadContext.LoadFromAssemblyPath(fileName);
 #else
 				
-			assembly = Assembly.LoadFrom(fileName);
+		assembly = Assembly.LoadFrom(fileName);
 #endif
-		}
-
+		
 		Type type = assembly.GetType(typeName);
 		MethodInfo method = type.GetMethod(methodName, new Type[] { typeof(string) });
 		return method.Invoke(Activator.CreateInstance(type), parameters);
@@ -167,11 +145,13 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 		{
 			if (!Debugger.IsAttached || AlwaysUseLoadContext) loadContext = AssemblyLoadContext = new SetupAssemblyLoadContext();
 			else loadContext = AssemblyLoadContext = AssemblyLoadContext.Default;
+
 			var res = RemoteRun(fileName, typeName, methodName, parameters);
 			if (!Debugger.IsAttached || AlwaysUseLoadContext) loadContext.Unload();
 			return res;
 		} catch (Exception ex)
 		{
+			UI.Current.ShowError(ex);
 			if (loadContext != null && loadContext != AssemblyLoadContext.Default) loadContext.Unload();
 			return Result.Cancel;
 		}

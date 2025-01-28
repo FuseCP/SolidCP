@@ -107,7 +107,7 @@ namespace SolidCP.UniversalInstaller {
 				UI.EndWaitCursor();
 				IWin32Window owner = UI.MainForm as IWin32Window;
 				var result = Form.ShowModal(owner) == DialogResult.OK;
-				Installer.Current.UpdateSettings();
+				Installer.Current.UpdateSettings(result);
 				return result;
 			}
 		}
@@ -269,9 +269,9 @@ namespace SolidCP.UniversalInstaller {
 			MessageBox.Show((Form)MainForm, msg, ((Form)MainForm).Text, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 		}
 
-		public override bool DownloadSetup(RemoteFile file)
+		public override bool DownloadSetup(RemoteFile file, bool setupOnly = false)
 		{
-			Controls.Loader loader = new Controls.Loader(file, (e) => ShowError(e));
+			Controls.Loader loader = new Controls.Loader(file, ShowError, setupOnly);
 			DialogResult result = loader.ShowDialog();
 
 			if (result == DialogResult.OK)

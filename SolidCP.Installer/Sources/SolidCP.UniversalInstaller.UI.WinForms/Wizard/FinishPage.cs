@@ -52,14 +52,23 @@ namespace SolidCP.UniversalInstaller.WinForms
 		protected internal override void OnBeforeDisplay(EventArgs e)
 		{
 			base.OnBeforeDisplay(e);
-			this.Text = "Setup complete";
+			var logs = Installer.Current.InstallLogs;
+			if (Installer.Current.Error != null)
+			{
+				this.Text = "Setup failed";
+				txtLog.Text = Installer.Current.Error.SourceException.ToString();
+				//ParentForm.DialogResult = DialogResult.Abort;
+			} else
+			{
+				this.Text = "Setup complete";
+				logs.Insert(0, "The Installer has:");
+				this.txtLog.Text = string.Join(Environment.NewLine, Installer.Current.InstallLogs
+					.Select(log => "- " + log));
+				//ParentForm.DialogResult = DialogResult.OK;
+			}
 			this.Description = "Click Finish to exit the wizard.";
 			this.AllowMoveBack = false;
 			this.AllowCancel = false;
-			var logs = Installer.Current.InstallLogs;
-			logs.Insert(0, "The Installer has:");
-			this.txtLog.Text = string.Join(Environment.NewLine, Installer.Current.InstallLogs
-				.Select(log => "- " + log));
 		}
 
 		protected internal override void OnAfterDisplay(EventArgs e)

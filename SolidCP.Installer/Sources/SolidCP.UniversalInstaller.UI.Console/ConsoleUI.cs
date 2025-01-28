@@ -650,7 +650,11 @@ SolidCP Installer successfully has:
 
 			private void SetProgressValue(int value)
 			{
-				if (value > 0) value = (int)(ProgressMaximum * (1 - Math.Exp(-2 * value / Installer.Current.EstimatedOutputLines)));
+				if (value > 0)
+				{
+					if (value < 100) value = (ProgressMaximum * value / (5 * 100));
+					else value = (ProgressMaximum / 5) + (int)(ProgressMaximum * (1 - Math.Exp(-2 * (value - 100) / Installer.Current.EstimatedOutputLines)));
+				}
 				var ui = UI as ConsoleUI;
 				if (ui.InstallationProgress.Progress.Value != value)
 				{
@@ -674,6 +678,8 @@ SolidCP Installer successfully has:
 					Installer.Current.Log.OnWrite += reportProgress;
 					Installer.Current.OnInfo += SetProgressText;
 					Installer.Current.OnError += UI.ShowError;
+
+					Installer.Current.WaitForDownloadToComplete();
 
 					action();
 
@@ -1470,13 +1476,14 @@ SolidCP cannot be installed on this System.
 		}
 
 		bool downloadComplete = false;
-		public override bool DownloadSetup(RemoteFile file)
+		public override bool DownloadSetup(RemoteFile file, bool setupOnly = false)
 		{
 			var loader = Core.SetupLoaderFactory.CreateFileLoader(file);
 			loader.ProgressChanged += DownloadProgressChanged;
 			ShowInstallationProgress("Download and Extract Component");
 			loader.OperationCompleted += DownloadAndUnzipCompleted;
 			loader.DownloadComplete += DownloadCompleted;
+			loader.SetupOnly = setupOnly;
 			loader.LoadAppDistributive();
 
 			while (!downloadComplete) Thread.Sleep(100);
@@ -1514,6 +1521,7 @@ SolidCP cannot be installed on this System.
 		private bool CursorVisibleAfterWaitCursor;
 		public override void ShowWaitCursor()
 		{
+			if (!Directory.Exists(Settings.Installer.TempPath)) Directory.CreateDirectory(Settings.Installer.TempPath);
 			Console.Clear();
 			var write = (string txt) =>
 			{
@@ -1539,7 +1547,7 @@ SolidCP cannot be installed on this System.
 				}
 				catch {
 					CancelWaitCursor = new CancellationTokenSource();
-					File.Delete(CancelFile);
+					if (File.Exists(CancelFile)) File.Delete(CancelFile);
 				}
 			});
 		}

@@ -67,7 +67,8 @@ public partial class InstallerForm : Form
 
 	private void OnWizardFinish(object sender, EventArgs e)
 	{
-		this.DialogResult = DialogResult.OK;
+		if (Installer.Current.Error == null) this.DialogResult = DialogResult.OK;
+		else this.DialogResult = DialogResult.Abort;
 		Close();
 	}
 

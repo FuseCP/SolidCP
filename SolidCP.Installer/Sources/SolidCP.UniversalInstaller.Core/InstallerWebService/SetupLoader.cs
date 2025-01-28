@@ -176,12 +176,14 @@ namespace SolidCP.UniversalInstaller.Core
 		public event EventHandler<LoaderEventArgs<Int32>> ProgressChanged;
 		public event EventHandler<EventArgs> DownloadComplete;
 		public event EventHandler<EventArgs> OperationCompleted;
-
+		public event EventHandler<EventArgs> NoUnzipStatus;
+		public event EventHandler<LoaderEventArgs<int>> SetMaximumProgress;
 		internal SetupLoader(RemoteFile remoteFile)
 		{
 			this.remoteFile = remoteFile;
 		}
 
+		public bool SetupOnly { get; set; } = false;
 		public void LoadAppDistributive()
 		{
 			ThreadPool.QueueUserWorkItem(q => LoadAppDistributiveInternal());
@@ -218,6 +220,11 @@ namespace SolidCP.UniversalInstaller.Core
 			RaiseOnProgressChangedEvent(eventData, true);
 		}
 
+		protected void RaiseSetMaximumProgressEvent(int eventData)
+		{
+			SetMaximumProgress?.Invoke(eventData, new LoaderEventArgs<int>() { EventData = eventData });
+		}
+
 		protected void RaiseOnProgressChangedEvent(int eventData, bool cancellable)
 		{
 			if (ProgressChanged == null)
@@ -252,6 +259,8 @@ namespace SolidCP.UniversalInstaller.Core
 			OperationCompleted(this, EventArgs.Empty);
 		}
 
+		protected void RaiseNoUzipStatusEvent() => NoUnzipStatus?.Invoke(this, EventArgs.Empty);
+
 		/// <summary>
 		/// Executes a file download request asynchronously
 		/// </summary>
@@ -266,13 +275,62 @@ namespace SolidCP.UniversalInstaller.Core
 				// Initialize storage
 				InitializeLocalStorage(dataFolder, tmpFolder);
 
-				string fileToDownload = Path.GetFileName(remoteFile.File);
-
-				string destinationFile = Path.Combine(dataFolder, fileToDownload);
-				string tmpFile = Path.Combine(tmpFolder, fileToDownload);
-
 				cts = new CancellationTokenSource();
 				CancellationToken token = cts.Token;
+
+				var fileToDownload = Path.GetFileName(remoteFile.File);
+				var exeFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+				var installerPath = remoteFile.Release.InstallerPath.Replace('/', Path.DirectorySeparatorChar);
+				var setupFileName = Path.Combine(exeFolder,
+					Path.GetFileName(installerPath));
+				var destinationFile = Path.Combine(dataFolder, fileToDownload);
+				var tmpFile = Path.Combine(tmpFolder, fileToDownload);
+
+				if (File.Exists(setupFileName))
+				{
+					var assembly = Mono.Cecil.AssemblyDefinition.ReadAssembly(setupFileName);
+					var version = assembly.Name.Version;
+					if (version.Major == remoteFile.Release.Version.Major &&
+						version.Minor == remoteFile.Release.Version.Minor &&
+						version.Build == remoteFile.Release.Version.Build)
+					{
+						RaiseNoUzipStatusEvent();
+						RaiseOnProgressChangedEvent(100);
+						RaiseDownloadCompleteEvent();
+						RaiseOnOperationCompletedEvent();
+
+						if (!SetupOnly) StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
+
+						return;
+					}
+				}
+
+				// Check for setup file
+				var info = Installer.Current.Releases.GetReleaseFileInfo(Path.GetFileNameWithoutExtension(setupFileName).ToLower(), remoteFile.Release.VersionName);
+				if (info != null)
+				{
+					try
+					{
+						RaiseNoUzipStatusEvent();
+
+						Task downloadSetupTask = GetDownloadFileTask(new RemoteFile(info, true), setupFileName, token);
+						
+						if (!SetupOnly)
+						{
+							var downloadComponentTask = downloadSetupTask.ContinueWith(async task =>
+							{
+								RaiseDownloadCompleteEvent();
+								RaiseOnOperationCompletedEvent();
+
+								StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
+							}, token);
+						}
+						downloadSetupTask.Start();
+					}
+					catch (Exception ex) { }
+
+					return;
+				}
 
 				try
 				{
@@ -285,8 +343,8 @@ namespace SolidCP.UniversalInstaller.Core
 
 						if (File.Exists(tmpFile))
 						{
-							// copy downloaded file to data folder
-							RaiseOnStatusChangedEvent(CopyingSetupFilesMessage);
+							// move downloaded file to data folder
+							//RaiseOnStatusChangedEvent(CopyingSetupFilesMessage);
 							//
 							//RaiseOnProgressChangedEvent(0);
 
@@ -295,7 +353,7 @@ namespace SolidCP.UniversalInstaller.Core
 								FileUtils.DeleteFile(destinationFile);
 							File.Move(tmpFile, destinationFile);
 							//
-							//RaiseOnProgressChangedEvent(100);
+							//RaiseOnProgressChangedEvent(1000);
 						}
 					}, TaskContinuationOptions.NotOnCanceled);
 					// Unzip file downloaded
@@ -349,6 +407,104 @@ namespace SolidCP.UniversalInstaller.Core
 			}
 		}
 
+
+		public const string DownloadProgressFile = "_downloadProgress";
+		protected void StartDownloadAsyncRelease(RemoteFile remoteFile, string tmpFile, string destinationFile,
+			string tmpFolder, string installerPath, CancellationToken token)
+		{
+			var progressFile = Path.Combine(tmpFolder, DownloadProgressFile);
+
+			try
+			{
+				var installerPathDir = Path.GetDirectoryName(installerPath).Replace(Path.DirectorySeparatorChar, '/');
+				if (!string.IsNullOrEmpty(installerPathDir) && installerPathDir != "/") installerPath = installerPathDir;
+				var loader = new SetupLoader(remoteFile);
+				var progressStream = File.Create(progressFile);
+
+				// report progress in progress file so it can be read by setup
+				loader.ProgressChanged += (sender, args) =>
+				{
+					try
+					{
+						while (args.EventData > progressStream.Length)
+						{
+							progressStream.WriteByte(0);
+							progressStream.Flush();
+						}
+					}
+					catch { }
+				};
+
+				// Download the file requested
+				Task downloadFileTask = loader.GetDownloadFileTask(remoteFile, tmpFile, token);
+				// Move the file downloaded from temporary location to Data folder
+				var moveFileTask = downloadFileTask.ContinueWith((t) =>
+				{
+					if (File.Exists(tmpFile))
+					{
+						// Ensure that the target does not exist.
+						if (File.Exists(destinationFile))
+							FileUtils.DeleteFile(destinationFile);
+						File.Move(tmpFile, destinationFile);
+					}
+				}, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.NotOnFaulted);
+				var faultDowloadFile = downloadFileTask.ContinueWith(t =>
+				{
+					progressStream.Close();
+					File.Delete(progressFile);
+				}, TaskContinuationOptions.NotOnRanToCompletion);
+				var faultMoveFileTask = moveFileTask.ContinueWith(t =>
+				{
+					progressStream.Close();
+					File.Delete(progressFile);
+				}, TaskContinuationOptions.NotOnRanToCompletion);
+				// Unzip file downloaded
+				var unzipFileTask = moveFileTask.ContinueWith((t) =>
+				{
+					if (File.Exists(destinationFile))
+					{
+						loader.UnzipFile(destinationFile, tmpFolder, name => !name.StartsWith(installerPath));
+					}
+
+					progressStream.Close();
+					File.Delete(progressFile);
+				}, token, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.NotOnFaulted, TaskScheduler.Current);
+				var faultUnzipFile = unzipFileTask.ContinueWith(t =>
+				{
+					progressStream.Close();
+					File.Delete(progressFile);
+				}, TaskContinuationOptions.NotOnRanToCompletion);
+				//
+
+				downloadFileTask.Start();
+			}
+			catch (AggregateException ae)
+			{
+				ae.Handle((e) =>
+				{
+					// We handle cancellation requests
+					if (e is OperationCanceledException)
+					{
+						CancelDownload(tmpFile);
+						Log.WriteInfo("Download has been cancelled by the user");
+						return true;
+					}
+					// But other issues just being logged
+					Log.WriteError("Could not download the file", e);
+					return false;
+				});
+			}
+			catch (Exception ex)
+			{
+				if (ex is ThreadAbortException)
+					return;
+
+				Log.WriteError("Loader module error", ex);
+				//
+				RaiseOnOperationFailedEvent(ex);
+			}
+		}
+
 		protected virtual Task GetDownloadFileTask(RemoteFile sourceFile, string tmpFile, CancellationToken ct)
 		{
 			var downloadFileTask = new Task(async () =>
@@ -372,8 +528,9 @@ namespace SolidCP.UniversalInstaller.Core
 								string.Format(DownloadProgressMessage, downloaded / 1024, fileSize / 1024));
 
 							RaiseOnProgressChangedEvent(Convert.ToInt32((downloaded * 100) / fileSize));
-						});	
+						});
 
+					RaiseOnProgressChangedEvent(100);
 					RaiseOnStatusChangedEvent(DownloadingSetupFilesMessage, "100%");
 					Log.WriteEnd(string.Format("Downloaded {0} bytes", downloadedSize));
 				}
@@ -408,10 +565,12 @@ namespace SolidCP.UniversalInstaller.Core
 			tmpFolder = FileUtils.GetTempDirectory();
 		}
 
-		private void UnzipFile(string zipFile, string destFolder)
+		private void UnzipFile(string zipFile, string destFolder, Func<string, bool> filter = null)
 		{
 			try
 			{
+				if (filter == null) filter = name => true;
+
 				int val = 0;
 				// Negative value means no progress made yet
 				int progress = -1;
@@ -429,15 +588,19 @@ namespace SolidCP.UniversalInstaller.Core
 
 					foreach (var entry in zip.Entries)
 					{
-						if (string.IsNullOrEmpty(entry.Name))
+						if (filter(entry.FullName))
 						{
-							Directory.CreateDirectory(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)));
+							if (string.IsNullOrEmpty(entry.Name))
+							{
+								Directory.CreateDirectory(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)));
+							}
+							else
+							{
+								entry.ExtractToFile(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)), true);
+								files++;
+							}
 						}
-						else
-						{
-							entry.ExtractToFile(Path.Combine(destFolder, entry.FullName.Replace('/', Path.DirectorySeparatorChar)), true);
-							files++;
-						}
+						else if (!string.IsNullOrEmpty(entry.Name)) files++;
 
 						unzipped += entry.CompressedLength;
 

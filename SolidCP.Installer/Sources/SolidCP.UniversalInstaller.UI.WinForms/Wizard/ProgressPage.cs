@@ -87,7 +87,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 			}
 			else
 			{
-				if (value > 0) value = (int)(Maximum * (1 - Math.Exp(-2 * value / Installer.Current.EstimatedOutputLines)));
+				if (value > 0)
+				{
+					if (value < 100) value = (Maximum * value / (5 * 100));
+					else value = (Maximum / 5) + (int)(Maximum * (1 - Math.Exp(-2 * (value - 100) / Installer.Current.EstimatedOutputLines)));
+				}
+				
 				if (progressBar.Value != value)
 				{
 					progressBar.Value = value;
@@ -157,12 +162,14 @@ namespace SolidCP.UniversalInstaller.WinForms
 			int n = 0;
 			try
 			{
-				SetProgressText("Creating installation script...");
+				SetProgressText("Download && Unzip component...");
 
 				var reportProgress = () => SetProgressValue(n++);
 				Installer.Current.Log.OnWrite += reportProgress;
 				Installer.Current.OnInfo += SetProgressText;
 				Installer.Current.OnError += ShowError;
+
+				Installer.Current.WaitForDownloadToComplete();
 
 				Action?.Invoke();
 
@@ -173,7 +180,6 @@ namespace SolidCP.UniversalInstaller.WinForms
 				this.progressBar.Value = Maximum;
 
 				SetProgressText("Completed. Click Next to continue.");
-				ParentForm.DialogResult = DialogResult.OK;
 			}
 			catch (Exception ex)
 			{
@@ -186,7 +192,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 				}
 				this.progressBar.Value = 0;
 				SetProgressText("Installation failed. Click Next to continue.");
-				ParentForm.DialogResult = DialogResult.Abort;
+				this.AllowMoveNext = true;
+				this.AllowCancel = false;
+				//ParentForm.DialogResult = DialogResult.Abort;
 			}
 
 			this.AllowMoveNext = true;

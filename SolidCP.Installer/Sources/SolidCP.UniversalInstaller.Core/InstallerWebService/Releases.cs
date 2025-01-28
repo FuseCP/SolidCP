@@ -55,16 +55,17 @@ public class Releases
 			(wsinfo == null || ghinfo.Version > wsinfo.Version)) return ghinfo;
 		else return wsinfo;
 	}
-	public ReleaseFileInfo GetReleaseFileInfo(string componentCode, string version)
+	public ComponentUpdateInfo GetReleaseFileInfo(string componentCode, string version)
 		=> GetReleaseFileInfoAsync(componentCode, version).Result;
-	public async Task<ReleaseFileInfo> GetReleaseFileInfoAsync(string componentCode, string version)
+	public async Task<ComponentUpdateInfo> GetReleaseFileInfoAsync(string componentCode, string version)
 	{
 		var infos = new[]
 		{
 			GitHub.GetReleaseFileInfoAsync(componentCode, version),
 			WebService.GetReleaseFileInfoAsync(componentCode, version)
 		};
-		return await infos[0] ?? await infos[1];
+		var info = await infos[0] ?? await infos[1];
+		return info != null ? new ComponentUpdateInfo(info, version) : null;
 	}
 	public void GetFile(RemoteFile file, string destinationFile, Action<long, long> progress = null)
 		=> Task.Run(() => GetFileAsync(file, destinationFile, progress)).Wait();

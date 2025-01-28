@@ -146,9 +146,9 @@ public abstract partial class Installer
 		Settings.Installer.Version = Version;
 		File.WriteAllText(path, json);
 	}
-	public void UpdateSettings()
+	public void UpdateSettings(bool success = true)
 	{
-		if (Settings.Installer.Component != null)
+		if (Settings.Installer.Component != null && success)
 		{
 			if (Settings.Installer.Action != SetupActions.Uninstall &&
 				Settings.Installer.Action != SetupActions.Setup)
@@ -160,7 +160,8 @@ public abstract partial class Installer
 				var component = Settings.Installer.InstalledComponents
 					.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
 				if (component != null) Settings.Installer.InstalledComponents.Remove(component);
-			} else
+			}
+			else
 			{
 				var component = Settings.Installer.InstalledComponents
 					.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
@@ -171,10 +172,10 @@ public abstract partial class Installer
 					Settings.Installer.InstalledComponents.Insert(index, Settings.Installer.Component);
 				}
 			}
-			Settings.Installer.Component = null;
-			Error = null;
-			SaveSettings();
 		}
+		Settings.Installer.Component = null;
+		Error = null;
+		SaveSettings();
 	}
 	public bool RunSetup(ComponentInfo info, SetupActions action)
 	{
@@ -189,11 +190,11 @@ public abstract partial class Installer
 		string installerPath = info.InstallerPath;
 		string installerType = info.InstallerType;
 
-		if (Settings.Installer.Action == SetupActions.Install && info.IsInstalled)
+		if (action == SetupActions.Install && info.IsInstalled)
 		{
 			UI.Current.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
 			return false;
-		} else if (Settings.Installer.Action != SetupActions.Install && !info.IsInstalled)
+		} else if (action != SetupActions.Install && !info.IsInstalled)
 		{
 			UI.Current.ShowWarning(Global.Messages.ComponentIsNotInstalled);
 			return false;
@@ -203,7 +204,7 @@ public abstract partial class Installer
 			// download installer
 			var tmpFolder = Settings.Installer.TempPath;
 
-			if (UI.Current.DownloadSetup(file))
+			if (UI.Current.DownloadSetup(file, action == SetupActions.Uninstall))
 			{
 				UI.Current.ShowWaitCursor();
 				string path = Path.Combine(tmpFolder, installerPath);
@@ -226,6 +227,7 @@ public abstract partial class Installer
 
 				//run installer
 				var res = (Result)LoadContext.Execute(path, installerType, method, new object[] { hashtable }) == Result.OK;
+
 				FileUtils.DeleteTempDirectory();
 
 				LoadSettings();
@@ -320,15 +322,21 @@ public abstract partial class Installer
 	public virtual void RemoveFirewallRule(int port) { }
 	public virtual void OpenFirewall(params IEnumerable<int> ports)
 	{
-		Info("Configure firewall...");
-		foreach (int port in ports) OpenFirewall(port);
-		InstallLog($"Opened firewall on {string.Join(",", ports.OfType<object>().ToArray())}");
+		if (ports.Any())
+		{
+			Info("Configure firewall...");
+			foreach (int port in ports) OpenFirewall(port);
+			InstallLog($"Opened firewall on {string.Join(",", ports.OfType<object>().ToArray())}");
+		}
 	}
 	public virtual void RemoveFirewallRule(params IEnumerable<int> ports)
 	{
-		Info("Configure firewall...");
-		foreach (int port in ports) RemoveFirewallRule(port);
-		InstallLog($"Closed firewall on {string.Join(",", ports.OfType<object>().ToArray())}");
+		if (ports.Any())
+		{
+			Info("Configure firewall...");
+			foreach (int port in ports) RemoveFirewallRule(port);
+			InstallLog($"Closed firewall on {string.Join(",", ports.OfType<object>().ToArray())}");
+		}
 	}
 
 	public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
@@ -376,7 +384,7 @@ public abstract partial class Installer
 			((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
 
 			WebServer.CreateSite(site);
-			InstallLog($"Installed Website {name}");
+			InstallLog($"Installed IIS website {name}");
 		})
 		.WithRollback(() => WebServer.DeleteSite(site.SiteId));
 		
@@ -385,7 +393,6 @@ public abstract partial class Installer
 			.Where(binding => binding.IP != "127.0.0.1" && binding.IP != "::1" && binding.Host != "localhost")
 			.Select(binding => int.TryParse(binding.Port, out p) ? p : 0);
 		OpenFirewall(ports);
-
 	}
 
 	public void InstallService(ServiceDescription description)
@@ -593,11 +600,27 @@ public abstract partial class Installer
 		var tc = get("trustservercertificate");
 		trustCertificate = tc != null && tc.Equals("true", StringComparison.OrdinalIgnoreCase);
 	}
+
 	public abstract bool CheckOSSupported();
 	public abstract bool CheckSystemdSupported();
 	public abstract bool CheckIISVersionSupported();
 	public abstract bool CheckNetVersionSupported();
 
+	public virtual void WaitForDownloadToComplete()
+	{
+		var progressFile = Path.Combine(Settings.Installer.TempPath, SetupLoader.DownloadProgressFile);
+		int n = 0;
+		var info = new FileInfo(progressFile);
+		while (info.Exists)
+		{
+			while (info.Exists && n++ < info.Length)
+			{
+				Log.ProgressOne();
+				info = new FileInfo(progressFile);
+			}
+			Thread.Sleep(50);
+		}
+	}
 	public virtual ILoadContext LoadContext {
 		get
 		{

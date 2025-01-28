@@ -91,12 +91,12 @@ namespace SolidCP.UniversalInstaller
 
 	public class RemoteFile
 	{
-		public RemoteFile(ReleaseFileInfo release, bool fullFile)
+		public RemoteFile(ComponentUpdateInfo release, bool fullFile)
 		{
 			Release = release;
 			FullFile = fullFile;
 		}
-		public ReleaseFileInfo Release { get; set; }
+		public ComponentUpdateInfo Release { get; set; }
 		public bool FullFile { get; set; }
 		public string File => FullFile ? Release.FullFilePath : Release.UpgradeFilePath;
 	}
@@ -117,6 +117,23 @@ namespace SolidCP.UniversalInstaller
 			this.VersionName = info.VersionName;
 			this.GitHub = info.GitHub;
 		}
+		public ComponentUpdateInfo(ReleaseFileInfo info, string release)
+		{
+			Version version = default;
+			var vm = Regex.Match(release, "[0-9][0-9.]+");
+			if (vm.Success) Version.TryParse(vm.Value, out version);
+			this.Beta = Regex.IsMatch(release, "beta|alpha", RegexOptions.IgnoreCase);
+			this.FullFilePath = info.FullFilePath;
+			this.InstallerPath = info.InstallerPath;
+			this.InstallerType = info.InstallerType;
+			this.Platforms = info.Platforms;
+			this.ReleaseFileId = info.ReleaseFileId;
+			this.UpgradeFilePath = info.UpgradeFilePath;
+			this.Version = version;
+			this.VersionName = release;
+			this.GitHub = info.GitHub;
+		}
+
 		public ComponentUpdateInfo(ElementInfo raw): base(raw)
 		{
 			VersionName = raw.Version;

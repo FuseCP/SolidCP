@@ -190,7 +190,6 @@ namespace SolidCP.UniversalInstaller
 				Converters = new List<JsonConverter>() { new VersionConverter(), new StringEnumConverter() }
 			}));
 
-			InstallLog("Configured Server.");
 		}
 
 		public virtual void ConfigureServerNetFX()
@@ -256,13 +255,13 @@ namespace SolidCP.UniversalInstaller
 			}
 
 			configuration.Save(confFile);
-
-			InstallLog("Configured Server.");
 		}
 
 		public virtual void ConfigureServer(bool standalone = false) {
 			ConfigureServerNetFX();
 			ConfigureServerNetCore();
+
+			InstallLog("Configured Server.");
 		}
 		public virtual void CopyServer(Func<string, string> filter = null)
 		{

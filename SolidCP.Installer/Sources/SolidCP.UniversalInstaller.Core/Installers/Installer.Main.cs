@@ -69,6 +69,7 @@ namespace SolidCP.UniversalInstaller
 			AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
 			{
 				Log.WriteError($"Unhandled Exception:", args.ExceptionObject as Exception);
+				UI.Current.ShowError(args.ExceptionObject as Exception);
 			};
 		}
 

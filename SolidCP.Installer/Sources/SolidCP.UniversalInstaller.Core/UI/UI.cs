@@ -169,7 +169,7 @@ namespace SolidCP.UniversalInstaller
 		}
 
 		public abstract void ShowWarning(string msg);
-		public abstract bool DownloadSetup(RemoteFile file);
+		public abstract bool DownloadSetup(RemoteFile file, bool setupOnly = false);
 		public virtual bool ExecuteSetup(string path, string installerType, string method, object[] args)
 		{
 			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });

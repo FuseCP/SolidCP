@@ -59,6 +59,8 @@ namespace SolidCP.UniversalInstaller
 		}
 		protected DataSet DataSet(ArrayOfXElement xml)
 		{
+			if (xml == null) return null;
+
 			var set = new DataSet();
 			using (var stream = XStream(xml.Nodes[0]))
 			{
