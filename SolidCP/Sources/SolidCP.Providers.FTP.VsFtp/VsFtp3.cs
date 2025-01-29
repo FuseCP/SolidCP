@@ -30,6 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 using System;
 using System.IO;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ using SolidCP.Providers.OS;
 using SolidCP.Providers.FTP;
 using SolidCP.Server.Utils;
 using Mono.Unix.Native;
+using SolidCP.Providers.Database;
 
 namespace SolidCP.Providers.FTP
 {
@@ -69,44 +71,8 @@ namespace SolidCP.Providers.FTP
 		VsFtpConfig config = null;
 		public VsFtpConfig Config => config ??= new VsFtpConfig(ConfigFile);
 
-		public Shell Shell => Shell.Default;
+		public Shell Shell => Shell.Standard;
 		public void Reload() => Service.Reload();
-
-		public void AddUnixUser(string user, string group)
-		{
-			Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
-		}
-		public void EnsureSetup()
-		{
-			if (!Regex.IsMatch(Config.Text, @"^# This file has been modified by SolidCP\.", RegexOptions.Multiline))
-			{
-				// Create solidcp-vsftpd user
-				AddUnixUser(VsftpdUser, VsftpdGroup);
-
-				// Configure PAM
-				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
-
-				// Configure vsftpd
-				Config.Text = $"# This file has been modified by SolidCP.{NewLine}{Config.Text}{NewLine}# SolidCP settings";
-				Config.AnonymousEnable = false;
-				Config.LocalEnable = true;
-				Config.WriteEnable = true;
-				Config.LocalUmask = LocalUmask;
-				Config.LocalRoot = LocalRoot;
-				Config.ChrootLocalUser = true;
-				Config.AllowWriteableChroot = true;
-				//Config.HideIds = true;
-				if (!Directory.Exists(UsersConfigFolder)) Directory.CreateDirectory(UsersConfigFolder);
-				Config.GuestEnable = true;
-				Config.VirtualUseLocalPrivs = true;
-				Config.PamServiceName = VsftpdUser;
-				Config.NoprivUser = VsftpdUser;
-				Config.GuestUsername = VsftpdUser;
-				Config.Save();
-
-				Reload();
-			}
-		}
 
 		#region Sites
 
@@ -172,14 +138,12 @@ namespace SolidCP.Providers.FTP
 		IEnumerable<string> Users => Directory.EnumerateFiles(UsersConfigFolder)
 			.Select(Path.GetFileName);
 
-		public virtual bool AccountExists(string accountName) {
-			EnsureSetup();	
+		public virtual bool AccountExists(string accountName)
+		{
 			return Users.Any(user => user == accountName);
 		}
 		public virtual FtpAccount GetAccount(string accountName)
 		{
-			EnsureSetup();
-
 			int n = 0;
 			if (Users.Any(user =>
 			{
@@ -210,7 +174,6 @@ namespace SolidCP.Providers.FTP
 
 		public virtual FtpAccount[] GetAccounts()
 		{
-			EnsureSetup();
 			return Users.Select(user => GetAccount(user)).ToArray();
 		}
 		public string PasswordToken(string password)
@@ -221,8 +184,6 @@ namespace SolidCP.Providers.FTP
 
 		public virtual void CreateAccount(FtpAccount account)
 		{
-			EnsureSetup();
-
 			if (AccountExists(account.Name)) throw new InvalidOperationException($"User {account.Name} already exists.");
 
 			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder))
@@ -262,8 +223,6 @@ namespace SolidCP.Providers.FTP
 
 		public virtual void UpdateAccount(FtpAccount account)
 		{
-			EnsureSetup();
-
 			if (!AccountExists(account.Name)) throw new InvalidOperationException($"Ftp user account {account.Name} does not exist.");
 
 			if (!Directory.Exists(account.Folder) && !string.IsNullOrEmpty(account.Folder))
@@ -286,8 +245,6 @@ namespace SolidCP.Providers.FTP
 
 		public virtual void DeleteAccount(string accountName)
 		{
-			EnsureSetup();
-
 			if (AccountExists(accountName))
 			{
 				// Remove user from password file
@@ -303,6 +260,74 @@ namespace SolidCP.Providers.FTP
 			else throw new ArgumentException($"User {accountName} does not exist.");
 		}
 		#endregion
+
+		#region HostingServiceProviderBase methods
+		public void AddUnixUser(string user, string group)
+		{
+			Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
+		}
+		public override string[] Install()
+		{
+			if (!Regex.IsMatch(Config.Text, @"^# This file has been modified by SolidCP\.", RegexOptions.Multiline))
+			{
+				// Create wsp-vsftpd user
+				AddUnixUser(VsftpdUser, VsftpdGroup);
+
+				// Configure PAM
+				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
+
+				// Configure vsftpd
+				Config.Text = $"# This file has been modified by SolidCP.{NewLine}{Config.Text}{NewLine}# SolidCP settings";
+				Config.AnonymousEnable = false;
+				Config.LocalEnable = true;
+				Config.WriteEnable = true;
+				Config.LocalUmask = LocalUmask;
+				Config.LocalRoot = LocalRoot;
+				Config.ChrootLocalUser = true;
+				Config.AllowWriteableChroot = true;
+				//Config.HideIds = true;
+				if (!Directory.Exists(UsersConfigFolder)) Directory.CreateDirectory(UsersConfigFolder);
+				Config.GuestEnable = true;
+				Config.VirtualUseLocalPrivs = true;
+				Config.PamServiceName = VsftpdUser;
+				Config.NoprivUser = VsftpdUser;
+				Config.GuestUsername = VsftpdUser;
+				Config.Save();
+
+				Reload();
+			}
+
+			return null;
+		}
+
+		public override void DeleteServiceItems(ServiceProviderItem[] items)
+		{
+			foreach (ServiceProviderItem item in items)
+			{
+				if (item is FtpAccount)
+				{
+					try
+					{
+						DeleteAccount(item.Name);
+					}
+					catch (Exception ex)
+					{
+						Log.WriteError($"Error deleting '{item.Name}' vsftpd user", ex);
+					}
+				}
+				else if (item is FtpSite)
+				{
+					try
+					{
+						DeleteSite(item.Name);
+
+					}
+					catch (Exception ex)
+					{
+						Log.WriteError($"Error deleting '{item.Name}' ftp site."}
+				}
+			}
+		}
 
 		public override void ChangeServiceItemsState(ServiceProviderItem[] items, bool enabled)
 		{
@@ -325,24 +350,6 @@ namespace SolidCP.Providers.FTP
 			}
 		}
 
-		public override void DeleteServiceItems(ServiceProviderItem[] items)
-		{
-			foreach (ServiceProviderItem item in items)
-			{
-				if (item is FtpAccount)
-				{
-					try
-					{
-						// delete FTP account
-						DeleteAccount(item.Name);
-					}
-					catch (Exception ex)
-					{
-						Log.WriteError(String.Format("Error deleting '{0}' {1}", item.Name, item.GetType().Name), ex);
-					}
-				}
-			}
-		}
 
 		public override bool IsInstalled()
 		{
@@ -373,6 +380,7 @@ namespace SolidCP.Providers.FTP
 			}
 			return false;
 		}
+		#endregion
 
 	}
 }
