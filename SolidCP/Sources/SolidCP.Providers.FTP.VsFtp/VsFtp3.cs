@@ -315,17 +315,6 @@ namespace SolidCP.Providers.FTP
 						Log.WriteError($"Error deleting '{item.Name}' vsftpd user", ex);
 					}
 				}
-				else if (item is FtpSite)
-				{
-					try
-					{
-						DeleteSite(item.Name);
-
-					}
-					catch (Exception ex)
-					{
-						Log.WriteError($"Error deleting '{item.Name}' ftp site."}
-				}
 			}
 		}
 
