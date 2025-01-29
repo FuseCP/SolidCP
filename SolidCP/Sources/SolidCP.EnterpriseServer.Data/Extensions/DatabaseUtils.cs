@@ -67,7 +67,18 @@ namespace SolidCP.EnterpriseServer.Data
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
 			var streams = resNames
-				.OrderBy(name => name)
+				.OrderBy(name =>
+				{
+					var tokens = name.Split('.');
+					var type = tokens.Length >= 2 ? tokens[tokens.Length - 2] : "";
+					switch (type)
+					{
+						case "View": return $"0{name}";
+						case "StoredProcedure": return $"3{name}";
+						case "UserDefinedFunction": return $"1{name}";
+						default: return $"2{type}.{string.Join(".", tokens.Take(tokens.Length - 2))}";
+					}
+				})
 				.Where(name => {
 					if (name.StartsWith("!")) return Regex.IsMatch(name, scriptName.Substring(1));
 					else return name.EndsWith(scriptName);
