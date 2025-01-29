@@ -181,8 +181,4 @@
         </Compile>
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations\SqlServer\StoredProcedures\" />
-    </ItemGroup>
-
 </Project>
