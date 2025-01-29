@@ -66,10 +66,25 @@ namespace SolidCP.EnterpriseServer.Data
 		{
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
-			return resNames
-				.Where(name => name.EndsWith(scriptName))
+			var streams = resNames
+				.OrderBy(name => name)
+				.Where(name => {
+					if (name.StartsWith("!")) return Regex.IsMatch(name, scriptName.Substring(1));
+					else return name.EndsWith(scriptName);
+				})
 				.Select(name => assembly.GetManifestResourceStream(name))
-				.FirstOrDefault();
+				.ToList();
+			
+			if (streams.Count <= 1) return streams.FirstOrDefault();
+
+			var combined = string.Join(Environment.NewLine, streams
+				.Select(stream => new StreamReader(stream).ReadToEnd()));
+			var mem = new MemoryStream(combined.Length + 512);
+			var writer = new StreamWriter(mem, Encoding.UTF8);
+			writer.Write(combined);
+			writer.Flush();
+			mem.Position = 0;
+			return mem;
 		}
 
 		public static string InstallScript(string scriptName)

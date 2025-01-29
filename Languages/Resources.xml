@@ -13917,6 +13917,11 @@
     <DefaultValue>Allow user to Start, Turn off and Shutdown VPS</DefaultValue>
   </Resource>
   <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>ResourceGroup.MsSQL2025</Key>
+    <DefaultValue>SQL Server 2025</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ApplyEnableHardQuotaFeature.ascx.resx</File>
     <Key>btnUpdate.Text</Key>
     <DefaultValue>Apply</DefaultValue>
@@ -19174,6 +19179,11 @@
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
     <Key>btnDiscoverServices.Text</Key>
     <DefaultValue>Search Installed Software</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\ServersEditServer.ascx.resx</File>
+    <Key>btnDiscoverServices.OnClientClick</Key>
+    <DefaultValue>ShowProgressDialog('Search installed software...')</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\ServersEditService.ascx.resx</File>

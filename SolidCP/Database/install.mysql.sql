@@ -1,98 +1,15 @@
-﻿DROP PROCEDURE IF EXISTS `POMELO_BEFORE_DROP_PRIMARY_KEY`;
-DELIMITER //
-CREATE PROCEDURE `POMELO_BEFORE_DROP_PRIMARY_KEY`(IN `SCHEMA_NAME_ARGUMENT` VARCHAR(255), IN `TABLE_NAME_ARGUMENT` VARCHAR(255))
-BEGIN
-	DECLARE HAS_AUTO_INCREMENT_ID TINYINT(1);
-	DECLARE PRIMARY_KEY_COLUMN_NAME VARCHAR(255);
-	DECLARE PRIMARY_KEY_TYPE VARCHAR(255);
-	DECLARE SQL_EXP VARCHAR(1000);
-	SELECT COUNT(*)
-		INTO HAS_AUTO_INCREMENT_ID
-		FROM `information_schema`.`COLUMNS`
-		WHERE `TABLE_SCHEMA` = (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA()))
-			AND `TABLE_NAME` = TABLE_NAME_ARGUMENT
-			AND `Extra` = 'auto_increment'
-			AND `COLUMN_KEY` = 'PRI'
-			LIMIT 1;
-	IF HAS_AUTO_INCREMENT_ID THEN
-		SELECT `COLUMN_TYPE`
-			INTO PRIMARY_KEY_TYPE
-			FROM `information_schema`.`COLUMNS`
-			WHERE `TABLE_SCHEMA` = (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA()))
-				AND `TABLE_NAME` = TABLE_NAME_ARGUMENT
-				AND `COLUMN_KEY` = 'PRI'
-			LIMIT 1;
-		SELECT `COLUMN_NAME`
-			INTO PRIMARY_KEY_COLUMN_NAME
-			FROM `information_schema`.`COLUMNS`
-			WHERE `TABLE_SCHEMA` = (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA()))
-				AND `TABLE_NAME` = TABLE_NAME_ARGUMENT
-				AND `COLUMN_KEY` = 'PRI'
-			LIMIT 1;
-		SET SQL_EXP = CONCAT('ALTER TABLE `', (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA())), '`.`', TABLE_NAME_ARGUMENT, '` MODIFY COLUMN `', PRIMARY_KEY_COLUMN_NAME, '` ', PRIMARY_KEY_TYPE, ' NOT NULL;');
-		SET @SQL_EXP = SQL_EXP;
-		PREPARE SQL_EXP_EXECUTE FROM @SQL_EXP;
-		EXECUTE SQL_EXP_EXECUTE;
-		DEALLOCATE PREPARE SQL_EXP_EXECUTE;
-	END IF;
-END //
-DELIMITER ;
-
-DROP PROCEDURE IF EXISTS `POMELO_AFTER_ADD_PRIMARY_KEY`;
-DELIMITER //
-CREATE PROCEDURE `POMELO_AFTER_ADD_PRIMARY_KEY`(IN `SCHEMA_NAME_ARGUMENT` VARCHAR(255), IN `TABLE_NAME_ARGUMENT` VARCHAR(255), IN `COLUMN_NAME_ARGUMENT` VARCHAR(255))
-BEGIN
-	DECLARE HAS_AUTO_INCREMENT_ID INT(11);
-	DECLARE PRIMARY_KEY_COLUMN_NAME VARCHAR(255);
-	DECLARE PRIMARY_KEY_TYPE VARCHAR(255);
-	DECLARE SQL_EXP VARCHAR(1000);
-	SELECT COUNT(*)
-		INTO HAS_AUTO_INCREMENT_ID
-		FROM `information_schema`.`COLUMNS`
-		WHERE `TABLE_SCHEMA` = (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA()))
-			AND `TABLE_NAME` = TABLE_NAME_ARGUMENT
-			AND `COLUMN_NAME` = COLUMN_NAME_ARGUMENT
-			AND `COLUMN_TYPE` LIKE '%int%'
-			AND `COLUMN_KEY` = 'PRI';
-	IF HAS_AUTO_INCREMENT_ID THEN
-		SELECT `COLUMN_TYPE`
-			INTO PRIMARY_KEY_TYPE
-			FROM `information_schema`.`COLUMNS`
-			WHERE `TABLE_SCHEMA` = (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA()))
-				AND `TABLE_NAME` = TABLE_NAME_ARGUMENT
-				AND `COLUMN_NAME` = COLUMN_NAME_ARGUMENT
-				AND `COLUMN_TYPE` LIKE '%int%'
-				AND `COLUMN_KEY` = 'PRI';
-		SELECT `COLUMN_NAME`
-			INTO PRIMARY_KEY_COLUMN_NAME
-			FROM `information_schema`.`COLUMNS`
-			WHERE `TABLE_SCHEMA` = (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA()))
-				AND `TABLE_NAME` = TABLE_NAME_ARGUMENT
-				AND `COLUMN_NAME` = COLUMN_NAME_ARGUMENT
-				AND `COLUMN_TYPE` LIKE '%int%'
-				AND `COLUMN_KEY` = 'PRI';
-		SET SQL_EXP = CONCAT('ALTER TABLE `', (SELECT IFNULL(SCHEMA_NAME_ARGUMENT, SCHEMA())), '`.`', TABLE_NAME_ARGUMENT, '` MODIFY COLUMN `', PRIMARY_KEY_COLUMN_NAME, '` ', PRIMARY_KEY_TYPE, ' NOT NULL AUTO_INCREMENT;');
-		SET @SQL_EXP = SQL_EXP;
-		PREPARE SQL_EXP_EXECUTE FROM @SQL_EXP;
-		EXECUTE SQL_EXP_EXECUTE;
-		DEALLOCATE PREPARE SQL_EXP_EXECUTE;
-	END IF;
-END //
-DELIMITER ;
-
-CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
+﻿CREATE TABLE IF NOT EXISTS `__EFMigrationsHistory` (
     `MigrationId` varchar(150) CHARACTER SET utf8mb4 NOT NULL,
     `ProductVersion` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
     CONSTRAINT `PK___EFMigrationsHistory` PRIMARY KEY (`MigrationId`)
 ) CHARACTER SET=utf8mb4;
 
 START TRANSACTION;
-
 DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     ALTER DATABASE CHARACTER SET utf8mb4;
 
@@ -106,13 +23,13 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `AdditionalGroups` (
         `ID` int NOT NULL AUTO_INCREMENT,
         `UserID` int NOT NULL,
         `GroupName` varchar(255) CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK__Addition__3214EC272F1861EB` PRIMARY KEY (`ID`)
+        CONSTRAINT `PK__Addition__3214EC27E665DDE2` PRIMARY KEY (`ID`)
     ) CHARACTER SET=utf8mb4;
 
     END IF;
@@ -125,7 +42,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `AuditLog` (
         `RecordID` varchar(32) CHARACTER SET utf8mb4 NOT NULL,
@@ -153,7 +70,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `AuditLogSources` (
         `SourceName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
@@ -170,7 +87,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `AuditLogTasks` (
         `SourceName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
@@ -189,7 +106,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `BackgroundTasks` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -212,7 +129,7 @@ BEGIN
         `Completed` tinyint(1) NULL,
         `NotifyOnComplete` tinyint(1) NULL,
         `Status` int NOT NULL,
-        CONSTRAINT `PK__Backgrou__3214EC271AFAB817` PRIMARY KEY (`ID`)
+        CONSTRAINT `PK__Backgrou__3214EC273A1145AC` PRIMARY KEY (`ID`)
     ) CHARACTER SET=utf8mb4;
 
     END IF;
@@ -225,7 +142,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Clusters` (
         `ClusterID` int NOT NULL AUTO_INCREMENT,
@@ -243,7 +160,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ExchangeDeletedAccounts` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -266,7 +183,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ExchangeDisclaimers` (
         `ExchangeDisclaimerId` int NOT NULL AUTO_INCREMENT,
@@ -286,7 +203,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ExchangeMailboxPlanRetentionPolicyTags` (
         `PlanTagID` int NOT NULL AUTO_INCREMENT,
@@ -305,7 +222,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ExchangeRetentionPolicyTags` (
         `TagID` int NOT NULL AUTO_INCREMENT,
@@ -327,7 +244,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `OCSUsers` (
         `OCSUserID` int NOT NULL AUTO_INCREMENT,
@@ -348,7 +265,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageSettings` (
         `PackageID` int NOT NULL,
@@ -368,7 +285,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `RDSCertificates` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -391,7 +308,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `RDSCollections` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -412,7 +329,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `RDSServerSettings` (
         `RdsServerId` int NOT NULL,
@@ -434,7 +351,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ResourceGroups` (
         `GroupID` int NOT NULL,
@@ -455,7 +372,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ScheduleTasks` (
         `TaskID` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
@@ -474,7 +391,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `SfBUserPlans` (
         `SfBUserPlanId` int NOT NULL AUTO_INCREMENT,
@@ -489,9 +406,9 @@ BEGIN
         `EnterpriseVoice` tinyint(1) NOT NULL,
         `VoicePolicy` int NOT NULL,
         `IsDefault` tinyint(1) NOT NULL,
-        `RemoteUserAccess` tinyint(1) NOT NULL,
-        `PublicIMConnectivity` tinyint(1) NOT NULL,
-        `AllowOrganizeMeetingsWithExternalAnonymous` tinyint(1) NOT NULL,
+        `RemoteUserAccess` tinyint(1) NOT NULL DEFAULT FALSE,
+        `PublicIMConnectivity` tinyint(1) NOT NULL DEFAULT FALSE,
+        `AllowOrganizeMeetingsWithExternalAnonymous` tinyint(1) NOT NULL DEFAULT FALSE,
         `Telephony` int NULL,
         `ServerURI` varchar(300) CHARACTER SET utf8mb4 NULL,
         `ArchivePolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
@@ -510,7 +427,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `SfBUsers` (
         `SfBUserID` int NOT NULL AUTO_INCREMENT,
@@ -532,7 +449,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `SSLCertificates` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -565,7 +482,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `StorageSpaceLevels` (
         `Id` int NOT NULL AUTO_INCREMENT,
@@ -584,7 +501,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `SupportServiceLevels` (
         `LevelID` int NOT NULL AUTO_INCREMENT,
@@ -603,7 +520,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `SystemSettings` (
         `SettingsName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
@@ -622,7 +539,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `TempIds` (
         `Key` int NOT NULL AUTO_INCREMENT,
@@ -644,7 +561,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Themes` (
         `ThemeID` int NOT NULL AUTO_INCREMENT,
@@ -666,14 +583,15 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ThemeSettings` (
+        `ThemeSettingID` int NOT NULL AUTO_INCREMENT,
         `ThemeID` int NOT NULL,
         `SettingsName` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
         `PropertyName` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
         `PropertyValue` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-        CONSTRAINT `PK_ThemeSettings` PRIMARY KEY (`ThemeID`, `SettingsName`, `PropertyName`)
+        CONSTRAINT `PK_ThemeSettings` PRIMARY KEY (`ThemeSettingID`)
     ) CHARACTER SET=utf8mb4;
 
     END IF;
@@ -686,15 +604,15 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Users` (
         `UserID` int NOT NULL AUTO_INCREMENT,
         `OwnerID` int NULL,
         `RoleID` int NOT NULL,
         `StatusID` int NOT NULL,
-        `IsDemo` tinyint(1) NOT NULL,
-        `IsPeer` tinyint(1) NOT NULL,
+        `IsDemo` tinyint(1) NOT NULL DEFAULT FALSE,
+        `IsPeer` tinyint(1) NOT NULL DEFAULT FALSE,
         `Username` varchar(50) CHARACTER SET utf8mb4 NULL,
         `Password` varchar(200) CHARACTER SET utf8mb4 NULL,
         `FirstName` varchar(50) CHARACTER SET utf8mb4 NULL,
@@ -721,7 +639,7 @@ BEGIN
         `FailedLogins` int NULL,
         `SubscriberNumber` varchar(32) CHARACTER SET utf8mb4 NULL,
         `OneTimePasswordState` int NULL,
-        `MfaMode` int NOT NULL,
+        `MfaMode` int NOT NULL DEFAULT 0,
         `PinSecret` varchar(255) CHARACTER SET utf8mb4 NULL,
         CONSTRAINT `PK_Users` PRIMARY KEY (`UserID`),
         CONSTRAINT `FK_Users_Users` FOREIGN KEY (`OwnerID`) REFERENCES `Users` (`UserID`)
@@ -737,7 +655,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Versions` (
         `DatabaseVersion` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
@@ -755,7 +673,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `BackgroundTaskLogs` (
         `LogID` int NOT NULL AUTO_INCREMENT,
@@ -767,8 +685,8 @@ BEGIN
         `Text` TEXT CHARACTER SET utf8mb4 NULL,
         `TextIdent` int NULL,
         `XmlParameters` TEXT CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK__Backgrou__5E5499A830A1D5BF` PRIMARY KEY (`LogID`),
-        CONSTRAINT `FK__Backgroun__TaskI__06ADD4BD` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`)
+        CONSTRAINT `PK__Backgrou__5E5499A86067A6E5` PRIMARY KEY (`LogID`),
+        CONSTRAINT `FK__Backgroun__TaskI__7D8391DF` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`)
     ) CHARACTER SET=utf8mb4;
 
     END IF;
@@ -781,7 +699,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `BackgroundTaskParameters` (
         `ParameterID` int NOT NULL AUTO_INCREMENT,
@@ -789,8 +707,8 @@ BEGIN
         `Name` varchar(255) CHARACTER SET utf8mb4 NULL,
         `SerializerValue` TEXT CHARACTER SET utf8mb4 NULL,
         `TypeName` varchar(255) CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK__Backgrou__F80C6297E2E5AF88` PRIMARY KEY (`ParameterID`),
-        CONSTRAINT `FK__Backgroun__TaskI__03D16812` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`)
+        CONSTRAINT `PK__Backgrou__F80C629777BF580B` PRIMARY KEY (`ParameterID`),
+        CONSTRAINT `FK__Backgroun__TaskI__7AA72534` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`)
     ) CHARACTER SET=utf8mb4;
 
     END IF;
@@ -803,13 +721,13 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `BackgroundTaskStack` (
         `TaskStackID` int NOT NULL AUTO_INCREMENT,
         `TaskID` int NOT NULL,
-        CONSTRAINT `PK__Backgrou__5E44466F62E48BE6` PRIMARY KEY (`TaskStackID`),
-        CONSTRAINT `FK__Backgroun__TaskI__098A4168` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`)
+        CONSTRAINT `PK__Backgrou__5E44466FB8A5F217` PRIMARY KEY (`TaskStackID`),
+        CONSTRAINT `FK__Backgroun__TaskI__005FFE8A` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`)
     ) CHARACTER SET=utf8mb4;
 
     END IF;
@@ -822,7 +740,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `RDSCollectionSettings` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -856,7 +774,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `RDSMessages` (
         `Id` int NOT NULL AUTO_INCREMENT,
@@ -878,7 +796,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `RDSServers` (
         `ID` int NOT NULL AUTO_INCREMENT,
@@ -903,7 +821,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Providers` (
         `ProviderID` int NOT NULL,
@@ -927,7 +845,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ResourceGroupDnsRecords` (
         `RecordID` int NOT NULL AUTO_INCREMENT,
@@ -951,7 +869,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Servers` (
         `ServerID` int NOT NULL AUTO_INCREMENT,
@@ -959,7 +877,7 @@ BEGIN
         `ServerUrl` varchar(255) CHARACTER SET utf8mb4 NULL DEFAULT '',
         `Password` varchar(100) CHARACTER SET utf8mb4 NULL,
         `Comments` TEXT CHARACTER SET utf8mb4 NULL,
-        `VirtualServer` tinyint(1) NOT NULL,
+        `VirtualServer` tinyint(1) NOT NULL DEFAULT FALSE,
         `InstantDomainAlias` varchar(200) CHARACTER SET utf8mb4 NULL,
         `PrimaryGroupID` int NULL,
         `ADRootDomain` varchar(200) CHARACTER SET utf8mb4 NULL,
@@ -969,9 +887,9 @@ BEGIN
         `ADEnabled` tinyint(1) NULL DEFAULT FALSE,
         `ADParentDomain` varchar(200) CHARACTER SET utf8mb4 NULL,
         `ADParentDomainController` varchar(200) CHARACTER SET utf8mb4 NULL,
-        `OSPlatform` int NOT NULL,
+        `OSPlatform` int NOT NULL DEFAULT 0,
         `IsCore` tinyint(1) NULL,
-        `PasswordIsSHA256` tinyint(1) NOT NULL,
+        `PasswordIsSHA256` tinyint(1) NOT NULL DEFAULT FALSE,
         CONSTRAINT `PK_Servers` PRIMARY KEY (`ServerID`),
         CONSTRAINT `FK_Servers_ResourceGroups` FOREIGN KEY (`PrimaryGroupID`) REFERENCES `ResourceGroups` (`GroupID`)
     ) CHARACTER SET=utf8mb4;
@@ -986,7 +904,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ServiceItemTypes` (
         `ItemTypeID` int NOT NULL,
@@ -1015,14 +933,14 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ScheduleTaskParameters` (
         `TaskID` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
         `ParameterID` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
         `DataTypeID` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
         `DefaultValue` longtext CHARACTER SET utf8mb4 NULL,
-        `ParameterOrder` int NOT NULL,
+        `ParameterOrder` int NOT NULL DEFAULT 0,
         CONSTRAINT `PK_ScheduleTaskParameters` PRIMARY KEY (`TaskID`, `ParameterID`),
         CONSTRAINT `FK_ScheduleTaskParameters_ScheduleTasks` FOREIGN KEY (`TaskID`) REFERENCES `ScheduleTasks` (`TaskID`)
     ) CHARACTER SET=utf8mb4;
@@ -1037,7 +955,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ScheduleTaskViewConfiguration` (
         `TaskID` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
@@ -1058,7 +976,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `StorageSpaceLevelResourceGroups` (
         `Id` int NOT NULL AUTO_INCREMENT,
@@ -1079,7 +997,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Comments` (
         `CommentID` int NOT NULL AUTO_INCREMENT,
@@ -1103,7 +1021,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `UserSettings` (
         `UserID` int NOT NULL,
@@ -1124,7 +1042,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ServiceDefaultProperties` (
         `ProviderID` int NOT NULL,
@@ -1144,772 +1062,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `IPAddresses` (
-        `AddressID` int NOT NULL AUTO_INCREMENT,
-        `ExternalIP` varchar(24) CHARACTER SET utf8mb4 NOT NULL,
-        `InternalIP` varchar(24) CHARACTER SET utf8mb4 NULL,
-        `ServerID` int NULL,
-        `Comments` TEXT CHARACTER SET utf8mb4 NULL,
-        `SubnetMask` varchar(15) CHARACTER SET utf8mb4 NULL,
-        `DefaultGateway` varchar(15) CHARACTER SET utf8mb4 NULL,
-        `PoolID` int NULL,
-        `VLAN` int NULL,
-        CONSTRAINT `PK_IPAddresses` PRIMARY KEY (`AddressID`),
-        CONSTRAINT `FK_IPAddresses_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `PrivateNetworkVLANs` (
-        `VlanID` int NOT NULL AUTO_INCREMENT,
-        `Vlan` int NOT NULL,
-        `ServerID` int NULL,
-        `Comments` TEXT CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK__PrivateN__8348135581B53618` PRIMARY KEY (`VlanID`),
-        CONSTRAINT `FK_ServerID` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `Services` (
-        `ServiceID` int NOT NULL AUTO_INCREMENT,
-        `ServerID` int NOT NULL,
-        `ProviderID` int NOT NULL,
-        `ServiceName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
-        `Comments` TEXT CHARACTER SET utf8mb4 NULL,
-        `ServiceQuotaValue` int NULL,
-        `ClusterID` int NULL,
-        CONSTRAINT `PK_Services` PRIMARY KEY (`ServiceID`),
-        CONSTRAINT `FK_Services_Clusters` FOREIGN KEY (`ClusterID`) REFERENCES `Clusters` (`ClusterID`),
-        CONSTRAINT `FK_Services_Providers` FOREIGN KEY (`ProviderID`) REFERENCES `Providers` (`ProviderID`),
-        CONSTRAINT `FK_Services_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `VirtualGroups` (
-        `VirtualGroupID` int NOT NULL AUTO_INCREMENT,
-        `ServerID` int NOT NULL,
-        `GroupID` int NOT NULL,
-        `DistributionType` int NULL,
-        `BindDistributionToPrimary` tinyint(1) NULL,
-        CONSTRAINT `PK_VirtualGroups` PRIMARY KEY (`VirtualGroupID`),
-        CONSTRAINT `FK_VirtualGroups_ResourceGroups` FOREIGN KEY (`GroupID`) REFERENCES `ResourceGroups` (`GroupID`),
-        CONSTRAINT `FK_VirtualGroups_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `Quotas` (
-        `QuotaID` int NOT NULL,
-        `GroupID` int NOT NULL,
-        `QuotaOrder` int NOT NULL DEFAULT 1,
-        `QuotaName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
-        `QuotaDescription` varchar(200) CHARACTER SET utf8mb4 NULL,
-        `QuotaTypeID` int NOT NULL DEFAULT 2,
-        `ServiceQuota` tinyint(1) NULL DEFAULT FALSE,
-        `ItemTypeID` int NULL,
-        `HideQuota` tinyint(1) NULL,
-        `PerOrganization` int NULL,
-        CONSTRAINT `PK_Quotas` PRIMARY KEY (`QuotaID`),
-        CONSTRAINT `FK_Quotas_ResourceGroups` FOREIGN KEY (`GroupID`) REFERENCES `ResourceGroups` (`GroupID`) ON DELETE CASCADE,
-        CONSTRAINT `FK_Quotas_ServiceItemTypes` FOREIGN KEY (`ItemTypeID`) REFERENCES `ServiceItemTypes` (`ItemTypeID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ServiceProperties` (
-        `ServiceID` int NOT NULL,
-        `PropertyName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
-        `PropertyValue` longtext CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK_ServiceProperties_1` PRIMARY KEY (`ServiceID`, `PropertyName`),
-        CONSTRAINT `FK_ServiceProperties_Services` FOREIGN KEY (`ServiceID`) REFERENCES `Services` (`ServiceID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `StorageSpaces` (
-        `Id` int NOT NULL AUTO_INCREMENT,
-        `Name` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        `ServiceId` int NOT NULL,
-        `ServerId` int NOT NULL,
-        `LevelId` int NOT NULL,
-        `Path` longtext CHARACTER SET utf8mb4 NOT NULL,
-        `IsShared` tinyint(1) NOT NULL,
-        `UncPath` longtext CHARACTER SET utf8mb4 NULL,
-        `FsrmQuotaType` int NOT NULL,
-        `FsrmQuotaSizeBytes` bigint NOT NULL,
-        `IsDisabled` tinyint(1) NOT NULL,
-        CONSTRAINT `PK__StorageS__3214EC07B8B9A6D1` PRIMARY KEY (`Id`),
-        CONSTRAINT `FK_StorageSpaces_ServerId` FOREIGN KEY (`ServerId`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE,
-        CONSTRAINT `FK_StorageSpaces_ServiceId` FOREIGN KEY (`ServiceId`) REFERENCES `Services` (`ServiceID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `VirtualServices` (
-        `VirtualServiceID` int NOT NULL AUTO_INCREMENT,
-        `ServerID` int NOT NULL,
-        `ServiceID` int NOT NULL,
-        CONSTRAINT `PK_VirtualServices` PRIMARY KEY (`VirtualServiceID`),
-        CONSTRAINT `FK_VirtualServices_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE,
-        CONSTRAINT `FK_VirtualServices_Services` FOREIGN KEY (`ServiceID`) REFERENCES `Services` (`ServiceID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `StorageSpaceFolders` (
-        `Id` int NOT NULL AUTO_INCREMENT,
-        `Name` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        `StorageSpaceId` int NOT NULL,
-        `Path` longtext CHARACTER SET utf8mb4 NOT NULL,
-        `UncPath` longtext CHARACTER SET utf8mb4 NULL,
-        `IsShared` tinyint(1) NOT NULL,
-        `FsrmQuotaType` int NOT NULL,
-        `FsrmQuotaSizeBytes` bigint NOT NULL,
-        CONSTRAINT `PK__StorageS__3214EC07AC0C9EB6` PRIMARY KEY (`Id`),
-        CONSTRAINT `FK_StorageSpaceFolders_StorageSpaceId` FOREIGN KEY (`StorageSpaceId`) REFERENCES `StorageSpaces` (`Id`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `EnterpriseFolders` (
-        `EnterpriseFolderID` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `FolderName` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
-        `FolderQuota` int NOT NULL,
-        `LocationDrive` varchar(255) CHARACTER SET utf8mb4 NULL,
-        `HomeFolder` varchar(255) CHARACTER SET utf8mb4 NULL,
-        `Domain` varchar(255) CHARACTER SET utf8mb4 NULL,
-        `StorageSpaceFolderId` int NULL,
-        CONSTRAINT `PK_EnterpriseFolders` PRIMARY KEY (`EnterpriseFolderID`),
-        CONSTRAINT `FK_EnterpriseFolders_StorageSpaceFolderId` FOREIGN KEY (`StorageSpaceFolderId`) REFERENCES `StorageSpaceFolders` (`Id`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `AccessTokens` (
-        `ID` int NOT NULL AUTO_INCREMENT,
-        `AccessTokenGuid` char(36) COLLATE ascii_general_ci NOT NULL,
-        `ExpirationDate` datetime(6) NOT NULL,
-        `AccountID` int NOT NULL,
-        `ItemId` int NOT NULL,
-        `TokenType` int NOT NULL,
-        `SmsResponse` varchar(100) CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK__AccessTo__3214EC27A32557FE` PRIMARY KEY (`ID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `BlackBerryUsers` (
-        `BlackBerryUserId` int NOT NULL AUTO_INCREMENT,
-        `AccountId` int NOT NULL,
-        `CreatedDate` datetime(6) NOT NULL,
-        `ModifiedDate` datetime(6) NOT NULL,
-        CONSTRAINT `PK_BlackBerryUsers` PRIMARY KEY (`BlackBerryUserId`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `CRMUsers` (
-        `CRMUserID` int NOT NULL AUTO_INCREMENT,
-        `AccountID` int NOT NULL,
-        `CreatedDate` datetime(6) NOT NULL,
-        `ChangedDate` datetime(6) NOT NULL,
-        `CRMUserGuid` char(36) COLLATE ascii_general_ci NULL,
-        `BusinessUnitID` char(36) COLLATE ascii_general_ci NULL,
-        `CALType` int NULL,
-        CONSTRAINT `PK_CRMUsers` PRIMARY KEY (`CRMUserID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `DomainDnsRecords` (
-        `ID` int NOT NULL AUTO_INCREMENT,
-        `DomainId` int NOT NULL,
-        `RecordType` int NOT NULL,
-        `DnsServer` varchar(255) CHARACTER SET utf8mb4 NULL,
-        `Value` varchar(255) CHARACTER SET utf8mb4 NULL,
-        `Date` datetime(6) NULL,
-        CONSTRAINT `PK__DomainDn__3214EC2758B0A6F1` PRIMARY KEY (`ID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `Domains` (
-        `DomainID` int NOT NULL AUTO_INCREMENT,
-        `PackageID` int NOT NULL,
-        `ZoneItemID` int NULL,
-        `DomainName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-        `HostingAllowed` tinyint(1) NOT NULL,
-        `WebSiteID` int NULL,
-        `MailDomainID` int NULL,
-        `IsSubDomain` tinyint(1) NOT NULL,
-        `IsPreviewDomain` tinyint(1) NOT NULL,
-        `IsDomainPointer` tinyint(1) NOT NULL,
-        `DomainItemId` int NULL,
-        `CreationDate` datetime(6) NULL,
-        `ExpirationDate` datetime(6) NULL,
-        `LastUpdateDate` datetime(6) NULL,
-        `RegistrarName` longtext CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK_Domains` PRIMARY KEY (`DomainID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `EnterpriseFoldersOwaPermissions` (
-        `ID` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `FolderID` int NOT NULL,
-        `AccountID` int NOT NULL,
-        CONSTRAINT `PK__Enterpri__3214EC27D1B48691` PRIMARY KEY (`ID`),
-        CONSTRAINT `FK_EnterpriseFoldersOwaPermissions_FolderId` FOREIGN KEY (`FolderID`) REFERENCES `EnterpriseFolders` (`EnterpriseFolderID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeAccountEmailAddresses` (
-        `AddressID` int NOT NULL AUTO_INCREMENT,
-        `AccountID` int NOT NULL,
-        `EmailAddress` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        CONSTRAINT `PK_ExchangeAccountEmailAddresses` PRIMARY KEY (`AddressID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeAccounts` (
-        `AccountID` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `AccountType` int NOT NULL,
-        `AccountName` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        `DisplayName` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        `PrimaryEmailAddress` varchar(300) CHARACTER SET utf8mb4 NULL,
-        `MailEnabledPublicFolder` tinyint(1) NULL,
-        `MailboxManagerActions` varchar(200) CHARACTER SET utf8mb4 NULL,
-        `SamAccountName` varchar(100) CHARACTER SET utf8mb4 NULL,
-        `CreatedDate` datetime(6) NOT NULL,
-        `MailboxPlanId` int NULL,
-        `SubscriberNumber` varchar(32) CHARACTER SET utf8mb4 NULL,
-        `UserPrincipalName` varchar(300) CHARACTER SET utf8mb4 NULL,
-        `ExchangeDisclaimerId` int NULL,
-        `ArchivingMailboxPlanId` int NULL,
-        `EnableArchiving` tinyint(1) NULL,
-        `LevelID` int NULL,
-        `IsVIP` tinyint(1) NOT NULL,
-        CONSTRAINT `PK_ExchangeAccounts` PRIMARY KEY (`AccountID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `RDSCollectionUsers` (
-        `ID` int NOT NULL AUTO_INCREMENT,
-        `RDSCollectionId` int NOT NULL,
-        `AccountID` int NOT NULL,
-        CONSTRAINT `PK__RDSColle__3214EC2780141EF7` PRIMARY KEY (`ID`),
-        CONSTRAINT `FK_RDSCollectionUsers_RDSCollectionId` FOREIGN KEY (`RDSCollectionId`) REFERENCES `RDSCollections` (`ID`) ON DELETE CASCADE,
-        CONSTRAINT `FK_RDSCollectionUsers_UserId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `WebDavAccessTokens` (
-        `ID` int NOT NULL AUTO_INCREMENT,
-        `FilePath` longtext CHARACTER SET utf8mb4 NOT NULL,
-        `AuthData` longtext CHARACTER SET utf8mb4 NOT NULL,
-        `AccessToken` char(36) COLLATE ascii_general_ci NOT NULL,
-        `ExpirationDate` datetime(6) NOT NULL,
-        `AccountID` int NOT NULL,
-        `ItemId` int NOT NULL,
-        CONSTRAINT `PK__WebDavAc__3214EC27B27DC571` PRIMARY KEY (`ID`),
-        CONSTRAINT `FK_WebDavAccessTokens_UserId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `WebDavPortalUsersSettings` (
-        `ID` int NOT NULL AUTO_INCREMENT,
-        `AccountId` int NOT NULL,
-        `Settings` longtext CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK__WebDavPo__3214EC278AF5195E` PRIMARY KEY (`ID`),
-        CONSTRAINT `FK_WebDavPortalUsersSettings_UserId` FOREIGN KEY (`AccountId`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeMailboxPlans` (
-        `MailboxPlanId` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `MailboxPlan` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        `MailboxPlanType` int NULL,
-        `EnableActiveSync` tinyint(1) NOT NULL,
-        `EnableIMAP` tinyint(1) NOT NULL,
-        `EnableMAPI` tinyint(1) NOT NULL,
-        `EnableOWA` tinyint(1) NOT NULL,
-        `EnablePOP` tinyint(1) NOT NULL,
-        `IsDefault` tinyint(1) NOT NULL,
-        `IssueWarningPct` int NOT NULL,
-        `KeepDeletedItemsDays` int NOT NULL,
-        `MailboxSizeMB` int NOT NULL,
-        `MaxReceiveMessageSizeKB` int NOT NULL,
-        `MaxRecipients` int NOT NULL,
-        `MaxSendMessageSizeKB` int NOT NULL,
-        `ProhibitSendPct` int NOT NULL,
-        `ProhibitSendReceivePct` int NOT NULL,
-        `HideFromAddressBook` tinyint(1) NOT NULL,
-        `AllowLitigationHold` tinyint(1) NULL,
-        `RecoverableItemsWarningPct` int NULL,
-        `RecoverableItemsSpace` int NULL,
-        `LitigationHoldUrl` varchar(256) CHARACTER SET utf8mb4 NULL,
-        `LitigationHoldMsg` varchar(512) CHARACTER SET utf8mb4 NULL,
-        `Archiving` tinyint(1) NULL,
-        `EnableArchiving` tinyint(1) NULL,
-        `ArchiveSizeMB` int NULL,
-        `ArchiveWarningPct` int NULL,
-        `EnableAutoReply` tinyint(1) NULL,
-        `IsForJournaling` tinyint(1) NULL,
-        `EnableForceArchiveDeletion` tinyint(1) NULL,
-        CONSTRAINT `PK_ExchangeMailboxPlans` PRIMARY KEY (`MailboxPlanId`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeOrganizationDomains` (
-        `OrganizationDomainID` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `DomainID` int NULL,
-        `IsHost` tinyint(1) NULL DEFAULT FALSE,
-        `DomainTypeID` int NOT NULL,
-        CONSTRAINT `PK_ExchangeOrganizationDomains` PRIMARY KEY (`OrganizationDomainID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeOrganizations` (
-        `ItemID` int NOT NULL,
-        `OrganizationID` varchar(128) CHARACTER SET utf8mb4 NOT NULL,
-        `ExchangeMailboxPlanID` int NULL,
-        `LyncUserPlanID` int NULL,
-        `SfBUserPlanID` int NULL,
-        CONSTRAINT `PK_ExchangeOrganizations` PRIMARY KEY (`ItemID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeOrganizationSettings` (
-        `ItemId` int NOT NULL,
-        `SettingsName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-        `Xml` longtext CHARACTER SET utf8mb4 NOT NULL,
-        CONSTRAINT `PK_ExchangeOrganizationSettings` PRIMARY KEY (`ItemId`, `SettingsName`),
-        CONSTRAINT `FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId` FOREIGN KEY (`ItemId`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `ExchangeOrganizationSsFolders` (
-        `Id` int NOT NULL AUTO_INCREMENT,
-        `ItemId` int NOT NULL,
-        `Type` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
-        `StorageSpaceFolderId` int NOT NULL,
-        CONSTRAINT `PK__Exchange__3214EC072DDBA072` PRIMARY KEY (`Id`),
-        CONSTRAINT `FK_ExchangeOrganizationSsFolders_ItemId` FOREIGN KEY (`ItemId`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE,
-        CONSTRAINT `FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId` FOREIGN KEY (`StorageSpaceFolderId`) REFERENCES `StorageSpaceFolders` (`Id`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `LyncUserPlans` (
-        `LyncUserPlanId` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `LyncUserPlanName` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
-        `LyncUserPlanType` int NULL,
-        `IM` tinyint(1) NOT NULL,
-        `Mobility` tinyint(1) NOT NULL,
-        `MobilityEnableOutsideVoice` tinyint(1) NOT NULL,
-        `Federation` tinyint(1) NOT NULL,
-        `Conferencing` tinyint(1) NOT NULL,
-        `EnterpriseVoice` tinyint(1) NOT NULL,
-        `VoicePolicy` int NOT NULL,
-        `IsDefault` tinyint(1) NOT NULL,
-        `RemoteUserAccess` tinyint(1) NOT NULL,
-        `PublicIMConnectivity` tinyint(1) NOT NULL,
-        `AllowOrganizeMeetingsWithExternalAnonymous` tinyint(1) NOT NULL,
-        `Telephony` int NULL,
-        `ServerURI` varchar(300) CHARACTER SET utf8mb4 NULL,
-        `ArchivePolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
-        `TelephonyDialPlanPolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
-        `TelephonyVoicePolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK_LyncUserPlans` PRIMARY KEY (`LyncUserPlanId`),
-        CONSTRAINT `FK_LyncUserPlans_ExchangeOrganizations` FOREIGN KEY (`ItemID`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `LyncUsers` (
-        `LyncUserID` int NOT NULL AUTO_INCREMENT,
-        `AccountID` int NOT NULL,
-        `LyncUserPlanID` int NOT NULL,
-        `CreatedDate` datetime(6) NOT NULL,
-        `ModifiedDate` datetime(6) NOT NULL,
-        `SipAddress` varchar(300) CHARACTER SET utf8mb4 NULL,
-        CONSTRAINT `PK_LyncUsers` PRIMARY KEY (`LyncUserID`),
-        CONSTRAINT `FK_LyncUsers_LyncUserPlans` FOREIGN KEY (`LyncUserPlanID`) REFERENCES `LyncUserPlans` (`LyncUserPlanId`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `GlobalDnsRecords` (
-        `RecordID` int NOT NULL AUTO_INCREMENT,
-        `RecordType` varchar(10) CHARACTER SET utf8mb4 NOT NULL,
-        `RecordName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
-        `RecordData` varchar(500) CHARACTER SET utf8mb4 NOT NULL,
-        `MXPriority` int NOT NULL,
-        `ServiceID` int NULL,
-        `ServerID` int NULL,
-        `PackageID` int NULL,
-        `IPAddressID` int NULL,
-        `SrvPriority` int NULL,
-        `SrvWeight` int NULL,
-        `SrvPort` int NULL,
-        CONSTRAINT `PK_GlobalDnsRecords` PRIMARY KEY (`RecordID`),
-        CONSTRAINT `FK_GlobalDnsRecords_IPAddresses` FOREIGN KEY (`IPAddressID`) REFERENCES `IPAddresses` (`AddressID`),
-        CONSTRAINT `FK_GlobalDnsRecords_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`),
-        CONSTRAINT `FK_GlobalDnsRecords_Services` FOREIGN KEY (`ServiceID`) REFERENCES `Services` (`ServiceID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `HostingPlanQuotas` (
-        `PlanID` int NOT NULL,
-        `QuotaID` int NOT NULL,
-        `QuotaValue` int NOT NULL,
-        CONSTRAINT `PK_HostingPlanQuotas_1` PRIMARY KEY (`PlanID`, `QuotaID`),
-        CONSTRAINT `FK_HostingPlanQuotas_Quotas` FOREIGN KEY (`QuotaID`) REFERENCES `Quotas` (`QuotaID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE TABLE `HostingPlanResources` (
-        `PlanID` int NOT NULL,
-        `GroupID` int NOT NULL,
-        `CalculateDiskSpace` tinyint(1) NULL,
-        `CalculateBandwidth` tinyint(1) NULL,
-        CONSTRAINT `PK_HostingPlanResources` PRIMARY KEY (`PlanID`, `GroupID`),
-        CONSTRAINT `FK_HostingPlanResources_ResourceGroups` FOREIGN KEY (`GroupID`) REFERENCES `ResourceGroups` (`GroupID`)
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `HostingPlans` (
         `PlanID` int NOT NULL AUTO_INCREMENT,
@@ -1939,7 +1092,153 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `IPAddresses` (
+        `AddressID` int NOT NULL AUTO_INCREMENT,
+        `ExternalIP` varchar(24) CHARACTER SET utf8mb4 NOT NULL,
+        `InternalIP` varchar(24) CHARACTER SET utf8mb4 NULL,
+        `ServerID` int NULL,
+        `Comments` TEXT CHARACTER SET utf8mb4 NULL,
+        `SubnetMask` varchar(15) CHARACTER SET utf8mb4 NULL,
+        `DefaultGateway` varchar(15) CHARACTER SET utf8mb4 NULL,
+        `PoolID` int NULL,
+        `VLAN` int NULL,
+        CONSTRAINT `PK_IPAddresses` PRIMARY KEY (`AddressID`),
+        CONSTRAINT `FK_IPAddresses_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `PrivateNetworkVLANs` (
+        `VlanID` int NOT NULL AUTO_INCREMENT,
+        `Vlan` int NOT NULL,
+        `ServerID` int NULL,
+        `Comments` TEXT CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK__PrivateN__8348135581B53618` PRIMARY KEY (`VlanID`),
+        CONSTRAINT `FK_ServerID` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `Services` (
+        `ServiceID` int NOT NULL AUTO_INCREMENT,
+        `ServerID` int NOT NULL,
+        `ProviderID` int NOT NULL,
+        `ServiceName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+        `Comments` TEXT CHARACTER SET utf8mb4 NULL,
+        `ServiceQuotaValue` int NULL,
+        `ClusterID` int NULL,
+        CONSTRAINT `PK_Services` PRIMARY KEY (`ServiceID`),
+        CONSTRAINT `FK_Services_Clusters` FOREIGN KEY (`ClusterID`) REFERENCES `Clusters` (`ClusterID`),
+        CONSTRAINT `FK_Services_Providers` FOREIGN KEY (`ProviderID`) REFERENCES `Providers` (`ProviderID`),
+        CONSTRAINT `FK_Services_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `VirtualGroups` (
+        `VirtualGroupID` int NOT NULL AUTO_INCREMENT,
+        `ServerID` int NOT NULL,
+        `GroupID` int NOT NULL,
+        `DistributionType` int NULL,
+        `BindDistributionToPrimary` tinyint(1) NULL,
+        CONSTRAINT `PK_VirtualGroups` PRIMARY KEY (`VirtualGroupID`),
+        CONSTRAINT `FK_VirtualGroups_ResourceGroups` FOREIGN KEY (`GroupID`) REFERENCES `ResourceGroups` (`GroupID`),
+        CONSTRAINT `FK_VirtualGroups_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `Quotas` (
+        `QuotaID` int NOT NULL,
+        `GroupID` int NOT NULL,
+        `QuotaOrder` int NOT NULL DEFAULT 1,
+        `QuotaName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+        `QuotaDescription` varchar(200) CHARACTER SET utf8mb4 NULL,
+        `QuotaTypeID` int NOT NULL DEFAULT 2,
+        `ServiceQuota` tinyint(1) NULL DEFAULT FALSE,
+        `ItemTypeID` int NULL,
+        `HideQuota` tinyint(1) NULL,
+        `PerOrganization` int NULL,
+        CONSTRAINT `PK_Quotas` PRIMARY KEY (`QuotaID`),
+        CONSTRAINT `FK_Quotas_ResourceGroups` FOREIGN KEY (`GroupID`) REFERENCES `ResourceGroups` (`GroupID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_Quotas_ServiceItemTypes` FOREIGN KEY (`ItemTypeID`) REFERENCES `ServiceItemTypes` (`ItemTypeID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `HostingPlanResources` (
+        `PlanID` int NOT NULL,
+        `GroupID` int NOT NULL,
+        `CalculateDiskSpace` tinyint(1) NULL,
+        `CalculateBandwidth` tinyint(1) NULL,
+        CONSTRAINT `PK_HostingPlanResources` PRIMARY KEY (`PlanID`, `GroupID`),
+        CONSTRAINT `FK_HostingPlanResources_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_HostingPlanResources_ResourceGroups` FOREIGN KEY (`GroupID`) REFERENCES `ResourceGroups` (`GroupID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Packages` (
         `PackageID` int NOT NULL AUTO_INCREMENT,
@@ -1951,12 +1250,12 @@ BEGIN
         `StatusID` int NOT NULL,
         `PlanID` int NULL,
         `PurchaseDate` datetime(6) NULL,
-        `OverrideQuotas` tinyint(1) NOT NULL,
+        `OverrideQuotas` tinyint(1) NOT NULL DEFAULT FALSE,
         `BandwidthUpdated` datetime(6) NULL,
-        `DefaultTopPackage` tinyint(1) NOT NULL,
+        `DefaultTopPackage` tinyint(1) NOT NULL DEFAULT FALSE,
         `StatusIDchangeDate` datetime(6) NOT NULL,
         CONSTRAINT `PK_Packages` PRIMARY KEY (`PackageID`),
-        CONSTRAINT `FK_Packages_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`),
+        CONSTRAINT `FK_Packages_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`) ON DELETE CASCADE,
         CONSTRAINT `FK_Packages_Packages` FOREIGN KEY (`ParentPackageID`) REFERENCES `Packages` (`PackageID`),
         CONSTRAINT `FK_Packages_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`),
         CONSTRAINT `FK_Packages_Users` FOREIGN KEY (`UserID`) REFERENCES `Users` (`UserID`)
@@ -1972,7 +1271,130 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ServiceProperties` (
+        `ServiceID` int NOT NULL,
+        `PropertyName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+        `PropertyValue` longtext CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK_ServiceProperties_1` PRIMARY KEY (`ServiceID`, `PropertyName`),
+        CONSTRAINT `FK_ServiceProperties_Services` FOREIGN KEY (`ServiceID`) REFERENCES `Services` (`ServiceID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `StorageSpaces` (
+        `Id` int NOT NULL AUTO_INCREMENT,
+        `Name` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        `ServiceId` int NOT NULL,
+        `ServerId` int NOT NULL,
+        `LevelId` int NOT NULL,
+        `Path` longtext CHARACTER SET utf8mb4 NOT NULL,
+        `IsShared` tinyint(1) NOT NULL,
+        `UncPath` longtext CHARACTER SET utf8mb4 NULL,
+        `FsrmQuotaType` int NOT NULL,
+        `FsrmQuotaSizeBytes` bigint NOT NULL,
+        `IsDisabled` tinyint(1) NOT NULL DEFAULT FALSE,
+        CONSTRAINT `PK__StorageS__3214EC07B8B9A6D1` PRIMARY KEY (`Id`),
+        CONSTRAINT `FK_StorageSpaces_ServerId` FOREIGN KEY (`ServerId`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_StorageSpaces_ServiceId` FOREIGN KEY (`ServiceId`) REFERENCES `Services` (`ServiceID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `VirtualServices` (
+        `VirtualServiceID` int NOT NULL AUTO_INCREMENT,
+        `ServerID` int NOT NULL,
+        `ServiceID` int NOT NULL,
+        CONSTRAINT `PK_VirtualServices` PRIMARY KEY (`VirtualServiceID`),
+        CONSTRAINT `FK_VirtualServices_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_VirtualServices_Services` FOREIGN KEY (`ServiceID`) REFERENCES `Services` (`ServiceID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `HostingPlanQuotas` (
+        `PlanID` int NOT NULL,
+        `QuotaID` int NOT NULL,
+        `QuotaValue` int NOT NULL,
+        CONSTRAINT `PK_HostingPlanQuotas_1` PRIMARY KEY (`PlanID`, `QuotaID`),
+        CONSTRAINT `FK_HostingPlanQuotas_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_HostingPlanQuotas_Quotas` FOREIGN KEY (`QuotaID`) REFERENCES `Quotas` (`QuotaID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `GlobalDnsRecords` (
+        `RecordID` int NOT NULL AUTO_INCREMENT,
+        `RecordType` varchar(10) CHARACTER SET utf8mb4 NOT NULL,
+        `RecordName` varchar(50) CHARACTER SET utf8mb4 NOT NULL,
+        `RecordData` varchar(500) CHARACTER SET utf8mb4 NOT NULL,
+        `MXPriority` int NOT NULL,
+        `ServiceID` int NULL,
+        `ServerID` int NULL,
+        `PackageID` int NULL,
+        `IPAddressID` int NULL,
+        `SrvPriority` int NULL,
+        `SrvWeight` int NULL,
+        `SrvPort` int NULL,
+        CONSTRAINT `PK_GlobalDnsRecords` PRIMARY KEY (`RecordID`),
+        CONSTRAINT `FK_GlobalDnsRecords_IPAddresses` FOREIGN KEY (`IPAddressID`) REFERENCES `IPAddresses` (`AddressID`),
+        CONSTRAINT `FK_GlobalDnsRecords_Packages` FOREIGN KEY (`PackageID`) REFERENCES `Packages` (`PackageID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_GlobalDnsRecords_Servers` FOREIGN KEY (`ServerID`) REFERENCES `Servers` (`ServerID`),
+        CONSTRAINT `FK_GlobalDnsRecords_Services` FOREIGN KEY (`ServiceID`) REFERENCES `Services` (`ServiceID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageAddons` (
         `PackageAddonID` int NOT NULL AUTO_INCREMENT,
@@ -1997,7 +1419,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageQuotas` (
         `PackageID` int NOT NULL,
@@ -2018,7 +1440,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageResources` (
         `PackageID` int NOT NULL,
@@ -2040,7 +1462,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackagesBandwidth` (
         `PackageID` int NOT NULL,
@@ -2063,7 +1485,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackagesDiskspace` (
         `PackageID` int NOT NULL,
@@ -2084,7 +1506,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageServices` (
         `PackageID` int NOT NULL,
@@ -2104,7 +1526,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackagesTreeCache` (
         `ParentPackageID` int NOT NULL,
@@ -2124,12 +1546,13 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageVLANs` (
         `PackageVlanID` int NOT NULL AUTO_INCREMENT,
         `VlanID` int NOT NULL,
         `PackageID` int NOT NULL,
+        `IsDmz` tinyint(1) NOT NULL DEFAULT FALSE,
         CONSTRAINT `PK__PackageV__A9AABBF9C0C25CB3` PRIMARY KEY (`PackageVlanID`),
         CONSTRAINT `FK_PackageID` FOREIGN KEY (`PackageID`) REFERENCES `Packages` (`PackageID`) ON DELETE CASCADE,
         CONSTRAINT `FK_VlanID` FOREIGN KEY (`VlanID`) REFERENCES `PrivateNetworkVLANs` (`VlanID`) ON DELETE CASCADE
@@ -2145,7 +1568,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `Schedule` (
         `ScheduleID` int NOT NULL AUTO_INCREMENT,
@@ -2179,7 +1602,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ServiceItems` (
         `ItemID` int NOT NULL AUTO_INCREMENT,
@@ -2204,7 +1627,32 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `StorageSpaceFolders` (
+        `Id` int NOT NULL AUTO_INCREMENT,
+        `Name` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        `StorageSpaceId` int NOT NULL,
+        `Path` longtext CHARACTER SET utf8mb4 NOT NULL,
+        `UncPath` longtext CHARACTER SET utf8mb4 NULL,
+        `IsShared` tinyint(1) NOT NULL,
+        `FsrmQuotaType` int NOT NULL,
+        `FsrmQuotaSizeBytes` bigint NOT NULL,
+        CONSTRAINT `PK__StorageS__3214EC07AC0C9EB6` PRIMARY KEY (`Id`),
+        CONSTRAINT `FK_StorageSpaceFolders_StorageSpaceId` FOREIGN KEY (`StorageSpaceId`) REFERENCES `StorageSpaces` (`Id`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ScheduleParameters` (
         `ScheduleID` int NOT NULL,
@@ -2224,7 +1672,107 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `DmzIPAddresses` (
+        `DmzAddressID` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `IPAddress` varchar(15) CHARACTER SET utf8mb4 NOT NULL,
+        `IsPrimary` tinyint(1) NOT NULL,
+        CONSTRAINT `PK_DmzIPAddresses` PRIMARY KEY (`DmzAddressID`),
+        CONSTRAINT `FK_DmzIPAddresses_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `Domains` (
+        `DomainID` int NOT NULL AUTO_INCREMENT,
+        `PackageID` int NOT NULL,
+        `ZoneItemID` int NULL,
+        `DomainName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+        `HostingAllowed` tinyint(1) NOT NULL DEFAULT FALSE,
+        `WebSiteID` int NULL,
+        `MailDomainID` int NULL,
+        `IsSubDomain` tinyint(1) NOT NULL DEFAULT FALSE,
+        `IsPreviewDomain` tinyint(1) NOT NULL DEFAULT FALSE,
+        `IsDomainPointer` tinyint(1) NOT NULL,
+        `DomainItemId` int NULL,
+        `CreationDate` datetime(6) NULL,
+        `ExpirationDate` datetime(6) NULL,
+        `LastUpdateDate` datetime(6) NULL,
+        `RegistrarName` longtext CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK_Domains` PRIMARY KEY (`DomainID`),
+        CONSTRAINT `FK_Domains_Packages` FOREIGN KEY (`PackageID`) REFERENCES `Packages` (`PackageID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_Domains_ServiceItems_MailDomain` FOREIGN KEY (`MailDomainID`) REFERENCES `ServiceItems` (`ItemID`),
+        CONSTRAINT `FK_Domains_ServiceItems_WebSite` FOREIGN KEY (`WebSiteID`) REFERENCES `ServiceItems` (`ItemID`),
+        CONSTRAINT `FK_Domains_ServiceItems_ZoneItem` FOREIGN KEY (`ZoneItemID`) REFERENCES `ServiceItems` (`ItemID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeOrganizationDomains` (
+        `OrganizationDomainID` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `DomainID` int NULL,
+        `IsHost` tinyint(1) NULL DEFAULT FALSE,
+        `DomainTypeID` int NOT NULL DEFAULT 0,
+        CONSTRAINT `PK_ExchangeOrganizationDomains` PRIMARY KEY (`OrganizationDomainID`),
+        CONSTRAINT `FK_ExchangeOrganizationDomains_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeOrganizations` (
+        `ItemID` int NOT NULL,
+        `OrganizationID` varchar(128) CHARACTER SET utf8mb4 NOT NULL,
+        `ExchangeMailboxPlanID` int NULL,
+        `LyncUserPlanID` int NULL,
+        `SfBUserPlanID` int NULL,
+        CONSTRAINT `PK_ExchangeOrganizations` PRIMARY KEY (`ItemID`),
+        CONSTRAINT `FK_ExchangeOrganizations_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PackageIPAddresses` (
         `PackageAddressID` int NOT NULL AUTO_INCREMENT,
@@ -2249,7 +1797,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `PrivateIPAddresses` (
         `PrivateAddressID` int NOT NULL AUTO_INCREMENT,
@@ -2270,7 +1818,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE TABLE `ServiceItemProperties` (
         `ItemID` int NOT NULL,
@@ -2290,7 +1838,417 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `EnterpriseFolders` (
+        `EnterpriseFolderID` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `FolderName` varchar(255) CHARACTER SET utf8mb4 NOT NULL,
+        `FolderQuota` int NOT NULL DEFAULT 0,
+        `LocationDrive` varchar(255) CHARACTER SET utf8mb4 NULL,
+        `HomeFolder` varchar(255) CHARACTER SET utf8mb4 NULL,
+        `Domain` varchar(255) CHARACTER SET utf8mb4 NULL,
+        `StorageSpaceFolderId` int NULL,
+        CONSTRAINT `PK_EnterpriseFolders` PRIMARY KEY (`EnterpriseFolderID`),
+        CONSTRAINT `FK_EnterpriseFolders_StorageSpaceFolderId` FOREIGN KEY (`StorageSpaceFolderId`) REFERENCES `StorageSpaceFolders` (`Id`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `DomainDnsRecords` (
+        `ID` int NOT NULL AUTO_INCREMENT,
+        `DomainId` int NOT NULL,
+        `RecordType` int NOT NULL,
+        `DnsServer` varchar(255) CHARACTER SET utf8mb4 NULL,
+        `Value` varchar(255) CHARACTER SET utf8mb4 NULL,
+        `Date` datetime(6) NULL,
+        CONSTRAINT `PK__DomainDn__3214EC27A6FC0498` PRIMARY KEY (`ID`),
+        CONSTRAINT `FK_DomainDnsRecords_DomainId` FOREIGN KEY (`DomainId`) REFERENCES `Domains` (`DomainID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeMailboxPlans` (
+        `MailboxPlanId` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `MailboxPlan` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        `MailboxPlanType` int NULL,
+        `EnableActiveSync` tinyint(1) NOT NULL,
+        `EnableIMAP` tinyint(1) NOT NULL,
+        `EnableMAPI` tinyint(1) NOT NULL,
+        `EnableOWA` tinyint(1) NOT NULL,
+        `EnablePOP` tinyint(1) NOT NULL,
+        `IsDefault` tinyint(1) NOT NULL,
+        `IssueWarningPct` int NOT NULL,
+        `KeepDeletedItemsDays` int NOT NULL,
+        `MailboxSizeMB` int NOT NULL,
+        `MaxReceiveMessageSizeKB` int NOT NULL,
+        `MaxRecipients` int NOT NULL,
+        `MaxSendMessageSizeKB` int NOT NULL,
+        `ProhibitSendPct` int NOT NULL,
+        `ProhibitSendReceivePct` int NOT NULL,
+        `HideFromAddressBook` tinyint(1) NOT NULL,
+        `AllowLitigationHold` tinyint(1) NULL,
+        `RecoverableItemsWarningPct` int NULL,
+        `RecoverableItemsSpace` int NULL,
+        `LitigationHoldUrl` varchar(256) CHARACTER SET utf8mb4 NULL,
+        `LitigationHoldMsg` varchar(512) CHARACTER SET utf8mb4 NULL,
+        `Archiving` tinyint(1) NULL,
+        `EnableArchiving` tinyint(1) NULL,
+        `ArchiveSizeMB` int NULL,
+        `ArchiveWarningPct` int NULL,
+        `EnableAutoReply` tinyint(1) NULL,
+        `IsForJournaling` tinyint(1) NULL,
+        `EnableForceArchiveDeletion` tinyint(1) NULL,
+        CONSTRAINT `PK_ExchangeMailboxPlans` PRIMARY KEY (`MailboxPlanId`),
+        CONSTRAINT `FK_ExchangeMailboxPlans_ExchangeOrganizations` FOREIGN KEY (`ItemID`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeOrganizationSettings` (
+        `ItemId` int NOT NULL,
+        `SettingsName` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+        `Xml` longtext CHARACTER SET utf8mb4 NOT NULL,
+        CONSTRAINT `PK_ExchangeOrganizationSettings` PRIMARY KEY (`ItemId`, `SettingsName`),
+        CONSTRAINT `FK_ExchangeOrganizationSettings_ExchangeOrganizations_ItemId` FOREIGN KEY (`ItemId`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeOrganizationSsFolders` (
+        `Id` int NOT NULL AUTO_INCREMENT,
+        `ItemId` int NOT NULL,
+        `Type` varchar(100) CHARACTER SET utf8mb4 NOT NULL,
+        `StorageSpaceFolderId` int NOT NULL,
+        CONSTRAINT `PK__Exchange__3214EC072DDBA072` PRIMARY KEY (`Id`),
+        CONSTRAINT `FK_ExchangeOrganizationSsFolders_ItemId` FOREIGN KEY (`ItemId`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_ExchangeOrganizationSsFolders_StorageSpaceFolderId` FOREIGN KEY (`StorageSpaceFolderId`) REFERENCES `StorageSpaceFolders` (`Id`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `LyncUserPlans` (
+        `LyncUserPlanId` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `LyncUserPlanName` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        `LyncUserPlanType` int NULL,
+        `IM` tinyint(1) NOT NULL,
+        `Mobility` tinyint(1) NOT NULL,
+        `MobilityEnableOutsideVoice` tinyint(1) NOT NULL,
+        `Federation` tinyint(1) NOT NULL,
+        `Conferencing` tinyint(1) NOT NULL,
+        `EnterpriseVoice` tinyint(1) NOT NULL,
+        `VoicePolicy` int NOT NULL,
+        `IsDefault` tinyint(1) NOT NULL,
+        `RemoteUserAccess` tinyint(1) NOT NULL DEFAULT FALSE,
+        `PublicIMConnectivity` tinyint(1) NOT NULL DEFAULT FALSE,
+        `AllowOrganizeMeetingsWithExternalAnonymous` tinyint(1) NOT NULL DEFAULT FALSE,
+        `Telephony` int NULL,
+        `ServerURI` varchar(300) CHARACTER SET utf8mb4 NULL,
+        `ArchivePolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
+        `TelephonyDialPlanPolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
+        `TelephonyVoicePolicy` varchar(300) CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK_LyncUserPlans` PRIMARY KEY (`LyncUserPlanId`),
+        CONSTRAINT `FK_LyncUserPlans_ExchangeOrganizations` FOREIGN KEY (`ItemID`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeAccounts` (
+        `AccountID` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `AccountType` int NOT NULL,
+        `AccountName` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        `DisplayName` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        `PrimaryEmailAddress` varchar(300) CHARACTER SET utf8mb4 NULL,
+        `MailEnabledPublicFolder` tinyint(1) NULL,
+        `MailboxManagerActions` varchar(200) CHARACTER SET utf8mb4 NULL,
+        `SamAccountName` varchar(100) CHARACTER SET utf8mb4 NULL,
+        `CreatedDate` datetime(6) NOT NULL,
+        `MailboxPlanId` int NULL,
+        `SubscriberNumber` varchar(32) CHARACTER SET utf8mb4 NULL,
+        `UserPrincipalName` varchar(300) CHARACTER SET utf8mb4 NULL,
+        `ExchangeDisclaimerId` int NULL,
+        `ArchivingMailboxPlanId` int NULL,
+        `EnableArchiving` tinyint(1) NULL,
+        `LevelID` int NULL,
+        `IsVIP` tinyint(1) NOT NULL DEFAULT FALSE,
+        CONSTRAINT `PK_ExchangeAccounts` PRIMARY KEY (`AccountID`),
+        CONSTRAINT `FK_ExchangeAccounts_ExchangeMailboxPlans` FOREIGN KEY (`MailboxPlanId`) REFERENCES `ExchangeMailboxPlans` (`MailboxPlanId`),
+        CONSTRAINT `FK_ExchangeAccounts_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `LyncUsers` (
+        `LyncUserID` int NOT NULL AUTO_INCREMENT,
+        `AccountID` int NOT NULL,
+        `LyncUserPlanID` int NOT NULL,
+        `CreatedDate` datetime(6) NOT NULL,
+        `ModifiedDate` datetime(6) NOT NULL,
+        `SipAddress` varchar(300) CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK_LyncUsers` PRIMARY KEY (`LyncUserID`),
+        CONSTRAINT `FK_LyncUsers_LyncUserPlans` FOREIGN KEY (`LyncUserPlanID`) REFERENCES `LyncUserPlans` (`LyncUserPlanId`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `AccessTokens` (
+        `ID` int NOT NULL AUTO_INCREMENT,
+        `AccessTokenGuid` char(36) COLLATE ascii_general_ci NOT NULL,
+        `ExpirationDate` datetime(6) NOT NULL,
+        `AccountID` int NOT NULL,
+        `ItemId` int NOT NULL,
+        `TokenType` int NOT NULL,
+        `SmsResponse` varchar(100) CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK__AccessTo__3214EC27DEAEF66E` PRIMARY KEY (`ID`),
+        CONSTRAINT `FK_AccessTokens_UserId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `BlackBerryUsers` (
+        `BlackBerryUserId` int NOT NULL AUTO_INCREMENT,
+        `AccountId` int NOT NULL,
+        `CreatedDate` datetime(6) NOT NULL,
+        `ModifiedDate` datetime(6) NOT NULL,
+        CONSTRAINT `PK_BlackBerryUsers` PRIMARY KEY (`BlackBerryUserId`),
+        CONSTRAINT `FK_BlackBerryUsers_ExchangeAccounts` FOREIGN KEY (`AccountId`) REFERENCES `ExchangeAccounts` (`AccountID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `CRMUsers` (
+        `CRMUserID` int NOT NULL AUTO_INCREMENT,
+        `AccountID` int NOT NULL,
+        `CreatedDate` datetime(6) NOT NULL,
+        `ChangedDate` datetime(6) NOT NULL,
+        `CRMUserGuid` char(36) COLLATE ascii_general_ci NULL,
+        `BusinessUnitID` char(36) COLLATE ascii_general_ci NULL,
+        `CALType` int NULL,
+        CONSTRAINT `PK_CRMUsers` PRIMARY KEY (`CRMUserID`),
+        CONSTRAINT `FK_CRMUsers_ExchangeAccounts` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`)
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `EnterpriseFoldersOwaPermissions` (
+        `ID` int NOT NULL AUTO_INCREMENT,
+        `ItemID` int NOT NULL,
+        `FolderID` int NOT NULL,
+        `AccountID` int NOT NULL,
+        CONSTRAINT `PK__Enterpri__3214EC27D1B48691` PRIMARY KEY (`ID`),
+        CONSTRAINT `FK_EnterpriseFoldersOwaPermissions_AccountId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_EnterpriseFoldersOwaPermissions_FolderId` FOREIGN KEY (`FolderID`) REFERENCES `EnterpriseFolders` (`EnterpriseFolderID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `ExchangeAccountEmailAddresses` (
+        `AddressID` int NOT NULL AUTO_INCREMENT,
+        `AccountID` int NOT NULL,
+        `EmailAddress` varchar(300) CHARACTER SET utf8mb4 NOT NULL,
+        CONSTRAINT `PK_ExchangeAccountEmailAddresses` PRIMARY KEY (`AddressID`),
+        CONSTRAINT `FK_ExchangeAccountEmailAddresses_ExchangeAccounts` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `RDSCollectionUsers` (
+        `ID` int NOT NULL AUTO_INCREMENT,
+        `RDSCollectionId` int NOT NULL,
+        `AccountID` int NOT NULL,
+        CONSTRAINT `PK__RDSColle__3214EC2780141EF7` PRIMARY KEY (`ID`),
+        CONSTRAINT `FK_RDSCollectionUsers_RDSCollectionId` FOREIGN KEY (`RDSCollectionId`) REFERENCES `RDSCollections` (`ID`) ON DELETE CASCADE,
+        CONSTRAINT `FK_RDSCollectionUsers_UserId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `WebDavAccessTokens` (
+        `ID` int NOT NULL AUTO_INCREMENT,
+        `FilePath` longtext CHARACTER SET utf8mb4 NOT NULL,
+        `AuthData` longtext CHARACTER SET utf8mb4 NOT NULL,
+        `AccessToken` char(36) COLLATE ascii_general_ci NOT NULL,
+        `ExpirationDate` datetime(6) NOT NULL,
+        `AccountID` int NOT NULL,
+        `ItemId` int NOT NULL,
+        CONSTRAINT `PK__WebDavAc__3214EC2708781F08` PRIMARY KEY (`ID`),
+        CONSTRAINT `FK_WebDavAccessTokens_UserId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE TABLE `WebDavPortalUsersSettings` (
+        `ID` int NOT NULL AUTO_INCREMENT,
+        `AccountId` int NOT NULL,
+        `Settings` longtext CHARACTER SET utf8mb4 NULL,
+        CONSTRAINT `PK__WebDavPo__3214EC278AF5195E` PRIMARY KEY (`ID`),
+        CONSTRAINT `FK_WebDavPortalUsersSettings_UserId` FOREIGN KEY (`AccountId`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE
+    ) CHARACTER SET=utf8mb4;
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `AuditLogSources` (`SourceName`)
     VALUES ('APP_INSTALLER'),
@@ -2342,7 +2300,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `AuditLogTasks` (`SourceName`, `TaskName`, `TaskDescription`)
     VALUES ('APP_INSTALLER', 'INSTALL_APPLICATION', 'Install application'),
@@ -2668,7 +2626,22 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (750, 36, NULL, NULL, NULL, 'DMZ Network', 'VPS2012.DMZNetworkEnabled', 22, 1, FALSE);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ResourceGroups` (`GroupID`, `GroupController`, `GroupName`, `GroupOrder`, `ShowGroup`)
     VALUES (1, 'SolidCP.EnterpriseServer.OperatingSystemController', 'OS', 1, TRUE),
@@ -2708,7 +2681,9 @@ BEGIN
     (73, 'SolidCP.EnterpriseServer.HostedSharePointServerEntController', 'Sharepoint Enterprise Server', 15, TRUE),
     (74, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MsSQL2019', 10, TRUE),
     (75, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MsSQL2022', 10, TRUE),
+    (76, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MsSQL2025', 10, TRUE),
     (90, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL8', 12, TRUE),
+    (91, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL9', 12, TRUE),
     (167, NULL, 'Proxmox', 20, TRUE);
 
     END IF;
@@ -2721,7 +2696,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ScheduleTasks` (`TaskID`, `RoleID`, `TaskType`)
     VALUES ('SCHEDULE_TASK_ACTIVATE_PAID_INVOICES', 0, 'SolidCP.Ecommerce.EnterpriseServer.ActivatePaidInvoicesTask, SolidCP.EnterpriseServer.Code'),
@@ -2758,7 +2733,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `SystemSettings` (`PropertyName`, `SettingsName`, `PropertyValue`)
     VALUES ('AccessIps', 'AccessIpsSettings', ''),
@@ -2780,29 +2755,29 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `ThemeSettings` (`PropertyName`, `SettingsName`, `ThemeID`, `PropertyValue`)
-    VALUES ('#0727d7', 'color-header', 1, 'headercolor1'),
-    ('#157d4c', 'color-header', 1, 'headercolor4'),
-    ('#23282c', 'color-header', 1, 'headercolor2'),
-    ('#673ab7', 'color-header', 1, 'headercolor5'),
-    ('#795548', 'color-header', 1, 'headercolor6'),
-    ('#d3094e', 'color-header', 1, 'headercolor7'),
-    ('#e10a1f', 'color-header', 1, 'headercolor3'),
-    ('#ff9800', 'color-header', 1, 'headercolor8'),
-    ('#1f0e3b', 'color-Sidebar', 1, 'sidebarcolor8'),
-    ('#230924', 'color-Sidebar', 1, 'sidebarcolor4'),
-    ('#408851', 'color-Sidebar', 1, 'sidebarcolor3'),
-    ('#5b737f', 'color-Sidebar', 1, 'sidebarcolor2'),
-    ('#6c85ec', 'color-Sidebar', 1, 'sidebarcolor1'),
-    ('#903a85', 'color-Sidebar', 1, 'sidebarcolor5'),
-    ('#a04846', 'color-Sidebar', 1, 'sidebarcolor6'),
-    ('#a65314', 'color-Sidebar', 1, 'sidebarcolor7'),
-    ('Dark', 'Style', 1, 'dark-theme'),
-    ('Light', 'Style', 1, 'light-theme'),
-    ('Minimal', 'Style', 1, 'minimal-theme'),
-    ('Semi Dark', 'Style', 1, 'semi-dark');
+    INSERT INTO `ThemeSettings` (`ThemeSettingID`, `PropertyName`, `PropertyValue`, `SettingsName`, `ThemeID`)
+    VALUES (1, 'Light', 'light-theme', 'Style', 1),
+    (2, 'Dark', 'dark-theme', 'Style', 1),
+    (3, 'Semi Dark', 'semi-dark', 'Style', 1),
+    (4, 'Minimal', 'minimal-theme', 'Style', 1),
+    (5, '#0727d7', 'headercolor1', 'color-header', 1),
+    (6, '#23282c', 'headercolor2', 'color-header', 1),
+    (7, '#e10a1f', 'headercolor3', 'color-header', 1),
+    (8, '#157d4c', 'headercolor4', 'color-header', 1),
+    (9, '#673ab7', 'headercolor5', 'color-header', 1),
+    (10, '#795548', 'headercolor6', 'color-header', 1),
+    (11, '#d3094e', 'headercolor7', 'color-header', 1),
+    (12, '#ff9800', 'headercolor8', 'color-header', 1),
+    (13, '#6c85ec', 'sidebarcolor1', 'color-Sidebar', 1),
+    (14, '#5b737f', 'sidebarcolor2', 'color-Sidebar', 1),
+    (15, '#408851', 'sidebarcolor3', 'color-Sidebar', 1),
+    (16, '#230924', 'sidebarcolor4', 'color-Sidebar', 1),
+    (17, '#903a85', 'sidebarcolor5', 'color-Sidebar', 1),
+    (18, '#a04846', 'sidebarcolor6', 'color-Sidebar', 1),
+    (19, '#a65314', 'sidebarcolor7', 'color-Sidebar', 1),
+    (20, '#1f0e3b', 'sidebarcolor8', 'color-Sidebar', 1);
 
     END IF;
 END //
@@ -2814,7 +2789,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `Themes` (`ThemeID`, `DisplayName`, `DisplayOrder`, `Enabled`, `LTRName`, `RTLName`)
     VALUES (1, 'SolidCP v1', 1, 1, 'Default', 'Default');
@@ -2829,10 +2804,10 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `Users` (`UserID`, `AdditionalParams`, `Address`, `Changed`, `City`, `Comments`, `CompanyName`, `Country`, `Created`, `EcommerceEnabled`, `Email`, `FailedLogins`, `Fax`, `FirstName`, `HtmlMail`, `InstantMessenger`, `IsDemo`, `IsPeer`, `LastName`, `LoginStatusId`, `MfaMode`, `OneTimePasswordState`, `OwnerID`, `Password`, `PinSecret`, `PrimaryPhone`, `RoleID`, `SecondaryEmail`, `SecondaryPhone`, `State`, `StatusID`, `SubscriberNumber`, `Username`, `Zip`)
-    VALUES (1, NULL, '', TIMESTAMP '2010-07-16 12:53:02', '', '', NULL, '', TIMESTAMP '2010-07-16 12:53:02', TRUE, 'serveradmin@myhosting.com', NULL, '', 'Enterprise', TRUE, '', FALSE, FALSE, 'Administrator', NULL, 0, NULL, NULL, '', NULL, '', 1, '', '', '', 1, NULL, 'serveradmin', '');
+    INSERT INTO `Users` (`UserID`, `AdditionalParams`, `Address`, `Changed`, `City`, `Comments`, `CompanyName`, `Country`, `Created`, `EcommerceEnabled`, `Email`, `FailedLogins`, `Fax`, `FirstName`, `HtmlMail`, `InstantMessenger`, `LastName`, `LoginStatusId`, `OneTimePasswordState`, `OwnerID`, `Password`, `PinSecret`, `PrimaryPhone`, `RoleID`, `SecondaryEmail`, `SecondaryPhone`, `State`, `StatusID`, `SubscriberNumber`, `Username`, `Zip`)
+    VALUES (1, NULL, '', TIMESTAMP '2010-07-16 10:53:02', '', '', NULL, '', TIMESTAMP '2010-07-16 12:53:02', TRUE, 'serveradmin@myhosting.com', NULL, '', 'Enterprise', TRUE, '', 'Administrator', NULL, NULL, NULL, '', NULL, '', 1, '', '', '', 1, NULL, 'serveradmin', '');
 
     END IF;
 END //
@@ -2844,7 +2819,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `Versions` (`DatabaseVersion`, `BuildDate`)
     VALUES ('1.0', TIMESTAMP '2010-04-10 00:00:00'),
@@ -2866,10 +2841,10 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `Packages` (`PackageID`, `BandwidthUpdated`, `DefaultTopPackage`, `OverrideQuotas`, `PackageComments`, `PackageName`, `ParentPackageID`, `PlanID`, `PurchaseDate`, `ServerID`, `StatusID`, `StatusIDchangeDate`, `UserID`)
-    VALUES (1, NULL, FALSE, FALSE, '', 'System', NULL, NULL, NULL, NULL, 1, TIMESTAMP '2024-04-20 11:02:58', 1);
+    INSERT INTO `Packages` (`PackageID`, `BandwidthUpdated`, `PackageComments`, `PackageName`, `ParentPackageID`, `PlanID`, `PurchaseDate`, `ServerID`, `StatusID`, `StatusIDchangeDate`, `UserID`)
+    VALUES (1, NULL, '', 'System', NULL, NULL, NULL, NULL, 1, TIMESTAMP '2024-10-12 19:29:19', 1);
 
     END IF;
 END //
@@ -2881,7 +2856,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
     VALUES (1, NULL, 'Windows Server 2003', 'Windows2003', 1, 'Windows2003', 'SolidCP.Providers.OS.Windows2003, SolidCP.Providers.OS.Windows2003'),
@@ -2925,7 +2900,7 @@ BEGIN
     (66, NULL, 'SmarterMail 10.x +', 'SmarterMail100', 4, 'SmarterMail', 'SolidCP.Providers.Mail.SmarterMail10, SolidCP.Providers.Mail.SmarterMail10'),
     (67, NULL, 'SmarterMail 100.x +', 'SmarterMail100x', 4, 'SmarterMail', 'SolidCP.Providers.Mail.SmarterMail100, SolidCP.Providers.Mail.SmarterMail100'),
     (90, NULL, 'Hosted Microsoft Exchange Server 2010 SP2', 'Exchange', 12, 'Exchange2010SP2', 'SolidCP.Providers.HostedSolution.Exchange2010SP2, SolidCP.Providers.HostedSolution'),
-    (91, TRUE, 'Hosted Microsoft Exchange Server 2013', 'Exchange', 12, 'Exchange2013', 'SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution.Exchange2013');
+    (91, NULL, 'Hosted Microsoft Exchange Server 2013', 'Exchange', 12, 'Exchange2013', 'SolidCP.Providers.HostedSolution.Exchange2013, SolidCP.Providers.HostedSolution.Exchange2013');
     INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
     VALUES (92, NULL, 'Hosted Microsoft Exchange Server 2016', 'Exchange', 12, 'Exchange2016', 'SolidCP.Providers.HostedSolution.Exchange2016, SolidCP.Providers.HostedSolution.Exchange2016'),
     (93, NULL, 'Hosted Microsoft Exchange Server 2019', 'Exchange', 12, 'Exchange2016', 'SolidCP.Providers.HostedSolution.Exchange2019, SolidCP.Providers.HostedSolution.Exchange2019'),
@@ -2959,18 +2934,21 @@ BEGIN
     (304, NULL, 'MySQL Server 8.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer80, SolidCP.Providers.Database.MySQL'),
     (305, NULL, 'MySQL Server 8.1', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer81, SolidCP.Providers.Database.MySQL'),
     (306, NULL, 'MySQL Server 8.2', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer82, SolidCP.Providers.Database.MySQL'),
+    (307, NULL, 'MySQL Server 8.3', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL'),
+    (308, NULL, 'MySQL Server 8.4', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL'),
+    (320, NULL, 'MySQL Server 9.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL'),
     (350, TRUE, 'Microsoft Hyper-V 2012 R2', 'HyperV2012R2', 33, 'HyperV2012R2', 'SolidCP.Providers.Virtualization.HyperV2012R2, SolidCP.Providers.Virtualization.HyperV2012R2'),
     (351, TRUE, 'Microsoft Hyper-V Virtual Machine Management', 'HyperVvmm', 33, 'HyperVvmm', 'SolidCP.Providers.Virtualization.HyperVvmm, SolidCP.Providers.Virtualization.HyperVvmm'),
     (352, TRUE, 'Microsoft Hyper-V 2016', 'HyperV2012R2', 33, 'HyperV2016', 'SolidCP.Providers.Virtualization.HyperV2016, SolidCP.Providers.Virtualization.HyperV2016'),
     (370, TRUE, 'Proxmox Virtualization (remote)', 'Proxmox', 167, 'Proxmox (remote)', 'SolidCP.Providers.Virtualization.Proxmoxvps, SolidCP.Providers.Virtualization.Proxmoxvps'),
     (371, FALSE, 'Proxmox Virtualization', 'Proxmox', 167, 'Proxmox', 'SolidCP.Providers.Virtualization.ProxmoxvpsLocal, SolidCP.Providers.Virtualization.Proxmoxvps'),
     (400, TRUE, 'Microsoft Hyper-V For Private Cloud', 'HyperVForPrivateCloud', 40, 'HyperVForPC', 'SolidCP.Providers.VirtualizationForPC.HyperVForPC, SolidCP.Providers.VirtualizationForPC.HyperVForPC'),
-    (410, NULL, 'Microsoft DNS Server 2012+', 'MSDNS', 7, 'MSDNS.2012', 'SolidCP.Providers.DNS.MsDNS2012, SolidCP.Providers.DNS.MsDNS2012'),
-    (500, NULL, 'Unix System', 'Unix', 1, 'UnixSystem', 'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix'),
-    (600, TRUE, 'Enterprise Storage Windows 2012', 'EnterpriseStorage', 44, 'EnterpriseStorage2012', 'SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseStorage.Windows2012'),
-    (700, TRUE, 'Storage Spaces Windows 2012', 'StorageSpaceServices', 49, 'StorageSpace2012', 'SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Windows2012');
+    (410, NULL, 'Microsoft DNS Server 2012+', 'MSDNS', 7, 'MSDNS.2012', 'SolidCP.Providers.DNS.MsDNS2012, SolidCP.Providers.DNS.MsDNS2012');
     INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
-    VALUES (1201, NULL, 'Hosted MS CRM 2011', 'CRM2011', 21, 'CRM', 'SolidCP.Providers.HostedSolution.CRMProvider2011, SolidCP.Providers.HostedSolution.CRM2011'),
+    VALUES (500, NULL, 'Unix System', 'Unix', 1, 'UnixSystem', 'SolidCP.Providers.OS.Unix, SolidCP.Providers.OS.Unix'),
+    (600, NULL, 'Enterprise Storage Windows 2012', 'EnterpriseStorage', 44, 'EnterpriseStorage2012', 'SolidCP.Providers.EnterpriseStorage.Windows2012, SolidCP.Providers.EnterpriseStorage.Windows2012'),
+    (700, NULL, 'Storage Spaces Windows 2012', 'StorageSpaceServices', 49, 'StorageSpace2012', 'SolidCP.Providers.StorageSpaces.Windows2012, SolidCP.Providers.StorageSpaces.Windows2012'),
+    (1201, NULL, 'Hosted MS CRM 2011', 'CRM2011', 21, 'CRM', 'SolidCP.Providers.HostedSolution.CRMProvider2011, SolidCP.Providers.HostedSolution.CRM2011'),
     (1202, NULL, 'Hosted MS CRM 2013', 'CRM2011', 24, 'CRM', 'SolidCP.Providers.HostedSolution.CRMProvider2013, SolidCP.Providers.HostedSolution.Crm2013'),
     (1203, NULL, 'Microsoft SQL Server 2014', 'MSSQL', 46, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2014, SolidCP.Providers.Database.SqlServer'),
     (1205, NULL, 'Hosted MS CRM 2015', 'CRM2011', 24, 'CRM', 'SolidCP.Providers.HostedSolution.CRMProvider2015, SolidCP.Providers.HostedSolution.Crm2015'),
@@ -2984,31 +2962,50 @@ BEGIN
     (1501, TRUE, 'Remote Desktop Services Windows 2012', 'RDS', 45, 'RemoteDesktopServices2012', 'SolidCP.Providers.RemoteDesktopServices.Windows2012,SolidCP.Providers.RemoteDesktopServices.Windows2012'),
     (1502, TRUE, 'Remote Desktop Services Windows 2016', 'RDS', 45, 'RemoteDesktopServices2012', 'SolidCP.Providers.RemoteDesktopServices.Windows2016,SolidCP.Providers.RemoteDesktopServices.Windows2016'),
     (1503, TRUE, 'Remote Desktop Services Windows 2019', 'RDS', 45, 'RemoteDesktopServices2019', 'SolidCP.Providers.RemoteDesktopServices.Windows2019,SolidCP.Providers.RemoteDesktopServices.Windows2019'),
+    (1504, TRUE, 'Remote Desktop Services Windows 2022', 'RDS', 45, 'RemoteDesktopServices2022', 'SolidCP.Providers.RemoteDesktopServices.Windows2022,SolidCP.Providers.RemoteDesktopServices.Windows2022'),
+    (1505, TRUE, 'Remote Desktop Services Windows 2025', 'RDS', 45, 'RemoteDesktopServices2025', 'SolidCP.Providers.RemoteDesktopServices.Windows2025,SolidCP.Providers.RemoteDesktopServices.Windows2025'),
     (1550, NULL, 'MariaDB 10.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB101, SolidCP.Providers.Database.MariaDB'),
     (1552, NULL, 'Hosted SharePoint Enterprise 2013', 'HostedSharePoint30', 73, 'HostedSharePoint2013Ent', 'SolidCP.Providers.HostedSolution.HostedSharePointServer2013Ent, SolidCP.Providers.HostedSolution.SharePoint2013Ent'),
     (1560, NULL, 'MariaDB 10.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB102, SolidCP.Providers.Database.MariaDB'),
-    (1570, TRUE, 'MariaDB 10.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB'),
-    (1571, TRUE, 'MariaDB 10.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB'),
+    (1570, NULL, 'MariaDB 10.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB'),
+    (1571, NULL, 'MariaDB 10.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB104, SolidCP.Providers.Database.MariaDB'),
     (1572, NULL, 'MariaDB 10.5', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB105, SolidCP.Providers.Database.MariaDB'),
     (1573, NULL, 'MariaDB 10.6', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB106, SolidCP.Providers.Database.MariaDB'),
+    (1574, NULL, 'MariaDB 10.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB'),
+    (1575, NULL, 'MariaDB 10.8', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB'),
+    (1576, NULL, 'MariaDB 10.9', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB'),
+    (1577, NULL, 'MariaDB 10.10', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB'),
+    (1578, NULL, 'MariaDB 10.11', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB'),
+    (1579, NULL, 'MariaDB 11.0', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB'),
+    (1580, NULL, 'MariaDB 11.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB'),
+    (1581, NULL, 'MariaDB 11.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB'),
+    (1582, NULL, 'MariaDB 11.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB'),
+    (1583, NULL, 'MariaDB 11.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB'),
+    (1584, NULL, 'MariaDB 11.5', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB'),
+    (1585, NULL, 'MariaDB 11.6', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB'),
+    (1586, NULL, 'MariaDB 11.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB'),
     (1601, TRUE, 'Mail Cleaner', 'MailCleaner', 61, 'MailCleaner', 'SolidCP.Providers.Filters.MailCleaner, SolidCP.Providers.Filters.MailCleaner'),
     (1602, TRUE, 'SpamExperts Mail Filter', 'SpamExperts', 61, 'SpamExperts', 'SolidCP.Providers.Filters.SpamExperts, SolidCP.Providers.Filters.SpamExperts'),
-    (1701, NULL, 'Microsoft SQL Server 2016', 'MSSQL', 71, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2016, SolidCP.Providers.Database.SqlServer'),
-    (1702, NULL, 'Hosted SharePoint Enterprise 2016', 'HostedSharePoint30', 73, 'HostedSharePoint2016Ent', 'SolidCP.Providers.HostedSolution.HostedSharePointServer2016Ent, SolidCP.Providers.HostedSolution.SharePoint2016Ent'),
+    (1701, NULL, 'Microsoft SQL Server 2016', 'MSSQL', 71, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2016, SolidCP.Providers.Database.SqlServer');
+    INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
+    VALUES (1702, NULL, 'Hosted SharePoint Enterprise 2016', 'HostedSharePoint30', 73, 'HostedSharePoint2016Ent', 'SolidCP.Providers.HostedSolution.HostedSharePointServer2016Ent, SolidCP.Providers.HostedSolution.SharePoint2016Ent'),
     (1703, NULL, 'SimpleDNS Plus 6.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.Providers.DNS.SimpleDNS6, SolidCP.Providers.DNS.SimpleDNS60'),
-    (1704, TRUE, 'Microsoft SQL Server 2017', 'MSSQL', 72, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer'),
-    (1705, TRUE, 'Microsoft SQL Server 2019', 'MSSQL', 74, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer'),
+    (1704, NULL, 'Microsoft SQL Server 2017', 'MSSQL', 72, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer'),
+    (1705, NULL, 'Microsoft SQL Server 2019', 'MSSQL', 74, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer'),
     (1706, NULL, 'Microsoft SQL Server 2022', 'MSSQL', 75, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2022, SolidCP.Providers.Database.SqlServer'),
+    (1707, NULL, 'Microsoft SQL Server 2025', 'MSSQL', 76, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2025, SolidCP.Providers.Database.SqlServer'),
     (1711, NULL, 'Hosted SharePoint 2019', 'HostedSharePoint30', 73, 'HostedSharePoint2019', 'SolidCP.Providers.HostedSolution.HostedSharePointServer2019, SolidCP.Providers.HostedSolution.SharePoint2019'),
     (1800, NULL, 'Windows Server 2019', 'Windows2012', 1, 'Windows2019', 'SolidCP.Providers.OS.Windows2019, SolidCP.Providers.OS.Windows2019'),
     (1801, TRUE, 'Microsoft Hyper-V 2019', 'HyperV2012R2', 33, 'HyperV2019', 'SolidCP.Providers.Virtualization.HyperV2019, SolidCP.Providers.Virtualization.HyperV2019'),
     (1802, NULL, 'Windows Server 2022', 'Windows2012', 1, 'Windows2022', 'SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022'),
     (1803, TRUE, 'Microsoft Hyper-V 2022', 'HyperV2012R2', 33, 'HyperV2022', 'SolidCP.Providers.Virtualization.HyperV2022, SolidCP.Providers.Virtualization.HyperV2022'),
+    (1804, NULL, 'Windows Server 2025', 'Windows2012', 1, 'Windows2025', 'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025'),
+    (1805, TRUE, 'Microsoft Hyper-V 2025', 'HyperV2012R2', 33, 'HyperV2025', 'SolidCP.Providers.Virtualization.HyperV2025, SolidCP.Providers.Virtualization.HyperV2025'),
     (1901, NULL, 'SimpleDNS Plus 8.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.Providers.DNS.SimpleDNS8, SolidCP.Providers.DNS.SimpleDNS80'),
     (1902, NULL, 'Microsoft DNS Server 2016', 'MSDNS', 7, 'MSDNS.2016', 'SolidCP.Providers.DNS.MsDNS2016, SolidCP.Providers.DNS.MsDNS2016'),
     (1903, NULL, 'SimpleDNS Plus 9.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.Providers.DNS.SimpleDNS9, SolidCP.Providers.DNS.SimpleDNS90'),
     (1910, NULL, 'vsftpd FTP Server 3', 'vsftpd', 3, 'vsftpd', 'SolidCP.Providers.FTP.VsFtp3, SolidCP.Providers.FTP.VsFtp'),
-    (1911, NULL, 'Apache Web Server 2.4 (Experimental)', 'Apache', 2, 'Apache', 'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache');
+    (1911, NULL, 'Apache Web Server 2.4', 'Apache', 2, 'Apache', 'SolidCP.Providers.Web.Apache24, SolidCP.Providers.Web.Apache');
 
     END IF;
 END //
@@ -3020,7 +3017,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
     VALUES (25, 2, NULL, NULL, NULL, 'ASP.NET 1.1', 'Web.AspNet11', 3, 1, FALSE),
@@ -3094,6 +3091,10 @@ BEGIN
     (113, 90, NULL, NULL, NULL, 'Max Database Size', 'MySQL8.MaxDatabaseSize', 3, 3, FALSE),
     (114, 90, NULL, NULL, NULL, 'Database Restores', 'MySQL8.Restore', 5, 1, FALSE),
     (115, 90, NULL, NULL, NULL, 'Database Truncate', 'MySQL8.Truncate', 6, 1, FALSE),
+    (122, 91, NULL, NULL, NULL, 'Database Backups', 'MySQL9.Backup', 4, 1, FALSE),
+    (123, 91, NULL, NULL, NULL, 'Max Database Size', 'MySQL9.MaxDatabaseSize', 3, 3, FALSE),
+    (124, 91, NULL, NULL, NULL, 'Database Restores', 'MySQL9.Restore', 5, 1, FALSE),
+    (125, 91, NULL, NULL, NULL, 'Database Truncate', 'MySQL9.Truncate', 6, 1, FALSE),
     (203, 10, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2005.MaxLogSize', 4, 3, FALSE),
     (204, 5, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2000.MaxLogSize', 4, 3, FALSE),
     (207, 13, NULL, NULL, 1, 'Domains per Organizations', 'HostedSolution.Domains', 3, 3, FALSE),
@@ -3103,13 +3104,13 @@ BEGIN
     (213, 22, NULL, NULL, NULL, 'Max Database Size', 'MsSQL2008.MaxDatabaseSize', 3, 3, FALSE),
     (214, 22, NULL, NULL, NULL, 'Database Backups', 'MsSQL2008.Backup', 5, 1, FALSE),
     (215, 22, NULL, NULL, NULL, 'Database Restores', 'MsSQL2008.Restore', 6, 1, FALSE),
-    (216, 22, NULL, NULL, NULL, 'Database Truncate', 'MsSQL2008.Truncate', 7, 1, FALSE),
-    (217, 22, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2008.MaxLogSize', 4, 3, FALSE),
+    (216, 22, NULL, NULL, NULL, 'Database Truncate', 'MsSQL2008.Truncate', 7, 1, FALSE);
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (217, 22, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2008.MaxLogSize', 4, 3, FALSE),
     (220, 1, TRUE, NULL, NULL, 'Domain Pointers', 'OS.DomainPointers', 5, 2, FALSE),
     (221, 23, NULL, NULL, NULL, 'Max Database Size', 'MsSQL2012.MaxDatabaseSize', 3, 3, FALSE),
-    (222, 23, NULL, NULL, NULL, 'Database Backups', 'MsSQL2012.Backup', 5, 1, FALSE);
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (223, 23, NULL, NULL, NULL, 'Database Restores', 'MsSQL2012.Restore', 6, 1, FALSE),
+    (222, 23, NULL, NULL, NULL, 'Database Backups', 'MsSQL2012.Backup', 5, 1, FALSE),
+    (223, 23, NULL, NULL, NULL, 'Database Restores', 'MsSQL2012.Restore', 6, 1, FALSE),
     (224, 23, NULL, NULL, NULL, 'Database Truncate', 'MsSQL2012.Truncate', 7, 1, FALSE),
     (225, 23, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2012.MaxLogSize', 4, 3, FALSE),
     (230, 13, NULL, NULL, NULL, 'Allow to Change UserPrincipalName', 'HostedSolution.AllowChangeUPN', 4, 1, FALSE),
@@ -3146,13 +3147,13 @@ BEGIN
     (331, 2, NULL, NULL, NULL, 'ASP.NET 4.0', 'Web.AspNet40', 4, 1, FALSE),
     (332, 2, NULL, NULL, NULL, 'SSL', 'Web.SSL', 21, 1, FALSE),
     (333, 2, NULL, NULL, NULL, 'Allow IP Address Mode Switch', 'Web.AllowIPAddressModeSwitch', 22, 1, FALSE),
-    (334, 2, NULL, NULL, NULL, 'Enable Hostname Support', 'Web.EnableHostNameSupport', 23, 1, FALSE),
-    (344, 2, NULL, NULL, NULL, 'htaccess', 'Web.Htaccess', 9, 1, FALSE),
+    (334, 2, NULL, NULL, NULL, 'Enable Hostname Support', 'Web.EnableHostNameSupport', 23, 1, FALSE);
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (344, 2, NULL, NULL, NULL, 'htaccess', 'Web.Htaccess', 9, 1, FALSE),
     (346, 40, NULL, NULL, NULL, 'Allow user to create VPS', 'VPSForPC.ManagingAllowed', 2, 1, FALSE),
     (347, 40, NULL, NULL, NULL, 'Number of CPU cores', 'VPSForPC.CpuNumber', 3, 2, FALSE),
-    (348, 40, NULL, NULL, NULL, 'Boot from CD allowed', 'VPSForPC.BootCdAllowed', 7, 1, FALSE);
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (349, 40, NULL, NULL, NULL, 'Boot from CD', 'VPSForPC.BootCdEnabled', 7, 1, FALSE),
+    (348, 40, NULL, NULL, NULL, 'Boot from CD allowed', 'VPSForPC.BootCdAllowed', 7, 1, FALSE),
+    (349, 40, NULL, NULL, NULL, 'Boot from CD', 'VPSForPC.BootCdEnabled', 7, 1, FALSE),
     (350, 40, NULL, NULL, NULL, 'RAM size, MB', 'VPSForPC.Ram', 4, 2, FALSE),
     (351, 40, NULL, NULL, NULL, 'Hard Drive size, GB', 'VPSForPC.Hdd', 5, 2, FALSE),
     (352, 40, NULL, NULL, NULL, 'DVD drive', 'VPSForPC.DvdEnabled', 6, 1, FALSE),
@@ -3184,18 +3185,19 @@ BEGIN
     (378, 41, NULL, NULL, NULL, 'Allow Mobile Calls', 'Lync.EVMobile', 9, 1, FALSE),
     (379, 41, NULL, NULL, NULL, 'Allow International Calls', 'Lync.EVInternational', 10, 1, FALSE),
     (380, 41, NULL, NULL, NULL, 'Enable Plans Editing', 'Lync.EnablePlansEditing', 11, 1, FALSE),
+    (381, 41, NULL, NULL, NULL, 'Phone Numbers', 'Lync.PhoneNumbers', 12, 2, FALSE),
     (400, 20, NULL, NULL, NULL, 'Use shared SSL Root', 'HostedSharePoint.UseSharedSSL', 3, 1, FALSE),
     (409, 1, NULL, NULL, NULL, 'Not allow Tenants to Delete Top Level Domains', 'OS.NotAllowTenantDeleteDomains', 13, 1, FALSE),
     (410, 1, NULL, NULL, NULL, 'Not allow Tenants to Create Top Level Domains', 'OS.NotAllowTenantCreateDomains', 12, 1, FALSE),
     (411, 2, NULL, NULL, NULL, 'Application Pools Restart', 'Web.AppPoolsRestart', 13, 1, FALSE),
-    (420, 12, NULL, NULL, NULL, 'Allow Litigation Hold', 'Exchange2007.AllowLitigationHold', 24, 1, FALSE),
-    (421, 12, NULL, NULL, 1, 'Recoverable Items Space', 'Exchange2007.RecoverableItemsSpace', 25, 2, FALSE),
+    (420, 12, NULL, NULL, NULL, 'Allow Litigation Hold', 'Exchange2007.AllowLitigationHold', 24, 1, FALSE);
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (421, 12, NULL, NULL, 1, 'Recoverable Items Space', 'Exchange2007.RecoverableItemsSpace', 25, 2, FALSE),
     (422, 12, NULL, NULL, NULL, 'Disclaimers Allowed', 'Exchange2007.DisclaimersAllowed', 26, 1, FALSE),
     (423, 13, NULL, NULL, 1, 'Security Groups', 'HostedSolution.SecurityGroups', 5, 2, FALSE),
     (424, 12, NULL, NULL, NULL, 'Allow Retention Policy', 'Exchange2013.AllowRetentionPolicy', 27, 1, FALSE),
-    (425, 12, NULL, NULL, 1, 'Archiving storage, MB', 'Exchange2013.ArchivingStorage', 29, 2, FALSE);
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (426, 12, NULL, NULL, 1, 'Archiving Mailboxes per Organization', 'Exchange2013.ArchivingMailboxes', 28, 2, FALSE),
+    (425, 12, NULL, NULL, 1, 'Archiving storage, MB', 'Exchange2013.ArchivingStorage', 29, 2, FALSE),
+    (426, 12, NULL, NULL, 1, 'Archiving Mailboxes per Organization', 'Exchange2013.ArchivingMailboxes', 28, 2, FALSE),
     (428, 12, NULL, NULL, 1, 'Resource Mailboxes per Organization', 'Exchange2013.ResourceMailboxes', 31, 2, FALSE),
     (429, 12, NULL, NULL, 1, 'Shared Mailboxes per Organization', 'Exchange2013.SharedMailboxes', 30, 2, FALSE),
     (430, 44, NULL, NULL, 1, 'Disk Storage Space (Mb)', 'EnterpriseStorage.DiskStorageSpace', 1, 2, FALSE),
@@ -3231,14 +3233,14 @@ BEGIN
     (557, 33, NULL, NULL, NULL, 'Boot from CD', 'VPS2012.BootCdEnabled', 8, 1, FALSE),
     (558, 33, NULL, NULL, NULL, 'RAM size, MB', 'VPS2012.Ram', 4, 2, FALSE),
     (559, 33, NULL, NULL, NULL, 'Hard Drive size, GB', 'VPS2012.Hdd', 5, 2, FALSE),
-    (560, 33, NULL, NULL, NULL, 'DVD drive', 'VPS2012.DvdEnabled', 6, 1, FALSE),
-    (561, 33, NULL, NULL, NULL, 'External Network', 'VPS2012.ExternalNetworkEnabled', 10, 1, FALSE),
+    (560, 33, NULL, NULL, NULL, 'DVD drive', 'VPS2012.DvdEnabled', 6, 1, FALSE);
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (561, 33, NULL, NULL, NULL, 'External Network', 'VPS2012.ExternalNetworkEnabled', 10, 1, FALSE),
     (562, 33, NULL, NULL, NULL, 'Number of External IP addresses', 'VPS2012.ExternalIPAddressesNumber', 11, 2, FALSE),
     (563, 33, NULL, NULL, NULL, 'Private Network', 'VPS2012.PrivateNetworkEnabled', 13, 1, FALSE),
     (564, 33, NULL, NULL, NULL, 'Number of Private IP addresses per VPS', 'VPS2012.PrivateIPAddressesNumber', 14, 3, FALSE),
-    (565, 33, NULL, NULL, NULL, 'Number of Snaphots', 'VPS2012.SnapshotsNumber', 9, 3, FALSE);
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (566, 33, NULL, NULL, NULL, 'Allow user to Start, Turn off and Shutdown VPS', 'VPS2012.StartShutdownAllowed', 15, 1, FALSE),
+    (565, 33, NULL, NULL, NULL, 'Number of Snaphots', 'VPS2012.SnapshotsNumber', 9, 3, FALSE),
+    (566, 33, NULL, NULL, NULL, 'Allow user to Start, Turn off and Shutdown VPS', 'VPS2012.StartShutdownAllowed', 15, 1, FALSE),
     (567, 33, NULL, NULL, NULL, 'Allow user to Pause, Resume VPS', 'VPS2012.PauseResumeAllowed', 16, 1, FALSE),
     (568, 33, NULL, NULL, NULL, 'Allow user to Reboot VPS', 'VPS2012.RebootAllowed', 17, 1, FALSE),
     (569, 33, NULL, NULL, NULL, 'Allow user to Reset VPS', 'VPS2012.ResetAlowed', 18, 1, FALSE),
@@ -3274,14 +3276,14 @@ BEGIN
     (683, 167, NULL, NULL, NULL, 'Private Network', 'PROXMOX.PrivateNetworkEnabled', 13, 1, FALSE),
     (684, 167, NULL, NULL, NULL, 'Number of Private IP addresses per VPS', 'PROXMOX.PrivateIPAddressesNumber', 14, 3, FALSE),
     (685, 167, NULL, NULL, NULL, 'Number of Snaphots', 'PROXMOX.SnapshotsNumber', 9, 3, FALSE),
-    (686, 167, NULL, NULL, NULL, 'Allow user to Start, Turn off and Shutdown VPS', 'PROXMOX.StartShutdownAllowed', 15, 1, FALSE),
-    (687, 167, NULL, NULL, NULL, 'Allow user to Pause, Resume VPS', 'PROXMOX.PauseResumeAllowed', 16, 1, FALSE),
+    (686, 167, NULL, NULL, NULL, 'Allow user to Start, Turn off and Shutdown VPS', 'PROXMOX.StartShutdownAllowed', 15, 1, FALSE);
+    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
+    VALUES (687, 167, NULL, NULL, NULL, 'Allow user to Pause, Resume VPS', 'PROXMOX.PauseResumeAllowed', 16, 1, FALSE),
     (688, 167, NULL, NULL, NULL, 'Allow user to Reboot VPS', 'PROXMOX.RebootAllowed', 17, 1, FALSE),
     (689, 167, NULL, NULL, NULL, 'Allow user to Reset VPS', 'PROXMOX.ResetAlowed', 18, 1, FALSE),
     (690, 167, NULL, NULL, NULL, 'Allow user to Re-install VPS', 'PROXMOX.ReinstallAllowed', 19, 1, FALSE),
-    (691, 167, NULL, NULL, NULL, 'Monthly bandwidth, GB', 'PROXMOX.Bandwidth', 12, 2, FALSE);
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (692, 167, NULL, NULL, NULL, 'Allow user to Replication', 'PROXMOX.ReplicationEnabled', 20, 1, FALSE),
+    (691, 167, NULL, NULL, NULL, 'Monthly bandwidth, GB', 'PROXMOX.Bandwidth', 12, 2, FALSE),
+    (692, 167, NULL, NULL, NULL, 'Allow user to Replication', 'PROXMOX.ReplicationEnabled', 20, 1, FALSE),
     (703, 71, NULL, NULL, NULL, 'Max Database Size', 'MsSQL2016.MaxDatabaseSize', 3, 3, FALSE),
     (704, 71, NULL, NULL, NULL, 'Database Backups', 'MsSQL2016.Backup', 5, 1, FALSE),
     (705, 71, NULL, NULL, NULL, 'Database Restores', 'MsSQL2016.Restore', 6, 1, FALSE),
@@ -3305,7 +3307,15 @@ BEGIN
     (735, 75, NULL, NULL, NULL, 'Database Backups', 'MsSQL2022.Backup', 5, 1, FALSE),
     (736, 75, NULL, NULL, NULL, 'Database Restores', 'MsSQL2022.Restore', 6, 1, FALSE),
     (737, 75, NULL, NULL, NULL, 'Database Truncate', 'MsSQL2022.Truncate', 7, 1, FALSE),
-    (738, 75, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2022.MaxLogSize', 4, 3, FALSE);
+    (738, 75, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2022.MaxLogSize', 4, 3, FALSE),
+    (751, 33, NULL, NULL, NULL, 'Number of DMZ IP addresses per VPS', 'VPS2012.DMZIPAddressesNumber', 23, 3, FALSE),
+    (752, 33, NULL, NULL, NULL, 'Number of DMZ Network VLANs', 'VPS2012.DMZVLANsNumber', 24, 2, FALSE),
+    (753, 7, NULL, NULL, NULL, 'Allow editing TTL in DNS Editor', 'DNS.EditTTL', 2, 1, FALSE),
+    (762, 76, NULL, NULL, NULL, 'Max Database Size', 'MsSQL2025.MaxDatabaseSize', 3, 3, FALSE),
+    (763, 76, NULL, NULL, NULL, 'Database Backups', 'MsSQL2025.Backup', 5, 1, FALSE),
+    (764, 76, NULL, NULL, NULL, 'Database Restores', 'MsSQL2025.Restore', 6, 1, FALSE),
+    (765, 76, NULL, NULL, NULL, 'Database Truncate', 'MsSQL2025.Truncate', 7, 1, FALSE),
+    (766, 76, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2025.MaxLogSize', 4, 3, FALSE);
 
     END IF;
 END //
@@ -3317,7 +3327,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ResourceGroupDnsRecords` (`RecordID`, `GroupID`, `MXPriority`, `RecordData`, `RecordName`, `RecordOrder`, `RecordType`)
     VALUES (1, 2, 0, '[IP]', '', 1, 'A'),
@@ -3347,7 +3357,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ScheduleTaskParameters` (`ParameterID`, `TaskID`, `DataTypeID`, `DefaultValue`, `ParameterOrder`)
     VALUES ('AUDIT_LOG_DATE', 'SCHEDULE_TASK_AUDIT_LOG_REPORT', 'List', 'today=Today;yesterday=Yesterday;schedule=Schedule', 5),
@@ -3452,7 +3462,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ScheduleTaskViewConfiguration` (`ConfigurationID`, `TaskID`, `Description`, `Environment`)
     VALUES ('ASP_NET', 'SCHEDULE_TASK_ACTIVATE_PAID_INVOICES', '~/DesktopModules/SolidCP/ScheduleTaskControls/EmptyView.ascx', 'ASP.NET'),
@@ -3488,7 +3498,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (2, TRUE, FALSE, TRUE, 'HomeFolder', TRUE, 1, FALSE, FALSE, 'SolidCP.Providers.OS.HomeFolder, SolidCP.Providers.Base', 15);
@@ -3503,7 +3513,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (5, TRUE, FALSE, TRUE, 'MsSQL2000Database', TRUE, 5, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 9),
@@ -3524,7 +3534,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`)
     VALUES (12, TRUE, FALSE, FALSE, 'DNSZone', TRUE, 7, TRUE, FALSE, TRUE, 'SolidCP.Providers.DNS.DnsZone, SolidCP.Providers.Base');
@@ -3539,7 +3549,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (13, FALSE, FALSE, 'Domain', FALSE, 1, TRUE, FALSE, 'SolidCP.Providers.OS.Domain, SolidCP.Providers.Base', 1);
@@ -3554,7 +3564,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (14, TRUE, FALSE, FALSE, 'StatisticsSite', TRUE, 8, TRUE, TRUE, FALSE, 'SolidCP.Providers.Statistics.StatsSite, SolidCP.Providers.Base', 17);
@@ -3569,7 +3579,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (15, FALSE, TRUE, 'MailAccount', FALSE, 4, TRUE, FALSE, 'SolidCP.Providers.Mail.MailAccount, SolidCP.Providers.Base', 4),
@@ -3587,7 +3597,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (20, TRUE, FALSE, FALSE, 'ODBCDSN', TRUE, 1, TRUE, TRUE, FALSE, 'SolidCP.Providers.OS.SystemDSN, SolidCP.Providers.Base', 22),
@@ -3606,7 +3616,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (25, TRUE, FALSE, FALSE, 'SharedSSLFolder', TRUE, 2, TRUE, FALSE, 'SolidCP.Providers.Web.SharedSSLFolder, SolidCP.Providers.Base', 21);
@@ -3621,7 +3631,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`)
     VALUES (28, TRUE, FALSE, FALSE, 'SecondaryDNSZone', TRUE, 7, FALSE, TRUE, 'SolidCP.Providers.DNS.SecondaryDnsZone, SolidCP.Providers.Base');
@@ -3636,7 +3646,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (29, TRUE, FALSE, TRUE, 'Organization', TRUE, 13, TRUE, TRUE, 'SolidCP.Providers.HostedSolution.Organization, SolidCP.Providers.Base', 1),
@@ -3652,7 +3662,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (31, TRUE, FALSE, TRUE, 'MsSQL2008Database', TRUE, 22, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
@@ -3668,7 +3678,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (33, FALSE, FALSE, 'VirtualMachine', TRUE, 30, TRUE, TRUE, 'SolidCP.Providers.Virtualization.VirtualMachine, SolidCP.Providers.Base', 1),
@@ -3686,7 +3696,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (37, TRUE, FALSE, TRUE, 'MsSQL2012Database', TRUE, 23, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
@@ -3704,7 +3714,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (41, FALSE, FALSE, 'VirtualMachine', TRUE, 33, TRUE, TRUE, 'SolidCP.Providers.Virtualization.VirtualMachine, SolidCP.Providers.Base', 1),
@@ -3720,7 +3730,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (71, TRUE, FALSE, TRUE, 'MsSQL2016Database', TRUE, 71, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
@@ -3732,7 +3742,9 @@ BEGIN
     (77, TRUE, FALSE, TRUE, 'MsSQL2019Database', TRUE, 74, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
     (78, TRUE, FALSE, FALSE, 'MsSQL2019User', TRUE, 74, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1),
     (79, TRUE, FALSE, TRUE, 'MsSQL2022Database', TRUE, 75, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
-    (80, TRUE, FALSE, FALSE, 'MsSQL2022User', TRUE, 75, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1);
+    (80, TRUE, FALSE, FALSE, 'MsSQL2022User', TRUE, 75, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1),
+    (90, TRUE, FALSE, TRUE, 'MySQL9Database', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20),
+    (91, TRUE, FALSE, FALSE, 'MySQL9User', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21);
 
     END IF;
 END //
@@ -3744,7 +3756,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (143, FALSE, FALSE, 'VirtualMachine', TRUE, 167, TRUE, TRUE, 'SolidCP.Providers.Virtualization.VirtualMachine, SolidCP.Providers.Base', 1),
@@ -3760,13 +3772,15 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
     VALUES (200, TRUE, FALSE, TRUE, 'SharePointFoundationSiteCollection', TRUE, 20, TRUE, TRUE, FALSE, 'SolidCP.Providers.SharePoint.SharePointSiteCollection, SolidCP.Providers.Base', 25),
     (202, TRUE, FALSE, TRUE, 'MariaDBDatabase', TRUE, 50, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
     (203, TRUE, FALSE, FALSE, 'MariaDBUser', TRUE, 50, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1),
-    (204, TRUE, FALSE, TRUE, 'SharePointEnterpriseSiteCollection', TRUE, 73, TRUE, TRUE, FALSE, 'SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base', 100);
+    (204, TRUE, FALSE, TRUE, 'SharePointEnterpriseSiteCollection', TRUE, 73, TRUE, TRUE, FALSE, 'SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base', 100),
+    (205, TRUE, FALSE, TRUE, 'MsSQL2025Database', TRUE, 76, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1),
+    (206, TRUE, FALSE, FALSE, 'MsSQL2025User', TRUE, 76, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1);
 
     END IF;
 END //
@@ -3778,7 +3792,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `UserSettings` (`PropertyName`, `SettingsName`, `UserID`, `PropertyValue`)
     VALUES ('CC', 'AccountSummaryLetter', 1, 'support@HostingCompany.com'),
@@ -3930,7 +3944,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `PackagesTreeCache` (`PackageID`, `ParentPackageID`)
     VALUES (1, 1);
@@ -3945,7 +3959,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
     VALUES (2, 6, NULL, 7, NULL, 'Databases', 'MySQL4.Databases', 1, 2, TRUE),
@@ -3967,6 +3981,8 @@ BEGIN
     (69, 11, NULL, 24, NULL, 'Users', 'MySQL5.Users', 2, 2, FALSE),
     (110, 90, NULL, 75, NULL, 'Databases', 'MySQL8.Databases', 1, 2, FALSE),
     (111, 90, NULL, 76, NULL, 'Users', 'MySQL8.Users', 2, 2, FALSE),
+    (120, 91, NULL, 75, NULL, 'Databases', 'MySQL9.Databases', 1, 2, FALSE),
+    (121, 91, NULL, 76, NULL, 'Users', 'MySQL9.Users', 2, 2, FALSE),
     (200, 20, NULL, 200, 1, 'SharePoint Site Collections', 'HostedSharePoint.Sites', 1, 2, FALSE),
     (205, 13, NULL, 29, NULL, 'Organizations', 'HostedSolution.Organizations', 1, 2, FALSE),
     (206, 13, NULL, 30, 1, 'Users', 'HostedSolution.Users', 2, 2, FALSE),
@@ -3983,15 +3999,17 @@ BEGIN
     (573, 50, NULL, 202, NULL, 'Databases', 'MariaDB.Databases', 1, 2, FALSE),
     (574, 50, NULL, 203, NULL, 'Users', 'MariaDB.Users', 2, 2, FALSE),
     (673, 167, NULL, 41, NULL, 'Number of VPS', 'PROXMOX.ServersNumber', 1, 2, FALSE),
-    (701, 71, NULL, 39, NULL, 'Databases', 'MsSQL2016.Databases', 1, 2, FALSE),
-    (702, 71, NULL, 40, NULL, 'Users', 'MsSQL2016.Users', 2, 2, FALSE),
+    (701, 71, NULL, 71, NULL, 'Databases', 'MsSQL2016.Databases', 1, 2, FALSE),
+    (702, 71, NULL, 72, NULL, 'Users', 'MsSQL2016.Users', 2, 2, FALSE),
     (711, 72, NULL, 73, NULL, 'Databases', 'MsSQL2017.Databases', 1, 2, FALSE),
     (712, 72, NULL, 74, NULL, 'Users', 'MsSQL2017.Users', 2, 2, FALSE),
-    (721, 74, NULL, 77, NULL, 'Databases', 'MsSQL2019.Databases', 1, 2, FALSE),
-    (722, 74, NULL, 78, NULL, 'Users', 'MsSQL2019.Users', 2, 2, FALSE),
-    (732, 75, NULL, 79, NULL, 'Databases', 'MsSQL2022.Databases', 1, 2, FALSE);
+    (721, 74, NULL, 77, NULL, 'Databases', 'MsSQL2019.Databases', 1, 2, FALSE);
     INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (733, 75, NULL, 80, NULL, 'Users', 'MsSQL2022.Users', 2, 2, FALSE);
+    VALUES (722, 74, NULL, 78, NULL, 'Users', 'MsSQL2019.Users', 2, 2, FALSE),
+    (732, 75, NULL, 79, NULL, 'Databases', 'MsSQL2022.Databases', 1, 2, FALSE),
+    (733, 75, NULL, 80, NULL, 'Users', 'MsSQL2022.Users', 2, 2, FALSE),
+    (760, 76, NULL, 79, NULL, 'Databases', 'MsSQL2025.Databases', 1, 2, FALSE),
+    (761, 76, NULL, 80, NULL, 'Users', 'MsSQL2025.Users', 2, 2, FALSE);
 
     END IF;
 END //
@@ -4003,7 +4021,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `Schedule` (`ScheduleID`, `Enabled`, `FromTime`, `HistoriesNumber`, `Interval`, `LastRun`, `MaxExecutionTime`, `NextRun`, `PackageID`, `PriorityID`, `ScheduleName`, `ScheduleTypeID`, `StartTime`, `TaskID`, `ToTime`, `WeekMonthDay`)
     VALUES (1, TRUE, TIMESTAMP '2000-01-01 12:00:00', 7, 0, NULL, 3600, TIMESTAMP '2010-07-16 14:53:02', 1, 'Normal', 'Calculate Disk Space', 'Daily', TIMESTAMP '2000-01-01 12:30:00', 'SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE', TIMESTAMP '2000-01-01 12:00:00', 1),
@@ -4019,7 +4037,7 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
     VALUES ('UsersHome', 1, '%SYSTEMDRIVE%\\HostingSpaces'),
@@ -4061,11 +4079,13 @@ BEGIN
     ('ExpireLimit', 7, '1209600'),
     ('MinimumTTL', 7, '86400'),
     ('NameServers', 7, 'ns1.yourdomain.com;ns2.yourdomain.com'),
-    ('RefreshInterval', 7, '3600'),
-    ('ResponsiblePerson', 7, 'hostmaster.[DOMAIN_NAME]'),
-    ('RetryDelay', 7, '600');
+    ('RecordDefaultTTL', 7, '86400'),
+    ('RecordMinimumTTL', 7, '3600'),
+    ('RefreshInterval', 7, '3600');
     INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('AwStatsFolder', 8, '%SYSTEMDRIVE%\\AWStats\\wwwroot\\cgi-bin'),
+    VALUES ('ResponsiblePerson', 7, 'hostmaster.[DOMAIN_NAME]'),
+    ('RetryDelay', 7, '600'),
+    ('AwStatsFolder', 8, '%SYSTEMDRIVE%\\AWStats\\wwwroot\\cgi-bin'),
     ('BatchFileName', 8, 'UpdateStats.bat'),
     ('BatchLineTemplate', 8, '%SYSTEMDRIVE%\\perl\\bin\\perl.exe awstats.pl config=[DOMAIN_NAME] -update'),
     ('ConfigFileName', 8, 'awstats.[DOMAIN_NAME].conf'),
@@ -4075,6 +4095,8 @@ BEGIN
     ('ExpireLimit', 9, '1209600'),
     ('MinimumTTL', 9, '86400'),
     ('NameServers', 9, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 9, '86400'),
+    ('RecordMinimumTTL', 9, '3600'),
     ('RefreshInterval', 9, '3600'),
     ('ResponsiblePerson', 9, 'hostmaster.[DOMAIN_NAME]'),
     ('RetryDelay', 9, '600'),
@@ -4092,6 +4114,7 @@ BEGIN
     ('Username', 10, 'Admin'),
     ('AdminPassword', 11, ''),
     ('AdminUsername', 11, 'admin'),
+    ('defaultdomainhostname', 11, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 11, '%SYSTEMDRIVE%\\SmarterMail'),
     ('ServerIPAddress', 11, '127.0.0.1;127.0.0.1'),
     ('ServiceUrl', 11, 'http://127.0.0.1:9998/services'),
@@ -4099,16 +4122,17 @@ BEGIN
     ('LogsFolder', 12, '%PROGRAMFILES%\\Gene6 FTP Server\\Log'),
     ('AdminPassword', 14, ''),
     ('AdminUsername', 14, 'admin'),
+    ('defaultdomainhostname', 14, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 14, '%SYSTEMDRIVE%\\SmarterMail'),
-    ('ServerIPAddress', 14, '127.0.0.1;127.0.0.1'),
-    ('ServiceUrl', 14, 'http://127.0.0.1:9998/services'),
+    ('ServerIPAddress', 14, '127.0.0.1;127.0.0.1');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('ServiceUrl', 14, 'http://127.0.0.1:9998/services'),
     ('BrowseMethod', 16, 'POST'),
     ('BrowseParameters', 16, CONCAT('ServerName=[SERVER]', CHAR(13, 10), 'Login=[USER]', CHAR(13, 10), 'Password=[PASSWORD]', CHAR(13, 10), 'Protocol=dbmssocn')),
     ('BrowseURL', 16, 'http://localhost/MLA/silentlogon.aspx'),
     ('DatabaseLocation', 16, '%SYSTEMDRIVE%\\SQL2005Databases\\[USER_NAME]'),
-    ('ExternalAddress', 16, '(local)');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('InternalAddress', 16, '(local)'),
+    ('ExternalAddress', 16, '(local)'),
+    ('InternalAddress', 16, '(local)'),
     ('SaLogin', 16, 'sa'),
     ('SaPassword', 16, ''),
     ('UseDefaultDatabaseLocation', 16, 'True'),
@@ -4125,6 +4149,8 @@ BEGIN
     ('ExpireLimit', 24, '1209600'),
     ('MinimumTTL', 24, '86400'),
     ('NameServers', 24, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 24, '86400'),
+    ('RecordMinimumTTL', 24, '3600'),
     ('RefreshInterval', 24, '3600'),
     ('ResponsiblePerson', 24, 'hostmaster.[DOMAIN_NAME]'),
     ('RetryDelay', 24, '600'),
@@ -4141,17 +4167,20 @@ BEGIN
     ('ExpireLimit', 28, '1209600'),
     ('MinimumTTL', 28, '86400'),
     ('NameServers', 28, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 28, '86400');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('RecordMinimumTTL', 28, '3600'),
     ('RefreshInterval', 28, '3600'),
     ('ResponsiblePerson', 28, 'hostmaster.[DOMAIN_NAME]'),
     ('RetryDelay', 28, '600'),
     ('SimpleDnsUrl', 28, 'http://127.0.0.1:8053'),
     ('AdminPassword', 29, ' '),
     ('AdminUsername', 29, 'admin'),
+    ('defaultdomainhostname', 29, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 29, '%SYSTEMDRIVE%\\SmarterMail'),
     ('ServerIPAddress', 29, '127.0.0.1;127.0.0.1'),
-    ('ServiceUrl', 29, 'http://localhost:9998/services/');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('ExternalAddress', 30, 'localhost'),
+    ('ServiceUrl', 29, 'http://localhost:9998/services/'),
+    ('ExternalAddress', 30, 'localhost'),
     ('InstallFolder', 30, '%PROGRAMFILES%\\MySQL\\MySQL Server 5.1'),
     ('InternalAddress', 30, 'localhost,3306'),
     ('RootLogin', 30, 'root'),
@@ -4172,6 +4201,8 @@ BEGIN
     ('MailboxDatabase', 32, 'Hosted Exchange Database'),
     ('RootOU', 32, 'SCP Hosting'),
     ('TempDomain', 32, 'my-temp-domain.com'),
+    ('RecordDefaultTTL', 55, '86400'),
+    ('RecordMinimumTTL', 55, '3600'),
     ('ExpireLimit', 56, '1209600'),
     ('MinimumTTL', 56, '86400'),
     ('NameServers', 56, 'ns1.yourdomain.com;ns2.yourdomain.com'),
@@ -4179,11 +4210,15 @@ BEGIN
     ('PDNSDbPort', 56, '3306'),
     ('PDNSDbServer', 56, 'localhost'),
     ('PDNSDbUser', 56, 'root'),
+    ('RecordDefaultTTL', 56, '86400');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('RecordMinimumTTL', 56, '3600'),
     ('RefreshInterval', 56, '3600'),
     ('ResponsiblePerson', 56, 'hostmaster.[DOMAIN_NAME]'),
     ('RetryDelay', 56, '600'),
     ('AdminPassword', 60, ' '),
     ('AdminUsername', 60, 'admin'),
+    ('defaultdomainhostname', 60, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 60, '%SYSTEMDRIVE%\\SmarterMail'),
     ('ServerIPAddress', 60, '127.0.0.1;127.0.0.1'),
     ('ServiceUrl', 60, 'http://localhost:9998/services/'),
@@ -4192,9 +4227,8 @@ BEGIN
     ('LogWildcard', 62, '*.log'),
     ('Password', 62, ''),
     ('ServerID', 62, '1'),
-    ('SmarterLogDeleteMonths', 62, '0');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('SmarterLogsPath', 62, '%SYSTEMDRIVE%\\SmarterLogs'),
+    ('SmarterLogDeleteMonths', 62, '0'),
+    ('SmarterLogsPath', 62, '%SYSTEMDRIVE%\\SmarterLogs'),
     ('SmarterUrl', 62, 'http://127.0.0.1:9999/services'),
     ('StatisticsURL', 62, 'http://127.0.0.1:9999/Login.aspx?txtSiteID=[site_id]&txtUser=[username]&txtPass=[password]&shortcutLink=autologin'),
     ('TimeZoneId', 62, '27'),
@@ -4203,21 +4237,26 @@ BEGIN
     ('AdminUsername', 63, 'Administrator'),
     ('AdminPassword', 64, ''),
     ('AdminUsername', 64, 'admin'),
+    ('defaultdomainhostname', 64, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 64, '%SYSTEMDRIVE%\\SmarterMail'),
     ('ServerIPAddress', 64, '127.0.0.1;127.0.0.1'),
     ('ServiceUrl', 64, 'http://localhost:9998/services/'),
     ('AdminPassword', 65, ''),
     ('AdminUsername', 65, 'admin'),
+    ('defaultdomainhostname', 65, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 65, '%SYSTEMDRIVE%\\SmarterMail'),
     ('ServerIPAddress', 65, '127.0.0.1;127.0.0.1'),
     ('ServiceUrl', 65, 'http://localhost:9998/services/'),
     ('AdminPassword', 66, ''),
     ('AdminUsername', 66, 'admin'),
+    ('defaultdomainhostname', 66, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 66, '%SYSTEMDRIVE%\\SmarterMail'),
     ('ServerIPAddress', 66, '127.0.0.1;127.0.0.1'),
     ('ServiceUrl', 66, 'http://localhost:9998/services/'),
-    ('AdminPassword', 67, ''),
-    ('AdminUsername', 67, 'admin'),
+    ('AdminPassword', 67, '');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('AdminUsername', 67, 'admin'),
+    ('defaultdomainhostname', 67, 'mail.[DOMAIN_NAME]'),
     ('DomainsPath', 67, '%SYSTEMDRIVE%\\SmarterMail\\Domains'),
     ('ServerIPAddress', 67, '127.0.0.1;127.0.0.1'),
     ('ServiceUrl', 67, 'http://localhost:9998'),
@@ -4235,9 +4274,8 @@ BEGIN
     ('IntegratedAspNet20Pool', 101, 'ASP.NET 2.0 (Integrated)'),
     ('IntegratedAspNet40Pool', 101, 'ASP.NET 4.0 (Integrated)'),
     ('PerlPath', 101, '%SYSTEMDRIVE%\\Perl\\bin\\PerlEx30.dll'),
-    ('Php4Path', 101, '%PROGRAMFILES(x86)%\\PHP\\php.exe');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('PhpMode', 101, 'FastCGI'),
+    ('Php4Path', 101, '%PROGRAMFILES(x86)%\\PHP\\php.exe'),
+    ('PhpMode', 101, 'FastCGI'),
     ('PhpPath', 101, '%PROGRAMFILES(x86)%\\PHP\\php-cgi.exe'),
     ('ProtectedGroupsFile', 101, '.htgroup'),
     ('ProtectedUsersFile', 101, '.htpasswd'),
@@ -4258,8 +4296,9 @@ BEGIN
     ('ClassicAspNet40Pool', 105, 'ASP.NET 4.0 (Classic)'),
     ('ColdFusionPath', 105, 'C:\\ColdFusion9\\runtime\\lib\\wsconfig\\jrun_iis6.dll'),
     ('GalleryXmlFeedUrl', 105, ''),
-    ('IntegratedAspNet20Pool', 105, 'ASP.NET 2.0 (Integrated)'),
-    ('IntegratedAspNet40Pool', 105, 'ASP.NET 4.0 (Integrated)'),
+    ('IntegratedAspNet20Pool', 105, 'ASP.NET 2.0 (Integrated)');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('IntegratedAspNet40Pool', 105, 'ASP.NET 4.0 (Integrated)'),
     ('PerlPath', 105, '%SYSTEMDRIVE%\\Perl\\bin\\PerlEx30.dll'),
     ('Php4Path', 105, '%PROGRAMFILES(x86)%\\PHP\\php.exe'),
     ('PhpMode', 105, 'FastCGI'),
@@ -4278,9 +4317,8 @@ BEGIN
     ('AspNet11Pool', 112, 'ASP.NET 1.1'),
     ('AspNet40Path', 112, '%WINDIR%\\Microsoft.NET\\Framework\\v4.0.30319\\aspnet_isapi.dll'),
     ('AspNet40x64Path', 112, '%WINDIR%\\Microsoft.NET\\Framework64\\v4.0.30319\\aspnet_isapi.dll'),
-    ('AspNetBitnessMode', 112, '32');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('CFFlashRemotingDirectory', 112, 'C:\\ColdFusion9\\runtime\\lib\\wsconfig\\1'),
+    ('AspNetBitnessMode', 112, '32'),
+    ('CFFlashRemotingDirectory', 112, 'C:\\ColdFusion9\\runtime\\lib\\wsconfig\\1'),
     ('CFScriptsDirectory', 112, 'C:\\Inetpub\\wwwroot\\CFIDE'),
     ('ClassicAspNet20Pool', 112, 'ASP.NET 2.0 (Classic)'),
     ('ClassicAspNet40Pool', 112, 'ASP.NET 4.0 (Classic)'),
@@ -4301,8 +4339,9 @@ BEGIN
     ('WmSvc.Port', 112, '8172'),
     ('FtpGroupName', 113, 'SCPFtpUsers'),
     ('SiteId', 113, 'Default FTP Site'),
-    ('sslusesni', 113, 'False'),
-    ('RootWebApplicationIpAddress', 200, ''),
+    ('sslusesni', 113, 'False');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('RootWebApplicationIpAddress', 200, ''),
     ('UserName', 204, 'admin'),
     ('UtilityPath', 204, 'C:\\Program Files\\Research In Motion\\BlackBerry Enterprise Server Resource Kit\\BlackBerry Enterprise Server User Administration Tool'),
     ('CpuLimit', 300, '100'),
@@ -4321,9 +4360,8 @@ BEGIN
     ('ExternalAddress', 301, 'localhost'),
     ('InstallFolder', 301, '%PROGRAMFILES%\\MySQL\\MySQL Server 5.5'),
     ('InternalAddress', 301, 'localhost,3306'),
-    ('RootLogin', 301, 'root');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('RootPassword', 301, ''),
+    ('RootLogin', 301, 'root'),
+    ('RootPassword', 301, ''),
     ('ExternalAddress', 304, 'localhost'),
     ('InstallFolder', 304, '%PROGRAMFILES%\\MySQL\\MySQL Server 8.0'),
     ('InternalAddress', 304, 'localhost,3306'),
@@ -4342,2315 +4380,11 @@ BEGIN
     ('RootLogin', 306, 'root'),
     ('RootPassword', 306, ''),
     ('sslmode', 306, 'True'),
-    ('admode', 410, 'False'),
-    ('expirelimit', 410, '1209600'),
-    ('minimumttl', 410, '86400'),
-    ('nameservers', 410, 'ns1.yourdomain.com;ns2.yourdomain.com'),
-    ('refreshinterval', 410, '3600'),
-    ('responsibleperson', 410, 'hostmaster.[DOMAIN_NAME]'),
-    ('retrydelay', 410, '600'),
-    ('LogDir', 500, '/var/log'),
-    ('UsersHome', 500, '%HOME%'),
-    ('ExternalAddress', 1550, 'localhost'),
-    ('InstallFolder', 1550, '%PROGRAMFILES%\\MariaDB 10.1'),
-    ('InternalAddress', 1550, 'localhost'),
-    ('RootLogin', 1550, 'root'),
-    ('RootPassword', 1550, ''),
-    ('ExternalAddress', 1570, 'localhost'),
-    ('InstallFolder', 1570, '%PROGRAMFILES%\\MariaDB 10.3'),
-    ('InternalAddress', 1570, 'localhost'),
-    ('RootLogin', 1570, 'root'),
-    ('RootPassword', 1570, ''),
-    ('ExternalAddress', 1571, 'localhost'),
-    ('InstallFolder', 1571, '%PROGRAMFILES%\\MariaDB 10.4'),
-    ('InternalAddress', 1571, 'localhost'),
-    ('RootLogin', 1571, 'root');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('RootPassword', 1571, ''),
-    ('ExternalAddress', 1572, 'localhost'),
-    ('InstallFolder', 1572, '%PROGRAMFILES%\\MariaDB 10.5'),
-    ('InternalAddress', 1572, 'localhost'),
-    ('RootLogin', 1572, 'root'),
-    ('RootPassword', 1572, ''),
-    ('ExternalAddress', 1573, 'localhost'),
-    ('InstallFolder', 1573, '%PROGRAMFILES%\\MariaDB 10.5'),
-    ('InternalAddress', 1573, 'localhost'),
-    ('RootLogin', 1573, 'root'),
-    ('RootPassword', 1573, ''),
-    ('UsersHome', 1800, '%SYSTEMDRIVE%\\HostingSpaces'),
-    ('UsersHome', 1802, '%SYSTEMDRIVE%\\HostingSpaces'),
-    ('AdminLogin', 1901, 'Admin'),
-    ('ExpireLimit', 1901, '1209600'),
-    ('MinimumTTL', 1901, '86400'),
-    ('NameServers', 1901, 'ns1.yourdomain.com;ns2.yourdomain.com'),
-    ('RefreshInterval', 1901, '3600'),
-    ('ResponsiblePerson', 1901, 'hostmaster.[DOMAIN_NAME]'),
-    ('RetryDelay', 1901, '600'),
-    ('SimpleDnsUrl', 1901, 'http://127.0.0.1:8053'),
-    ('admode', 1902, 'False'),
-    ('expirelimit', 1902, '1209600'),
-    ('minimumttl', 1902, '86400'),
-    ('nameservers', 1902, 'ns1.yourdomain.com;ns2.yourdomain.com'),
-    ('refreshinterval', 1902, '3600'),
-    ('responsibleperson', 1902, 'hostmaster.[DOMAIN_NAME]'),
-    ('retrydelay', 1902, '600'),
-    ('ConfigFile', 1910, '/etc/vsftpd.conf'),
-    ('BinPath', 1911, ''),
-    ('ConfigFile', 1911, '/etc/apache2/apache2.conf'),
-    ('ConfigPath', 1911, '/etc/apache2');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    INSERT INTO `ScheduleParameters` (`ParameterID`, `ScheduleID`, `ParameterValue`)
-    VALUES ('SUSPEND_OVERUSED', 1, 'false'),
-    ('SUSPEND_OVERUSED', 2, 'false');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `AccessTokensIdx_AccountID` ON `AccessTokens` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `BackgroundTaskLogsIdx_TaskID` ON `BackgroundTaskLogs` (`TaskID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `BackgroundTaskParametersIdx_TaskID` ON `BackgroundTaskParameters` (`TaskID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `BackgroundTaskStackIdx_TaskID` ON `BackgroundTaskStack` (`TaskID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `BlackBerryUsersIdx_AccountId` ON `BlackBerryUsers` (`AccountId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `CommentsIdx_UserID` ON `Comments` (`UserID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `CRMUsersIdx_AccountID` ON `CRMUsers` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `DomainDnsRecordsIdx_DomainId` ON `DomainDnsRecords` (`DomainId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `DomainsIdx_MailDomainID` ON `Domains` (`MailDomainID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `DomainsIdx_PackageID` ON `Domains` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `DomainsIdx_WebSiteID` ON `Domains` (`WebSiteID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `DomainsIdx_ZoneItemID` ON `Domains` (`ZoneItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `EnterpriseFoldersIdx_StorageSpaceFolderId` ON `EnterpriseFolders` (`StorageSpaceFolderId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `EnterpriseFoldersOwaPermissionsIdx_AccountID` ON `EnterpriseFoldersOwaPermissions` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `EnterpriseFoldersOwaPermissionsIdx_FolderID` ON `EnterpriseFoldersOwaPermissions` (`FolderID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeAccountEmailAddressesIdx_AccountID` ON `ExchangeAccountEmailAddresses` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_ExchangeAccountEmailAddresses_UniqueEmail` ON `ExchangeAccountEmailAddresses` (`EmailAddress`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeAccountsIdx_ItemID` ON `ExchangeAccounts` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeAccountsIdx_MailboxPlanId` ON `ExchangeAccounts` (`MailboxPlanId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_ExchangeAccounts_UniqueAccountName` ON `ExchangeAccounts` (`AccountName`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeMailboxPlansIdx_ItemID` ON `ExchangeMailboxPlans` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_ExchangeMailboxPlans` ON `ExchangeMailboxPlans` (`MailboxPlanId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeOrganizationDomainsIdx_ItemID` ON `ExchangeOrganizationDomains` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_ExchangeOrganizationDomains_UniqueDomain` ON `ExchangeOrganizationDomains` (`DomainID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_ExchangeOrganizations_UniqueOrg` ON `ExchangeOrganizations` (`OrganizationID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeOrganizationSettingsIdx_ItemId` ON `ExchangeOrganizationSettings` (`ItemId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeOrganizationSsFoldersIdx_ItemId` ON `ExchangeOrganizationSsFolders` (`ItemId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId` ON `ExchangeOrganizationSsFolders` (`StorageSpaceFolderId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `GlobalDnsRecordsIdx_IPAddressID` ON `GlobalDnsRecords` (`IPAddressID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `GlobalDnsRecordsIdx_PackageID` ON `GlobalDnsRecords` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `GlobalDnsRecordsIdx_ServerID` ON `GlobalDnsRecords` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `GlobalDnsRecordsIdx_ServiceID` ON `GlobalDnsRecords` (`ServiceID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_HostingPlanQuotas_QuotaID` ON `HostingPlanQuotas` (`QuotaID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_HostingPlanResources_GroupID` ON `HostingPlanResources` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `HostingPlansIdx_PackageID` ON `HostingPlans` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `HostingPlansIdx_ServerID` ON `HostingPlans` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `HostingPlansIdx_UserID` ON `HostingPlans` (`UserID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IPAddressesIdx_ServerID` ON `IPAddresses` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_LyncUserPlans` ON `LyncUserPlans` (`LyncUserPlanId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `LyncUserPlansIdx_ItemID` ON `LyncUserPlans` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `LyncUsersIdx_LyncUserPlanID` ON `LyncUsers` (`LyncUserPlanID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageAddonsIdx_PackageID` ON `PackageAddons` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageAddonsIdx_PlanID` ON `PackageAddons` (`PlanID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIPAddressesIdx_AddressID` ON `PackageIPAddresses` (`AddressID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIPAddressesIdx_ItemID` ON `PackageIPAddresses` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIPAddressesIdx_PackageID` ON `PackageIPAddresses` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_PackageQuotas_QuotaID` ON `PackageQuotas` (`QuotaID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_PackageResources_GroupID` ON `PackageResources` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIndex_ParentPackageID` ON `Packages` (`ParentPackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIndex_PlanID` ON `Packages` (`PlanID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIndex_ServerID` ON `Packages` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageIndex_UserID` ON `Packages` (`UserID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_PackagesBandwidth_GroupID` ON `PackagesBandwidth` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_PackagesDiskspace_GroupID` ON `PackagesDiskspace` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_PackageServices_ServiceID` ON `PackageServices` (`ServiceID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_PackagesTreeCache_PackageID` ON `PackagesTreeCache` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackagesTreeCacheIndex` ON `PackagesTreeCache` (`ParentPackageID`, `PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageVLANsIdx_PackageID` ON `PackageVLANs` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PackageVLANsIdx_VlanID` ON `PackageVLANs` (`VlanID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PrivateIPAddressesIdx_ItemID` ON `PrivateIPAddresses` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `PrivateNetworkVLANsIdx_ServerID` ON `PrivateNetworkVLANs` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ProvidersIdx_GroupID` ON `Providers` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `QuotasIdx_GroupID` ON `Quotas` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `QuotasIdx_ItemTypeID` ON `Quotas` (`ItemTypeID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `RDSCollectionSettingsIdx_RDSCollectionId` ON `RDSCollectionSettings` (`RDSCollectionId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `RDSCollectionUsersIdx_AccountID` ON `RDSCollectionUsers` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `RDSCollectionUsersIdx_RDSCollectionId` ON `RDSCollectionUsers` (`RDSCollectionId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `RDSMessagesIdx_RDSCollectionId` ON `RDSMessages` (`RDSCollectionId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `RDSServersIdx_RDSCollectionId` ON `RDSServers` (`RDSCollectionId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ResourceGroupDnsRecordsIdx_GroupID` ON `ResourceGroupDnsRecords` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ScheduleIdx_PackageID` ON `Schedule` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ScheduleIdx_TaskID` ON `Schedule` (`TaskID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_ScheduleTaskViewConfiguration_TaskID` ON `ScheduleTaskViewConfiguration` (`TaskID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServersIdx_PrimaryGroupID` ON `Servers` (`PrimaryGroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServiceItemsIdx_ItemTypeID` ON `ServiceItems` (`ItemTypeID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServiceItemsIdx_PackageID` ON `ServiceItems` (`PackageID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServiceItemsIdx_ServiceID` ON `ServiceItems` (`ServiceID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServiceItemTypesIdx_GroupID` ON `ServiceItemTypes` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServicesIdx_ClusterID` ON `Services` (`ClusterID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServicesIdx_ProviderID` ON `Services` (`ProviderID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `ServicesIdx_ServerID` ON `Services` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `StorageSpaceFoldersIdx_StorageSpaceId` ON `StorageSpaceFolders` (`StorageSpaceId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `StorageSpaceLevelResourceGroupsIdx_GroupId` ON `StorageSpaceLevelResourceGroups` (`GroupId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `StorageSpaceLevelResourceGroupsIdx_LevelId` ON `StorageSpaceLevelResourceGroups` (`LevelId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `StorageSpacesIdx_ServerId` ON `StorageSpaces` (`ServerId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `StorageSpacesIdx_ServiceId` ON `StorageSpaces` (`ServiceId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `IX_TempIds_Created_Scope_Level` ON `TempIds` (`Created`, `Scope`, `Level`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE UNIQUE INDEX `IX_Users_Username` ON `Users` (`Username`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `UsersIdx_OwnerID` ON `Users` (`OwnerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `VirtualGroupsIdx_GroupID` ON `VirtualGroups` (`GroupID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `VirtualGroupsIdx_ServerID` ON `VirtualGroups` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `VirtualServicesIdx_ServerID` ON `VirtualServices` (`ServerID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `VirtualServicesIdx_ServiceID` ON `VirtualServices` (`ServiceID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `WebDavAccessTokensIdx_AccountID` ON `WebDavAccessTokens` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    CREATE INDEX `WebDavPortalUsersSettingsIdx_AccountId` ON `WebDavPortalUsersSettings` (`AccountId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `AccessTokens` ADD CONSTRAINT `FK_AccessTokens_UserId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `BlackBerryUsers` ADD CONSTRAINT `FK_BlackBerryUsers_ExchangeAccounts` FOREIGN KEY (`AccountId`) REFERENCES `ExchangeAccounts` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `CRMUsers` ADD CONSTRAINT `FK_CRMUsers_ExchangeAccounts` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `DomainDnsRecords` ADD CONSTRAINT `FK_DomainDnsRecords_DomainId` FOREIGN KEY (`DomainId`) REFERENCES `Domains` (`DomainID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `Domains` ADD CONSTRAINT `FK_Domains_Packages` FOREIGN KEY (`PackageID`) REFERENCES `Packages` (`PackageID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `Domains` ADD CONSTRAINT `FK_Domains_ServiceItems_MailDomain` FOREIGN KEY (`MailDomainID`) REFERENCES `ServiceItems` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `Domains` ADD CONSTRAINT `FK_Domains_ServiceItems_WebSite` FOREIGN KEY (`WebSiteID`) REFERENCES `ServiceItems` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `Domains` ADD CONSTRAINT `FK_Domains_ServiceItems_ZoneItem` FOREIGN KEY (`ZoneItemID`) REFERENCES `ServiceItems` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `EnterpriseFoldersOwaPermissions` ADD CONSTRAINT `FK_EnterpriseFoldersOwaPermissions_AccountId` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `ExchangeAccountEmailAddresses` ADD CONSTRAINT `FK_ExchangeAccountEmailAddresses_ExchangeAccounts` FOREIGN KEY (`AccountID`) REFERENCES `ExchangeAccounts` (`AccountID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `ExchangeAccounts` ADD CONSTRAINT `FK_ExchangeAccounts_ExchangeMailboxPlans` FOREIGN KEY (`MailboxPlanId`) REFERENCES `ExchangeMailboxPlans` (`MailboxPlanId`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `ExchangeAccounts` ADD CONSTRAINT `FK_ExchangeAccounts_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `ExchangeMailboxPlans` ADD CONSTRAINT `FK_ExchangeMailboxPlans_ExchangeOrganizations` FOREIGN KEY (`ItemID`) REFERENCES `ExchangeOrganizations` (`ItemID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `ExchangeOrganizationDomains` ADD CONSTRAINT `FK_ExchangeOrganizationDomains_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `ExchangeOrganizations` ADD CONSTRAINT `FK_ExchangeOrganizations_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `GlobalDnsRecords` ADD CONSTRAINT `FK_GlobalDnsRecords_Packages` FOREIGN KEY (`PackageID`) REFERENCES `Packages` (`PackageID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `HostingPlanQuotas` ADD CONSTRAINT `FK_HostingPlanQuotas_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `HostingPlanResources` ADD CONSTRAINT `FK_HostingPlanResources_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    ALTER TABLE `HostingPlans` ADD CONSTRAINT `FK_HostingPlans_Packages` FOREIGN KEY (`PackageID`) REFERENCES `Packages` (`PackageID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240630175848_InitialCreate') THEN
-
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20240630175848_InitialCreate', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskLogs` DROP FOREIGN KEY `FK__Backgroun__TaskI__06ADD4BD`;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskParameters` DROP FOREIGN KEY `FK__Backgroun__TaskI__03D16812`;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskStack` DROP FOREIGN KEY `FK__Backgroun__TaskI__098A4168`;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `HostingPlans` DROP FOREIGN KEY `FK_HostingPlans_Packages`;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `Packages` DROP FOREIGN KEY `FK_Packages_HostingPlans`;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'WebDavAccessTokens');
-    ALTER TABLE `WebDavAccessTokens` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'DomainDnsRecords');
-    ALTER TABLE `DomainDnsRecords` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'BackgroundTaskStack');
-    ALTER TABLE `BackgroundTaskStack` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'BackgroundTasks');
-    ALTER TABLE `BackgroundTasks` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'BackgroundTaskParameters');
-    ALTER TABLE `BackgroundTaskParameters` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'BackgroundTaskLogs');
-    ALTER TABLE `BackgroundTaskLogs` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'AdditionalGroups');
-    ALTER TABLE `AdditionalGroups` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'AccessTokens');
-    ALTER TABLE `AccessTokens` DROP PRIMARY KEY;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    DELETE FROM `Versions`
-    WHERE `DatabaseVersion` = '2.0.0.228';
-    SELECT ROW_COUNT();
-
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `PackageVLANs` ADD `IsDmz` tinyint(1) NOT NULL DEFAULT FALSE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `WebDavAccessTokens` ADD CONSTRAINT `PK__WebDavAc__3214EC2708781F08` PRIMARY KEY (`ID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'WebDavAccessTokens', 'ID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `DomainDnsRecords` ADD CONSTRAINT `PK__DomainDn__3214EC27A6FC0498` PRIMARY KEY (`ID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'DomainDnsRecords', 'ID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskStack` ADD CONSTRAINT `PK__Backgrou__5E44466FB8A5F217` PRIMARY KEY (`TaskStackID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'BackgroundTaskStack', 'TaskStackID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTasks` ADD CONSTRAINT `PK__Backgrou__3214EC273A1145AC` PRIMARY KEY (`ID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'BackgroundTasks', 'ID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskParameters` ADD CONSTRAINT `PK__Backgrou__F80C629777BF580B` PRIMARY KEY (`ParameterID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'BackgroundTaskParameters', 'ParameterID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskLogs` ADD CONSTRAINT `PK__Backgrou__5E5499A86067A6E5` PRIMARY KEY (`LogID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'BackgroundTaskLogs', 'LogID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `AdditionalGroups` ADD CONSTRAINT `PK__Addition__3214EC27E665DDE2` PRIMARY KEY (`ID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'AdditionalGroups', 'ID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `AccessTokens` ADD CONSTRAINT `PK__AccessTo__3214EC27DEAEF66E` PRIMARY KEY (`ID`);
-    CALL POMELO_AFTER_ADD_PRIMARY_KEY(NULL, 'AccessTokens', 'ID');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CREATE TABLE `DmzIPAddresses` (
-        `DmzAddressID` int NOT NULL AUTO_INCREMENT,
-        `ItemID` int NOT NULL,
-        `IPAddress` varchar(15) CHARACTER SET utf8mb4 NOT NULL,
-        `IsPrimary` tinyint(1) NOT NULL,
-        CONSTRAINT `PK_DmzIPAddresses` PRIMARY KEY (`DmzAddressID`),
-        CONSTRAINT `FK_DmzIPAddresses_ServiceItems` FOREIGN KEY (`ItemID`) REFERENCES `ServiceItems` (`ItemID`) ON DELETE CASCADE
-    ) CHARACTER SET=utf8mb4;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    UPDATE `Quotas` SET `ItemTypeID` = 71
-    WHERE `QuotaID` = 701;
-    SELECT ROW_COUNT();
-
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    UPDATE `Quotas` SET `ItemTypeID` = 72
-    WHERE `QuotaID` = 702;
-    SELECT ROW_COUNT();
-
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (750, 33, NULL, NULL, NULL, 'DMZ Network', 'VPS2012.DMZNetworkEnabled', 22, 1, FALSE),
-    (751, 33, NULL, NULL, NULL, 'Number of DMZ IP addresses per VPS', 'VPS2012.DMZIPAddressesNumber', 23, 3, FALSE),
-    (752, 33, NULL, NULL, NULL, 'Number of DMZ Network VLANs', 'VPS2012.DMZVLANsNumber', 24, 2, FALSE);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    UPDATE `Users` SET `Changed` = TIMESTAMP '2010-07-16 10:53:02'
-    WHERE `UserID` = 1;
-    SELECT ROW_COUNT();
-
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    CREATE INDEX `DmzIPAddressesIdx_ItemID` ON `DmzIPAddresses` (`ItemID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskLogs` ADD CONSTRAINT `FK__Backgroun__TaskI__7D8391DF` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskParameters` ADD CONSTRAINT `FK__Backgroun__TaskI__7AA72534` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `BackgroundTaskStack` ADD CONSTRAINT `FK__Backgroun__TaskI__005FFE8A` FOREIGN KEY (`TaskID`) REFERENCES `BackgroundTasks` (`ID`);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    ALTER TABLE `Packages` ADD CONSTRAINT `FK_Packages_HostingPlans` FOREIGN KEY (`PlanID`) REFERENCES `HostingPlans` (`PlanID`) ON DELETE CASCADE;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20240709093159_AddedDMZ') THEN
-
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20240709093159_AddedDMZ', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241005210853_SQLite_NOCASE') THEN
-
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241005210853_SQLite_NOCASE', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
-    VALUES (307, NULL, 'MySQL Server 8.3', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer83, SolidCP.Providers.Database.MySQL'),
-    (308, NULL, 'MySQL Server 8.4', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer84, SolidCP.Providers.Database.MySQL'),
-    (320, NULL, 'MySQL Server 9.0', 'MySQL', 90, 'MySQL', 'SolidCP.Providers.Database.MySqlServer90, SolidCP.Providers.Database.MySQL');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (125, 90, NULL, NULL, NULL, 'Database Truncate', 'MySQL9.Truncate', 6, 1, FALSE);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `ResourceGroups` (`GroupID`, `GroupController`, `GroupName`, `GroupOrder`, `ShowGroup`)
-    VALUES (91, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL9', 12, TRUE);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `Quotas` (`QuotaID`, `GroupID`, `HideQuota`, `ItemTypeID`, `PerOrganization`, `QuotaDescription`, `QuotaName`, `QuotaOrder`, `QuotaTypeID`, `ServiceQuota`)
-    VALUES (120, 91, NULL, 75, NULL, 'Databases', 'MySQL9.Databases', 1, 2, FALSE),
-    (121, 91, NULL, 76, NULL, 'Users', 'MySQL9.Users', 2, 2, FALSE),
-    (122, 91, NULL, NULL, NULL, 'Database Backups', 'MySQL9.Backup', 4, 1, FALSE),
-    (123, 91, NULL, NULL, NULL, 'Max Database Size', 'MySQL9.MaxDatabaseSize', 3, 3, FALSE),
-    (124, 91, NULL, NULL, NULL, 'Database Restores', 'MySQL9.Restore', 5, 1, FALSE);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('ExternalAddress', 307, 'localhost'),
+    ('ExternalAddress', 307, 'localhost'),
     ('InstallFolder', 307, '%PROGRAMFILES%\\MySQL\\MySQL Server 8.0'),
-    ('InternalAddress', 307, 'localhost,3306'),
-    ('RootLogin', 307, 'root'),
+    ('InternalAddress', 307, 'localhost,3306');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('RootLogin', 307, 'root'),
     ('RootPassword', 307, ''),
     ('sslmode', 307, 'True'),
     ('ExternalAddress', 308, 'localhost'),
@@ -6664,101 +4398,45 @@ BEGIN
     ('InternalAddress', 320, 'localhost,3306'),
     ('RootLogin', 320, 'root'),
     ('RootPassword', 320, ''),
-    ('sslmode', 320, 'True');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `ServiceItemTypes` (`ItemTypeID`, `Backupable`, `CalculateBandwidth`, `CalculateDiskspace`, `DisplayName`, `Disposable`, `GroupID`, `Importable`, `Searchable`, `Suspendable`, `TypeName`, `TypeOrder`)
-    VALUES (90, TRUE, FALSE, TRUE, 'MySQL9Database', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 20),
-    (91, TRUE, FALSE, FALSE, 'MySQL9User', TRUE, 91, TRUE, TRUE, FALSE, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 21);
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006063131_MySql9AndMaraiDB11') THEN
-
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241006063131_MySql9AndMaraiDB11', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
-
-    INSERT INTO `Providers` (`ProviderID`, `DisableAutoDiscovery`, `DisplayName`, `EditorControl`, `GroupID`, `ProviderName`, `ProviderType`)
-    VALUES (1574, NULL, 'MariaDB 10.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB107, SolidCP.Providers.Database.MariaDB'),
-    (1575, NULL, 'MariaDB 10.8', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB108, SolidCP.Providers.Database.MariaDB'),
-    (1576, NULL, 'MariaDB 10.9', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB109, SolidCP.Providers.Database.MariaDB'),
-    (1577, NULL, 'MariaDB 10.10', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1010, SolidCP.Providers.Database.MariaDB'),
-    (1578, NULL, 'MariaDB 10.11', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB1011, SolidCP.Providers.Database.MariaDB'),
-    (1579, NULL, 'MariaDB 11.0', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB110, SolidCP.Providers.Database.MariaDB'),
-    (1580, NULL, 'MariaDB 11.1', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB111, SolidCP.Providers.Database.MariaDB'),
-    (1581, NULL, 'MariaDB 11.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB112, SolidCP.Providers.Database.MariaDB'),
-    (1582, NULL, 'MariaDB 11.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB113, SolidCP.Providers.Database.MariaDB'),
-    (1583, NULL, 'MariaDB 11.4', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB114, SolidCP.Providers.Database.MariaDB'),
-    (1584, NULL, 'MariaDB 11.5', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB115, SolidCP.Providers.Database.MariaDB'),
-    (1585, NULL, 'MariaDB 11.6', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB116, SolidCP.Providers.Database.MariaDB'),
-    (1586, NULL, 'MariaDB 11.7', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB117, SolidCP.Providers.Database.MariaDB');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
-
-    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MariaDB 10.6'
-    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 1573;
-    SELECT ROW_COUNT();
-
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
-
+    ('sslmode', 320, 'True'),
+    ('admode', 410, 'False'),
+    ('expirelimit', 410, '1209600'),
+    ('minimumttl', 410, '86400'),
+    ('nameservers', 410, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 410, '86400'),
+    ('RecordMinimumTTL', 410, '3600'),
+    ('refreshinterval', 410, '3600'),
+    ('responsibleperson', 410, 'hostmaster.[DOMAIN_NAME]'),
+    ('retrydelay', 410, '600'),
+    ('LogDir', 500, '/var/log'),
+    ('UsersHome', 500, '/var/www/HostingSpaces'),
+    ('ExternalAddress', 1550, 'localhost'),
+    ('InstallFolder', 1550, '%PROGRAMFILES%\\MariaDB 10.1'),
+    ('InternalAddress', 1550, 'localhost'),
+    ('RootLogin', 1550, 'root'),
+    ('RootPassword', 1550, ''),
+    ('ExternalAddress', 1570, 'localhost'),
+    ('InstallFolder', 1570, '%PROGRAMFILES%\\MariaDB 10.3'),
+    ('InternalAddress', 1570, 'localhost'),
+    ('RootLogin', 1570, 'root'),
+    ('RootPassword', 1570, ''),
+    ('ExternalAddress', 1571, 'localhost'),
+    ('InstallFolder', 1571, '%PROGRAMFILES%\\MariaDB 10.4'),
+    ('InternalAddress', 1571, 'localhost'),
+    ('RootLogin', 1571, 'root'),
+    ('RootPassword', 1571, ''),
+    ('ExternalAddress', 1572, 'localhost');
     INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('ExternalAddress', 1574, 'localhost'),
+    VALUES ('InstallFolder', 1572, '%PROGRAMFILES%\\MariaDB 10.5'),
+    ('InternalAddress', 1572, 'localhost'),
+    ('RootLogin', 1572, 'root'),
+    ('RootPassword', 1572, ''),
+    ('ExternalAddress', 1573, 'localhost'),
+    ('InstallFolder', 1573, '%PROGRAMFILES%\\MariaDB 10.6'),
+    ('InternalAddress', 1573, 'localhost'),
+    ('RootLogin', 1573, 'root'),
+    ('RootPassword', 1573, ''),
+    ('ExternalAddress', 1574, 'localhost'),
     ('InstallFolder', 1574, '%PROGRAMFILES%\\MariaDB 10.7'),
     ('InternalAddress', 1574, 'localhost'),
     ('RootLogin', 1574, 'root'),
@@ -6790,8 +4468,9 @@ BEGIN
     ('RootPassword', 1579, ''),
     ('ExternalAddress', 1580, 'localhost'),
     ('InstallFolder', 1580, '%PROGRAMFILES%\\MariaDB 11.1'),
-    ('InternalAddress', 1580, 'localhost'),
-    ('RootLogin', 1580, 'root'),
+    ('InternalAddress', 1580, 'localhost');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('RootLogin', 1580, 'root'),
     ('RootPassword', 1580, ''),
     ('ExternalAddress', 1581, 'localhost'),
     ('InstallFolder', 1581, '%PROGRAMFILES%\\MariaDB 11.2'),
@@ -6799,9 +4478,8 @@ BEGIN
     ('RootLogin', 1581, 'root'),
     ('RootPassword', 1581, ''),
     ('ExternalAddress', 1582, 'localhost'),
-    ('InstallFolder', 1582, '%PROGRAMFILES%\\MariaDB 11.3');
-    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
-    VALUES ('InternalAddress', 1582, 'localhost'),
+    ('InstallFolder', 1582, '%PROGRAMFILES%\\MariaDB 11.3'),
+    ('InternalAddress', 1582, 'localhost'),
     ('RootLogin', 1582, 'root'),
     ('RootPassword', 1582, ''),
     ('ExternalAddress', 1583, 'localhost'),
@@ -6823,7 +4501,45 @@ BEGIN
     ('InstallFolder', 1586, '%PROGRAMFILES%\\MariaDB 11.7'),
     ('InternalAddress', 1586, 'localhost'),
     ('RootLogin', 1586, 'root'),
-    ('RootPassword', 1586, '');
+    ('RootPassword', 1586, ''),
+    ('RecordDefaultTTL', 1703, '86400'),
+    ('RecordMinimumTTL', 1703, '3600'),
+    ('UsersHome', 1800, '%SYSTEMDRIVE%\\HostingSpaces'),
+    ('UsersHome', 1802, '%SYSTEMDRIVE%\\HostingSpaces'),
+    ('UsersHome', 1804, '%SYSTEMDRIVE%\\HostingSpaces'),
+    ('AdminLogin', 1901, 'Admin'),
+    ('ExpireLimit', 1901, '1209600'),
+    ('MinimumTTL', 1901, '86400'),
+    ('NameServers', 1901, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 1901, '86400');
+    INSERT INTO `ServiceDefaultProperties` (`PropertyName`, `ProviderID`, `PropertyValue`)
+    VALUES ('RecordMinimumTTL', 1901, '3600'),
+    ('RefreshInterval', 1901, '3600'),
+    ('ResponsiblePerson', 1901, 'hostmaster.[DOMAIN_NAME]'),
+    ('RetryDelay', 1901, '600'),
+    ('SimpleDnsUrl', 1901, 'http://127.0.0.1:8053'),
+    ('admode', 1902, 'False'),
+    ('expirelimit', 1902, '1209600'),
+    ('minimumttl', 1902, '86400'),
+    ('nameservers', 1902, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 1902, '86400'),
+    ('RecordMinimumTTL', 1902, '3600'),
+    ('refreshinterval', 1902, '3600'),
+    ('responsibleperson', 1902, 'hostmaster.[DOMAIN_NAME]'),
+    ('retrydelay', 1902, '600'),
+    ('AdminLogin', 1903, 'Admin'),
+    ('ExpireLimit', 1903, '1209600'),
+    ('NameServers', 1903, 'ns1.yourdomain.com;ns2.yourdomain.com'),
+    ('RecordDefaultTTL', 1903, '86400'),
+    ('RecordMinimumTTL', 1903, '3600'),
+    ('RefreshInterval', 1903, '3600'),
+    ('ResponsiblePerson', 1903, 'hostmaster.[DOMAIN_NAME]'),
+    ('RetryDelay', 1903, '600'),
+    ('SimpleDnsUrl', 1903, 'http://127.0.0.1:8053'),
+    ('ConfigFile', 1910, '/etc/vsftpd.conf'),
+    ('BinPath', 1911, ''),
+    ('ConfigFile', 1911, '/etc/apache2/apache2.conf'),
+    ('ConfigPath', 1911, '/etc/apache2');
 
     END IF;
 END //
@@ -6835,31 +4551,11 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006121748_AddMariaDB11') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241006121748_AddMariaDB11', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
-
-    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.1'
-    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 305;
-    SELECT ROW_COUNT();
-
+    INSERT INTO `ScheduleParameters` (`ParameterID`, `ScheduleID`, `ParameterValue`)
+    VALUES ('SUSPEND_OVERUSED', 1, 'false'),
+    ('SUSPEND_OVERUSED', 2, 'false');
 
     END IF;
 END //
@@ -6871,12 +4567,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.2'
-    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 306;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `AccessTokensIdx_AccountID` ON `AccessTokens` (`AccountID`);
 
     END IF;
 END //
@@ -6888,12 +4581,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.3'
-    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 307;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `BackgroundTaskLogsIdx_TaskID` ON `BackgroundTaskLogs` (`TaskID`);
 
     END IF;
 END //
@@ -6905,12 +4595,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '%PROGRAMFILES%\\MySQL\\MySQL Server 8.4'
-    WHERE `PropertyName` = 'InstallFolder' AND `ProviderID` = 308;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `BackgroundTaskParametersIdx_TaskID` ON `BackgroundTaskParameters` (`TaskID`);
 
     END IF;
 END //
@@ -6922,31 +4609,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241006212105_Bugfix_for_MySQL_8_x') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241006212105_Bugfix_for_MySQL_8_x', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241007112853_BugfixMySQL8TruncateQuota') THEN
-
-    UPDATE `Quotas` SET `GroupID` = 91
-    WHERE `QuotaID` = 125;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `BackgroundTaskStackIdx_TaskID` ON `BackgroundTaskStack` (`TaskID`);
 
     END IF;
 END //
@@ -6958,31 +4623,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241007112853_BugfixMySQL8TruncateQuota') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241007112853_BugfixMySQL8TruncateQuota', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241010081944_FixUsersHomeForUnix') THEN
-
-    UPDATE `ServiceDefaultProperties` SET `PropertyValue` = '/var/www/HostingSpaces'
-    WHERE `PropertyName` = 'UsersHome' AND `ProviderID` = 500;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `BlackBerryUsersIdx_AccountId` ON `BlackBerryUsers` (`AccountId`);
 
     END IF;
 END //
@@ -6994,29 +4637,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241010081944_FixUsersHomeForUnix') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241010081944_FixUsersHomeForUnix', '8.0.10');
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-COMMIT;
-
-START TRANSACTION;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
-
-    CALL POMELO_BEFORE_DROP_PRIMARY_KEY(NULL, 'ThemeSettings');
-    ALTER TABLE `ThemeSettings` DROP PRIMARY KEY;
+    CREATE INDEX `CommentsIdx_UserID` ON `Comments` (`UserID`);
 
     END IF;
 END //
@@ -7028,12 +4651,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#0727d7' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `CRMUsersIdx_AccountID` ON `CRMUsers` (`AccountID`);
 
     END IF;
 END //
@@ -7045,12 +4665,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#157d4c' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `DmzIPAddressesIdx_ItemID` ON `DmzIPAddresses` (`ItemID`);
 
     END IF;
 END //
@@ -7062,12 +4679,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#23282c' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `DomainDnsRecordsIdx_DomainId` ON `DomainDnsRecords` (`DomainId`);
 
     END IF;
 END //
@@ -7079,12 +4693,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#673ab7' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `DomainsIdx_MailDomainID` ON `Domains` (`MailDomainID`);
 
     END IF;
 END //
@@ -7096,12 +4707,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#795548' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `DomainsIdx_PackageID` ON `Domains` (`PackageID`);
 
     END IF;
 END //
@@ -7113,12 +4721,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#d3094e' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `DomainsIdx_WebSiteID` ON `Domains` (`WebSiteID`);
 
     END IF;
 END //
@@ -7130,12 +4735,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#e10a1f' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `DomainsIdx_ZoneItemID` ON `Domains` (`ZoneItemID`);
 
     END IF;
 END //
@@ -7147,12 +4749,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#ff9800' AND `SettingsName` = 'color-header' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `EnterpriseFoldersIdx_StorageSpaceFolderId` ON `EnterpriseFolders` (`StorageSpaceFolderId`);
 
     END IF;
 END //
@@ -7164,12 +4763,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#1f0e3b' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `EnterpriseFoldersOwaPermissionsIdx_AccountID` ON `EnterpriseFoldersOwaPermissions` (`AccountID`);
 
     END IF;
 END //
@@ -7181,12 +4777,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#230924' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `EnterpriseFoldersOwaPermissionsIdx_FolderID` ON `EnterpriseFoldersOwaPermissions` (`FolderID`);
 
     END IF;
 END //
@@ -7198,12 +4791,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#408851' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `ExchangeAccountEmailAddressesIdx_AccountID` ON `ExchangeAccountEmailAddresses` (`AccountID`);
 
     END IF;
 END //
@@ -7215,12 +4805,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#5b737f' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE UNIQUE INDEX `IX_ExchangeAccountEmailAddresses_UniqueEmail` ON `ExchangeAccountEmailAddresses` (`EmailAddress`);
 
     END IF;
 END //
@@ -7232,12 +4819,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#6c85ec' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `ExchangeAccountsIdx_ItemID` ON `ExchangeAccounts` (`ItemID`);
 
     END IF;
 END //
@@ -7249,12 +4833,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#903a85' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `ExchangeAccountsIdx_MailboxPlanId` ON `ExchangeAccounts` (`MailboxPlanId`);
 
     END IF;
 END //
@@ -7266,12 +4847,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#a04846' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE UNIQUE INDEX `IX_ExchangeAccounts_UniqueAccountName` ON `ExchangeAccounts` (`AccountName`);
 
     END IF;
 END //
@@ -7283,12 +4861,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = '#a65314' AND `SettingsName` = 'color-Sidebar' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `ExchangeMailboxPlansIdx_ItemID` ON `ExchangeMailboxPlans` (`ItemID`);
 
     END IF;
 END //
@@ -7300,12 +4875,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = 'Dark' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE UNIQUE INDEX `IX_ExchangeMailboxPlans` ON `ExchangeMailboxPlans` (`MailboxPlanId`);
 
     END IF;
 END //
@@ -7317,12 +4889,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = 'Light' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE INDEX `ExchangeOrganizationDomainsIdx_ItemID` ON `ExchangeOrganizationDomains` (`ItemID`);
 
     END IF;
 END //
@@ -7334,12 +4903,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = 'Minimal' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE UNIQUE INDEX `IX_ExchangeOrganizationDomains_UniqueDomain` ON `ExchangeOrganizationDomains` (`DomainID`);
 
     END IF;
 END //
@@ -7351,12 +4917,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    DELETE FROM `ThemeSettings`
-    WHERE `PropertyName` = 'Semi Dark' AND `SettingsName` = 'Style' AND `ThemeID` = 1;
-    SELECT ROW_COUNT();
-
+    CREATE UNIQUE INDEX `IX_ExchangeOrganizations_UniqueOrg` ON `ExchangeOrganizations` (`OrganizationID`);
 
     END IF;
 END //
@@ -7368,23 +4931,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    ALTER TABLE `ThemeSettings` MODIFY COLUMN `PropertyName` varchar(255) CHARACTER SET utf8mb4 NOT NULL;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
-
-    ALTER TABLE `ThemeSettings` MODIFY COLUMN `SettingsName` varchar(255) CHARACTER SET utf8mb4 NOT NULL;
+    CREATE INDEX `ExchangeOrganizationSettingsIdx_ItemId` ON `ExchangeOrganizationSettings` (`ItemId`);
 
     END IF;
 END //
@@ -7396,24 +4945,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    ALTER TABLE `ThemeSettings` MODIFY COLUMN `ThemeID` int NOT NULL;
-
-    END IF;
-END //
-DELIMITER ;
-CALL MigrationsScript();
-DROP PROCEDURE MigrationsScript;
-
-DROP PROCEDURE IF EXISTS MigrationsScript;
-DELIMITER //
-CREATE PROCEDURE MigrationsScript()
-BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
-
-    ALTER TABLE `ThemeSettings` ADD `ThemeSettingID` int NOT NULL DEFAULT 0 AUTO_INCREMENT,
-    ADD CONSTRAINT `PK_ThemeSettings` PRIMARY KEY (`ThemeSettingID`);
+    CREATE INDEX `ExchangeOrganizationSsFoldersIdx_ItemId` ON `ExchangeOrganizationSsFolders` (`ItemId`);
 
     END IF;
 END //
@@ -7425,29 +4959,9 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
-    INSERT INTO `ThemeSettings` (`ThemeSettingID`, `PropertyName`, `PropertyValue`, `SettingsName`, `ThemeID`)
-    VALUES (1, 'Light', 'light-theme', 'Style', 1),
-    (2, 'Dark', 'dark-theme', 'Style', 1),
-    (3, 'Semi Dark', 'semi-dark', 'Style', 1),
-    (4, 'Minimal', 'minimal-theme', 'Style', 1),
-    (5, '#0727d7', 'headercolor1', 'color-header', 1),
-    (6, '#23282c', 'headercolor2', 'color-header', 1),
-    (7, '#e10a1f', 'headercolor3', 'color-header', 1),
-    (8, '#157d4c', 'headercolor4', 'color-header', 1),
-    (9, '#673ab7', 'headercolor5', 'color-header', 1),
-    (10, '#795548', 'headercolor6', 'color-header', 1),
-    (11, '#d3094e', 'headercolor7', 'color-header', 1),
-    (12, '#ff9800', 'headercolor8', 'color-header', 1),
-    (13, '#6c85ec', 'sidebarcolor1', 'color-Sidebar', 1),
-    (14, '#5b737f', 'sidebarcolor2', 'color-Sidebar', 1),
-    (15, '#408851', 'sidebarcolor3', 'color-Sidebar', 1),
-    (16, '#230924', 'sidebarcolor4', 'color-Sidebar', 1),
-    (17, '#903a85', 'sidebarcolor5', 'color-Sidebar', 1),
-    (18, '#a04846', 'sidebarcolor6', 'color-Sidebar', 1),
-    (19, '#a65314', 'sidebarcolor7', 'color-Sidebar', 1),
-    (20, '#1f0e3b', 'sidebarcolor8', 'color-Sidebar', 1);
+    CREATE INDEX `ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId` ON `ExchangeOrganizationSsFolders` (`StorageSpaceFolderId`);
 
     END IF;
 END //
@@ -7459,7 +4973,819 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `GlobalDnsRecordsIdx_IPAddressID` ON `GlobalDnsRecords` (`IPAddressID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `GlobalDnsRecordsIdx_PackageID` ON `GlobalDnsRecords` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `GlobalDnsRecordsIdx_ServerID` ON `GlobalDnsRecords` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `GlobalDnsRecordsIdx_ServiceID` ON `GlobalDnsRecords` (`ServiceID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_HostingPlanQuotas_QuotaID` ON `HostingPlanQuotas` (`QuotaID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_HostingPlanResources_GroupID` ON `HostingPlanResources` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `HostingPlansIdx_PackageID` ON `HostingPlans` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `HostingPlansIdx_ServerID` ON `HostingPlans` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `HostingPlansIdx_UserID` ON `HostingPlans` (`UserID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IPAddressesIdx_ServerID` ON `IPAddresses` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE UNIQUE INDEX `IX_LyncUserPlans` ON `LyncUserPlans` (`LyncUserPlanId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `LyncUserPlansIdx_ItemID` ON `LyncUserPlans` (`ItemID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `LyncUsersIdx_LyncUserPlanID` ON `LyncUsers` (`LyncUserPlanID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageAddonsIdx_PackageID` ON `PackageAddons` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageAddonsIdx_PlanID` ON `PackageAddons` (`PlanID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIPAddressesIdx_AddressID` ON `PackageIPAddresses` (`AddressID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIPAddressesIdx_ItemID` ON `PackageIPAddresses` (`ItemID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIPAddressesIdx_PackageID` ON `PackageIPAddresses` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_PackageQuotas_QuotaID` ON `PackageQuotas` (`QuotaID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_PackageResources_GroupID` ON `PackageResources` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIndex_ParentPackageID` ON `Packages` (`ParentPackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIndex_PlanID` ON `Packages` (`PlanID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIndex_ServerID` ON `Packages` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageIndex_UserID` ON `Packages` (`UserID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_PackagesBandwidth_GroupID` ON `PackagesBandwidth` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_PackagesDiskspace_GroupID` ON `PackagesDiskspace` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_PackageServices_ServiceID` ON `PackageServices` (`ServiceID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_PackagesTreeCache_PackageID` ON `PackagesTreeCache` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageVLANsIdx_PackageID` ON `PackageVLANs` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PackageVLANsIdx_VlanID` ON `PackageVLANs` (`VlanID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PrivateIPAddressesIdx_ItemID` ON `PrivateIPAddresses` (`ItemID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `PrivateNetworkVLANsIdx_ServerID` ON `PrivateNetworkVLANs` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ProvidersIdx_GroupID` ON `Providers` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `QuotasIdx_GroupID` ON `Quotas` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `QuotasIdx_ItemTypeID` ON `Quotas` (`ItemTypeID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `RDSCollectionSettingsIdx_RDSCollectionId` ON `RDSCollectionSettings` (`RDSCollectionId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `RDSCollectionUsersIdx_AccountID` ON `RDSCollectionUsers` (`AccountID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `RDSCollectionUsersIdx_RDSCollectionId` ON `RDSCollectionUsers` (`RDSCollectionId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `RDSMessagesIdx_RDSCollectionId` ON `RDSMessages` (`RDSCollectionId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `RDSServersIdx_RDSCollectionId` ON `RDSServers` (`RDSCollectionId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ResourceGroupDnsRecordsIdx_GroupID` ON `ResourceGroupDnsRecords` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ScheduleIdx_PackageID` ON `Schedule` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ScheduleIdx_TaskID` ON `Schedule` (`TaskID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_ScheduleTaskViewConfiguration_TaskID` ON `ScheduleTaskViewConfiguration` (`TaskID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServersIdx_PrimaryGroupID` ON `Servers` (`PrimaryGroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServiceItemsIdx_ItemTypeID` ON `ServiceItems` (`ItemTypeID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServiceItemsIdx_PackageID` ON `ServiceItems` (`PackageID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServiceItemsIdx_ServiceID` ON `ServiceItems` (`ServiceID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServiceItemTypesIdx_GroupID` ON `ServiceItemTypes` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServicesIdx_ClusterID` ON `Services` (`ClusterID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServicesIdx_ProviderID` ON `Services` (`ProviderID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `ServicesIdx_ServerID` ON `Services` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `StorageSpaceFoldersIdx_StorageSpaceId` ON `StorageSpaceFolders` (`StorageSpaceId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `StorageSpaceLevelResourceGroupsIdx_GroupId` ON `StorageSpaceLevelResourceGroups` (`GroupId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `StorageSpaceLevelResourceGroupsIdx_LevelId` ON `StorageSpaceLevelResourceGroups` (`LevelId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `StorageSpacesIdx_ServerId` ON `StorageSpaces` (`ServerId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `StorageSpacesIdx_ServiceId` ON `StorageSpaces` (`ServiceId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `IX_TempIds_Created_Scope_Level` ON `TempIds` (`Created`, `Scope`, `Level`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     CREATE INDEX `ThemeSettingsIdx_ThemeID` ON `ThemeSettings` (`ThemeID`);
 
@@ -7473,10 +5799,122 @@ DROP PROCEDURE IF EXISTS MigrationsScript;
 DELIMITER //
 CREATE PROCEDURE MigrationsScript()
 BEGIN
-    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20241011210006_RemoveCompositeKeyInThemeSetting') THEN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE UNIQUE INDEX `IX_Users_Username` ON `Users` (`Username`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `UsersIdx_OwnerID` ON `Users` (`OwnerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `VirtualGroupsIdx_GroupID` ON `VirtualGroups` (`GroupID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `VirtualGroupsIdx_ServerID` ON `VirtualGroups` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `VirtualServicesIdx_ServerID` ON `VirtualServices` (`ServerID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `VirtualServicesIdx_ServiceID` ON `VirtualServices` (`ServiceID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `WebDavAccessTokensIdx_AccountID` ON `WebDavAccessTokens` (`AccountID`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
+
+    CREATE INDEX `WebDavPortalUsersSettingsIdx_AccountId` ON `WebDavPortalUsersSettings` (`AccountId`);
+
+    END IF;
+END //
+DELIMITER ;
+CALL MigrationsScript();
+DROP PROCEDURE MigrationsScript;
+
+DROP PROCEDURE IF EXISTS MigrationsScript;
+DELIMITER //
+CREATE PROCEDURE MigrationsScript()
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM `__EFMigrationsHistory` WHERE `MigrationId` = '20250123142537_InitialCreate') THEN
 
     INSERT INTO `__EFMigrationsHistory` (`MigrationId`, `ProductVersion`)
-    VALUES ('20241011210006_RemoveCompositeKeyInThemeSetting', '8.0.10');
+    VALUES ('20250123142537_InitialCreate', '9.0.1');
 
     END IF;
 END //
@@ -7485,8 +5923,4 @@ CALL MigrationsScript();
 DROP PROCEDURE MigrationsScript;
 
 COMMIT;
-
-DROP PROCEDURE `POMELO_BEFORE_DROP_PRIMARY_KEY`;
-
-DROP PROCEDURE `POMELO_AFTER_ADD_PRIMARY_KEY`;
 

@@ -12,7 +12,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 			StoredProceduresDown(migrationBuilder);
 
 			if (migrationBuilder.IsSqlServer())
-				migrationBuilder.SafeSql(DatabaseUtils.InstallScript("InitialCreate_StoredProcedures.sql"));
+				migrationBuilder.SqlScript(@"!\.StoredProcedures\..*\.sql$");
 		}
 
 		protected void StoredProceduresDown(MigrationBuilder migrationBuilder)

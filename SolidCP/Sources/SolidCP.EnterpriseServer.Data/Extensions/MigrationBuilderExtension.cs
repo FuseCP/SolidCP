@@ -166,5 +166,12 @@ namespace SolidCP.EnterpriseServer.Data
 
 			return str.ToString().Trim();
 		}
+
+#if NetCore
+		public static OperationBuilder<SqlOperation> SqlScript(this MigrationBuilder migration, string scriptName, bool suppressTransaction = false)
+		{
+			return migration.SafeSql(DatabaseUtils.InstallScript(scriptName), suppressTransaction);
+		}
+#endif
 	}
 }

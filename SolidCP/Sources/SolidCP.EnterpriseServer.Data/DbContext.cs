@@ -253,7 +253,7 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
-                public TimeSpan Timeout
+         public TimeSpan Timeout
         {
             get
             {
@@ -261,17 +261,20 @@ namespace SolidCP.EnterpriseServer.Data
                 return TimeSpan.FromSeconds((double)Database.CommandTimeout);
 #elif NETCOREAPP
                 return TimeSpan.FromSeconds((double)Database.GetCommandTimeout());
+#else
+                throw new NotSupportedException("Timeout not supported for NET Standard");
 #endif
-
 			}
 			set {
 #if NETFRAMEWORK
                 Database.CommandTimeout = (int)(value.TotalMilliseconds / 1000 + 0.5);
 #elif NETCOREAPP
 				Database.SetCommandTimeout((int)(value.TotalMilliseconds / 1000 + 0.5));
+#else
+                throw new NotSupportedException("Timeout not supported for NET Standard");
 #endif
-            }
-        }
+			}
+		}
 
         public IGenericDbContext BaseContext = null;
 
