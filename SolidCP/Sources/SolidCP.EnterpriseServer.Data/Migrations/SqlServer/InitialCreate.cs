@@ -12,7 +12,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 			StoredProceduresDown(migrationBuilder);
 
 			if (migrationBuilder.IsSqlServer())
-				migrationBuilder.SqlScript(@"!\.SqlServer\.StoredProcedures\..*\.sql$");
+				migrationBuilder.SqlScript(@"!\.SqlServer\.StoredProcedures\.2\.0\.0\..*\.sql$");
 		}
 
 		protected void StoredProceduresDown(MigrationBuilder migrationBuilder)
