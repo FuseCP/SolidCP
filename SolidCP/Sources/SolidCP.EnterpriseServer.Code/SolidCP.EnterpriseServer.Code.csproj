@@ -36,9 +36,11 @@
 		<DefineConstants>$(DefineConstants);UseEntityFramework</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup>
-	  <None Remove="Data\mgrg2n5g.cgr~" />
-	</ItemGroup>
+    <ItemGroup>
+        <Content Include="..\SolidCP.EnterpriseServer.Data\Migrations\SqlServer\StoredProcedures\**\*.sql">
+            <Link>Data\StoredProcedures\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </Content>
+    </ItemGroup>
 
 	<ItemGroup>
         <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
