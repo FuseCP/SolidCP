@@ -58,12 +58,11 @@ namespace SolidCP.EnterpriseServer.Data
 		/// <summary>
 		/// Initializes a new instance of the class.
 		/// </summary>
-		private DatabaseUtils()
-		{
-		}
+		private DatabaseUtils() { }
 
 		public static Stream InstallScriptStream(string scriptName)
 		{
+			scriptName = Regex.Replace(scriptName, @"(?<=^!.*\\\.)([0-9]+)(?=\\\.)", "_$1");
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
 			var streams = resNames
@@ -80,13 +79,14 @@ namespace SolidCP.EnterpriseServer.Data
 					}
 				})
 				.Where(name => {
-					if (name.StartsWith("!")) return Regex.IsMatch(name, scriptName.Substring(1));
+					if (scriptName.StartsWith("!")) return Regex.IsMatch(name, scriptName.Substring(1));
 					else return name.EndsWith(scriptName);
 				})
 				.Select(name => assembly.GetManifestResourceStream(name))
 				.ToList();
-			
-			if (streams.Count <= 1) return streams.FirstOrDefault();
+
+			if (streams.Count == 0) throw new FileNotFoundException("No SQL scripts found");
+			else if (streams.Count == 1) return streams.FirstOrDefault();
 
 			var length = streams
 				.Sum(stream => stream.Length);
@@ -95,13 +95,12 @@ namespace SolidCP.EnterpriseServer.Data
 			foreach (var stream in streams)
 			{
 				var text = new StreamReader(stream).ReadToEnd();
-				writer.Write(text);
+				writer.WriteLine(text);
 			}
 			writer.Flush();
 			mem.Position = 0;
 			return mem;
 		}
-
 		public static string InstallScript(string scriptName)
 		{
 			using (var scriptStream = InstallScriptStream(scriptName))
