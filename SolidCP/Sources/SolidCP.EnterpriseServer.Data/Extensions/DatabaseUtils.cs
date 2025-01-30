@@ -88,11 +88,15 @@ namespace SolidCP.EnterpriseServer.Data
 			
 			if (streams.Count <= 1) return streams.FirstOrDefault();
 
-			var combined = string.Join(Environment.NewLine, streams
-				.Select(stream => new StreamReader(stream).ReadToEnd()));
-			var mem = new MemoryStream(combined.Length + 512);
+			var length = streams
+				.Sum(stream => stream.Length);
+			var mem = new MemoryStream((int)length + 512);
 			var writer = new StreamWriter(mem, Encoding.UTF8);
-			writer.Write(combined);
+			foreach (var stream in streams)
+			{
+				var text = new StreamReader(stream).ReadToEnd();
+				writer.Write(text);
+			}
 			writer.Flush();
 			mem.Position = 0;
 			return mem;

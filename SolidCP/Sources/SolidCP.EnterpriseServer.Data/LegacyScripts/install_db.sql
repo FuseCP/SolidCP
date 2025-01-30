@@ -516,7 +516,6 @@ GO
 
 
 
-/****** Object:  Table [dbo].[AddExchangeAccount]    ******/
 CREATE PROCEDURE [dbo].[AddExchangeAccount]
 (
 	@AccountID int OUTPUT,
@@ -15358,7 +15357,6 @@ GO
 
 
 
-/****** Object:  StoredProcedure [dbo].[GetScheduleTaskViewConfigurations]    Script Date: 09/10/2007 17:53:56 ******/
 
 CREATE PROCEDURE [dbo].[GetScheduleTaskViewConfigurations]
 (
@@ -31812,11 +31810,9 @@ GO
 ALTER TABLE [dbo].[VirtualServices] CHECK CONSTRAINT [FK_VirtualServices_Services]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetSearchObject]    Script Date: 07.09.2015 15:29:17 ******/
 DROP PROCEDURE [dbo].[GetSearchObject]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetSearchObject]    Script Date: 07.09.2015 15:29:17 ******/
 SET ANSI_NULLS ON
 GO
 

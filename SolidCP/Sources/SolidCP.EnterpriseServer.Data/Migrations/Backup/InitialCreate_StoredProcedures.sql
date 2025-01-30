@@ -13572,7 +13572,6 @@ GO
 SET QUOTED_IDENTIFIER OFF
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetScheduleTaskViewConfigurations]    Script Date: 09/10/2007 17:53:56 ******/
 
 CREATE PROCEDURE [dbo].[GetScheduleTaskViewConfigurations]
 (

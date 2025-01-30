@@ -11360,523 +11360,393 @@ GO
 
 -- REMOVE ECOMMERCE 
 
-/****** Object:  StoredProcedure [dbo].[ecWriteSupportedPluginLog]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecWriteSupportedPluginLog]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecWriteSupportedPluginLog]
 GO
-/****** Object:  StoredProcedure [dbo].[ecVoidCustomerInvoice]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecVoidCustomerInvoice]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecVoidCustomerInvoice]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateTopLevelDomain]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateTopLevelDomain]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateTopLevelDomain]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateTaxation]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateTaxation]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateTaxation]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateSystemTrigger]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateSystemTrigger]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateSystemTrigger]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateServiceHandlersResponses]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateServiceHandlersResponses]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateServiceHandlersResponses]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateInvoice]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateInvoice]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateInvoice]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateHostingPlanSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateHostingPlanSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateHostingPlanSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateHostingPlan]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateHostingPlan]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateHostingPlan]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateHostingAddonSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateHostingAddonSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateHostingAddonSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateHostingAddon]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateHostingAddon]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateHostingAddon]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateDomainNameSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateDomainNameSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateDomainNameSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateCustomerPayment]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateCustomerPayment]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateCustomerPayment]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateContract]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateContract]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateContract]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateCategory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateCategory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecUpdateBillingCycle]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecUpdateBillingCycle]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecUpdateBillingCycle]
 GO
-/****** Object:  StoredProcedure [dbo].[ecSetSvcsUsageRecordsClosed]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSetSvcsUsageRecordsClosed]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecSetSvcsUsageRecordsClosed]
 GO
-/****** Object:  StoredProcedure [dbo].[ecSetStoreSettings]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSetStoreSettings]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecSetStoreSettings]
 GO
-/****** Object:  StoredProcedure [dbo].[ecSetPluginProperties]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSetPluginProperties]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecSetPluginProperties]
 GO
-/****** Object:  StoredProcedure [dbo].[ecSetPaymentProfile]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSetPaymentProfile]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecSetPaymentProfile]
 GO
-/****** Object:  StoredProcedure [dbo].[ecSetPaymentMethod]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSetPaymentMethod]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecSetPaymentMethod]
 GO
-/****** Object:  StoredProcedure [dbo].[ecSetInvoiceItemProcessed]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSetInvoiceItemProcessed]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecSetInvoiceItemProcessed]
 GO
-/****** Object:  StoredProcedure [dbo].[ecPaymentProfileExists]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecPaymentProfileExists]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecPaymentProfileExists]
 GO
-/****** Object:  StoredProcedure [dbo].[ecLookupForTransaction]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecLookupForTransaction]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecLookupForTransaction]
 GO
-/****** Object:  StoredProcedure [dbo].[ecIsSupportedPluginActive]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecIsSupportedPluginActive]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecIsSupportedPluginActive]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetWholeCategoriesSet]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetWholeCategoriesSet]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetWholeCategoriesSet]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetUnpaidInvoices]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetUnpaidInvoices]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetUnpaidInvoices]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetTopLevelDomainsPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetTopLevelDomainsPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetTopLevelDomainsPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetTopLevelDomainCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetTopLevelDomainCycles]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetTopLevelDomainCycles]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetTopLevelDomain]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetTopLevelDomain]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetTopLevelDomain]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetTaxationsPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetTaxationsPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetTaxationsPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetTaxationsCount]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetTaxationsCount]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetTaxationsCount]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetTaxation]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetTaxation]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetTaxation]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetSystemTrigger]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetSystemTrigger]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetSystemTrigger]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetSvcsSuspendDateAligned]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetSvcsSuspendDateAligned]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetSvcsSuspendDateAligned]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetSupportedPluginsByGroup]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetSupportedPluginsByGroup]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetSupportedPluginsByGroup]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetSupportedPluginByID]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetSupportedPluginByID]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetSupportedPluginByID]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetSupportedPlugin]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetSupportedPlugin]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetSupportedPlugin]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStoreSettings]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStoreSettings]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStoreSettings]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontProductsInCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontProductsInCategory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontProductsInCategory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontProductsByType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontProductsByType]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontProductsByType]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontProduct]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontProduct]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontProduct]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontPath]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontPath]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontPath]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontHostingPlanAddons]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontHostingPlanAddons]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontHostingPlanAddons]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontCategory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontCategory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStorefrontCategories]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStorefrontCategories]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStorefrontCategories]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetStoreDefaultSettings]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetStoreDefaultSettings]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetStoreDefaultSettings]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetServiceSuspendDate]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetServiceSuspendDate]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetServiceSuspendDate]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetServicesToInvoice]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetServicesToInvoice]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetServicesToInvoice]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetServiceItemType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetServiceItemType]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetServiceItemType]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetServiceHandlersResponsesByReseller]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetServiceHandlersResponsesByReseller]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetServiceHandlersResponsesByReseller]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetResellerTopLevelDomain]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetResellerTopLevelDomain]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetResellerTopLevelDomain]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetResellerPMPlugin]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetResellerPMPlugin]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetResellerPMPlugin]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetResellerPaymentMethods]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetResellerPaymentMethods]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetResellerPaymentMethods]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetResellerPaymentMethod]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetResellerPaymentMethod]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetResellerPaymentMethod]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductTypeControl]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductTypeControl]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductTypeControl]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductType]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductType]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductsPagedByType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductsPagedByType]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductsPagedByType]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductsCountByType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductsCountByType]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductsCountByType]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductsByType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductsByType]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductsByType]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductHighlights]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductHighlights]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductHighlights]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductCategoriesIds]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductCategoriesIds]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductCategoriesIds]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetProductCategories]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetProductCategories]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetProductCategories]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetPluginProperties]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetPluginProperties]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetPluginProperties]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetPaymentProfile]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetPaymentProfile]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetPaymentProfile]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetPaymentMethod]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetPaymentMethod]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetPaymentMethod]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetInvoicesItemsToActivate]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetInvoicesItemsToActivate]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetInvoicesItemsToActivate]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetInvoicesItemsOverdue]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetInvoicesItemsOverdue]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetInvoicesItemsOverdue]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingPlansTaken]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingPlansTaken]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingPlansTaken]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingPlanCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingPlanCycles]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingPlanCycles]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingPlan]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingPlan]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingPlan]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingPackageSvcHistory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingPackageSvcHistory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingPackageSvcHistory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingPackageSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingPackageSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingPackageSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingAddonSvcHistory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingAddonSvcHistory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingAddonSvcHistory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingAddonSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingAddonSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingAddonSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingAddonsTaken]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingAddonsTaken]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingAddonsTaken]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingAddonCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingAddonCycles]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingAddonCycles]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetHostingAddon]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetHostingAddon]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetHostingAddon]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetDomainNameSvcHistory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetDomainNameSvcHistory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetDomainNameSvcHistory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetDomainNameSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetDomainNameSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetDomainNameSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomerTaxation]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomerTaxation]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomerTaxation]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomersServicesPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomersServicesPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomersServicesPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomersServicesCount]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomersServicesCount]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomersServicesCount]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomersPaymentsPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomersPaymentsPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomersPaymentsPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomersPaymentsCount]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomersPaymentsCount]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomersPaymentsCount]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomersInvoicesPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomersInvoicesPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomersInvoicesPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomersInvoicesCount]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomersInvoicesCount]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomersInvoicesCount]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomerService]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomerService]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomerService]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomerPayment]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomerPayment]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomerPayment]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomerInvoiceItems]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomerInvoiceItems]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomerInvoiceItems]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomerInvoice]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomerInvoice]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomerInvoice]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCustomerContract]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCustomerContract]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCustomerContract]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetContract]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetContract]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetContract]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCategory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCategory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCategoriesPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCategoriesPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCategoriesPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetCategoriesCount]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetCategoriesCount]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetCategoriesCount]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetBillingCyclesPaged]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetBillingCyclesPaged]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetBillingCyclesPaged]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetBillingCyclesFree]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetBillingCyclesFree]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetBillingCyclesFree]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetBillingCyclesCount]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetBillingCyclesCount]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetBillingCyclesCount]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetBillingCycle]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetBillingCycle]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetBillingCycle]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetAddonProductsIds]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetAddonProductsIds]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetAddonProductsIds]
 GO
-/****** Object:  StoredProcedure [dbo].[ecGetAddonProducts]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecGetAddonProducts]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecGetAddonProducts]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteTaxation]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteTaxation]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteTaxation]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteSystemTrigger]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteSystemTrigger]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteSystemTrigger]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteProduct]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteProduct]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteProduct]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeletePaymentProfile]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeletePaymentProfile]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeletePaymentProfile]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeletePaymentMethod]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeletePaymentMethod]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeletePaymentMethod]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteCustomerService]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteCustomerService]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteCustomerService]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteCustomerPayment]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteCustomerPayment]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteCustomerPayment]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteContract]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteContract]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteContract]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteCategory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteCategory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecDeleteBillingCycle]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDeleteBillingCycle]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecDeleteBillingCycle]
 GO
-/****** Object:  StoredProcedure [dbo].[ecCheckCustomerContractExists]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecCheckCustomerContractExists]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecCheckCustomerContractExists]
 GO
-/****** Object:  StoredProcedure [dbo].[ecChangeHostingPlanSvcCycle]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecChangeHostingPlanSvcCycle]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecChangeHostingPlanSvcCycle]
 GO
-/****** Object:  StoredProcedure [dbo].[ecBulkServiceDelete]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecBulkServiceDelete]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecBulkServiceDelete]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddTopLevelDomain]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddTopLevelDomain]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddTopLevelDomain]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddTaxation]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddTaxation]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddTaxation]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddSystemTrigger]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddSystemTrigger]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddSystemTrigger]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddServiceUsageRecord]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddServiceUsageRecord]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddServiceUsageRecord]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddServiceHandlerTextResponse]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddServiceHandlerTextResponse]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddServiceHandlerTextResponse]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddInvoice]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddInvoice]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddInvoice]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddHostingPlanSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddHostingPlanSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddHostingPlanSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddHostingPlan]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddHostingPlan]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddHostingPlan]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddHostingAddonSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddHostingAddonSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddHostingAddonSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddHostingAddon]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddHostingAddon]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddHostingAddon]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddDomainNameSvc]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddDomainNameSvc]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddDomainNameSvc]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddCustomerPayment]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddCustomerPayment]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddCustomerPayment]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddContract]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddContract]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddContract]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddCategory]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddCategory]
 GO
-/****** Object:  StoredProcedure [dbo].[ecAddBillingCycle]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddBillingCycle]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[ecAddBillingCycle]
 GO
@@ -11949,159 +11819,120 @@ GO
 IF  EXISTS (SELECT * FROM sys.foreign_keys WHERE object_id = OBJECT_ID(N'[dbo].[FK_ecAddonProducts_ecProduct]') AND parent_object_id = OBJECT_ID(N'[dbo].[ecAddonProducts]'))
 ALTER TABLE [dbo].[ecAddonProducts] DROP CONSTRAINT [FK_ecAddonProducts_ecProduct]
 GO
-/****** Object:  Table [dbo].[ecTopLevelDomainsCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecTopLevelDomainsCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecTopLevelDomainsCycles]
 GO
-/****** Object:  Table [dbo].[ecTopLevelDomains]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecTopLevelDomains]') AND type in (N'U'))
 DROP TABLE [dbo].[ecTopLevelDomains]
 GO
-/****** Object:  Table [dbo].[ecTaxations]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecTaxations]') AND type in (N'U'))
 DROP TABLE [dbo].[ecTaxations]
 GO
-/****** Object:  Table [dbo].[ecSystemTriggers]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSystemTriggers]') AND type in (N'U'))
 DROP TABLE [dbo].[ecSystemTriggers]
 GO
-/****** Object:  Table [dbo].[ecSvcsUsageLog]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSvcsUsageLog]') AND type in (N'U'))
 DROP TABLE [dbo].[ecSvcsUsageLog]
 GO
-/****** Object:  Table [dbo].[ecSupportedPlugins]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSupportedPlugins]') AND type in (N'U'))
 DROP TABLE [dbo].[ecSupportedPlugins]
 GO
-/****** Object:  Table [dbo].[ecSupportedPluginLog]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecSupportedPluginLog]') AND type in (N'U'))
 DROP TABLE [dbo].[ecSupportedPluginLog]
 GO
-/****** Object:  Table [dbo].[ecStoreSettings]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecStoreSettings]') AND type in (N'U'))
 DROP TABLE [dbo].[ecStoreSettings]
 GO
-/****** Object:  Table [dbo].[ecStoreDefaultSettings]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecStoreDefaultSettings]') AND type in (N'U'))
 DROP TABLE [dbo].[ecStoreDefaultSettings]
 GO
-/****** Object:  Table [dbo].[ecServiceHandlersResponses]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecServiceHandlersResponses]') AND type in (N'U'))
 DROP TABLE [dbo].[ecServiceHandlersResponses]
 GO
-/****** Object:  Table [dbo].[ecService]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecService]') AND type in (N'U'))
 DROP TABLE [dbo].[ecService]
 GO
-/****** Object:  Table [dbo].[ecProductTypeControls]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecProductTypeControls]') AND type in (N'U'))
 DROP TABLE [dbo].[ecProductTypeControls]
 GO
-/****** Object:  Table [dbo].[ecProductType]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecProductType]') AND type in (N'U'))
 DROP TABLE [dbo].[ecProductType]
 GO
-/****** Object:  Table [dbo].[ecProductsHighlights]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecProductsHighlights]') AND type in (N'U'))
 DROP TABLE [dbo].[ecProductsHighlights]
 GO
-/****** Object:  Table [dbo].[ecProductCategories]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecProductCategories]') AND type in (N'U'))
 DROP TABLE [dbo].[ecProductCategories]
 GO
-/****** Object:  Table [dbo].[ecProduct]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecProduct]') AND type in (N'U'))
 DROP TABLE [dbo].[ecProduct]
 GO
-/****** Object:  Table [dbo].[ecPluginsProperties]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecPluginsProperties]') AND type in (N'U'))
 DROP TABLE [dbo].[ecPluginsProperties]
 GO
-/****** Object:  Table [dbo].[ecPaymentProfiles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecPaymentProfiles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecPaymentProfiles]
 GO
-/****** Object:  Table [dbo].[ecPaymentMethods]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecPaymentMethods]') AND type in (N'U'))
 DROP TABLE [dbo].[ecPaymentMethods]
 GO
-/****** Object:  Table [dbo].[ecInvoiceItems]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecInvoiceItems]') AND type in (N'U'))
 DROP TABLE [dbo].[ecInvoiceItems]
 GO
-/****** Object:  Table [dbo].[ecInvoice]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecInvoice]') AND type in (N'U'))
 DROP TABLE [dbo].[ecInvoice]
 GO
-/****** Object:  Table [dbo].[ecHostingPlansBillingCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingPlansBillingCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingPlansBillingCycles]
 GO
-/****** Object:  Table [dbo].[ecHostingPlans]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingPlans]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingPlans]
 GO
-/****** Object:  Table [dbo].[ecHostingPackageSvcsCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingPackageSvcsCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingPackageSvcsCycles]
 GO
-/****** Object:  Table [dbo].[ecHostingPackageSvcs]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingPackageSvcs]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingPackageSvcs]
 GO
-/****** Object:  Table [dbo].[ecHostingAddonSvcsCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingAddonSvcsCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingAddonSvcsCycles]
 GO
-/****** Object:  Table [dbo].[ecHostingAddonSvcs]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingAddonSvcs]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingAddonSvcs]
 GO
-/****** Object:  Table [dbo].[ecHostingAddonsCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingAddonsCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingAddonsCycles]
 GO
-/****** Object:  Table [dbo].[ecHostingAddons]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecHostingAddons]') AND type in (N'U'))
 DROP TABLE [dbo].[ecHostingAddons]
 GO
-/****** Object:  Table [dbo].[ecDomainSvcsCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDomainSvcsCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecDomainSvcsCycles]
 GO
-/****** Object:  Table [dbo].[ecDomainSvcs]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecDomainSvcs]') AND type in (N'U'))
 DROP TABLE [dbo].[ecDomainSvcs]
 GO
-/****** Object:  Table [dbo].[ecCustomersPayments]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecCustomersPayments]') AND type in (N'U'))
 DROP TABLE [dbo].[ecCustomersPayments]
 GO
-/****** Object:  Table [dbo].[ecContracts]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecContracts]') AND type in (N'U'))
 DROP TABLE [dbo].[ecContracts]
 GO
-/****** Object:  Table [dbo].[ecCategory]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecCategory]') AND type in (N'U'))
 DROP TABLE [dbo].[ecCategory]
 GO
-/****** Object:  Table [dbo].[ecBillingCycles]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecBillingCycles]') AND type in (N'U'))
 DROP TABLE [dbo].[ecBillingCycles]
 GO
-/****** Object:  Table [dbo].[ecAddonProducts]    Script Date: 6/11/2015 8:14:20 PM ******/
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ecAddonProducts]') AND type in (N'U'))
 DROP TABLE [dbo].[ecAddonProducts]
 GO
-/****** Object:  View [dbo].[ServiceHandlersResponsesDetailed]    Script Date: 6/16/2015 6:26:54 AM ******/
 IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ServiceHandlersResponsesDetailed]'))
 DROP VIEW [dbo].[ServiceHandlersResponsesDetailed]
 GO
-/****** Object:  View [dbo].[ContractsServicesDetailed]    Script Date: 6/16/2015 6:26:54 AM ******/
 IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ContractsServicesDetailed]'))
 DROP VIEW [dbo].[ContractsServicesDetailed]
 GO
-/****** Object:  View [dbo].[ContractsInvoicesDetailed]    Script Date: 6/16/2015 6:26:54 AM ******/
 IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[ContractsInvoicesDetailed]'))
 DROP VIEW [dbo].[ContractsInvoicesDetailed]
 GO
@@ -13200,11 +13031,9 @@ END
 RETURN
 GO
 -- Search fix
-/****** Object:  StoredProcedure [dbo].[GetSearchObject]    Script Date: 07.09.2015 15:29:17 ******/
 DROP PROCEDURE [dbo].[GetSearchObject]
 GO
 
-/****** Object:  StoredProcedure [dbo].[GetSearchObject]    Script Date: 07.09.2015 15:29:17 ******/
 SET ANSI_NULLS ON
 GO
 
