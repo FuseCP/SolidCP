@@ -476,7 +476,11 @@ namespace SolidCP.UniversalInstaller.Core
 				}, TaskContinuationOptions.NotOnRanToCompletion);
 				//
 
-				downloadFileTask.Start();
+				try
+				{
+					downloadFileTask.Start();
+				}
+				catch { }
 			}
 			catch (AggregateException ae)
 			{
@@ -562,7 +566,7 @@ namespace SolidCP.UniversalInstaller.Core
 		private static void GetLocalStorageInfo(out string dataFolder, out string tmpFolder)
 		{
 			dataFolder = FileUtils.GetDataDirectory();
-			tmpFolder = FileUtils.GetTempDirectory();
+			tmpFolder = Installer.Current.ComponentTempPath; //FileUtils.GetTempDirectory(); + "\Component"
 		}
 
 		private void UnzipFile(string zipFile, string destFolder, Func<string, bool> filter = null)

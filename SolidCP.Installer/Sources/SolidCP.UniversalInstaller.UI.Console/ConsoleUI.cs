@@ -632,16 +632,33 @@ Configure Certificate Manually:
 			{
 				Pages.Add(() =>
 				{
-					var form = new ConsoleForm($@"
-Successful Installation:
-========================
+					if (!Installer.Current.HasError)
+					{
+						var form = new ConsoleForm($@"
+Successful Installation
+=======================
 
 SolidCP Installer successfully has:
 {string.Join(NewLine, Installer.Current.InstallLogs
-	.Select(line => $"- {line}"))}
+		.Select(line => $"- {line}"))}
 
 [  Finish  ]")
 						.ShowDialog();
+					} else
+					{
+						var form = new ConsoleForm($@"
+Installation Failed
+===================
+
+Installation of {Settings.Installer.Component.Component} failed. Any changes have been rolled back.
+Exception Message: {Installer.Error.SourceException.Message}
+
+[  Finish  ]")
+						.ShowDialog();
+					}
+					Installer.Current.UpdateSettings();
+					Installer.Current.Cleanup();
+
 					UI.RunMainUI();
 					UI.Exit();
 				});

@@ -13,13 +13,13 @@ namespace SolidCP.UniversalInstaller
 		protected Installer Installer { get; private set; }
 		protected ExceptionDispatchInfo Error { get => Installer.Error; set => Installer.Error = value; }
 		protected IEnumerable<Action> Undos { get => Installer.Undos; set => Installer.Undos = value; }
-
+		protected bool HasError => Installer.HasError;
 		public Transaction(Installer installer) => Installer = installer;
 
 		public void WithRollback(params IEnumerable<Action> actions)
 		{
 			Undos = actions = actions.Concat(Undos);
-			if (Error != null)
+			if (HasError)
 			{
 				Installer.OnError?.Invoke(Error.SourceException);
 
@@ -40,6 +40,7 @@ namespace SolidCP.UniversalInstaller
 	{
 		public CancellationTokenSource Cancel { get; set; } = new CancellationTokenSource();
 		public ExceptionDispatchInfo Error { get; set; } = null;
+		public bool HasError => Error != null || Cancel.IsCancellationRequested;
 		public IEnumerable<Action> Undos { get; set; } = Enumerable.Empty<Action>();
 		public Transaction Transaction(params IEnumerable<Action> actions)
 		{

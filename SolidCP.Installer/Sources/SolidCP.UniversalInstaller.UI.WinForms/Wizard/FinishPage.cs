@@ -53,7 +53,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			base.OnBeforeDisplay(e);
 			var logs = Installer.Current.InstallLogs;
-			if (Installer.Current.Error != null)
+			if (Installer.Current.HasError)
 			{
 				this.Text = "Setup failed";
 				txtLog.Text = Installer.Current.Error.SourceException.ToString();
@@ -61,9 +61,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 			} else
 			{
 				this.Text = "Setup complete";
-				logs.Insert(0, "The Installer has:");
-				this.txtLog.Text = string.Join(Environment.NewLine, Installer.Current.InstallLogs
-					.Select(log => "- " + log));
+				this.txtLog.Text = string.Join(Environment.NewLine,
+					new[] { "The Installer has:" }
+					.Concat(Installer.Current.InstallLogs.Select(log => "- " + log)));
 				//ParentForm.DialogResult = DialogResult.OK;
 			}
 			this.Description = "Click Finish to exit the wizard.";
@@ -81,7 +81,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 		
 		private void OnLinkClicked(object sender, LinkClickedEventArgs e)
 		{
-			Process.Start(e.LinkText);
+			var startInfo = new ProcessStartInfo(e.LinkText);
+			startInfo.UseShellExecute = true;
+			startInfo.Verb = "open";
+			Process.Start(startInfo);
 		}
 
 		private void OnViewLogLinkClicked(object sender, LinkLabelLinkClickedEventArgs e)

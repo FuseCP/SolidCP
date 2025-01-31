@@ -61,14 +61,16 @@ public partial class InstallerForm : Form
 
 	private void OnWizardCancel(object sender, EventArgs e)
 	{
+		Installer.Current.Cancel.Cancel();
 		this.DialogResult = DialogResult.Cancel;
 		Close();
 	}
 
 	private void OnWizardFinish(object sender, EventArgs e)
 	{
-		if (Installer.Current.Error == null) this.DialogResult = DialogResult.OK;
-		else this.DialogResult = DialogResult.Abort;
+		if (!Installer.Current.HasError) this.DialogResult = DialogResult.OK;
+		else if (!Installer.Current.Cancel.IsCancellationRequested) this.DialogResult = DialogResult.Abort;
+		else this.DialogResult = DialogResult.Cancel;
 		Close();
 	}
 

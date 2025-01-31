@@ -40,8 +40,15 @@ public abstract partial class Installer
 	public virtual bool CanInstallPortal => true;
 	public virtual string InstallerSettingsFile => "installer.settings.json";
 	public virtual string CertificateFolder => "Certificates";
+	public virtual string TempPath => Settings.Installer.TempPath;
+	public virtual string BackupPath => Path.Combine(TempPath, "Backup");
+	public virtual string ComponentTempPath => Path.Combine(TempPath, "Component");
 	public virtual bool IsWindows => OSInfo.IsWindows;
 	public virtual bool IsUnix => OSInfo.IsUnix;
+	public virtual bool IsInstallAction => Settings.Installer.Action == SetupActions.Install;
+	public virtual bool IsUpdateAction => Settings.Installer.Action == SetupActions.Update;
+	public virtual bool IsSetupAction => Settings.Installer.Action == SetupActions.Setup;
+	public virtual bool IsUninstallAction => Settings.Installer.Action == SetupActions.Uninstall;
 	public Action OnExit { get; set; }
 	public Action<Exception> OnError { get; set; }
 
@@ -135,7 +142,7 @@ public abstract partial class Installer
 	public void SaveSettings()
 	{
 		var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
-		var tempPath = Settings.Installer.TempPath;
+		var tempPath = TempPath;
 		Settings.Installer.TempPath = null;
 		Settings.Installer.Version = null;
 		Settings.Installer.UI = null;
@@ -146,37 +153,45 @@ public abstract partial class Installer
 		Settings.Installer.Version = Version;
 		File.WriteAllText(path, json);
 	}
-	public void UpdateSettings(bool success = true)
+	public void UpdateSettings()
 	{
-		if (Settings.Installer.Component != null && success)
+		if (HasError) return;
+
+		if (Settings.Installer.Component != null)
 		{
-			if (Settings.Installer.Action != SetupActions.Uninstall &&
-				Settings.Installer.Action != SetupActions.Setup)
+			ComponentInfo component;
+			switch (Settings.Installer.Action)
 			{
-				if (Error == null) Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
+				case SetupActions.Install:
+					Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
+					break;
+				case SetupActions.Uninstall:
+					component = Settings.Installer.InstalledComponents
+						.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
+					if (component != null) Settings.Installer.InstalledComponents.Remove(component);
+					break;
+				case SetupActions.Setup:
+					break;
+				case SetupActions.Update:
+					component = Settings.Installer.InstalledComponents
+						.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
+					if (component != null) Settings.Installer.InstalledComponents.Remove(component);
+					Settings.Installer.InstalledComponents.Add(Settings.Installer.Component);
+					break;
 			}
-			else if (Settings.Installer.Action == SetupActions.Uninstall)
-			{
-				var component = Settings.Installer.InstalledComponents
-					.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
-				if (component != null) Settings.Installer.InstalledComponents.Remove(component);
-			}
-			else
-			{
-				var component = Settings.Installer.InstalledComponents
-					.FirstOrDefault(c => c.ComponentCode == Settings.Installer.Component.ComponentCode);
-				var index = Settings.Installer.InstalledComponents.IndexOf(component);
-				if (index >= 0)
-				{
-					Settings.Installer.InstalledComponents.RemoveAt(index);
-					Settings.Installer.InstalledComponents.Insert(index, Settings.Installer.Component);
-				}
-			}
+			Settings.Installer.Component = null;
+			SaveSettings();
 		}
+	}
+
+	public virtual void Cleanup()
+	{
+		if (Directory.Exists(BackupPath)) Directory.Delete(BackupPath, true);
 		Settings.Installer.Component = null;
 		Error = null;
-		SaveSettings();
+		Cancel = new CancellationTokenSource();
 	}
+
 	public bool RunSetup(ComponentInfo info, SetupActions action)
 	{
 		Settings.Installer.Component = info;
@@ -202,7 +217,7 @@ public abstract partial class Installer
 		try
 		{
 			// download installer
-			var tmpFolder = Settings.Installer.TempPath;
+			var tmpFolder = ComponentTempPath;
 
 			if (UI.Current.DownloadSetup(file, action == SetupActions.Uninstall))
 			{
@@ -460,18 +475,60 @@ public abstract partial class Installer
 	}
 	public virtual string StandardInstallFilter(string file) => SetupFilter(file);
 	public virtual string StandardUpdateFilter(string file) => ConfigAndSetupFilter(file);
+
+	public virtual void CopyFile(string source, string destination, bool settings = false)
+	{
+		if (File.Exists(source))
+		{
+			File.Copy(source, destination, true);
+			if (settings)
+			{
+				if (IsUnix)
+				{
+					string owner, group;
+					OSInfo.Unix.GetUnixFileOwner(source, out owner, out group);
+					OSInfo.Unix.ChangeUnixFileOwner(destination, owner, group);
+					var mode = OSInfo.Unix.GetUnixPermissions(source);
+					OSInfo.Unix.GrantUnixPermissions(destination, mode);
+				} else if (IsWindows)
+				{
+					var sourceInfo = new FileInfo(source);
+					var acl = sourceInfo.GetAccessControl();
+					acl.SetAccessRuleProtection(true, true);
+					var destInfo = new FileInfo(destination);
+					destInfo.SetAccessControl(acl);
+				}
+			}
+			Log.ProgressOne();
+		}
+	}
+
 	public void CopyFiles(string source, string destination,
-		Func<string, string> filter = null, string root = null, string destroot = null)
+		Func<string, string> filter = null, string root = null, string destroot = null, bool settings = false)
 	{
 		if (root == null && destroot == null)
 		{
 			Info("Copy files...");
+			if (IsUpdateAction)
+			{
+				// Create backup
+				if (Directory.Exists(BackupPath)) Directory.Delete(BackupPath, true);
+				CopyFiles(destination, BackupPath, null, destination, BackupPath, true);
+			}
 			Transaction(() =>
 			{
 				CopyFiles(source, destination, filter, source, destination);
 				InstallLog("Unzipped & installed distribution files");
 			})
-				.WithRollback(() => Directory.Delete(destination, true));
+				.WithRollback(() =>
+				{
+					Directory.Delete(destination, true);
+					if (IsUpdateAction)
+					{
+						// Restore backup
+						CopyFiles(BackupPath, destination, null, source, BackupPath, true);
+					}
+				});
 		}
 		else
 		{
@@ -490,6 +547,25 @@ public abstract partial class Installer
 			if (Directory.Exists(source))
 			{
 				if (!Directory.Exists(destination)) Directory.CreateDirectory(destination);
+				if (settings)
+				{ // Copy security settings
+					if (IsUnix)
+					{
+						string owner, group;
+						OSInfo.Unix.GetUnixFileOwner(source, out owner, out group);
+						OSInfo.Unix.ChangeUnixFileOwner(destination, owner, group);
+						var mode = OSInfo.Unix.GetUnixPermissions(source);
+						OSInfo.Unix.GrantUnixPermissions(destination, mode);
+					}
+					else if (IsWindows)
+					{
+						var sourceInfo = new DirectoryInfo(source);
+						var acl = sourceInfo.GetAccessControl();
+						acl.SetAccessRuleProtection(true, true);
+						var destInfo = new DirectoryInfo(destination);
+						destInfo.SetAccessControl(acl);
+					}
+				}
 				foreach (var file in Directory.GetFiles(source))
 				{
 					var name = Path.GetFileName(file);
@@ -503,7 +579,15 @@ public abstract partial class Installer
 			}
 			else if (File.Exists(source))
 			{
-				File.Copy(source, destination);
+				File.Copy(source, destination, true);
+				if (settings)
+				{
+					if (IsUnix)
+					{
+						var mode = OSInfo.Unix.GetUnixPermissions(source);
+						OSInfo.Unix.GrantUnixPermissions(destination, mode);
+					}
+				}
 				Log.ProgressOne();
 			}
 		}
@@ -608,7 +692,7 @@ public abstract partial class Installer
 
 	public virtual void WaitForDownloadToComplete()
 	{
-		var progressFile = Path.Combine(Settings.Installer.TempPath, SetupLoader.DownloadProgressFile);
+		var progressFile = Path.Combine(TempPath, SetupLoader.DownloadProgressFile);
 		int n = 0;
 		var info = new FileInfo(progressFile);
 		while (info.Exists)

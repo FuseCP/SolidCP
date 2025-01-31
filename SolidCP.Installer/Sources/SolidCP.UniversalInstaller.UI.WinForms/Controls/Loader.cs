@@ -181,7 +181,11 @@ namespace SolidCP.UniversalInstaller.Controls
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DetachEventHandlers();
+
+            Installer.Current.Cancel.Cancel();
+
             Log.WriteInfo("Execution was canceled by user");
+            DialogResult = DialogResult.Cancel;
             Close();
         }
 

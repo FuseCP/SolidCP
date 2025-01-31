@@ -88,7 +88,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			filter ??= SetupFilter;
 			var websitePath = InstallWebRootPath;
-			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, filter);
 		}
 	}
 }

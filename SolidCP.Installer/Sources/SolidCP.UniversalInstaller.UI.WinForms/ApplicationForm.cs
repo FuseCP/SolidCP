@@ -42,8 +42,10 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 using Microsoft.Win32;
 using System.Xml;
+using SolidCP.Providers.OS;
 using SolidCP.UniversalInstaller.Controls;
 #if NETFRAMEWORK
 using System.Runtime.Remoting.Lifetime;
@@ -283,6 +285,11 @@ namespace SolidCP.UniversalInstaller
 				componentsNode.Nodes.Clear();
 				componentsNode.Populated = false;
 				OnScopeTreeAfterSelect(scopeTree, new TreeViewEventArgs(componentsNode));
+				var components = pnlResultView.Controls
+					.OfType<ComponentsControl>()
+					.FirstOrDefault();
+				if (components != null) components.StartLoadingComponents();
+
 			}
 		}
 
@@ -573,6 +580,8 @@ namespace SolidCP.UniversalInstaller
 
 		private void OnApplicationFormShown(object sender, EventArgs e)
 		{
+			if (OSInfo.IsWindows) ConsoleExtension.Hide();
+
 			StartUnattendedSetup();
 		}
 

@@ -626,13 +626,13 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			details = string.Empty;
 
-			if (string.IsNullOrEmpty(Installer.Current.Settings.Installer.TempPath))
+			if (string.IsNullOrEmpty(Installer.Current.ComponentTempPath))
 			{
 				details = "Installation folder is not specified.";
 				return false;
 			}
 
-			long spaceRequired = FileUtils.CalculateFolderSize(Installer.Current.Settings.Installer.TempPath);
+			long spaceRequired = FileUtils.CalculateFolderSize(Installer.Current.ComponentTempPath);
 			
 			string drive = null;
 			try

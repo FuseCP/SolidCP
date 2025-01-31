@@ -33,6 +33,7 @@ namespace SolidCP.UniversalInstaller
 			SetServerFileOwner();
 			ConfigureServer();
 			InstallServerWebsite();
+			UpdateSettings();
 		}
 		public virtual void UpdateServer()
 		{
@@ -43,13 +44,19 @@ namespace SolidCP.UniversalInstaller
 			UpdateServerConfig();
 			ConfigureServer();
 			InstallServerWebsite();
+			UpdateSettings();
 		}
-
+		public virtual void SetupServer()
+		{
+			ConfigureServer();
+			UpdateSettings();
+		}
 		public virtual void RemoveServer()
 		{
 			//RemoveServerPrerequisites();
 			RemoveServerWebsite();
 			RemoveServerFolder();
+			UpdateSettings();
 		}
 
 		public virtual void InstallServerUser() { }
@@ -267,7 +274,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			filter ??= SetupFilter;
 			var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, filter);
 		}
 		public virtual int InstallServerMaxProgress => 100;
 		public virtual int UninstallServerMaxProgress => 100;

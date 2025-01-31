@@ -30,55 +30,66 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using System;
 using System.ServiceProcess;
 using System.Threading;
 using SolidCP.EnterpriseServer;
 
-namespace SolidCP.SchedulerService
+namespace SolidCP.SchedulerService;
+
+
+#if NETCOREAPP
+public class ServiceBase {
+    protected virtual void OnStart(string[] args) { }
+
+    public static void Run(ServiceBase[] services) {
+        foreach (var service in services) service.OnStart(Environment.GetCommandLineArgs());
+    }    
+}
+#endif
+
+public partial class SchedulerService : ServiceBase
 {
-    public partial class SchedulerService : ServiceBase
+    private Timer _Timer;
+    private static object _isRuninng;
+    #region Construcor
+
+    public SchedulerService()
     {
-        private Timer _Timer;
-        private static object _isRuninng;
-        #region Construcor
+        _isRuninng = new object();
 
-        public SchedulerService()
-        {
-            _isRuninng = new object();
+        InitializeComponent();
 
-            InitializeComponent();
-
-            _Timer = new Timer(Process, null, 5000, 5000);
-        }
-
-        #endregion
-
-        #region Methods
-
-        protected override void OnStart(string[] args)
-        {
-        }
-
-        protected static void Process(object callback)
-        {
-            //check running service
-            if (!Monitor.TryEnter(_isRuninng))
-                return;
-
-            try
-            {
-                using (var scheduler = new Scheduler())
-                {
-                    scheduler.Start();
-                }
-            }
-            finally
-            {
-                Monitor.Exit(_isRuninng);
-            }
-
-        }
-
-        #endregion
+        _Timer = new Timer(Process, null, 5000, 5000);
     }
+
+    #endregion
+
+    #region Methods
+
+    protected override void OnStart(string[] args)
+    {
+    }
+
+    protected static void Process(object callback)
+    {
+        //check running service
+        if (!Monitor.TryEnter(_isRuninng))
+            return;
+
+        try
+        {
+            using (var scheduler = new Scheduler())
+            {
+                scheduler.Start();
+            }
+        }
+        finally
+        {
+            Monitor.Exit(_isRuninng);
+        }
+
+    }
+
+    #endregion
 }

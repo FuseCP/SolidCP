@@ -164,7 +164,9 @@ namespace SolidCP.UniversalInstaller
 				.Select(release => ReleaseComponentsAsync(release));
 			var component = (await Task.WhenAll(componentTasks))
 				.SelectMany(component => component)
-				.FirstOrDefault(component => component.Component.ReleaseFileId == file.Release.ReleaseFileId);
+				.FirstOrDefault(component => component.Component.Version == file.Release.Version &&
+					component.Component.FullFilePath == file.Release.FullFilePath &&
+					component.Component.UpgradeFilePath == file.Release.UpgradeFilePath);
 			var filename = file.FullFile ? component.Component.FullFilePath : component.Component.UpgradeFilePath;
 			filename = filename.Split('/').LastOrDefault();
 			var url = component.Release.Assets.FirstOrDefault(asset => asset.Name.EndsWith(filename))?.Url;

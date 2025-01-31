@@ -358,6 +358,12 @@ namespace SolidCP.Providers.OS
 				}
 			}
 		}
+		public void GetUnixFileOwner(string file, out string owner, out string group)
+		{
+			var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(file));
+			owner = info.OwnerUser.UserName;
+			group = info.OwnerGroup.GroupName;
+		}
 		public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
 		{
 			throw new NotImplementedException();

@@ -31,20 +31,32 @@ namespace SolidCP.UniversalInstaller
 			SetEnterpriseServerFileOwner();
 			InstallDatabase();
 			ConfigureEnterpriseServer();
+			InstallSchedulerService();
 			InstallEnterpriseServerWebsite();
+			UpdateSettings();
 		}
 		public virtual void UpdateEnterpriseServer()
 		{
 			ResetEstimatedOutputLines();
 			CountUpdateDatabaseStatements();
 			InstallEnterpriseServerPrerequisites();
+			RemoveSchedulerService();
+			DisableEnterpriseServerWebsite();
 			CopyEnterpriseServer(StandardUpdateFilter);
 			SetEnterpriseServerFilePermissions();
 			SetEnterpriseServerFileOwner();
 			UpdateEnterpriseServerConfig();
 			ConfigureEnterpriseServer();
 			UpdateDatabase();
-			InstallEnterpriseServerWebsite();
+			EnableEnterpriseServerWebsite();
+			InstallSchedulerService();
+			UpdateSettings();
+		}
+		public void SetupEnterpriseServer()
+		{
+			ResetEstimatedOutputLines();
+			ConfigureEnterpriseServer();
+			UpdateSettings();
 		}
 		public virtual void UpdateEnterpriseServerConfig() { }
 
@@ -74,13 +86,15 @@ namespace SolidCP.UniversalInstaller
 		}
 
 
-		public virtual void UpdateDatabase() {
+		public virtual void UpdateDatabase()
+		{
 			Info("Update Database");
 			var settings = Settings.EnterpriseServer;
 			var connstr = settings.DbInstallConnectionString;
 			InstallLog("Updated Database");
 		}
-		public virtual void DeleteDatabase() {
+		public virtual void DeleteDatabase()
+		{
 			Info("Delete Database");
 			var settings = Settings.EnterpriseServer;
 			var connstr = settings.DbInstallConnectionString;
@@ -120,6 +134,12 @@ namespace SolidCP.UniversalInstaller
 				Settings.EnterpriseServer.Urls ?? "",
 				"", "");
 		}
+
+		public virtual void EnableEnterpriseServerWebsite() { }
+		public virtual void DisableEnterpriseServerWebsite() { }
+
+		public virtual void InstallSchedulerService() { }
+		public virtual void RemoveSchedulerService() { }
 		public virtual void RemoveEnterpriseServerWebsite() { }
 		public virtual void RemoveEnterpriseServerFolder()
 		{
@@ -183,7 +203,7 @@ namespace SolidCP.UniversalInstaller
 			var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "web.config");
 
 			if (!File.Exists(confFile)) return;
-			
+
 			var configuration = XElement.Load(confFile);
 
 			// server certificate
@@ -262,14 +282,15 @@ namespace SolidCP.UniversalInstaller
 
 			InstallLog("Configured Enterprise Server.");
 		}
-		public virtual void ConfigureEnterpriseServer(bool standalone = false) {
+		public virtual void ConfigureEnterpriseServer(bool standalone = false)
+		{
 			ConfigureEnterpriseServerNetFX();
 		}
 		public virtual void CopyEnterpriseServer(Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
 			var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
-			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, filter);
 		}
 	}
 }

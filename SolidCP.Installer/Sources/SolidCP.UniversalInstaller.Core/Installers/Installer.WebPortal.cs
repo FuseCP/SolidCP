@@ -82,7 +82,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			filter ??= SetupFilter;
 			var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
-			CopyFiles(Settings.Installer.TempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, filter);
 		}
 		public virtual int InstallWebPortalMaxProgress => 100;
 		public virtual int UninstallWebPortalMaxProgress => 100;

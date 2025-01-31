@@ -189,17 +189,22 @@ namespace SolidCP.UniversalInstaller.Controls
             }
         }
 
-        /// <summary>
-        /// Start new thread to load components
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnLoadComponentsClick(object sender, EventArgs e)
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+            StartLoadingComponents();
+		}
+		/// <summary>
+		/// Start new thread to load components
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnLoadComponentsClick(object sender, EventArgs e)
         {
             StartLoadingComponents();
         }
 
-        private void StartLoadingComponents()
+        public void StartLoadingComponents()
         {
             //load list of available components in the separate thread
             AppContext.AppForm.StartAsyncProgress("Connecting...", true);

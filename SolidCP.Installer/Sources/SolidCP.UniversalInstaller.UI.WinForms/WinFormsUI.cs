@@ -107,7 +107,8 @@ namespace SolidCP.UniversalInstaller {
 				UI.EndWaitCursor();
 				IWin32Window owner = UI.MainForm as IWin32Window;
 				var result = Form.ShowModal(owner) == DialogResult.OK;
-				Installer.Current.UpdateSettings(result);
+				Installer.Current.UpdateSettings();
+				Installer.Current.Cleanup();
 				return result;
 			}
 		}
@@ -149,6 +150,7 @@ namespace SolidCP.UniversalInstaller {
 				var mainForm = new ApplicationForm();
 				MainForm = mainForm;
 				mainForm.InitializeApplication();
+
 				Application.Run(mainForm);
 			}
 			catch (Exception ex)
@@ -278,6 +280,9 @@ namespace SolidCP.UniversalInstaller {
 			{
 				return true;
 			}
+
+			Installer.Cleanup();
+			
 			return false;
 		}
 
@@ -288,12 +293,9 @@ namespace SolidCP.UniversalInstaller {
 			Log.WriteInfo(string.Format("Installer returned {0}", res));
 			Log.WriteEnd("Installer finished");
 			(MainForm as Form)?.Update();
-			if (res == Result.OK)
-			{
-				((ApplicationForm)MainForm).ReloadApplication();
-				return true;
-			}
-			return false;
+			((ApplicationForm)MainForm).ReloadApplication();
+
+			return res == Result.OK;
 		}
 
 		public override void ShowWaitCursor() => Cursor.Current = Cursors.WaitCursor;
