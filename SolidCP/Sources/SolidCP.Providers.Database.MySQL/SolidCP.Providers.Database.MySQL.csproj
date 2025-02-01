@@ -2,8 +2,6 @@
 	<PropertyGroup>
 		<RootNamespace>SolidCP.Providers.Database</RootNamespace>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<PublishUrl>publish\</PublishUrl>
-		<WarningsAsErrors>618</WarningsAsErrors>
 		<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>

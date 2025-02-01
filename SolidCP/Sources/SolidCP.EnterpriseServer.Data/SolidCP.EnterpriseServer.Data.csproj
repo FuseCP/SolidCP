@@ -46,22 +46,22 @@
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
         <PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.60" Condition="$(SupportOracle) == 'True'" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="9.103.7" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1"/>
         <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.1" />
         <!-- .NET 9 -->
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
         <PackageReference Include="System.Text.Json" Version="9.0.1" />
-        <PackageReference Include="System.Formats.Asn1" Version="9.0.1" />
+        <PackageReference Include="System.Formats.Asn1" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.1" />
     </ItemGroup>
     
@@ -73,7 +73,7 @@
         <PackageReference Include="EntityFramework" Version="6.5.1" />
         <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="9.103.7" />
         <PackageReference Include="Microsoft.EntityFramework.SqlServer" Version="6.5.1" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="MySql.Data.EntityFramework" Version="9.2.0" />
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.5.0" />
