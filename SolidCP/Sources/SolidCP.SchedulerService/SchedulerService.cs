@@ -44,7 +44,9 @@ public class ServiceBase {
 
     public static void Run(ServiceBase[] services) {
         foreach (var service in services) service.OnStart(Environment.GetCommandLineArgs());
-    }    
+    }
+    protected virtual void Dispose(bool disposing) { }
+    public string ServiceName { get; set; }
 }
 #endif
 

@@ -41,8 +41,8 @@
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.8" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.8" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.8" />
-        <PackageReference Include="System.Web.Services.Description" Version="8.1.0.0" Aliases="SD" />
-        <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.25" />
+        <PackageReference Include="System.Web.Services.Description" Version="8.1.1" Aliases="SD" />
+        <PackageReference Include="ReportViewerCore.NETCore" Version="15.1.26" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net48'">

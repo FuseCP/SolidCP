@@ -97,12 +97,12 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
         <PackageReference Include="System.Text.Json" Version="9.0.1" />
         <PackageReference Include="System.Formats.Asn1" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.2" />
+        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="tinymce\**\*.*" />

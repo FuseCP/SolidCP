@@ -718,7 +718,7 @@ namespace SolidCP.Providers.Utils
 
 		public static void ZipFiles(string zipFile, string rootPath, string[] files)
 		{
-            using (var stream = new FileStream(zipFile, FileMode.Truncate, FileAccess.Write))
+            using (var stream = new FileStream(zipFile, FileMode.Create, FileAccess.Write))
             using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, false, Encoding.UTF8))
             {
                 foreach (string file in files)

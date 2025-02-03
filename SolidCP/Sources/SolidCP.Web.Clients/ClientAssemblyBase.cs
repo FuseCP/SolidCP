@@ -114,7 +114,7 @@ namespace SolidCP.Web.Clients
 		}
 		protected void Invoke(string typeName, string methodName, params object[] parameters)
 		{
-			Invoke<object>(typeName, methodName, null, parameters);
+			Invoke<object>(typeName, methodName, parameters);
 		}
 
 

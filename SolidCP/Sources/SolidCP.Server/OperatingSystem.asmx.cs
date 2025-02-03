@@ -910,6 +910,22 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		[WebMethod, SoapHeader("settings")]
+		public UnixFileOwner GetUnixFileOwner(string path)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetUnixFileOwner", ProviderSettings.ProviderName);
+				var result = UnixProvider.GetUnixFileOwner(path);
+				Log.WriteEnd("'{0}' GetUnixFileOwner", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetUnixFileOwner", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
 		#endregion Unix Permissions
 
 		#region Terminal Services

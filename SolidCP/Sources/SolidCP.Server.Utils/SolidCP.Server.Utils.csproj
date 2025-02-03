@@ -12,11 +12,11 @@
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="System.Diagnostics.EventLog" Version="8.0.1" />
-        <PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-        <PackageReference Include="System.Management" Version="8.0.0" />
+        <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.1" />
+        <PackageReference Include="System.DirectoryServices" Version="9.0.1" />
+        <PackageReference Include="System.Management" Version="9.0.1" />
         <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.1" />
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
     </ItemGroup>
     <ItemGroup>

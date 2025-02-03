@@ -52,9 +52,9 @@
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.1" />
         <PackageReference Include="System.Text.Json" Version="9.0.1" />
-        <PackageReference Include="System.Formats.Asn1" Version="8.0.0" />
+        <PackageReference Include="System.Formats.Asn1" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.1" />
@@ -84,10 +84,10 @@
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
         <PackageReference Include="EntityFramework" Version="6.4.4" />
-        <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="8.103.7" />
+        <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="9.103.7" />
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
         <PackageReference Include="MySql.Data.EntityFramework" Version="9.2.0" />
-        <PackageReference Include="BouncyCastle.Cryptography" Version="2.4.0" />
+        <PackageReference Include="BouncyCastle.Cryptography" Version="2.5.0" />
         <PackageReference Include="EntityFramework6.Npgsql" Version="6.4.3" />
         <PackageReference Include="System.Data.SQLite.EF6" Version="1.0.119" />
         <PackageReference Include="System.Data.SQLite" Version="1.0.119" />
