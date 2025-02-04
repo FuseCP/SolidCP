@@ -571,6 +571,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		internal void FinishProgress()
 		{
+			
 			topLogoControl.HideProgress();
 			progressManager.FinishProgress();
 			EnableContent();

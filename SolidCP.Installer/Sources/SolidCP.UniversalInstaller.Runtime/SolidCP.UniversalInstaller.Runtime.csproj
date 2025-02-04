@@ -24,7 +24,7 @@
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.1" />
         <PackageReference Include="System.ServiceModel.Http" Version="8.1.1" />
-        <PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="System.Management" Version="9.0.1" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="System.Management">

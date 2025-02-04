@@ -3,7 +3,6 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolidCP.EnterpriseServer.Data;
 
@@ -12,11 +11,9 @@ using SolidCP.EnterpriseServer.Data;
 namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 {
     [DbContext(typeof(SqlServerDbContext))]
-    [Migration("20250123142011_InitialCreate")]
-    partial class InitialCreate
+    partial class SqlServerDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -8736,7 +8733,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         new
                         {
                             QuotaId = 750,
-                            GroupId = 36,
+                            GroupId = 33,
                             QuotaDescription = "DMZ Network",
                             QuotaName = "VPS2012.DMZNetworkEnabled",
                             QuotaOrder = 22,

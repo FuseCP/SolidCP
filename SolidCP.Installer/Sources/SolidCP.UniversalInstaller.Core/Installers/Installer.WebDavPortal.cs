@@ -6,6 +6,7 @@ namespace SolidCP.UniversalInstaller
 {
 	public partial class Installer
 	{
+		public virtual string UnixWebDavPortalServiceId => "solidcp-webdavportal";
 		public virtual void InstallWebDavPortalPrerequisites() { }
 		public virtual void RemoveWebDavPortalPrerequisites() { }
 		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(WebDavPortalFolder);
@@ -33,10 +34,15 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void InstallWebDavPortalWebsite()
 		{
+			var web = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
+			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebDavPortal.dll");
 			InstallWebsite($"{SolidCP}WebDavPortal",
-				Path.Combine(InstallWebRootPath, WebDavPortalFolder),
-				Settings.WebDavPortal.Urls ?? "",
-				"", "");
+				web,
+				Settings.WebDavPortal,
+				UnixWebDavPortalServiceId,
+				dll,
+				"SolidCP.WebDavPortal service, the WebDavPortal for the SolidCP control panel.",
+				UnixWebDavPortalServiceId);
 		}
 		public virtual void RemoveWebDavPortalWebsite() { }
 		public virtual void ReadWebDavPortalConfiguration() { }

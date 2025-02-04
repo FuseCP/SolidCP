@@ -20,6 +20,8 @@ namespace SolidCP.UniversalInstaller
 
 	public abstract partial class Installer
 	{
+		public virtual string UnixServerServiceId => "solidcp-server";
+
 		public virtual void InstallServerPrerequisites() { }
 		public virtual void RemoveServerPrerequisites() { }
 
@@ -33,7 +35,7 @@ namespace SolidCP.UniversalInstaller
 			SetServerFileOwner();
 			ConfigureServer();
 			InstallServerWebsite();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 		public virtual void UpdateServer()
 		{
@@ -44,27 +46,40 @@ namespace SolidCP.UniversalInstaller
 			UpdateServerConfig();
 			ConfigureServer();
 			InstallServerWebsite();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 		public virtual void SetupServer()
 		{
 			ConfigureServer();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 		public virtual void RemoveServer()
 		{
 			//RemoveServerPrerequisites();
 			RemoveServerWebsite();
 			RemoveServerFolder();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 
 		public virtual void InstallServerUser() { }
 		public virtual void InstallServerApplicationPool() { }
-		public virtual void InstallServerWebsite() { }
-		public virtual void RemoveServerWebsite() { }
+		public virtual void InstallServerWebsite()
+		{
+			var web = Path.Combine(InstallWebRootPath, ServerFolder);
+			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.Server.dll");
+			InstallWebsite($"{SolidCP}Server", web,
+				Settings.Server,
+				UnixServerServiceId,
+				dll,
+				"SolidCP.Server service, the server management service for the SolidCP control panel.",
+				UnixServerServiceId);
+		}
+		public virtual void RemoveServerWebsite() {
+			RemoveWebsite($"{SolidCP}Server", Settings.Server.Username, Settings.Server.Urls);
+		}
 		public virtual void RemoveServerFolder() {
 			Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
+			InstallLog("Removed Server files");
 		}
 		public virtual void RemoveServerUser() { }
 		public virtual void RemoveServerApplicationPool() { }

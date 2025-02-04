@@ -18,6 +18,7 @@ using Newtonsoft.Json.Converters;
 using static System.Net.Mime.MediaTypeNames;
 using SolidCP.UniversalInstaller.Core;
 using System.Collections;
+using Microsoft.Web.Administration;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -49,6 +50,7 @@ public abstract partial class Installer
 	public virtual bool IsUpdateAction => Settings.Installer.Action == SetupActions.Update;
 	public virtual bool IsSetupAction => Settings.Installer.Action == SetupActions.Setup;
 	public virtual bool IsUninstallAction => Settings.Installer.Action == SetupActions.Uninstall;
+	public virtual string SolidCPUnixGroup => "solidcp";
 	public Action OnExit { get; set; }
 	public Action<Exception> OnError { get; set; }
 
@@ -247,6 +249,8 @@ public abstract partial class Installer
 
 				LoadSettings();
 
+				UI.EndWaitCursor();
+
 				Log.WriteInfo(string.Format("Installer returned {0}", res));
 				Log.WriteEnd("Installer finished");
 
@@ -354,7 +358,8 @@ public abstract partial class Installer
 		}
 	}
 
-	public virtual void InstallWebsite(string name, string path, string urls, string username, string password)
+	public virtual void InstallWebsite(string name, string path, CommonSettings settings,
+		string group, string dll, string description, string serviceId)
 	{
 		/* var remoteServerSettings = new RemoteServerSettings() { ADEnabled = false };
 		// Create web users group
@@ -369,8 +374,8 @@ public abstract partial class Installer
 			ContentPath = path,
 			GroupName = SolidCPWebUsersGroup,
 			AspNetInstalled = "4I",
-			AnonymousUsername = username,
-			AnonymousUserPassword = password,
+			AnonymousUsername = settings.Username ?? "",
+			AnonymousUserPassword = settings.Password ?? "",
 			ApplicationPool = name,
 			DedicatedApplicationPool = true,
 			EnableAnonymousAccess = true,
@@ -380,7 +385,7 @@ public abstract partial class Installer
 			Name = name,
 			LogsPath = WebsiteLogsPath,
 		};
-		site.Bindings = urls
+		site.Bindings = (settings.Urls ?? "")
 			.Split(';')
 			.Select(url =>
 			{
@@ -399,7 +404,9 @@ public abstract partial class Installer
 			((HostingServiceProviderBase)WebServer).ProviderSettings.Settings.Add("WebGroupName", SolidCPWebUsersGroup);
 
 			WebServer.CreateSite(site);
-			InstallLog($"Installed IIS website {name}");
+			InstallLog($"Installed {name} website, listening on the url(s):" +
+				$"{string.Join(NewLine, (settings.Urls ?? "").Split(',', ';')
+					.Select(url => "  " + url))}");
 		})
 		.WithRollback(() => WebServer.DeleteSite(site.SiteId));
 		
@@ -408,6 +415,38 @@ public abstract partial class Installer
 			.Where(binding => binding.IP != "127.0.0.1" && binding.IP != "::1" && binding.Host != "localhost")
 			.Select(binding => int.TryParse(binding.Port, out p) ? p : 0);
 		OpenFirewall(ports);
+	}
+
+	public virtual void RemoveUser(string username)
+	{
+		if (!string.IsNullOrEmpty(username) && OSInfo.IsWindows)
+		{
+			var bslash = username.IndexOf('\\');
+			string machine, user;
+			if (bslash >= 0) {
+				machine = username.Substring(0, bslash);
+				if (bslash < username.Length - 1) user = username.Substring(bslash, username.Length - bslash - 1);
+				else user = "";
+			} else
+			{
+				machine = Environment.MachineName;
+				user = username;
+			}
+			if (SecurityUtils.UserExists(machine, user))
+			{
+				SecurityUtils.DeleteUser(machine, user);
+				InstallLog($"Removed user {username}");
+			}
+		}
+	}
+	public virtual void RemoveWebsite(string siteId, string username, string urls)
+	{
+		RemoveFirewallRule(urls);
+
+		Info($"Delete website {siteId}");
+		WebServer.DeleteSite(siteId);
+		RemoveUser(username);
+		InstallLog($"Removed website {siteId}");
 	}
 
 	public void InstallService(ServiceDescription description)
@@ -485,9 +524,8 @@ public abstract partial class Installer
 			{
 				if (IsUnix)
 				{
-					string owner, group;
-					OSInfo.Unix.GetUnixFileOwner(source, out owner, out group);
-					OSInfo.Unix.ChangeUnixFileOwner(destination, owner, group);
+					var owner = OSInfo.Unix.GetUnixFileOwner(source);
+					OSInfo.Unix.ChangeUnixFileOwner(destination, owner.Owner, owner.Group);
 					var mode = OSInfo.Unix.GetUnixPermissions(source);
 					OSInfo.Unix.GrantUnixPermissions(destination, mode);
 				} else if (IsWindows)
@@ -551,9 +589,8 @@ public abstract partial class Installer
 				{ // Copy security settings
 					if (IsUnix)
 					{
-						string owner, group;
-						OSInfo.Unix.GetUnixFileOwner(source, out owner, out group);
-						OSInfo.Unix.ChangeUnixFileOwner(destination, owner, group);
+						var owner =OSInfo.Unix.GetUnixFileOwner(source);
+						OSInfo.Unix.ChangeUnixFileOwner(destination, owner.Owner, owner.Group);
 						var mode = OSInfo.Unix.GetUnixPermissions(source);
 						OSInfo.Unix.GrantUnixPermissions(destination, mode);
 					}
@@ -700,9 +737,9 @@ public abstract partial class Installer
 			while (info.Exists && n++ < info.Length)
 			{
 				Log.ProgressOne();
-				info = new FileInfo(progressFile);
 			}
 			Thread.Sleep(50);
+			info = new FileInfo(progressFile);
 		}
 	}
 	public virtual ILoadContext LoadContext {

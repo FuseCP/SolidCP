@@ -236,19 +236,6 @@ public class WindowsInstaller : Installer
 		InstallNet48();
 	}
 
-	public override void InstallServerWebsite()
-	{
-		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-		InstallWebsite($"{SolidCP}Server", websitePath,
-			Settings.Server.Urls ?? "",
-			Settings.Server.Username ?? $"{SolidCP}Server",
-			Settings.Server.Password ?? "");
-
-		InstallLog("Installed Server website, listening on the url(s):" +
-			$"{string.Join(NewLine, Settings.Server.Urls.Split(',', ';')
-				.Select(url => "  " + url))}");
-	}
-
 	public override bool IsRunningAsAdmin
 		=> new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator);
 

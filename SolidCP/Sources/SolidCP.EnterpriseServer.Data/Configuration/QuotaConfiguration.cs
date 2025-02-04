@@ -678,7 +678,7 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 				ServiceQuota = false },
 			new Quota() { QuotaId = 738, GroupId = 75, QuotaDescription = "Max Log Size", QuotaName = "MsSQL2022.MaxLogSize", QuotaOrder = 4, QuotaTypeId = 3,
 				ServiceQuota = false },
-			new Quota() { QuotaId = 750, GroupId = 36, QuotaDescription = "DMZ Network", QuotaName = "VPS2012.DMZNetworkEnabled", QuotaOrder = 22, QuotaTypeId = 1,
+			new Quota() { QuotaId = 750, GroupId = 33, QuotaDescription = "DMZ Network", QuotaName = "VPS2012.DMZNetworkEnabled", QuotaOrder = 22, QuotaTypeId = 1,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 751, GroupId = 33, QuotaDescription = "Number of DMZ IP addresses per VPS", QuotaName = "VPS2012.DMZIPAddressesNumber", QuotaOrder = 23, QuotaTypeId = 3,
 				ServiceQuota = false },

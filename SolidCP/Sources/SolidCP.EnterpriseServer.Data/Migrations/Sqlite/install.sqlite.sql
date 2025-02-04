@@ -2427,11 +2427,6 @@ VALUES ('WEB_SITE', 'UPDATE_VDIR', 'Update virtual directory');
 SELECT changes();
 
 
-INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
-VALUES (750, 36, NULL, NULL, NULL, 'DMZ Network', 'VPS2012.DMZNetworkEnabled', 22, 1, 0);
-SELECT changes();
-
-
 INSERT INTO "ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
 VALUES (1, 'SolidCP.EnterpriseServer.OperatingSystemController', 'OS', 1, 1);
 SELECT changes();
@@ -4555,6 +4550,10 @@ SELECT changes();
 
 INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
 VALUES (738, 75, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2022.MaxLogSize', 4, 3, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (750, 33, NULL, NULL, NULL, 'DMZ Network', 'VPS2012.DMZNetworkEnabled', 22, 1, 0);
 SELECT changes();
 
 INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
@@ -8245,7 +8244,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20250123141952_InitialCreate', '9.0.1');
+VALUES ('20250204181838_InitialCreate', '9.0.1');
 
 COMMIT;
 

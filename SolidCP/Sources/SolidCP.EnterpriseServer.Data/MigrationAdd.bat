@@ -1,8 +1,11 @@
 set /P migration="Please enter a name for the migration: "
 set DOTNET_HOST_FACTORY_RESOLVER_DEFAULT_TIMEOUT_IN_SECONDS=0
 
+echo "Build"
+dotnet build
+
 echo "Add migration for Sqlite"
-dotnet ef migrations add --framework net8.0 -o Migrations\Sqlite --context SqliteDbContext %migration% -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
+dotnet ef migrations add --framework net8.0 --no-build -o Migrations\Sqlite --context SqliteDbContext %migration% -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
 echo "Add migration for SQL Server"
 dotnet ef migrations add --framework net8.0 --no-build -o Migrations\SqlServer --context SqlServerDbContext %migration% -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=SolidCP;Pwd=Password12;TrustServerCertificate=true"
@@ -13,8 +16,11 @@ dotnet ef migrations add --framework net8.0 --no-build -o Migrations\MySql --con
 echo "Add migration for PostgreSQL"
 dotnet ef migrations add --framework net8.0 --no-build -o Migrations\PostgreSql --context PostgreSqlDbContext %migration% -- "DbType=PostgreSql;Host=localhost;User ID=postgres;Password=Password12;Port=5433;Database=SolidCP;"
 
+echo "Build"
+dotnet build
+
 echo "Create install.sqlite.sql for Sqlite"
-dotnet ef migrations script --framework net8.0 -o Migrations\Sqlite\install.sqlite.sql --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
+dotnet ef migrations script --framework net8.0 --no-build -o Migrations\Sqlite\install.sqlite.sql --context SqliteDbContext -- "DbType=Sqlite;Data Source=..\SolidCP.EnterpriseServer\App_Data\SolidCP.sqlite;"
 
 echo "Create install.sqlserver.sql for SQL Server"
 dotnet ef migrations script --framework net8.0 --no-build -o Migrations\SqlServer\install.sqlserver.sql --context SqlServerDbContext -i -- "DbType=SqlServer;Server=(local);Database=SolidCP;Uid=SolidCP;Pwd=Password12;TrustServerCertificate=true"
@@ -42,3 +48,5 @@ copy /Y Migrations\Sqlite\install.sqlite.sql ..\..\Database
 copy /Y Migrations\SqlServer\install.sqlserver.sql ..\..\Database
 copy /Y Migrations\MySql\install.mysql.sql ..\..\Database
 copy /Y Migrations\PostgreSql\install.postgresql.sql ..\..\Database
+
+dotnet build

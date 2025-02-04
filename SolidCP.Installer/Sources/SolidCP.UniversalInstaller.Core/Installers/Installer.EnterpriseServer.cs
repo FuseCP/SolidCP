@@ -17,6 +17,7 @@ namespace SolidCP.UniversalInstaller
 {
 	public abstract partial class Installer
 	{
+		public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
 		public virtual void InstallEnterpriseServerPrerequisites() { }
 		public virtual void RemoveEnterpriseServerPrerequisites() { }
 		public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
@@ -33,7 +34,7 @@ namespace SolidCP.UniversalInstaller
 			ConfigureEnterpriseServer();
 			InstallSchedulerService();
 			InstallEnterpriseServerWebsite();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 		public virtual void UpdateEnterpriseServer()
 		{
@@ -50,13 +51,13 @@ namespace SolidCP.UniversalInstaller
 			UpdateDatabase();
 			EnableEnterpriseServerWebsite();
 			InstallSchedulerService();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 		public void SetupEnterpriseServer()
 		{
 			ResetEstimatedOutputLines();
 			ConfigureEnterpriseServer();
-			UpdateSettings();
+			//UpdateSettings();
 		}
 		public virtual void UpdateEnterpriseServerConfig() { }
 
@@ -129,10 +130,15 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void InstallEnterpriseServerWebsite()
 		{
+			var web = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.EnterpriseServer.dll");
 			InstallWebsite($"{SolidCP}EnterpriseServer",
-				Path.Combine(InstallWebRootPath, EnterpriseServerFolder),
-				Settings.EnterpriseServer.Urls ?? "",
-				"", "");
+				web,
+				Settings.EnterpriseServer,
+				UnixEnterpriseServerServiceId,
+				dll,
+				"SolidCP.EnterpriseServer service, the EnterpriseServer for the SolidCP control panel.",
+				UnixEnterpriseServerServiceId);
 		}
 
 		public virtual void EnableEnterpriseServerWebsite() { }

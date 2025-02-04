@@ -294,6 +294,8 @@ namespace SolidCP.UniversalInstaller {
 			Log.WriteEnd("Installer finished");
 			(MainForm as Form)?.Update();
 			((ApplicationForm)MainForm).ReloadApplication();
+			
+			EndWaitCursor();
 
 			return res == Result.OK;
 		}

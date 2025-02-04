@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SolidCP.UniversalInstaller.Core.Installers
+namespace SolidCP.UniversalInstaller
 {
-	internal class Installer
+	public abstract partial class Installer
 	{
 	}
 }

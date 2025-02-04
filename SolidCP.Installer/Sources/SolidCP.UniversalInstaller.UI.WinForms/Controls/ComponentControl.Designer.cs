@@ -79,8 +79,8 @@ namespace SolidCP.UniversalInstaller.Controls
 			// 
 			// grpInfo
 			// 
-			this.grpInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.grpInfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.grpInfo.Controls.Add(this.txtVersion);
 			this.grpInfo.Controls.Add(this.lblVersion);
 			this.grpInfo.Controls.Add(this.txtComponent);
@@ -97,8 +97,8 @@ namespace SolidCP.UniversalInstaller.Controls
 			// 
 			// txtVersion
 			// 
-			this.txtVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtVersion.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtVersion.Location = new System.Drawing.Point(122, 82);
 			this.txtVersion.Name = "txtVersion";
 			this.txtVersion.ReadOnly = true;
@@ -116,8 +116,8 @@ namespace SolidCP.UniversalInstaller.Controls
 			// 
 			// txtComponent
 			// 
-			this.txtComponent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtComponent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtComponent.Location = new System.Drawing.Point(122, 55);
 			this.txtComponent.Name = "txtComponent";
 			this.txtComponent.ReadOnly = true;
@@ -135,8 +135,8 @@ namespace SolidCP.UniversalInstaller.Controls
 			// 
 			// txtApplication
 			// 
-			this.txtApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.txtApplication.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.txtApplication.Location = new System.Drawing.Point(122, 28);
 			this.txtApplication.Name = "txtApplication";
 			this.txtApplication.ReadOnly = true;
@@ -154,8 +154,8 @@ namespace SolidCP.UniversalInstaller.Controls
 			// 
 			// grpDescription
 			// 
-			this.grpDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.grpDescription.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.grpDescription.Controls.Add(this.lblDescription);
 			this.grpDescription.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.grpDescription.Location = new System.Drawing.Point(14, 171);

@@ -16,13 +16,22 @@ namespace SolidCP.UniversalInstaller
 {
 	public abstract partial class Installer
 	{
+		public virtual string UnixPortalServiceId => "solidcp-portal";
 		public virtual void InstallWebPortalPrerequisites() { }
 		public virtual void RemoveWebPortalPrerequisites() { }
 		public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
 		public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
 		public virtual void InstallWebPortalWebsite()
 		{
-			InstallWebsite($"{SolidCP}WebPortal", Path.Combine(InstallWebRootPath, WebPortalFolder), Settings.WebPortal.Urls ?? "", "", "");
+			var web = Path.Combine(InstallWebRootPath, WebPortalFolder);
+			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebPortal.dll");
+			InstallWebsite($"{SolidCP}WebPortal",
+				web,
+				Settings.WebPortal,
+				UnixPortalServiceId,
+				dll,
+				"SolidCP.WebPortal service, the portal service for the SolidCP control panel.",
+				UnixPortalServiceId);
 		}
 		public virtual string WebPortalInstallFilter(string file) => SetupFilter(file);
 		public virtual string WebPortalSetupFilter(string file) => ConfigAndSetupFilter(file);
@@ -36,6 +45,7 @@ namespace SolidCP.UniversalInstaller
 			SetWebPortalFileOwner();
 			ConfigureWebPortal();
 			InstallWebPortalWebsite();
+			//UpdateSettings();
 		}
 		public virtual void RemoveWebPortalWebsite() { }
 		public virtual void UpdateWebPortal() {
@@ -47,11 +57,13 @@ namespace SolidCP.UniversalInstaller
 			UpdateWebPortalConfig();
 			ConfigureWebPortal();
 			InstallWebPortalWebsite();
+			//UpdateSettings();
 		}
 		public virtual void RemoveWebPortal()
 		{
 			RemoveWebPortalWebsite();
 			RemoveWebPortalFolder();
+			//UpdateSettings();
 		}
 		public virtual void RemoveWebPortalFolder()
 		{

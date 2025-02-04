@@ -8630,7 +8630,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                         new
                         {
                             QuotaId = 750,
-                            GroupId = 36,
+                            GroupId = 33,
                             QuotaDescription = "DMZ Network",
                             QuotaName = "VPS2012.DMZNetworkEnabled",
                             QuotaOrder = 22,

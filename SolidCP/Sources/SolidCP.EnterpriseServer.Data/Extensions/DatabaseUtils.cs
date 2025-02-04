@@ -65,23 +65,44 @@ namespace SolidCP.EnterpriseServer.Data
 			scriptName = Regex.Replace(scriptName, @"(?<=^!.*\\\.)([0-9]+)(?=\\\.)", "_$1");
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
-			var streams = resNames
+			var names = resNames
 				.OrderBy(name =>
 				{
 					var tokens = name.Split('.');
 					var type = tokens.Length >= 2 ? tokens[tokens.Length - 2] : "";
+					char[] typeid = new char[4];
+					for (int i = 0; i < 4; i++)
+					{
+						if (i < type.Length) typeid[i] = type[i];
+						else typeid[i] = '0';
+					}
+					var typecode = new string(typeid);
+					var orderText = tokens.Length >= 3 ? tokens[tokens.Length - 3] : "";
+					orderText = orderText.Trim('_');
+					int order;
+					if (!int.TryParse(orderText, out order)) order = short.MaxValue;
+
+					// Put Views first, then UserDefinedFunctions and then StoredProcedures and then the rest
+					string sortExpression;
 					switch (type)
 					{
-						case "View": return $"0{name}";
-						case "StoredProcedure": return $"3{name}";
-						case "UserDefinedFunction": return $"1{name}";
-						default: return $"2{type}.{string.Join(".", tokens.Take(tokens.Length - 2))}";
+						case "View": sortExpression = $"00000{order:x8}{name}"; break;
+						case "StoredProcedure": sortExpression = $"30000{order:x8}{name}"; break;
+						case "UserDefinedFunction": sortExpression = $"10000{order:x8}{name}"; break;
+						default: sortExpression = $"2{typecode}.{order:x8}{string.Join(".", tokens.Take(tokens.Length - 2))}"; break;
 					}
+
+					return sortExpression;
 				})
 				.Where(name => {
 					if (scriptName.StartsWith("!")) return Regex.IsMatch(name, scriptName.Substring(1));
 					else return name.EndsWith(scriptName);
 				})
+				.ToList();
+
+			//foreach (var name in names) Console.WriteLine($"Adding SQL script {name}");
+
+			var streams = names
 				.Select(name => assembly.GetManifestResourceStream(name))
 				.ToList();
 

@@ -2562,11 +2562,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                 });
 
             migrationBuilder.InsertData(
-                table: "Quotas",
-                columns: new[] { "QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota" },
-                values: new object[] { 750, 36, null, null, null, "DMZ Network", "VPS2012.DMZNetworkEnabled", 22, 1, false });
-
-            migrationBuilder.InsertData(
                 table: "ResourceGroups",
                 columns: new[] { "GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup" },
                 values: new object[,]
@@ -3154,6 +3149,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { 736, 75, null, null, null, "Database Restores", "MsSQL2022.Restore", 6, 1, false },
                     { 737, 75, null, null, null, "Database Truncate", "MsSQL2022.Truncate", 7, 1, false },
                     { 738, 75, null, null, null, "Max Log Size", "MsSQL2022.MaxLogSize", 4, 3, false },
+                    { 750, 33, null, null, null, "DMZ Network", "VPS2012.DMZNetworkEnabled", 22, 1, false },
                     { 751, 33, null, null, null, "Number of DMZ IP addresses per VPS", "VPS2012.DMZIPAddressesNumber", 23, 3, false },
                     { 752, 33, null, null, null, "Number of DMZ Network VLANs", "VPS2012.DMZVLANsNumber", 24, 2, false },
                     { 753, 7, null, null, null, "Allow editing TTL in DNS Editor", "DNS.EditTTL", 2, 1, false },

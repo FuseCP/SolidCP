@@ -412,7 +412,7 @@ namespace SolidCP.UniversalInstaller.Core
 		protected void StartDownloadAsyncRelease(RemoteFile remoteFile, string tmpFile, string destinationFile,
 			string tmpFolder, string installerPath, CancellationToken token)
 		{
-			var progressFile = Path.Combine(tmpFolder, DownloadProgressFile);
+			var progressFile = Path.Combine(Path.GetDirectoryName(tmpFolder), DownloadProgressFile);
 
 			try
 			{

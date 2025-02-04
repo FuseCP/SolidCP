@@ -51,7 +51,7 @@ namespace SolidCP.UniversalInstaller
 
 		public void StartProgress(string title)
 		{
-			cursor = form.Cursor;
+			if (form.Cursor != Cursors.WaitCursor) cursor = form.Cursor;
 			form.Cursor = Cursors.WaitCursor;
 			label.Text = title;
 			if (label.Owner != null)

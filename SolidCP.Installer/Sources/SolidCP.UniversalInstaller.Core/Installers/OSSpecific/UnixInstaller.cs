@@ -24,18 +24,21 @@ public abstract class UnixInstaller : Installer
 	public virtual string SolidCPUnixGroup => "solidcp";
 	public UnixInstaller() : base() { }
 
-	public void InstallWebsite(string dll, string serviceId, string urls, string user, string group, string description)
+	public override void InstallWebsite(string name, string path, CommonSettings settings,
+		string group, string dll, string description, string serviceId)
 	{
 		if (!File.Exists(dll) && !Debugger.IsAttached)
 		{
 			throw new FileNotFoundException($"The service executable {dll} was not found.");
 		}
 
+		AddUnixUser(serviceId, SolidCPUnixGroup);
+
 		var service = new SystemdServiceDescription()
 		{
-			ServiceId = UnixServerServiceId,
+			ServiceId = serviceId,
 			Directory = Path.GetDirectoryName(dll),
-			Description = "SolidCP.Server service, the server management service for the SolidCP control panel.",
+			Description = description,
 			Executable = $"dotnet {dll}",
 			DependsOn = new List<string>() { "network-online.target" },
 			EnvironmentVariables = new Dictionary<string, string>(),
@@ -43,24 +46,15 @@ public abstract class UnixInstaller : Installer
 			RestartSec = "1s",
 			StartLimitBurst = "5",
 			StartLimitIntervalSec = "500",
-			User = user,
+			User = settings.Username ?? "",
 			Group = group,
-			SyslogIdentifier = UnixServerServiceId
+			SyslogIdentifier = serviceId
 		};
 		service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
 
 		InstallService(service);
 
-		OpenFirewall(urls);
-	}
-	public override void InstallServerWebsite()
-	{
-		var dll = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "SolidCP.Server.dll");
-
-		InstallWebsite(dll, UnixServerServiceId, Settings.Server.Urls, "root", SolidCPUnixGroup,
-			"SolidCP.Server service, the server management service for the SolidCP control panel.");
-
-		//InstallLog($"Installed {UnixServerServiceId} service runnig the Server website.");
+		OpenFirewall(settings.Urls ?? "");
 	}
 	public virtual void AddUnixUser(string user, string group)
 	{
@@ -68,30 +62,7 @@ public abstract class UnixInstaller : Installer
 
 		InstallLog($"Added System User {user}.");
 	}
-	public override void InstallEnterpriseServerWebsite()
-	{
-		var dll = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "SolidCP.EnterpriseServer.dll");
-
-		AddUnixUser(UnixEnterpriseServerServiceId, SolidCPUnixGroup);
-
-		InstallWebsite(dll, UnixEnterpriseServerServiceId, Settings.Server.Urls, UnixEnterpriseServerServiceId, SolidCPUnixGroup,
-			"SolidCP.Server service, the server management service for the SolidCP control panel.");
-
-		//InstallLog($"Installed {UnixEnterpriseServerServiceId} service runnig the Enterprise Server website.");
-	}
-
-	public override void InstallWebPortalWebsite()
-	{
-		var dll = Path.Combine(InstallWebRootPath, WebPortalFolder, "bin_dotnet", "SolidCP.WebPortal.dll");
-
-		AddUnixUser(UnixPortalServiceId, SolidCPUnixGroup);
-
-		InstallWebsite(dll, UnixPortalServiceId, Settings.WebPortal.Urls, UnixPortalServiceId, SolidCPUnixGroup,
-			"SolidCP.Server service, the server management service for the SolidCP control panel.");
-
-		//InstallLog($"Installed {UnixPortalServiceId} service runnig the WebPortal website.");
-	}
-	public virtual void RemoveWebsite(string serviceId, string urls)
+	public override void RemoveWebsite(string serviceId, string username, string urls)
 	{
 		var service = ServiceController[serviceId];
 
@@ -101,26 +72,28 @@ public abstract class UnixInstaller : Installer
 			service.Disable();
 			service.Remove();
 
+			InstallLog($"Removed {serviceId} service");
+
 			RemoveFirewallRule(urls);
 		}
 	}
 	public override void RemoveServerWebsite()
 	{
-		RemoveWebsite(UnixServerServiceId, Settings.Server.Urls);
+		RemoveWebsite(UnixServerServiceId, UnixServerServiceId, Settings.Server.Urls);
 
 		//InstallLog($"Removed {UnixServerServiceId} service & website.");
 	}
 
 	public override void RemoveEnterpriseServerWebsite()
 	{
-		RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
+		RemoveWebsite(UnixEnterpriseServerServiceId, UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
 
 		//InstallLog($"Removed {UnixEnterpriseServerServiceId} service & website.");
 	}
 
 	public override void RemoveWebPortalWebsite()
 	{
-		RemoveWebsite(UnixPortalServiceId, Settings.WebPortal.Urls);
+		RemoveWebsite(UnixPortalServiceId, UnixPortalServiceId, Settings.WebPortal.Urls);
 
 		//InstallLog($"Removed {UnixPortalServiceId} service & website.");
 	}
@@ -140,7 +113,7 @@ public abstract class UnixInstaller : Installer
 		{
 			Shell.Default.Exec($"ufw delete allow {port}/tcp");
 
-			InstallLog($"Removed firewall rule for port {port}.");
+			//InstallLog($"Removed firewall rule for port {port}.");
 		}
 	}
 
@@ -149,8 +122,8 @@ public abstract class UnixInstaller : Installer
 		var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
 		if (File.Exists(appsettingsfile))
 		{
-			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile)
-				, new VersionConverter(), new StringEnumConverter()) ?? new AppSettings();
+			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile),
+				new VersionConverter(), new StringEnumConverter()) ?? new AppSettings();
 			Settings.Server.Urls = appsettings.applicationUrls;
 			Settings.Server.ServerPasswordSHA = appsettings.Server?.Password ?? "";
 			Settings.Server.ServerPassword = "";
@@ -164,8 +137,8 @@ public abstract class UnixInstaller : Installer
 			Settings.Server.CertificateFindValue = appsettings.Certificate?.FindValue;
 		}
 	}
-	public override void ConfigureEnterpriseServerNetFX() { }
-	public override void ConfigureServerNetFX() { }
+	//public override void ConfigureEnterpriseServerNetFX() { }
+	//public override void ConfigureServerNetFX() { }
 	public override void InstallServerPrerequisites()
 	{
 		InstallNet8Runtime();

@@ -90,9 +90,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 				if (value > 0)
 				{
 					if (value < 100) value = (Maximum * value / (5 * 100));
-					else value = (Maximum / 5) + (int)(Maximum * (1 - Math.Exp(-2 * (value - 100) / Installer.Current.EstimatedOutputLines)));
+					else value = (Maximum / 5) + (int)(Maximum * 0.8 * (1 - Math.Exp(-(value - 100) / Installer.Current.EstimatedOutputLines)));
 				}
-				
+				if (value > Maximum) value = Maximum;
+
 				if (progressBar.Value != value)
 				{
 					progressBar.Value = value;
@@ -150,6 +151,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			Task.Run(Start, Installer.Current.Cancel.Token);
 		}
 
+		bool progressFinished = false;
+
 		/// <summary>
 		/// Displays process progress.
 		/// </summary>
@@ -172,6 +175,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 				Installer.Current.WaitForDownloadToComplete();
 
 				Action?.Invoke();
+
+				progressFinished = true;
 
 				Installer.Current.Log.OnWrite -= reportProgress;
 				Installer.Current.OnInfo -= SetProgressText;
@@ -217,7 +222,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		void OnFormClosing(object sender, FormClosingEventArgs e)
 		{
-			AbortProcess();
+			if (!progressFinished) AbortProcess();
 		}
 
 		private void OnWizardCancel(object sender, EventArgs e)
