@@ -57,6 +57,7 @@ using Vds = Microsoft.Storage.Vds;
 using System.Configuration;
 using System.Linq;
 using SolidCP.Providers.Virtualization.Extensions;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -568,7 +569,7 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, PowerShellWithJobs, realVm, vm, ServerNameSettings);
+                HardDriveHelper.Update(PowerShell, wmi, realVm, vm, ServerNameSettings);
                 HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
@@ -1943,36 +1944,78 @@ namespace SolidCP.Providers.Virtualization
                 CreateFolder(destFolder);
             
             sourcePath = FileUtils.EvaluateSystemVariables(sourcePath);
-            destinationPath = FileUtils.EvaluateSystemVariables(destinationPath); 
-            
+            destinationPath = FileUtils.EvaluateSystemVariables(destinationPath);
+
+            string fileExtension = Path.GetExtension(destinationPath);
+            VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
+
             try
             {
-                Command cmd = new Command("Convert-VHD");
+                ManagementObject imageService = wmi.GetWmiObject("msvm_ImageManagementService");
+                ManagementClass settingsClass = wmi.GetWmiClass("Msvm_VirtualHardDiskSettingData");
 
-                cmd.Parameters.Add("Path", sourcePath);
-                cmd.Parameters.Add("DestinationPath", destinationPath);
-                cmd.Parameters.Add("VHDType", diskType.ToString());
-                if (blockSizeBytes > 0)
-                    cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
+                //TODO: remove this commented code if Remote Hyper-V works fine.
+                //ManagementPath path = new ManagementPath()
+                //{
+                //    Server = ServerNameSettings,
+                //    NamespacePath = imageService.Path.Path,
+                //    ClassName = "Msvm_VirtualHardDiskSettingData"
+                //};
+                //ManagementClass settingsClass = new ManagementClass(path);
 
-                //PowerShell.Execute(cmd, true, true);
-                //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
-                return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
+                ManagementObject settingsInstance = settingsClass.CreateInstance();
+                settingsInstance["Path"] = destinationPath;
+                settingsInstance["Type"] = diskType;
+                settingsInstance["Format"] = format;
+                settingsInstance["BlockSize"] = (blockSizeBytes > 0) ? blockSizeBytes : 0;
+                //settingsInstance["ParentPath"] = null;
+                //settingsInstance["MaxInternalSize"] = 0;
+                //settingsInstance["LogicalSectorSize"] = 0;
+                //settingsInstance["PhysicalSectorSize"] = 0;
+
+                ManagementBaseObject inParams = imageService.GetMethodParameters("ConvertVirtualHardDisk");
+                inParams["SourcePath"] = sourcePath;
+                inParams["VirtualDiskSettingData"] = settingsInstance.GetText(TextFormat.WmiDtd20);
+
+                ManagementBaseObject outParams = imageService.InvokeMethod("ConvertVirtualHardDisk", inParams, null);                
+
+                return JobHelper.CreateJobResultFromWmiResults(wmi, outParams);
             }
             catch (Exception ex)
             {
                 HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
                 throw;
-            }
+            }           
+
+            //try
+            //{
+            //    Command cmd = new Command("Convert-VHD");
+
+            //    cmd.Parameters.Add("Path", sourcePath);
+            //    cmd.Parameters.Add("DestinationPath", destinationPath);
+            //    cmd.Parameters.Add("VHDType", diskType.ToString());
+            //    if (blockSizeBytes > 0)
+            //        cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
+
+            //    //PowerShell.Execute(cmd, true, true);
+            //    //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
+
+            //    return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
+            //}
+            //catch (Exception ex)
+            //{
+            //    HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
+            //    throw;
+            //}
         }
 
         public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
         {
             try
             {
-                var result = HardDriveHelper.CreateVirtualHardDisk(PowerShellWithJobs, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
+                var result = HardDriveHelper.CreateVirtualHardDisk(wmi, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
 
-                return JobHelper.CreateResultFromPSResults(result);
+                return JobHelper.CreateJobResultFromWmiResults(wmi, result);
             }
             catch (Exception ex)
             {
@@ -2099,18 +2142,14 @@ namespace SolidCP.Providers.Virtualization
         #region Jobs
         public ConcreteJob GetJob(string jobId)
         {
-            if (!PowerShellWithJobs.IsStaticObj)
-                throw new Exception("GetJob error: You can't get jobs from non static object");
-
             HostedSolutionLog.LogStart("GetJob");
             HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
 
             ConcreteJob job;
-
             try
             {
-                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
-                job = JobHelper.CreateFromPSObject(result);
+                ManagementObject result = wmi.GetWmiObject("CIM_Job", "InstanceID = '{0}'", jobId);
+                job = JobHelper.CreateFromWmiObject(result);
             }
             catch (Exception ex)
             {
@@ -2122,15 +2161,49 @@ namespace SolidCP.Providers.Virtualization
             return job;
         }
 
-        public List<ConcreteJob> GetAllJobs()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void ClearOldJobs()
+        ///<summary>
+        /// Use only if GetJob do not return any results.
+        ///</summary>
+        public ConcreteJob GetPsJob(string jobId)
         {
             if (!PowerShellWithJobs.IsStaticObj)
-                throw new Exception("GetJob error: You can't execute this method from non static object");
+                throw new Exception("GetPowerShellJob error: You can't get jobs from non static object");
+
+            HostedSolutionLog.LogStart("GetPowerShellJob");
+            HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
+
+            ConcreteJob job;
+
+            try
+            {
+                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
+                job = JobHelper.CreateFromPSObject(result);
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetPowerShellJob", ex);
+                throw;
+            }
+
+            HostedSolutionLog.LogEnd("GetPowerShellJob");
+            return job;
+        }
+
+        public List<ConcreteJob> GetAllJobs()
+        {
+            List<ConcreteJob> jobs = new List<ConcreteJob>();
+
+            ManagementObjectCollection objJobs = wmi.GetWmiObjects("CIM_Job");
+            foreach (ManagementObject objJob in objJobs)
+                jobs.Add(JobHelper.CreateFromWmiObject(objJob));
+
+            return jobs;
+        }
+
+        public void ClearOldPsJobs()
+        {
+            if (!PowerShellWithJobs.IsStaticObj)
+                throw new Exception("ClearOldPsJobs error: You can't execute this method from non static object");
 
             PowerShellWithJobs.ClearOldJobs();
         }
@@ -2459,7 +2532,7 @@ namespace SolidCP.Providers.Virtualization
         }
 
 
-        private ConcreteJob CreateJobFromWmiObject(ManagementBaseObject objJob)
+        private ConcreteJob CreateJobFromWmiObject(ManagementBaseObject objJob) //TODO: remove, when will change all references to JobHelper.CreateFromWmiObject
         {
             if (objJob == null || objJob.Properties.Count == 0)
                 return null;
