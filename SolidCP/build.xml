@@ -443,7 +443,7 @@
 		<Copy SourceFiles="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\bin\$(BuildConfiguration)\Data\en-US\Resources.xml" DestinationFolder="$(RootFolder)\Languages" />
 	</Target>
 
-	<Target Name="CreateSetupBuild"> <!-- DependsOnTargets="CreateLocalizationToolkitBuild">-->
+	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
 
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
