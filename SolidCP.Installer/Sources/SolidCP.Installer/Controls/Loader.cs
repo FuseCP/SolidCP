@@ -68,10 +68,14 @@ namespace SolidCP.Installer.Controls
             Start(remoteFile, callback);
         }
 
-        public Loader(string localFile, string componentCode, string version, Action<Exception> callback)
+        public Loader(string localFile, string componentCode, string version, Action<Exception> callback, bool offline = false)
             : this()
         {
-            Start(componentCode, version, callback);
+            if (offline) {
+                StartOffline(localFile, componentCode, version, callback);
+            } else {
+                Start(componentCode, version, callback);
+            }            
         }
 
         /// <summary>
@@ -113,6 +117,31 @@ namespace SolidCP.Installer.Controls
             appLoader.OperationCompleted += new EventHandler<EventArgs>(appLoader_OperationCompleted);
 
             appLoader.LoadAppDistributive();
+        }
+
+        private void StartOffline(string localFile, string componentCode, string version, Action<Exception> callback)
+        {
+            appLoader = Core.LoaderFactory.CreateOfflineFileLoader(localFile, version);
+
+            appLoader.OperationFailed += new EventHandler<Core.LoaderEventArgs<Exception>>(appLoader_OperationFailed);
+            appLoader.OperationFailed += (object sender, Core.LoaderEventArgs<Exception> e) => {
+                if (callback != null)
+                {
+                    try
+                    {
+                        callback(e.EventData);
+                    }
+                    catch
+                    {
+                        // Just swallow the exception as we have no interest in it.
+                    }
+                }
+            };
+            appLoader.ProgressChanged += new EventHandler<Core.LoaderEventArgs<Int32>>(appLoader_ProgressChanged);
+            appLoader.StatusChanged += new EventHandler<Core.LoaderEventArgs<String>>(appLoader_StatusChanged);
+            appLoader.OperationCompleted += new EventHandler<EventArgs>(appLoader_OperationCompleted);
+
+            appLoader.LoadOfflineAppDistributive();
         }
 
         void appLoader_OperationCompleted(object sender, EventArgs e)

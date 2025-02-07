@@ -76,6 +76,10 @@ namespace SolidCP.Installer.Core
                 return new Loader(remoteFile);
             }
         }
+        public static Loader CreateOfflineFileLoader(string remoteFile, string version)
+        {
+            return new Loader(remoteFile, version);
+        }
     }
 
     public class CodeplexLoader : Loader
@@ -170,8 +174,15 @@ namespace SolidCP.Installer.Core
         public const string DownloadProgressMessage = "{0} KB of {1} KB";
         public const string PrepareSetupProgressMessage = "{0}%";
 
+        public const string readmeText = "To avoid re-downloading files, please create a version folder inside this directory (e.g., \"1.5.1\") and place the corresponding *-Update.zip files in it.\r\n\r\n" +
+                    "Example:\r\n" +
+                    "- Create a folder: C:/SolidCP Installer/Offline/1.5.1\r\n" +
+                    "- Place the file: SolidCP-EnterpriseServer-Update.zip\r\n\r\n" +
+                    "The installer will use the files in this folder instead of downloading them again.";
+
         private const int ChunkSize = 262144;
         private string remoteFile;
+        private string version;
         private CancellationTokenSource cts;
 
         public event EventHandler<LoaderEventArgs<String>> StatusChanged;
@@ -184,9 +195,20 @@ namespace SolidCP.Installer.Core
             this.remoteFile = remoteFile;
         }
 
+        internal Loader(string remoteFile, string version)
+        {
+            this.remoteFile = remoteFile;
+            this.version = version;
+        }
+
         public void LoadAppDistributive()
         {
             ThreadPool.QueueUserWorkItem(q => LoadAppDistributiveInternal());
+        }
+
+        public void LoadOfflineAppDistributive()
+        {
+            ThreadPool.QueueUserWorkItem(q => LoadOfflineAppDistributiveInternal());
         }
 
         protected void RaiseOnStatusChangedEvent(string statusMessage)
@@ -262,10 +284,11 @@ namespace SolidCP.Installer.Core
             {
                 string dataFolder;
                 string tmpFolder;
+                string offlineFolder;
                 // Retrieve local storage configuration
-                GetLocalStorageInfo(out dataFolder, out tmpFolder);
+                GetLocalStorageInfo(out dataFolder, out tmpFolder, out offlineFolder);
                 // Initialize storage
-                InitializeLocalStorage(dataFolder, tmpFolder);
+                InitializeLocalStorage(dataFolder, tmpFolder, offlineFolder);
 
                 string fileToDownload = Path.GetFileName(remoteFile);
 
@@ -348,6 +371,75 @@ namespace SolidCP.Installer.Core
             }
         }
 
+        private void LoadOfflineAppDistributiveInternal()
+        {
+            try
+            {
+                string dataFolder;
+                string tmpFolder;
+                string offlineFolder;
+                // Retrieve local storage configuration
+                GetLocalStorageInfo(out dataFolder, out tmpFolder, out offlineFolder);
+                // Initialize storage
+                InitializeLocalStorage(dataFolder, tmpFolder, offlineFolder);
+
+                offlineFolder = Path.Combine(offlineFolder, version);
+                string fileToUnpack = Path.GetFileName(remoteFile);
+                string destinationFile = Path.Combine(offlineFolder, fileToUnpack);
+
+                cts = new CancellationTokenSource();
+                CancellationToken token = cts.Token;
+
+                try
+                {
+                    var unzipFileTask = new Task(() =>
+                    {
+                        if (File.Exists(destinationFile))
+                        {
+                            RaiseOnStatusChangedEvent(PreparingSetupFilesMessage);
+                            RaiseOnProgressChangedEvent(0);
+                            UnzipFile(destinationFile, tmpFolder);
+                            RaiseOnProgressChangedEvent(100);
+                        }
+                        else
+                        {
+                            throw new FileNotFoundException("File not found", destinationFile);
+                        }
+                    }, token);
+
+                    var notifyCompletionTask = unzipFileTask.ContinueWith((t) =>
+                    {
+                        RaiseOnOperationCompletedEvent();
+                    }, token);
+
+                    unzipFileTask.Start();
+                    unzipFileTask.Wait();
+                }
+                catch (AggregateException ae)
+                {
+                    ae.Handle((e) =>
+                    {
+                        if (e is OperationCanceledException)
+                        {
+                            Log.WriteInfo("Operation has been cancelled by the user");
+                            return true;
+                        }
+
+                        Log.WriteError("Error during offline task", e);
+                        return false;
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                if (Utils.IsThreadAbortException(ex))
+                    return;
+
+                Log.WriteError("Loader module error", ex);
+                RaiseOnOperationFailedEvent(ex);
+            }
+        }
+
         protected virtual Task GetDownloadFileTask(string sourceFile, string tmpFile, CancellationToken ct)
         {
             var downloadFileTask = new Task(() =>
@@ -401,13 +493,21 @@ namespace SolidCP.Installer.Core
             return downloadFileTask;
         }
 
-        private static void InitializeLocalStorage(string dataFolder, string tmpFolder)
+        private static void InitializeLocalStorage(string dataFolder, string tmpFolder, string offlineFolder)
         {
             if (!Directory.Exists(dataFolder))
             {
                 Directory.CreateDirectory(dataFolder);
                 Log.WriteInfo("Data directory created");
             }
+
+            if (!Directory.Exists(offlineFolder))
+            {
+                Directory.CreateDirectory(offlineFolder);
+                Log.WriteInfo("Offline directory created");
+            }
+            string filePath = Path.Combine(offlineFolder, "readme.txt");
+            File.WriteAllText(filePath, readmeText); //we always overwrite the readme file to sure that it contains the latest information
 
             if (Directory.Exists(tmpFolder))
             {
@@ -421,10 +521,11 @@ namespace SolidCP.Installer.Core
             }
         }
 
-        private static void GetLocalStorageInfo(out string dataFolder, out string tmpFolder)
+        private static void GetLocalStorageInfo(out string dataFolder, out string tmpFolder, out string offlineFolder)
         {
             dataFolder = FileUtils.GetDataDirectory();
             tmpFolder = FileUtils.GetTempDirectory();
+            offlineFolder = FileUtils.GetOfflineDataDirectory();
         }
 
         private void UnzipFile(string zipFile, string destFolder)
