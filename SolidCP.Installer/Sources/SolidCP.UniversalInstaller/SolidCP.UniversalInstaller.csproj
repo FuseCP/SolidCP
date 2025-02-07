@@ -6,7 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>13</LangVersion>
-        <AssemblyName>SolidCP.UniversalInstaller</AssemblyName>
+        <AssemblyName>SolidCP.Installer</AssemblyName>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <StartupObject>SolidCP.UniversalInstaller.Program</StartupObject>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
@@ -17,6 +17,7 @@
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
         <GenerateDependencyFile>false</GenerateDependencyFile>
+        <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -39,7 +40,6 @@
 
     <ItemGroup>
         <None Remove="installer.settings.json" />
-        <None Remove="SolidCP.UniversalInstaller.runtimeconfig.json" />
     </ItemGroup>
 
     <ItemGroup>
@@ -70,7 +70,7 @@
             <Version>9.0.0</Version>
         </PackageReference>
         <PackageReference Include="System.Management" Version="9.0.1" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
-        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0"  GeneratePathProperty="true" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
     </ItemGroup>
     
     <ItemGroup>
@@ -95,13 +95,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="SolidCP.UniversalInstaller.runtimeconfig.json">
+      <Content Include="SolidCP.Installer.runtimeconfig.json">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
 
     <ItemGroup>
         <None Include="FodyWeavers.xsd" />
+        <None Include="SetPathCustomAction.cs" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
+        <Compile Include="SetPathCustomAction.cs" />
+        <Reference Include="System.Configuration.Install" />
     </ItemGroup>
 
     <ItemGroup>
@@ -120,15 +126,19 @@
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
         </EmbeddedResource>
     </ItemGroup>
+        
+    <ItemGroup>
+      <Compile Remove="SetPathCustomAction.cs" />
+    </ItemGroup>
     <Target Name="DeleteDlls" AfterTargets="Build" Condition="$(EmbedReferences) == 'true'">
         <ItemGroup>
             <DllsToKeep Include="$(OutputPath)\**\Setup2.*" />
-            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.exe" />
-            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.dll" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.exe" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.dll" />
             <DllsToKeep Include="$(OutputPath)\**\installer.settings.json" />
-            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.runtimeconfig.json" />
-            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.pdb" />
-            <DllsToKeep Include="$(OutputPath)\**\SolidCP.UniversalInstaller.Core.deps.json" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.runtimeconfig.json" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.pdb" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.Core.deps.json" />
             <DllsToDelete Include="$(OutputPath)\**\*.*" Exclude="@(DllsToKeep)" />
         </ItemGroup>
         <Delete Files="@(DllsToDelete)" />

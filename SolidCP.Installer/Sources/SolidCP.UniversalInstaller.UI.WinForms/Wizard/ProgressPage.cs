@@ -90,7 +90,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 				if (value > 0)
 				{
 					if (value < 100) value = (Maximum * value / (5 * 100));
-					else value = (Maximum / 5) + (int)(Maximum * 0.8 * (1 - Math.Exp(-(value - 100) / Installer.Current.EstimatedOutputLines)));
+					else value = (Maximum / 5) + (int)(Maximum * 0.8 * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
 				}
 				if (value > Maximum) value = Maximum;
 

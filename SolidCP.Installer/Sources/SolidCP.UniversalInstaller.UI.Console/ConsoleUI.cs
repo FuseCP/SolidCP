@@ -670,7 +670,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 				if (value > 0)
 				{
 					if (value < 100) value = (ProgressMaximum * value / (5 * 100));
-					else value = (ProgressMaximum / 5) + (int)(ProgressMaximum * (1 - Math.Exp(-2 * (value - 100) / Installer.Current.EstimatedOutputLines)));
+					else value = (ProgressMaximum / 5) + (int)(ProgressMaximum * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
 				}
 				var ui = UI as ConsoleUI;
 				if (ui.InstallationProgress.Progress.Value != value)

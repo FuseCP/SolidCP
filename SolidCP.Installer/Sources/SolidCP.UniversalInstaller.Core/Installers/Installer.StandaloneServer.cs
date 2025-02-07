@@ -80,8 +80,6 @@ namespace SolidCP.UniversalInstaller
 			ConfigureWebPortal();
 			ConfigureEnterpriseServer();
 			ConfigureServer();
-			ConfigureEnterpriseServer(true);
-			ConfigureServer(true);
 		}
 
 		public virtual void CopyStandaloneServer(Func<string, string> filter = null)

@@ -75,6 +75,9 @@ public class Releases
 		else
 		{
 			var service = WebService;
+			
+			var destinationPath = Path.GetDirectoryName(destinationFile);
+			if (!Directory.Exists(destinationPath)) Directory.CreateDirectory(destinationPath); 
 
 			long downloaded = 0;
 			long fileSize = service.GetFileSize(file.File);

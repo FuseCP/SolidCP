@@ -1,5 +1,4 @@
-﻿using SolidCP.Providers.OS;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
@@ -10,10 +9,16 @@ using Newtonsoft.Json.Bson;
 using SolidCP.Providers.Web;
 using SolidCP.Providers;
 using System.Xml.Linq;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Security.Policy;
 using System.Security.Principal;
+using System.Security.Cryptography.X509Certificates;
+using System.Net;
 using Microsoft.Win32;
+using SolidCP.UniversalInstaller.Web;
+using SolidCP.Providers.OS;
+using System.Globalization;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -234,6 +239,7 @@ public class WindowsInstaller : Installer
 	{
 		InstallNet8Runtime();
 		InstallNet48();
+		ConfigureAspNetTempFolderPermissions();
 	}
 
 	public override bool IsRunningAsAdmin
@@ -247,6 +253,401 @@ public class WindowsInstaller : Installer
 			Shell.Standard.Exec($"notepad.exe \"{path}\"");
 		}
 		catch { }
+	}
+
+	public void UserAndDomain(string username, out string domain, out string user)
+	{
+		var bslash = username.IndexOf('\\');
+		if (bslash >= 0)
+		{
+			user = username.Substring(bslash + 1);
+			domain = username.Substring(0, bslash);
+		}
+		else
+		{
+			user = username;
+			domain = "";
+		}
+	}
+
+	public virtual string AppPoolName(CommonSettings setting) => $"SolidCP {setting.ComponentName} Pool";
+
+	public void CreateApplicationPool(CommonSettings setting)
+	{
+		var appPoolName = AppPoolName(setting);
+		string domain, user;
+		UserAndDomain(setting.Username, out domain, out user);
+		var password = setting.Password;
+		var identity = WebUtils.GetWebIdentity(setting);
+		var poolExists = WebUtils.ApplicationPoolExists(appPoolName);
+
+		if (poolExists)
+		{
+			Log.WriteStart("Updating application pool");
+			Log.WriteInfo($"Updating application pool \"{appPoolName}\"");
+
+			WebUtils.UpdateApplicationPool(appPoolName, user, password);
+
+			Log.WriteEnd("Updated application pool");
+
+			InstallLog($"Updated application pool named \"{appPoolName}\"");
+		}
+		else
+		{
+			Log.WriteStart("Creating application pool");
+			Log.WriteInfo($"Creating application pool \"{appPoolName}\"");
+
+			WebUtils.CreateApplicationPool(appPoolName, user, password);
+
+			Log.WriteEnd("Created application pool");
+
+			InstallLog($"Created a new application pool named \"{appPoolName}\"");
+		}
+	}
+
+	public void DeleteApplicationPool(CommonSettings setting)
+	{
+		var appPoolName = AppPoolName(setting);
+		string domain, user;
+		UserAndDomain(setting.Username, out domain, out user);
+		var password = setting.Password;
+		var identity = WebUtils.GetWebIdentity(setting);
+		var poolExists = WebUtils.ApplicationPoolExists(appPoolName);
+		if (!poolExists) Log.WriteInfo($"Application pool {appPoolName} not found.");
+		else
+		{
+			Log.WriteStart($"Deleting Application Pool {appPoolName}");
+			try
+			{
+				WebUtils.DeleteApplicationPool(appPoolName);
+
+				Log.WriteEnd($"Application pool deleted");
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Error deleting Application Pool", ex);
+			}
+		}
+	}
+
+	public Providers.ServerBinding[] Bindings(CommonSettings setting)
+	{
+		if (setting.WebSitePort != default)
+		{
+			return new[]
+			{
+				new Providers.ServerBinding()
+				{
+					IP = setting.WebSiteIp,
+					Port = setting.WebSitePort.ToString(),
+					Host = setting.WebSiteDomain,
+					Protocol = IsHttps(setting) ? "https" : "http"
+				}
+			};
+		}
+		else if (!string.IsNullOrEmpty(setting.Urls))
+		{
+			var bindings = (setting.Urls ?? "")
+				.Split(';')
+				.Select(url =>
+				{
+					url = url.Trim();
+					var uri = new Uri(url);
+					IPAddress ip;
+					string host;
+					if (!IPAddress.TryParse(uri.Host, out ip))
+					{
+						ip = null;
+						host = uri.Host;
+					}
+					else
+					{
+						host = "";
+					}
+					return new Providers.ServerBinding(uri.Scheme, ip?.ToString(), uri.Port.ToString(), host);
+				})
+				.ToArray();
+			return bindings;
+		}
+		else return null;
+	}
+
+	private static SSLCertificate GetSSLCertificateFromX509Certificate2(X509Certificate2 cert)
+	{
+		var certificate = new SSLCertificate
+		{
+			Hostname = cert.GetNameInfo(X509NameType.SimpleName, false),
+			FriendlyName = cert.FriendlyName,
+			CSRLength = Convert.ToInt32(cert.PublicKey.Key.KeySize.ToString(CultureInfo.InvariantCulture)),
+			Installed = true,
+			DistinguishedName = cert.Subject,
+			Hash = cert.GetCertHash(),
+			SerialNumber = cert.SerialNumber,
+			ExpiryDate = DateTime.Parse(cert.GetExpirationDateString()),
+			ValidFrom = DateTime.Parse(cert.GetEffectiveDateString()),
+			Success = true
+		};
+
+		return certificate;
+	}
+
+	public void CreateWebsite(string siteName, CommonSettings setting, string contentPath)
+	{
+		Info($"Creating Website {siteName}");
+		var binding = Bindings(setting).FirstOrDefault();
+
+		var ip = binding.IP;
+		var port = binding.Port;
+		var domain = binding.Host;
+		var scheme = binding.Protocol;
+		var userName = WebUtils.GetWebIdentity(setting);
+		var userPassword = setting.Password;
+		var appPool = AppPoolName(setting);
+		var componentId = setting.ComponentCode;
+
+		Log.WriteInfo(String.Format("Creating web site \"{0}\" ( IP: {1}, Port: {2}, Domain: {3} )", siteName, ip, port, domain));
+
+		var oldSiteId = WebUtils.GetSiteIdByBinding(ip, port.ToString(), domain);
+		if (oldSiteId != null)
+		{
+			// get site name
+			string oldSiteName = IsIis7 ? oldSiteId : WebUtils.GetSite(oldSiteId).Name;
+			throw new Exception($"'{oldSiteName}' web site already has server binding ( IP: {ip}, Port: {port}, Domain: {domain} )");
+		}
+
+		//TODO certificate
+
+		// create site
+		var site = new WebSiteItem
+		{
+			Name = siteName,
+			SiteIPAddress = ip,
+			ContentPath = contentPath,
+			AllowExecuteAccess = false,
+			AllowScriptAccess = true,
+			AllowSourceAccess = false,
+			AllowReadAccess = true,
+			AllowWriteAccess = false,
+			AnonymousUsername = userName,
+			AnonymousUserPassword = userPassword,
+			AllowDirectoryBrowsingAccess = false,
+			AuthAnonymous = true,
+			AuthWindows = true,
+			DefaultDocs = null,
+			HttpRedirect = "",
+			InstalledDotNetFramework = AspNetVersion.AspNet40,
+			ApplicationPool = appPool,
+			//
+			Bindings = new Web.ServerBinding[] {
+					new Web.ServerBinding(ip, port.ToString(), domain, scheme, componentId)
+				}
+		};
+
+		var newSiteId = WebUtils.CreateSite(site);
+		
+		if (scheme == "https")
+		{
+			var webServer = OSInfo.Windows.WebServer;
+			var website = webServer.GetSite(siteName);
+			// Install certificate
+			if (!string.IsNullOrEmpty(setting.CertificateFile))
+			{
+				webServer.InstallPFX(File.ReadAllBytes(setting.CertificateFile), setting.CertificatePassword, website);
+			} else
+			{
+				var store = new X509Store(setting.CertificateStoreName, (StoreLocation)Enum.Parse(typeof(StoreLocation),
+					setting.CertificateStoreLocation));
+				store.Open(OpenFlags.MaxAllowed);
+				var cert = store.Certificates.Find((X509FindType)Enum.Parse(typeof(X509FindType), setting.CertificateFindType),
+					setting.CertificateFindValue, true)[0];
+				var certData = cert.Export(X509ContentType.Pfx);
+				store.Close();
+				var convertedCert = new X509Certificate2(certData, string.Empty, X509KeyStorageFlags.MachineKeySet | X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+				var password = Guid.NewGuid().ToString();
+				var certDataWithPassword = convertedCert.Export(X509ContentType.Pfx, password);
+				webServer.InstallPFX(certDataWithPassword, password, website);
+			}
+		} 
+		Log.WriteEnd("Created web site");
+		InstallLog($"Created web site {siteName}");
+	}
+
+	private void SetFolderPermission(string path, string account, NtfsPermission permission)
+	{
+		try
+		{
+			if (!FileUtils.DirectoryExists(path))
+			{
+				FileUtils.CreateDirectory(path);
+				Log.WriteInfo(string.Format("Created {0} folder", path));
+			}
+
+			Log.WriteStart(string.Format("Setting '{0}' permission for '{1}' folder for '{2}' account", permission, path, account));
+			SecurityUtils.GrantNtfsPermissions(path, null, account, permission, true, true);
+			Log.WriteEnd("Set security permissions");
+		}
+		catch (Exception ex)
+		{
+			if (Utils.IsThreadAbortException(ex))
+				return;
+
+			Log.WriteError("Security error", ex);
+		}
+	}
+
+	private void SetFolderPermissionBySid(string path, string account, NtfsPermission permission)
+	{
+		try
+		{
+			if (!FileUtils.DirectoryExists(path))
+			{
+				FileUtils.CreateDirectory(path);
+				Log.WriteInfo(string.Format("Created {0} folder", path));
+			}
+
+			Log.WriteStart(string.Format("Setting '{0}' permission for '{1}' folder for '{2}' account", permission, path, account));
+			SecurityUtils.GrantNtfsPermissionsBySid(path, account, permission, true, true);
+			Log.WriteEnd("Set security permissions");
+		}
+		catch (Exception ex)
+		{
+			if (Utils.IsThreadAbortException(ex))
+				return;
+
+			Log.WriteError("Security error", ex);
+		}
+	}
+
+	public void ConfigureAspNetTempFolderPermissions()
+	{
+		string path;
+		if (OSInfo.IsWindows && OSInfo.Windows.WebServer.Version.Major == 6)
+		{
+			// IIS_WPG -> C:\WINDOWS\Temp
+			path = Environment.GetEnvironmentVariable("TMP", EnvironmentVariableTarget.Machine);
+			SetFolderPermission(path, "IIS_WPG", NtfsPermission.Modify);
+
+			// IIS_WPG - > C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files
+			path = Path.Combine(System.Runtime.InteropServices.RuntimeEnvironment.GetRuntimeDirectory(),
+				"Temporary ASP.NET Files");
+			if (Utils.IsWin64() && Utils.IIS32Enabled())
+				path = path.Replace("Framework64", "Framework");
+			SetFolderPermission(path, "IIS_WPG", NtfsPermission.Modify);
+		}
+		// NETWORK_SERVICE -> C:\WINDOWS\Temp
+		path = Environment.GetEnvironmentVariable("TMP", EnvironmentVariableTarget.Machine);
+		//
+		SetFolderPermissionBySid(path, SystemSID.NETWORK_SERVICE, NtfsPermission.Modify);
+	}
+
+	public virtual void CreateWindowsAccount(CommonSettings setting)
+	{
+		Info("Create user...");
+		const string UserAccountExists = "Account already exists";
+		const string UserAccountDescription = "{0} account for anonymous access to Internet Information Services";
+		const string LogStartMessage = "Creating Windows user account...";
+		const string LogInfoMessage = "Creating Windows user account \"{0}\"";
+		const string LogEndMessage = "Created windows user account";
+		const string InstallLogMessageLocal = "Created a new Windows user account \"{0}\"";
+		const string InstallLogMessageDomain = "Created a new Windows user account \"{0}\" in \"{1}\" domain";
+		const string LogStartRollbackMessage = "Removing Windows user account...";
+		const string LogInfoRollbackMessage = "Deleting user account \"{0}\"";
+		const string LogEndRollbackMessage = "User account has been removed";
+		const string LogInfoRollbackMessageDomain = "Could not find user account '{0}' in domain '{1}', thus consider it removed";
+		const string LogInfoRollbackMessageLocal = "Could not find user account '{0}', thus consider it removed";
+		const string LogErrorRollbackMessage = "Could not remove Windows user account";
+
+		string domain, userName;
+		UserAndDomain(setting.Username, out domain, out userName);
+
+		Log.WriteStart(String.Format(LogInfoMessage, userName));
+
+		var description = String.Format(UserAccountDescription, setting.ComponentName);
+		var memberOf = new string[0];
+		var password = setting.Password;
+
+		// create account
+		SystemUserItem user = new SystemUserItem
+		{
+			Domain = domain,
+			Name = userName,
+			FullName = userName,
+			Description = description,
+			MemberOf = memberOf,
+			Password = password,
+			PasswordCantChange = true,
+			PasswordNeverExpires = true,
+			AccountDisabled = false,
+			System = true
+		};
+
+		Transaction(() =>
+		{
+			// Exit with an error if Windows account with the same name already exists
+			if (SecurityUtils.UserExists(domain, userName))
+				throw new Exception(UserAccountExists);
+		})
+			.WithRollback(() => { });
+
+		Transaction(() => SecurityUtils.CreateUser(user))
+			.WithRollback(() => SecurityUtils.DeleteUser(domain, userName));
+
+		// update log
+		Log.WriteEnd(LogEndMessage);
+
+		// update install log
+		if (string.IsNullOrEmpty(domain))
+		{
+			InstallLog(string.Format(InstallLogMessageLocal, userName));
+		}
+		else
+		{
+			InstallLog(string.Format(InstallLogMessageDomain, userName, domain));
+		}
+	}
+	public const string UserAccountDescription = "{0} account for anonymous access to Internet Information Services";
+	public void DeleteUserAccount(CommonSettings settings)
+	{
+		var username = settings.Username;
+		var bslash = username.IndexOf('\\');
+		string domain = "";
+		if (bslash >= 0)
+		{
+			domain = username.Substring(0, bslash);
+			username = username.Substring(bslash + 1);
+		}
+		else
+		{
+			domain = Environment.MachineName;
+		}
+		var password = settings.Password;
+
+		if (SecurityUtils.UserExists(domain, username)) SecurityUtils.DeleteUser(domain, username);
+	}
+
+	public override void InstallWebsite(string name, string path, CommonSettings settings,
+		string group, string dll, string description, string serviceId)
+	{
+		Transaction(() => CreateWindowsAccount(settings))
+			.WithRollback(() => DeleteUserAccount(settings));
+
+		Transaction(() => CreateApplicationPool(settings))
+			.WithRollback(() => DeleteApplicationPool(settings));
+		
+		CreateWebsite(name, settings, path);
+	}
+
+	public override void RemoveWebsite(string siteId, CommonSettings setting)
+	{
+		RemoveFirewallRule(GetUrls(setting));
+
+		Info($"Delete website {siteId}");
+		Log.WriteStart($"Delete website {siteId}");
+		WebUtils.DeleteSite(siteId);
+		InstallLog($"Removed website {siteId}");
+		Log.WriteEnd("Website deleted");
+		DeleteApplicationPool(setting);
+		RemoveUser(setting.Username);
 	}
 
 	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;

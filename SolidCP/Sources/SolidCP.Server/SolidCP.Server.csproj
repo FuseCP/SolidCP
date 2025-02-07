@@ -60,7 +60,8 @@
     <ItemGroup>
         <Compile Remove="Code\WPIHelper.cs" />
         <None Include="Code\WPIHelper.cs" />
-   </ItemGroup>
+        <!--<Content Include="wwwroot\img\logo.png" />-->
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />

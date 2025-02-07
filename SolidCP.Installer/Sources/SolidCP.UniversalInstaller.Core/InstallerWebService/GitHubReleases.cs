@@ -160,6 +160,9 @@ namespace SolidCP.UniversalInstaller
 
 		public async Task GetFileAsync(RemoteFile file, string destinationFile, Action<long, long> progress = null)
 		{
+			var destinationPath = Path.GetDirectoryName(destinationFile);
+			if (!Directory.Exists(destinationPath)) Directory.CreateDirectory(destinationPath);
+
 			var componentTasks = (await Repository.Release.GetAll(Owner, Repo))
 				.Select(release => ReleaseComponentsAsync(release));
 			var component = (await Task.WhenAll(componentTasks))

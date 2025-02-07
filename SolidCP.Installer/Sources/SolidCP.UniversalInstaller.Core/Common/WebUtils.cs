@@ -79,6 +79,8 @@ namespace SolidCP.UniversalInstaller
         ".mdb", ".mdf", ".msgx", ".refresh", ".rem", ".resources", ".resx", ".sd", ".sdm", ".sdmDocument",
         ".sitemap", ".skin", ".soap", ".svc", ".vb", ".vbproj", ".vjsproj", ".vsdisco", ".webinfo"};
 
+		public abstract string GetWebIdentity(CommonSettings vars);
+
 		/// <summary>
 		/// Retrieves web sites.
 		/// </summary>
@@ -136,14 +138,14 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="siteId">SiteID</param>
 		/// <returns></returns>
-		public abstract bool SiteIdExists(string siteId);
+		//public abstract bool SiteIdExists(string siteId);
 
 		/// <summary>
 		/// Checks if the site exists.
 		/// </summary>
 		/// <param name="siteId">SiteID</param>
 		/// <returns></returns>
-		public abstract bool IIS7SiteExists(string siteId);
+		public abstract bool SiteExists(string siteId);
 
 		/// <summary>
 		/// Retreives site by site id.
@@ -175,7 +177,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="site">Site object.</param>
 		/// <returns>Site id.</returns>
-		public abstract string CreateIIS7Site(WebSiteItem site);
+		//public abstract string CreateIIS7Site(WebSiteItem site);
 
 		/// <summary>
 		/// Updates site
@@ -221,7 +223,7 @@ namespace SolidCP.UniversalInstaller
 		/// Deletes site
 		/// </summary>
 		/// <param name="siteId"></param>
-		public abstract void DeleteIIS7Site(string siteId);
+		//public abstract void DeleteIIS7Site(string siteId);
 
 		/// <summary>
 		/// Check if there is already a web site with the specified server binding.
@@ -239,7 +241,7 @@ namespace SolidCP.UniversalInstaller
 		/// <param name="port">Port number</param>
 		/// <param name="host">Host header value</param>
 		/// <returns></returns>
-		public abstract string GetIIS7SiteIdByBinding(string ip, string port, string host);
+		//public abstract string GetIIS7SiteIdByBinding(string ip, string port, string host);
 
 		/// <summary>
 		/// Checks whether application pool exists
@@ -253,7 +255,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public abstract bool IIS7ApplicationPoolExists(string name);
+		//public abstract bool IIS7ApplicationPoolExists(string name);
 
 		/// <summary>
 		/// Creates application pool
@@ -266,8 +268,8 @@ namespace SolidCP.UniversalInstaller
 
 		public abstract void StopApplicationPool(string name);
 
-		public abstract void StartIIS7ApplicationPool(string name);
-		public abstract void StopIIS7ApplicationPool(string name);
+		//public abstract void StartIIS7ApplicationPool(string name);
+		//public abstract void StopIIS7ApplicationPool(string name);
 
 		/// <summary>
 		/// Creates application pool
@@ -275,7 +277,7 @@ namespace SolidCP.UniversalInstaller
 		/// <param name="name"></param>
 		/// <param name="username"></param>
 		/// <param name="password"></param>
-		public abstract void CreateIIS7ApplicationPool(string name, string username, string password);
+		//public abstract void CreateIIS7ApplicationPool(string name, string username, string password);
 
 		/// <summary>
 		/// Deletes application pool
@@ -287,7 +289,7 @@ namespace SolidCP.UniversalInstaller
 		/// Deletes application pool
 		/// </summary>
 		/// <param name="name"></param>
-		public abstract void DeleteIIS7ApplicationPool(string name);
+		//public abstract void DeleteIIS7ApplicationPool(string name);
 		/// <summary>
 		/// Updates application pool
 		/// </summary>
@@ -302,7 +304,7 @@ namespace SolidCP.UniversalInstaller
 		/// <param name="name"></param>
 		/// <param name="username"></param>
 		/// <param name="password"></param>
-		public abstract void UpdateIIS7ApplicationPool(string name, string username, string password);
+		//public abstract void UpdateIIS7ApplicationPool(string name, string username, string password);
 
 		/// <summary>
 		/// Updates virtual directory application pool
@@ -324,21 +326,16 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="applicationPoolName"></param>
 		/// <returns></returns>
-		public abstract int GetIIS7ApplicationPoolSitesCount(string applicationPoolName);
+		//public abstract int GetIIS7ApplicationPoolSitesCount(string applicationPoolName);
 
-		/*public static ServerBinding[] GetSiteBindings(string siteId)
-		{
-			// get web server settings object
-			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+		public abstract ServerBinding[] GetSiteBindings(string siteId);
 
-			WebSiteItem site = new WebSiteItem();
-			FillWebSiteFromWmiObject(site, objSite);
-			return site.Bindings;
-		}*/
+		//public abstract void CreateVirtualDirectory(string siteId, string directoryName, string contentPath,
+		//	AspNetVersion aspNet);
 
 		public abstract void UpdateSiteBindings(string siteId, ServerBinding[] bindings);
 
-		public abstract void UpdateIIS7SiteBindings(string siteId, ServerBinding[] bindings);
+		//public abstract void UpdateIIS7SiteBindings(string siteId, ServerBinding[] bindings);
 		public abstract string[] GetIPs();
 		public abstract string[] GetIPv4Addresses();
 		public abstract string[] GetIPv4AddressesWindows();

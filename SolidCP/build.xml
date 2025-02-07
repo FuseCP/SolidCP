@@ -218,7 +218,7 @@
 			<ServerBuildExclude Include="$(ServerSrc)\LogParser\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\WebServices\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\Properties\**" />
-			<ServerBuildExclude Include="$(ServerSrc)\wwwroot\**" />
+			<!--<ServerBuildExclude Include="$(ServerSrc)\wwwroot\**" />-->
 			<ServerBuildExclude Include="$(ServerSrc)\bin_dotnet\WebServices\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\wwwroot\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\Pages\**" />
@@ -443,11 +443,11 @@
 		<Copy SourceFiles="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\bin\$(BuildConfiguration)\Data\en-US\Resources.xml" DestinationFolder="$(RootFolder)\Languages" />
 	</Target>
 
-	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
+	<Target Name="CreateSetupBuild"> <!-- DependsOnTargets="CreateLocalizationToolkitBuild">-->
 
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
-			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.Installer\bin\$(BuildConfiguration)</InstallerProjectBin>
+			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
 		<Exec Command="dotnet restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
@@ -458,14 +458,14 @@
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
 			<!--<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />-->
-			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
-			<InstallerExe Include="$(InstallerProjectBin)\SolidCP.Installer.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\net48\*.exe" />
+			<InstallerExe Include="$(InstallerProjectBin)\net48\SolidCP.Installer.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
 		<Copy SourceFiles="@(InstallerExe)" DestinationFolder="$(DeployFolder)" />
 
 		<!-- Compile updater.exe -->
-		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration)" />
+		<!--<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration)" />-->
 
 		<!-- build MSI package -->
 

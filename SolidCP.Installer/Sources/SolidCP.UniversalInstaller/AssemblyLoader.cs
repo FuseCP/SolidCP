@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 #if NETCOREAPP
 using System.Runtime.Loader;
 #endif
@@ -122,15 +123,36 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 	public static bool IsLinux => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux);
 	public static bool IsMac => RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX);
 
+	private static void Cleanup(string path)
+	{
+		// delete all old temp folders
+		Task.Run(async () =>
+		{
+			await Task.Delay(TimeSpan.FromSeconds(5));
+			var tmpFolder = Path.GetDirectoryName(path);
+			var folders = Directory.EnumerateDirectories(tmpFolder)
+				.Where(dir => dir != path);
+			foreach (var folder in folders)
+			{
+				try
+				{
+					Directory.Delete(folder, true);
+				}
+				catch { }
+			}
+		});
+	}
+
 	public static AssemblyLoader Init(Assembly mainAssembly = null)
 	{
 		bool isSetup = mainAssembly != null;
 		mainAssembly ??= Assembly.GetExecutingAssembly();
 
-#if Costura
 		var guid = Guid.NewGuid();
-		var path = Path.Combine(Path.GetTempPath(), TmpFolder, guid.ToString("D"));
+		var folder = guid.ToString("D");
+		var path = Path.Combine(Path.GetTempPath(), TmpFolder, folder);
 		if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+		if (!isSetup) Cleanup(path);
 		AppDomain.CurrentDomain.DomainUnload += (sender, args) =>
 		{
 			try
@@ -139,16 +161,6 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 			}
 			catch { }
 		};
-#else
-		string path;
-		if (isSetup)
-		{
-			var guid = Guid.NewGuid();
-			path = Path.Combine(Path.GetTempPath(), TmpFolder, guid.ToString("D"));
-			if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-			AppDomain.CurrentDomain.DomainUnload += (sender, args) => Directory.Delete(path, true);
-		} else path = Path.Combine(Path.GetDirectoryName(mainAssembly.Location));
-#endif
 
 		var loader = Current = new AssemblyLoader() { AssembliesPath = path, MainAssembly = mainAssembly };
 

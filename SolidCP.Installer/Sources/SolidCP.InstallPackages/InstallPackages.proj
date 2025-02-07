@@ -36,8 +36,8 @@
     </Target>
     
     <Target Name="BuildUniversalInstaller" Condition=" '$(OS)' == 'Unix' ">
-        <Exec Command="$(NuGetCmd) restore $(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" />
-        <MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller.sln" Properties="Configuration=$(Configuration)" />
+        <Exec Command="$(NuGetCmd) restore $(SetupTrunkFolder)\Sources\SolidCP.Installer.sln" />
+        <MSBuild Projects="$(SetupTrunkFolder)\Sources\SolidCP.Installer.sln" Properties="Configuration=$(Configuration)" />
     </Target>
 
     <Target Name="CleanOutput" DependsOnTargets="BuildWpkg;BuildUniversalInstaller">
@@ -50,7 +50,7 @@
 
     <Target Name="Dos2Unix" DependsOnTargets="CleanOutput">
         <ItemGroup>
-            <TextFiles Include="$(PackagesFolder)\src\bin\solidcp-universalinstaller" />        
+            <TextFiles Include="$(PackagesFolder)\src\bin\solidcp-installer" />        
             <TextFiles Include="$(PackagesFolder)\src\doc\*.*" />
             <TextFiles Include="$(PackagesFolder)\src\man\*.*" />
             <TextFiles Include="$(PackagesFolder)\src\dektop\*.*" />
@@ -75,20 +75,21 @@
             <DocFilesDebian Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesDebianExclude)" />
         </ItemGroup>
 
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
-		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.dll" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.runtimeconfig.json" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-installer.1" DestinationFiles="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-installer.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Debian\usr\share\pixmaps\SolidCP.png" />
-		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Debian\usr\share\applications" />
+		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-installer.desktop" DestinationFolder="$(PackagesFolder)\Debian\usr\share\applications" />
 		<Copy SourceFiles="@(DocFilesDebian)" DestinationFolder="$(PackagesFolder)\Debian\usr\share\doc\solidcp" />
         <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(PackagesFolder)\Debian\usr\bin" />
 
-        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
-        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller.1&quot;"
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-installer.1.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-installer.1&quot;"
              LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
         </Exec>
         <Message Text="$(OutputOfZip)" />
-        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-universalinstaller" />
+        <Delete Files="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-installer" />
 
         <Delete Files="$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian.gz" />
         <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Debian\usr\share\doc\solidcp\changelog.Debian&quot;"
@@ -118,21 +119,21 @@
             <DocFilesFedora Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesFedoraExclude)" /> 
             <BinFilesFedora Include="$(PackagesFolder)\src\bin\*.*" />
         </ItemGroup>
-
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net48\SolidCP.UniversalInstaller.exe" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
-		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-universalinstaller.1" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.dll" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.runtimeconfig.json" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
+		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-installer.1" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-installer.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\pixmaps\SolidCP.png" />
-		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-universalinstaller.desktop" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\applications" />
+		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-installer.desktop" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\applications" />
 		<Copy SourceFiles="@(DocFilesFedora)" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\doc\solidcp" />
         <Copy SourceFiles="@(BinFiles)" DestinationFolder="$(PackagesFolder)\Fedora\usr\bin" />
 
-        <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1.gz" />
-        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller.1&quot;"
+        <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-installer.1.gz" />
+        <Exec Command="$(GZipCmd) -9 -n &quot;$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-installer.1&quot;"
              LogStandardErrorAsError="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfZip" />
         </Exec>
         <Message Text="$(OutputOfZip)" />
-        <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-universalinstaller" />
+        <Delete Files="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-installer" />
 
         <Exec Command="powershell -NonInteractive -ExecutionPolicy Unrestricted -command  &quot;&amp; { .\src\scripts\ConfigureFedora.ps1 '$(FileVersion)' }&quot;"
              LogStandardErrorAsError="true" />

@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=SolidCP Installer
+Comment=The SolidCP Installer that will install the SolidCP Server component
+Icon=/usr/share/pixmaps/SolidCP.png
+Exec=/usr/bin/solidcp-installer
+Terminal=false
+Type=Application
+Categories=Server
+GenericName=SolidCP
+Keywords=SolidCP

@@ -609,6 +609,13 @@ namespace SolidCP.UniversalInstaller
 			return (regkey != null);
 		}
 
+		public static bool CheckNet48Installed()
+		{
+			var regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full");
+			var release = (int)regkey.GetValue("Release");
+			return release >= 528040;
+		}
+
 		public static string ExecAspNetRegistrationToolCommand(string arguments)
 		{
 			if (OSInfo.IsWindows)

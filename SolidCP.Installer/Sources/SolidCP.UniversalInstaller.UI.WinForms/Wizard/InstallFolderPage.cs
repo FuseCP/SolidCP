@@ -67,7 +67,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
 
-			UpdateSpaceRequiredInformation();
+			//UpdateSpaceRequiredInformation();
+			lblSpaceRequired.Visible = lblSpaceRequiredValue.Visible = false;
 
 			if (!string.IsNullOrEmpty(Settings.InstallFolder))
 			{
@@ -75,7 +76,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			}
 		}
 
-		private void UpdateSpaceRequiredInformation()
+		/*private void UpdateSpaceRequiredInformation()
 		{
 			try
 			{
@@ -91,7 +92,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			{
 				Log.WriteError("I/O error:", ex);
 			}
-		}
+		}*/
 
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{

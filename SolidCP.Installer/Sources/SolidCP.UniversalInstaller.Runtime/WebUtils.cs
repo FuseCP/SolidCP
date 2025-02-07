@@ -54,8 +54,42 @@ namespace SolidCP.UniversalInstaller.Runtime
 	public class WebUtils: UniversalInstaller.WebUtils
 	{
 		private static WmiHelper wmi = new WmiHelper("root\\MicrosoftIISv2");
+		bool iis7 = OSInfo.IsWindows && OSInfo.Windows.WebServer.Version.Major >= 7;
 
 		private UniversalInstaller.SecurityUtils SecurityUtils => Installer.Current.SecurityUtils;
+
+		public override string GetWebIdentity(CommonSettings vars)
+		{
+			var userName = vars.Username;
+			var bslash = userName.IndexOf('\\');
+			string userDomain;
+			if (bslash >= 0)
+			{
+				userDomain = userName.Substring(0, bslash);
+				userName = userName.Substring(bslash + 1);
+			} else
+			{
+				userDomain = Environment.MachineName;
+			}
+			
+			if (!String.IsNullOrEmpty(userDomain))
+			{
+				//
+				if (iis7)
+				{
+					//for iis7 we use fqdn\user
+					return $"{userDomain}\\{userName}";
+				}
+				else
+				{
+					//for iis6 we use netbiosdomain\user
+					var netbiosDomain = SecurityUtils.GetNETBIOSDomainName(userDomain);
+					return $"{netbiosDomain}\\{userName}";
+				}
+			}
+			//
+			return userName;
+		}
 
 		/// <summary>
 		/// Retrieves web sites.
@@ -76,15 +110,25 @@ namespace SolidCP.UniversalInstaller.Runtime
 
 			return sites.ToArray();
 		}
-/*
+
+		public override ServerBinding[] GetSiteBindings(string siteId)
+		{
+			// get web server settings object
+			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+
+			WebSiteItem site = new WebSiteItem();
+			FillWebSiteFromWmiObject(site, objSite);
+			return site.Bindings;
+		}
+
 		/// <summary>
 		/// Creates virtual directory.
 		/// </summary>
 		/// <param name="siteId">Site id.</param>
 		/// <param name="directoryName">Directory name.</param>
 		/// <param name="contentPath">Content path.</param>
-        /// <param name="aspNet">ASP.NET version</param>
-		public override void CreateVirtualDirectory(string siteId, string directoryName, string contentPath,
+		/// <param name="aspNet">ASP.NET version</param>
+		/*public override void CreateVirtualDirectory(string siteId, string directoryName, string contentPath,
             AspNetVersion aspNet)
 		{
 			// set folder permissions
@@ -118,8 +162,8 @@ namespace SolidCP.UniversalInstaller.Runtime
 
             // save object again
 			objDirSetting.Put();
-		}
-*/
+		}*/
+
 		public override void SetWebFolderPermissions(string path, string userDomain, string userAccount)
 		{
 			if(!FileUtils.DirectoryExists(path))
@@ -133,7 +177,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// </summary>
 		/// <param name="siteId">SiteID</param>
 		/// <returns></returns>
-		public override bool SiteIdExists(string siteId)
+		private bool SiteExistsIis6(string siteId)
 		{
 			return (wmi.ExecuteQuery(
 				String.Format("SELECT * FROM IIsWebServerSetting WHERE Name='{0}'", siteId)).Count > 0);
@@ -144,12 +188,13 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// </summary>
 		/// <param name="siteId">SiteID</param>
 		/// <returns></returns>
-		public override bool IIS7SiteExists(string siteId)
+		private bool IIS7SiteExists(string siteId)
 		{
 			ServerManager serverManager = new ServerManager();
 			bool ret = (serverManager.Sites[siteId] != null);
 			return ret;
 		}
+		public override bool SiteExists(string siteId) => OSInfo.Current.WebServer.SiteExists(siteId);
 
 		/// <summary>
 		/// Retreives site by site id.
@@ -280,6 +325,8 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <returns>Site id.</returns>
 		public override string CreateSite(WebSiteItem site)
 		{
+			if (iis7) return CreateIIS7Site(site);
+
 			//CheckWebServerBindings(site.Bindings);
 
 			// set folder permissions
@@ -350,7 +397,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// </summary>
 		/// <param name="site">Site object.</param>
 		/// <returns>Site id.</returns>
-		public override string CreateIIS7Site(WebSiteItem site)
+		private string CreateIIS7Site(WebSiteItem site)
 		{
 			ServerManager serverManager = new ServerManager();
 			Site webSite = serverManager.Sites[site.Name];
@@ -630,14 +677,18 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="siteId"></param>
 		public override void DeleteSite(string siteId)
 		{
-			try
-			{ 
-				ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServer='{0}'", siteId));
-				objSite.Delete();
-			}
-			catch(Exception ex)
+			if (iis7) DeleteIIS7Site(siteId);
+			else
 			{
-				throw new Exception("Can't delete web site", ex);
+				try
+				{
+					ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServer='{0}'", siteId));
+					objSite.Delete();
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Can't delete web site", ex);
+				}
 			}
 		}
 
@@ -645,7 +696,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// Deletes site
 		/// </summary>
 		/// <param name="siteId"></param>
-		public override void DeleteIIS7Site(string siteId)
+		private void DeleteIIS7Site(string siteId)
 		{
 			try
 			{
@@ -672,6 +723,8 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <returns></returns>
 		public override string GetSiteIdByBinding(string ip, string port, string host)
 		{
+			if (iis7) return GetIIS7SiteIdByBinding(ip, port, host);
+
 			// check for server bindings
 			ObjectQuery objectQuery = new ObjectQuery("SELECT * FROM IIsWebServerSetting");
 			using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(wmi.WmiScope, objectQuery))
@@ -714,7 +767,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="port">Port number</param>
 		/// <param name="host">Host header value</param>
 		/// <returns></returns>
-		public override string GetIIS7SiteIdByBinding(string ip, string port, string host)
+		private string GetIIS7SiteIdByBinding(string ip, string port, string host)
 		{
 			ServerManager serverManager = new ServerManager();
 			foreach (Site webSite in serverManager.Sites)
@@ -748,6 +801,8 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <returns></returns>
 		public override bool ApplicationPoolExists(string name)
 		{
+			if (iis7) return IIS7ApplicationPoolExists(name);
+
 			WmiHelper wmi = new WmiHelper("root\\MicrosoftIISv2");
 			return(wmi.ExecuteQuery(
 				String.Format("SELECT * FROM IIsApplicationPool WHERE Name='W3SVC/AppPools/{0}'", name)).Count > 0);
@@ -758,7 +813,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public override bool IIS7ApplicationPoolExists(string name)
+		private bool IIS7ApplicationPoolExists(string name)
 		{
 			ServerManager serverManager = new ServerManager();
 			bool ret = (serverManager.ApplicationPools[name] != null);
@@ -773,43 +828,54 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="password"></param>
 		public override void CreateApplicationPool(string name, string username, string password)
 		{
-			// create pool
-			ManagementObject objPool = wmi.GetClass("IIsApplicationPool").CreateInstance();
-			objPool.Properties["Name"].Value = "W3SVC/AppPools/" + name;
-			objPool.Put();
+			if (iis7) CreateIIS7ApplicationPool(name, username, password);
+			else
+			{
+				// create pool
+				ManagementObject objPool = wmi.GetClass("IIsApplicationPool").CreateInstance();
+				objPool.Properties["Name"].Value = "W3SVC/AppPools/" + name;
+				objPool.Put();
 
-			// specify pool properties
-			objPool = wmi.GetClass("IIsApplicationPoolSetting").CreateInstance();
-			objPool.Properties["Name"].Value = "W3SVC/AppPools/" + name;
-            if (!String.IsNullOrEmpty(username))
-            {
-                // specified account
-                objPool.Properties["AppPoolIdentityType"].Value = 3;
-                objPool.Properties["WAMUserName"].Value = username;
-                objPool.Properties["WAMUserPass"].Value = password;
-            }
-            else
-            {
-                // NETWORK SERVICE
-                objPool.Properties["AppPoolIdentityType"].Value = 2;
-            }
-			objPool.Put();
+				// specify pool properties
+				objPool = wmi.GetClass("IIsApplicationPoolSetting").CreateInstance();
+				objPool.Properties["Name"].Value = "W3SVC/AppPools/" + name;
+				if (!String.IsNullOrEmpty(username))
+				{
+					// specified account
+					objPool.Properties["AppPoolIdentityType"].Value = 3;
+					objPool.Properties["WAMUserName"].Value = username;
+					objPool.Properties["WAMUserPass"].Value = password;
+				}
+				else
+				{
+					// NETWORK SERVICE
+					objPool.Properties["AppPoolIdentityType"].Value = 2;
+				}
+				objPool.Put();
+			}
 		}
 
 		public override void StartApplicationPool(string name)
 		{
-			ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPool='W3SVC/AppPools/{0}'", name));
-			objPool.InvokeMethod("Start", null);
+			if (iis7) StartIIS7ApplicationPool(name);
+			else
+			{
+				ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPool='W3SVC/AppPools/{0}'", name));
+				objPool.InvokeMethod("Start", null);
+			}
 		}
 
 		public override void StopApplicationPool(string name)
 		{
-			ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPool='W3SVC/AppPools/{0}'", name));
-			objPool.InvokeMethod("Stop", null);
-			
+			if (iis7) StopIIS7ApplicationPool(name);
+			else
+			{
+				ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPool='W3SVC/AppPools/{0}'", name));
+				objPool.InvokeMethod("Stop", null);
+			}
 		}
 
-		public override void StartIIS7ApplicationPool(string name)
+		private void StartIIS7ApplicationPool(string name)
 		{
 			ServerManager serverManager = new ServerManager();
 			ApplicationPool pool = serverManager.ApplicationPools[name];
@@ -820,7 +886,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 			}
 		}
 
-		public override void StopIIS7ApplicationPool(string name)
+		private void StopIIS7ApplicationPool(string name)
 		{
 			ServerManager serverManager = new ServerManager();
 			ApplicationPool pool = serverManager.ApplicationPools[name];
@@ -837,7 +903,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="name"></param>
 		/// <param name="username"></param>
 		/// <param name="password"></param>
-		public override void CreateIIS7ApplicationPool(string name, string username, string password)
+		private void CreateIIS7ApplicationPool(string name, string username, string password)
 		{
 			ServerManager serverManager = new ServerManager();
 			ApplicationPool pool = serverManager.ApplicationPools.Add(name);
@@ -853,7 +919,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 			{
 				pool.ProcessModel.IdentityType = ProcessModelIdentityType.NetworkService;
 			}
-			pool.ManagedRuntimeVersion = "v2.0";
+			pool.ManagedRuntimeVersion = "v4.0";
 			pool.ManagedPipelineMode = ManagedPipelineMode.Integrated;
 			serverManager.CommitChanges();
 		}
@@ -864,15 +930,19 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="name"></param>
 		public override void DeleteApplicationPool(string name)
 		{
-			try
+			if (iis7) DeleteIIS7ApplicationPool(name);
+			else
 			{
-				ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPool='W3SVC/AppPools/{0}'",
-					name));
-				objPool.Delete();
-			}
-			catch(Exception ex)
-			{
-				throw new Exception("Can't delete application pool", ex);
+				try
+				{
+					ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPool='W3SVC/AppPools/{0}'",
+						name));
+					objPool.Delete();
+				}
+				catch (Exception ex)
+				{
+					throw new Exception("Can't delete application pool", ex);
+				}
 			}
 		}
 
@@ -880,7 +950,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// Deletes application pool
 		/// </summary>
 		/// <param name="name"></param>
-		public override void DeleteIIS7ApplicationPool(string name)
+		private void DeleteIIS7ApplicationPool(string name)
 		{
 			try
 			{
@@ -906,22 +976,26 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="password"></param>
 		public override void UpdateApplicationPool(string name, string username, string password)
 		{
-			ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPoolSetting='W3SVC/AppPools/{0}'",
-				name));
+			if (iis7) UpdateIIS7ApplicationPool(name, username, password);
+			else
+			{
+				ManagementObject objPool = wmi.GetObject(String.Format("IIsApplicationPoolSetting='W3SVC/AppPools/{0}'",
+					name));
 
-            if (!String.IsNullOrEmpty(username))
-            {
-                // specified account
-                objPool.Properties["AppPoolIdentityType"].Value = 3;
-                objPool.Properties["WAMUserName"].Value = username;
-                objPool.Properties["WAMUserPass"].Value = password;
-            }
-            else
-            {
-                // NETWORK SERVICE
-                objPool.Properties["AppPoolIdentityType"].Value = 2;
-            }
-			objPool.Put();
+				if (!String.IsNullOrEmpty(username))
+				{
+					// specified account
+					objPool.Properties["AppPoolIdentityType"].Value = 3;
+					objPool.Properties["WAMUserName"].Value = username;
+					objPool.Properties["WAMUserPass"].Value = password;
+				}
+				else
+				{
+					// NETWORK SERVICE
+					objPool.Properties["AppPoolIdentityType"].Value = 2;
+				}
+				objPool.Put();
+			}
 		}
 
 		/// <summary>
@@ -930,7 +1004,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <param name="name"></param>
 		/// <param name="username"></param>
 		/// <param name="password"></param>
-		public override void UpdateIIS7ApplicationPool(string name, string username, string password)
+		private void UpdateIIS7ApplicationPool(string name, string username, string password)
 		{
 			ServerManager serverManager = new ServerManager();
 			ApplicationPool pool = serverManager.ApplicationPools[name];
@@ -970,6 +1044,8 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// <returns></returns>
 		public override int GetApplicationPoolSitesCount(string applicationPoolName)
 		{
+			if (iis7) return GetIIS7ApplicationPoolSitesCount(applicationPoolName);
+
 			ManagementObjectCollection objSites = wmi.ExecuteQuery(
 				string.Format("SELECT * FROM IIsWebVirtualDirSetting where AppPoolId = '{0}'", applicationPoolName));
 			return objSites.Count;
@@ -980,7 +1056,7 @@ namespace SolidCP.UniversalInstaller.Runtime
 		/// </summary>
 		/// <param name="applicationPoolName"></param>
 		/// <returns></returns>
-		public override int GetIIS7ApplicationPoolSitesCount(string applicationPoolName)
+		private int GetIIS7ApplicationPoolSitesCount(string applicationPoolName)
 		{
 			ServerManager serverManager = new ServerManager();
 			int num = 0;
@@ -1007,37 +1083,30 @@ namespace SolidCP.UniversalInstaller.Runtime
 			return num;
 		}
 
-		/*public override ServerBinding[] GetSiteBindings(string siteId)
-		{
-			// get web server settings object
-			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
-
-			WebSiteItem site = new WebSiteItem();
-			FillWebSiteFromWmiObject(site, objSite);
-			return site.Bindings;
-		}*/
-
-
 		public override void UpdateSiteBindings(string siteId, ServerBinding[] bindings)
 		{
-			ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
-
-			// update bindings
-			ManagementClass clsBinding = wmi.GetClass("ServerBinding");
-			ManagementObject[] objBinings = new ManagementObject[bindings.Length];
-
-			for (int i = 0; i < objBinings.Length; i++)
+			if (iis7) UpdateIIS7SiteBindings(siteId, bindings);
+			else
 			{
-				objBinings[i] = clsBinding.CreateInstance();
-				objBinings[i]["Hostname"] = bindings[i].Host;
-				objBinings[i]["IP"] = bindings[i].IP;
-				objBinings[i]["Port"] = bindings[i].Port;
+				ManagementObject objSite = wmi.GetObject(String.Format("IIsWebServerSetting='{0}'", siteId));
+
+				// update bindings
+				ManagementClass clsBinding = wmi.GetClass("ServerBinding");
+				ManagementObject[] objBinings = new ManagementObject[bindings.Length];
+
+				for (int i = 0; i < objBinings.Length; i++)
+				{
+					objBinings[i] = clsBinding.CreateInstance();
+					objBinings[i]["Hostname"] = bindings[i].Host;
+					objBinings[i]["IP"] = bindings[i].IP;
+					objBinings[i]["Port"] = bindings[i].Port;
+				}
+				objSite.Properties["ServerBindings"].Value = objBinings;
+				objSite.Put();
 			}
-			objSite.Properties["ServerBindings"].Value = objBinings;
-			objSite.Put();
 		}
 
-		public override void UpdateIIS7SiteBindings(string siteId, ServerBinding[] bindings)
+		private void UpdateIIS7SiteBindings(string siteId, ServerBinding[] bindings)
 		{
 			ServerManager serverManager = new ServerManager();
 			Site webSite = serverManager.Sites[siteId];
@@ -1164,7 +1233,6 @@ namespace SolidCP.UniversalInstaller.Runtime
 
 		public override bool LEInstallCertificate(string site, string domain, string email, bool updateWCF = true, bool updateIIS = true)
 		{
-
 			if (string.IsNullOrEmpty(email)) return false;
 
 			if (!OSInfo.IsWindows) throw new PlatformNotSupportedException("Let's Encrypt only supported on Windows.");
@@ -1240,5 +1308,3 @@ namespace SolidCP.UniversalInstaller.Runtime
 		}
 	}
 }
-
-

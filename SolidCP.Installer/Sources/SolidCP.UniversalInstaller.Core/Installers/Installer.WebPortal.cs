@@ -12,93 +12,96 @@ using System.Text.RegularExpressions;
 using System.Data;
 using System.Xml.Linq;
 
-namespace SolidCP.UniversalInstaller
+namespace SolidCP.UniversalInstaller;
+
+public abstract partial class Installer
 {
-	public abstract partial class Installer
+	public string WebPortalSiteId => $"{SolidCP}WebPortal";
+	public virtual string UnixPortalServiceId => "solidcp-portal";
+	public virtual void InstallWebPortalPrerequisites() { }
+	public virtual void RemoveWebPortalPrerequisites() { }
+	public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
+	public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
+	public virtual void InstallWebPortalWebsite()
 	{
-		public virtual string UnixPortalServiceId => "solidcp-portal";
-		public virtual void InstallWebPortalPrerequisites() { }
-		public virtual void RemoveWebPortalPrerequisites() { }
-		public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
-		public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
-		public virtual void InstallWebPortalWebsite()
-		{
-			var web = Path.Combine(InstallWebRootPath, WebPortalFolder);
-			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebPortal.dll");
-			InstallWebsite($"{SolidCP}WebPortal",
-				web,
-				Settings.WebPortal,
-				UnixPortalServiceId,
-				dll,
-				"SolidCP.WebPortal service, the portal service for the SolidCP control panel.",
-				UnixPortalServiceId);
-		}
-		public virtual string WebPortalInstallFilter(string file) => SetupFilter(file);
-		public virtual string WebPortalSetupFilter(string file) => ConfigAndSetupFilter(file);
+		var web = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebPortal.dll");
+		InstallWebsite(WebPortalSiteId,
+			web,
+			Settings.WebPortal,
+			UnixPortalServiceId,
+			dll,
+			"SolidCP.WebPortal service, the portal service for the SolidCP control panel.",
+			UnixPortalServiceId);
+	}
+	public virtual string WebPortalInstallFilter(string file) => SetupFilter(file);
+	public virtual string WebPortalSetupFilter(string file) => ConfigAndSetupFilter(file);
 
-		public virtual void InstallWebPortal()
+	public virtual void InstallWebPortal()
+	{
+		InstallWebPortalPrerequisites();
+		ReadWebPortalConfiguration();
+		CopyWebPortal(WebPortalInstallFilter);
+		SetWebPortalFilePermissions();
+		SetWebPortalFileOwner();
+		ConfigureWebPortal();
+		InstallWebPortalWebsite();
+	}
+	public virtual void RemoveWebPortalWebsite() {
+		RemoveWebsite(WebPortalSiteId, Settings.WebPortal);
+	}
+	public virtual void UpdateWebPortal() {
+		InstallWebPortalPrerequisites();
+		ReadWebPortalConfiguration();
+		CopyWebPortal(WebPortalSetupFilter);
+		SetWebPortalFilePermissions();
+		SetWebPortalFileOwner();
+		UpdateWebPortalConfig();
+		ConfigureWebPortal();
+		InstallWebPortalWebsite();
+	}
+	public virtual void RemoveWebPortal()
+	{
+		RemoveWebPortalWebsite();
+		RemoveWebPortalFolder();
+	}
+	public virtual void RemoveWebPortalFolder()
+	{
+		Directory.Delete(Path.Combine(InstallWebRootPath, WebPortalFolder), true);
+	}
+	public virtual void ReadWebPortalConfiguration()
+	{
+		var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
+		if (File.Exists(confFile))
 		{
-			InstallWebPortalPrerequisites();
-			ReadWebPortalConfiguration();
-			CopyWebPortal(WebPortalInstallFilter);
-			SetWebPortalFilePermissions();
-			SetWebPortalFileOwner();
-			ConfigureWebPortal();
-			InstallWebPortalWebsite();
-			//UpdateSettings();
-		}
-		public virtual void RemoveWebPortalWebsite() { }
-		public virtual void UpdateWebPortal() {
-			InstallWebPortalPrerequisites();
-			ReadWebPortalConfiguration();
-			CopyWebPortal(WebPortalSetupFilter);
-			SetWebPortalFilePermissions();
-			SetWebPortalFileOwner();
-			UpdateWebPortalConfig();
-			ConfigureWebPortal();
-			InstallWebPortalWebsite();
-			//UpdateSettings();
-		}
-		public virtual void RemoveWebPortal()
-		{
-			RemoveWebPortalWebsite();
-			RemoveWebPortalFolder();
-			//UpdateSettings();
-		}
-		public virtual void RemoveWebPortalFolder()
-		{
-			Directory.Delete(Path.Combine(InstallWebRootPath, WebPortalFolder), true);
-		}
-		public virtual void ReadWebPortalConfiguration()
-		{
-			Settings.WebPortal = new WebPortalSettings();
-
-			var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
 			var conf = XElement.Load(confFile);
-			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer.Value;
+			var enterpriseServer = conf.Element("EnterpriseServer");
+			Settings.WebPortal.EnterpriseServerUrl = enterpriseServer?.Value ?? "http://localhost:9002";
 		}
-		public virtual void ConfigureWebPortal()
-		{
-			var settings = Settings.WebPortal;
-			var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
-			var conf = XElement.Load(confFile);
-			var enterpriseServer = conf.Element("SiteSettings/EnterpriseServer");
-			enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
-			conf.Save(confFile);
+	}
+	public virtual void ConfigureWebPortal()
+	{
+		var settings = Settings.WebPortal;
+		var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
+		var conf = XElement.Load(confFile);
+		var enterpriseServer = conf.Element("EnterpriseServer");
+		enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
+		conf.Save(confFile);
 
-			InstallLog("Configured Web Portal.");
-		}
-		public virtual void UpdateWebPortalConfig() { }
-		public virtual void CopyWebPortal(Func<string, string> filter = null)
+		ConfigureAppsettings(Settings.WebPortal);
+
+		if (settings.EmbedEnterpriseServer)
 		{
-			filter ??= SetupFilter;
-			var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
-			CopyFiles(ComponentTempPath, websitePath, filter);
+			ConfigureEnterpriseServerNetFX(true);
 		}
-		public virtual int InstallWebPortalMaxProgress => 100;
-		public virtual int UninstallWebPortalMaxProgress => 100;
-		public virtual int SetupWebPortalMaxProgress => 100;
-		public virtual int UpdateWebPortalMaxProgress => 100;
+
+		InstallLog("Configured Web Portal.");
+	}
+	public virtual void UpdateWebPortalConfig() { }
+	public virtual void CopyWebPortal(Func<string, string> filter = null)
+	{
+		filter ??= SetupFilter;
+		var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		CopyFiles(ComponentTempPath, websitePath, filter);
 	}
 }

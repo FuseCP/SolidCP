@@ -21,6 +21,7 @@
         <PackageReference Include="System.Management" Version="9.0.1" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
         <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.1" />
+        <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
         <!--<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
         <!--<PackageReference Include="System.DirectoryServices" Version="9.0.1" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
@@ -65,7 +66,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="..\..\Build\$(Configuration)\SolidCP.UniversalInstaller.Core.deps.json">
+        <EmbeddedResource Include="..\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.UniversalInstaller.Core.deps.json">
             <LogicalName>Dlls/SolidCP.UniversalInstaller.Core.deps.json</LogicalName>
             <Link>Dlls\SolidCP.UniversalInstaller.Core.deps.json</Link>
         </EmbeddedResource>

@@ -671,7 +671,7 @@ public class SecurityUtils: UniversalInstaller.SecurityUtils
 		}
 	}
 
-public override void ChangeUserPassword(string userName, string password)
+	public override void ChangeUserPassword(string userName, string password)
     {
         try
         {

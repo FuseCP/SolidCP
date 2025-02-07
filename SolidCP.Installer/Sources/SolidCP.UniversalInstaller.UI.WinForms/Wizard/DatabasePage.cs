@@ -62,15 +62,33 @@ namespace SolidCP.UniversalInstaller.WinForms
 			string component = Settings.ComponentName;
 			this.Description = string.Format("Enter the connection information for the {0} database.", component);
 			this.lblIntro.Text = "The connection information will be used by the Setup Wizard to install the database objects only. Click Next to continue.";
-			this.txtSqlServerDatabase.Text = Settings.DatabaseName ?? "SolidCP";
 			this.txtSqlServerServer.Text = Settings.DatabaseServer == "localhost" ? "(local)" : Settings.DatabaseServer;
-			this.txtMySqlDatabase.Text = Settings.DatabaseName ?? "SolidCP";
-			this.txtSqliteDatabase.Text = Settings.DatabaseName ?? "SolidCP";
+			txtSqlServerDatabase.Text = txtMySqlDatabase.Text = txtSqliteDatabase.Text = Settings.DatabaseName ?? "SolidCP";
+			txtSqlServerLogin.Text = txtMySqlUser.Text = Settings.DatabaseUser ?? "SolidCP";
+			txtSqlServerPassword.Text = txtMySqlPassword.Text = Settings.DatabasePassword;
+			txtMySqlServer.Text = Settings.DatabaseServer;
+			txtMySqlPort.Text = Settings.DatabasePort != default ? Settings.DatabasePort.ToString() : "3306";
+			switch (Settings.DatabaseType)
+			{
+				default:
+				case Data.DbType.SqlServer:
+					tabControl.SelectedIndex = 0;
+					break;
+				case Data.DbType.MySql:
+				case Data.DbType.MariaDb:
+					tabControl.SelectedIndex = 1;
+					break;
+				case Data.DbType.Sqlite:
+				case Data.DbType.SqliteFX:
+					tabControl.SelectedIndex = 2;
+					break;
+			}
+
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
 			cbSqlServerAuthentication.SelectedIndex = 0;
-			ParseConnectionString();
+			//ParseConnectionString();
 		}
 
 		private void ParseConnectionString()
@@ -89,9 +107,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 						txtSqlServerServer.Text = server == "localhost" ? "(local)" : server;
 						windowsAuthentication = (csb["integrated security"] as string)?.Trim().ToLower() == "sspi";
 						cbSqlServerAuthentication.SelectedIndex = windowsAuthentication ? 0 : 1;
-						txtSqlServerLogin.Text = (string)(csb["user"] ?? csb["user id"] ?? csb["uid"] ?? "");
-						txtSqlServerPassword.Text = (string)(csb["password"] ?? "");
-						txtSqlServerDatabase.Text = (string)(csb["database"] ?? "");
+						//txtSqlServerLogin.Text = (string)(csb["user"] ?? csb["user id"] ?? csb["uid"] ?? "");
+						//txtSqlServerPassword.Text = (string)(csb["password"] ?? "");
+						//txtSqlServerDatabase.Text = (string)(csb["database"] ?? "");
 						tabControl.SelectedIndex = 0;
 						break;
 					case "mysql":

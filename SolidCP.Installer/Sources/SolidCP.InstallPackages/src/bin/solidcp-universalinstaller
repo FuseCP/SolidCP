@@ -1,2 +1,2 @@
 #!/bin/sh
-exec mono --debug /usr/share/solidcp/SolidCP.UniversalInstaller.exe
+exec dotnet /usr/share/solidcp/SolidCP.Installer.dll

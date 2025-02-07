@@ -1,10 +1,10 @@
 Name: solidcp
-Version:1.5.0
+Version:2.0.0
 Release: 1%{?dist}
 Summary: This is the SolidCP Server component
 License: Creative Commons Share-alike    
 URL: https://www.solidcp.com
-Requires: /bin/sh, sed, mono-complete >= 5.0.1
+Requires: /bin/sh, sed, dotnet-runtime-8.0, aspnetcore-runtime-8.0
 AutoReqProv: no
 BuildArch: noarch
 Source0: %{name}-%{version}.tar.gz
@@ -29,24 +29,25 @@ cp -rp usr/share/* $RPM_BUILD_ROOT/usr/share
 
 %post
 if [ $1 -ge 1 ];then
-    sed -i 's|/usr/bin/solidcp-universalinstaller|%{_bindir}/solidcp-universalinstaller|g' /usr/share/applications/solidcp-universalinstaller.desktop
-#  %{_bindir}/solidcp-universalinstaller
-    echo "Please type 'sudo solidcp-universalinstaller' to install SolidCP"
+    sed -i 's|/usr/bin/solidcp-installer|%{_bindir}/solidcp-installer|g' /usr/share/applications/solidcp-installer.desktop
+#  %{_bindir}/solidcp-installer
+    echo "Please type 'sudo solidcp-installer' to install SolidCP"
 fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/bin/solidcp-universalinstaller
-/usr/share/solidcp/SolidCP.UniversalInstaller.exe
+/usr/bin/solidcp-installer
+/usr/share/solidcp/SolidCP.Installer.dll
+/usr/share/solidcp/SolidCP.Installer.runtimeconfig.json
 /usr/share/pixmaps/SolidCP.png
-/usr/share/applications/solidcp-universalinstaller.desktop
+/usr/share/applications/solidcp-installer.desktop
 /usr/share/doc/solidcp/copyright
 /usr/share/doc/solidcp/ChangeLog
 /usr/share/doc/solidcp/README
-/usr/share/man/man1/solidcp-universalinstaller.1.gz
+/usr/share/man/man1/solidcp-installer.1.gz
 
 %changelog
-* Fri Mar 22 2024 Simon Egli <simon.jakob.egli@gmail.com> - 1.5.0
+* Fri Mar 22 2024 Simon Egli <simon.jakob.egli@gmail.com> - 2.0.0
 - First version being packaged

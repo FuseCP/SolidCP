@@ -344,9 +344,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 					}
 				}
                 bool iis7 = (OSInfo.IsWindows && OSInfo.Current.WebServer.Version.Major >= 7);
-				string siteId = iis7 ? 
-					WebUtils.GetIIS7SiteIdByBinding(newIP, newPort, newDomain) :
-					WebUtils.GetSiteIdByBinding(newIP, newPort, newDomain);
+				string siteId =	WebUtils.GetSiteIdByBinding(newIP, newPort, newDomain);
 				if (siteId == null)
 					return true;
 
@@ -407,6 +405,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			int port = 0;
 			int.TryParse(txtWebSiteTcpPort.Text, out port);
 			Settings.WebSitePort = port;
+			Settings.Urls = string.IsNullOrEmpty(Settings.WebSiteIp) ? Installer.Current.GetUrls(Settings) : null;
 			//}
 			base.OnBeforeMoveNext(e);
 		}

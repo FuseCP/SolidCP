@@ -52,7 +52,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 {
 	public partial class ConfigurationCheckPage : BannerWizardPage
 	{
-		public const string AspNet40HasBeenInstalledMessage = "ASP.NET 4.0 has been installed.";
+		public const string AspNet48HasBeenInstalledMessage = "ASP.NET 4.8 has been installed.";
 
 		private Thread thread;
 		private List<ConfigurationCheck> checks;
@@ -427,7 +427,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		}
 		internal static CheckStatuses CheckASPNET(out string details)
 		{
-			details = "ASP.NET 4.0 is installed.";
+			details = "ASP.NET 4.8 is installed.";
 			CheckStatuses ret = CheckStatuses.Success;
 			try
 			{
@@ -441,12 +441,18 @@ namespace SolidCP.UniversalInstaller.WinForms
                         Utils.RegisterAspNet40();
 						//
 						ret = CheckStatuses.Warning;
-						details = AspNet40HasBeenInstalledMessage;
+						details = AspNet48HasBeenInstalledMessage;
 					}
 					// Enable ASP.NET 4.0 Web Server Extension if it is prohibited
                     if (Utils.GetAspNetWebExtensionStatus_Iis6() == WebExtensionStatus.Prohibited)
 					{
 						Utils.EnableAspNetWebExtension_Iis6();
+					}
+
+					if (!Utils.CheckNet48Installed())
+					{
+						ret = CheckStatuses.Error;
+						details = "ASP.NET 4.8 is not installed on your server.";
 					}
 				}
 				// IIS 7 on Windows 2008 and higher
@@ -471,7 +477,12 @@ namespace SolidCP.UniversalInstaller.WinForms
                         Utils.RegisterAspNet40();
 						//
 						ret = CheckStatuses.Warning;
-						details = AspNet40HasBeenInstalledMessage;
+						details = AspNet48HasBeenInstalledMessage;
+					}
+					if (!Utils.CheckNet48Installed())
+					{
+						ret = CheckStatuses.Error;
+						details = "ASP.NET 4.8 is not installed on your server.";
 					}
 				}
 				// Log details
@@ -548,9 +559,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 			foreach (var binding in bindings)
 			{
-				if ((iis7 ?
-					WebUtils.GetIIS7SiteIdByBinding(binding.Ip, binding.Port, binding.Domain) :
-					WebUtils.GetSiteIdByBinding(binding.Ip, binding.Port, binding.Domain)) != null) {
+				if (WebUtils.GetSiteIdByBinding(binding.Ip, binding.Port, binding.Domain) != null) {
 					ipadr = binding.Ip;
 					port = binding.Port;
 					domain = binding.Domain;

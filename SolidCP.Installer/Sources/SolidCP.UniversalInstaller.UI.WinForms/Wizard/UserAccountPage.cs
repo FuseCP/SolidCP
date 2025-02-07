@@ -86,7 +86,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 					else username = "";
 				} else
 				{
-					domain = Environment.MachineName;
+					domain = "";
 				}
 				txtUserName.Text = username;
 				txtDomain.Text = domain;

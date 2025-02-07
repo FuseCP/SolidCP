@@ -62,7 +62,7 @@ public abstract class UnixInstaller : Installer
 
 		InstallLog($"Added System User {user}.");
 	}
-	public override void RemoveWebsite(string serviceId, string username, string urls)
+	public override void RemoveWebsite(string serviceId, CommonSettings settings)
 	{
 		var service = ServiceController[serviceId];
 
@@ -74,26 +74,26 @@ public abstract class UnixInstaller : Installer
 
 			InstallLog($"Removed {serviceId} service");
 
-			RemoveFirewallRule(urls);
+			RemoveFirewallRule(GetUrls(settings));
 		}
 	}
 	public override void RemoveServerWebsite()
 	{
-		RemoveWebsite(UnixServerServiceId, UnixServerServiceId, Settings.Server.Urls);
+		RemoveWebsite(UnixServerServiceId, Settings.Server);
 
 		//InstallLog($"Removed {UnixServerServiceId} service & website.");
 	}
 
 	public override void RemoveEnterpriseServerWebsite()
 	{
-		RemoveWebsite(UnixEnterpriseServerServiceId, UnixEnterpriseServerServiceId, Settings.EnterpriseServer.Urls);
+		RemoveWebsite(UnixEnterpriseServerServiceId, Settings.EnterpriseServer);
 
 		//InstallLog($"Removed {UnixEnterpriseServerServiceId} service & website.");
 	}
 
 	public override void RemoveWebPortalWebsite()
 	{
-		RemoveWebsite(UnixPortalServiceId, UnixPortalServiceId, Settings.WebPortal.Urls);
+		RemoveWebsite(UnixPortalServiceId, Settings.WebPortal);
 
 		//InstallLog($"Removed {UnixPortalServiceId} service & website.");
 	}

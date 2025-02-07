@@ -128,7 +128,8 @@ public class BaseSetup
 	public virtual bool IsStandalone => ComponentSettings is StandaloneSettings;
 	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
 	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
-
+	public virtual bool HasEnterpriseServerInstallation
+		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder));
 	public virtual UI.SetupWizard Wizard(object args)
 	{
 		if (ParseArgs(args) && CheckInstallerVersion())
@@ -151,6 +152,10 @@ public class BaseSetup
 
 				if (IsEnterpriseServer) wizard = wizard
 					.ServerAdminPassword();
+
+				if (IsWebPortal && HasEnterpriseServerInstallation) wizard = wizard
+					.EmbedEnterpriseServer();
+
 			} else
 			{
 				wizard = wizard

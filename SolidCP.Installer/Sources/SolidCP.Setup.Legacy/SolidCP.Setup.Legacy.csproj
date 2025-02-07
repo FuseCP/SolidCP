@@ -41,7 +41,6 @@
       <Compile Remove="Actions\EntServerUnixActionManager.cs" />
       <Compile Remove="Actions\StandaloneServerUnixActionManager.cs" />
       <Compile Remove="Actions\WebPortalUnixActionManager.cs" />
-      <Compile Remove="Common\Global.cs" />
     </ItemGroup>
     <ItemGroup>
         <!--<PackageReference Include="BouncyCastle.Cryptography" Version="2.3.1" />-->
@@ -118,7 +117,6 @@
         <None Include="Actions\EntServerUnixActionManager.cs" />
         <None Include="Actions\StandaloneServerUnixActionManager.cs" />
         <None Include="Actions\WebPortalUnixActionManager.cs" />
-        <None Include="Common\Global.cs" />
         <None Include="Resources\BannerImage.GIF" />
         <None Include="Resources\Icons.MenuFileOpenIcon.png" />
         <None Include="Resources\MarginImage.GIF" />

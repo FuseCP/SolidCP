@@ -6,6 +6,7 @@ namespace SolidCP.UniversalInstaller
 {
 	public partial class Installer
 	{
+		public virtual string WebDavPortalSiteId => $"{SolidCP}WebDavPortal";
 		public virtual string UnixWebDavPortalServiceId => "solidcp-webdavportal";
 		public virtual void InstallWebDavPortalPrerequisites() { }
 		public virtual void RemoveWebDavPortalPrerequisites() { }
@@ -36,7 +37,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			var web = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
 			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebDavPortal.dll");
-			InstallWebsite($"{SolidCP}WebDavPortal",
+			InstallWebsite(WebDavPortalSiteId,
 				web,
 				Settings.WebDavPortal,
 				UnixWebDavPortalServiceId,
@@ -44,7 +45,9 @@ namespace SolidCP.UniversalInstaller
 				"SolidCP.WebDavPortal service, the WebDavPortal for the SolidCP control panel.",
 				UnixWebDavPortalServiceId);
 		}
-		public virtual void RemoveWebDavPortalWebsite() { }
+		public virtual void RemoveWebDavPortalWebsite() {
+			RemoveWebsite(WebDavPortalSiteId, Settings.WebDavPortal);
+		}
 		public virtual void ReadWebDavPortalConfiguration() { }
 		public virtual void RemoveWebDavPortal()
 		{
@@ -65,9 +68,5 @@ namespace SolidCP.UniversalInstaller
 			var websitePath = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
 			CopyFiles(ComponentTempPath, websitePath, filter);
 		}
-		public virtual int InstallWebDavPortalMaxProgress => 100;
-		public virtual int UninstallWebDavPortalMaxProgress => 100;
-		public virtual int SetupWebDavPortalMaxProgress => 100;
-		public virtual int UpdateWebDavPortalMaxProgress => 100;
 	}
 }
