@@ -37,6 +37,8 @@ namespace SolidCP.Providers.OS
 		public static bool IsUnix => IsLinux || IsMac || IsFreeBSD || IsNetBSD;
 		public static bool IsFreeBSD => RuntimeInformation.IsOSPlatform(FreeBSD);
 		public static bool IsNetBSD => RuntimeInformation.IsOSPlatform(NetBSD);
+		public static bool IsSystemd => IsLinux && Directory.Exists("/run/systemd/system");
+
 
 		static OSFlavor flavor = OSFlavor.Unknown;
 		static Version version = new Version("0.0.0.0");

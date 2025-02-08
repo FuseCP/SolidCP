@@ -24,6 +24,7 @@ using System.Security.Cryptography.X509Certificates;
 using SolidCP.Web.Services;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Systemd;
 using System.Runtime.Intrinsics.X86;
 using System.IO;
 using SolidCP.Providers;
@@ -33,8 +34,6 @@ namespace SolidCP.Web.Services
 {
 	public static class StartupCore
 	{
-		public static bool IsUnixSystemd => Directory.Exists("/run/systemd/system");
-
 		public const int KB = Configuration.KB;
 		public const int MB = Configuration.MB;
 		public const int MaxReceivedMessageSize = Configuration.MaxReceivedMessageSize;
@@ -98,7 +97,6 @@ namespace SolidCP.Web.Services
 
 		public static void Init(string[] args)
 		{
-
 			var builder = WebApplication.CreateBuilder(args);
 			Configuration.ProbingPaths = builder.Configuration["probingPaths"];
 			AssemblyLoaderNetCore.Init();
@@ -152,6 +150,15 @@ namespace SolidCP.Web.Services
 
 			builder.Services.AddRazorPages();
 			builder.Services.AddHttpContextAccessor();
+			if (OSInfo.IsSystemd)
+			{
+				builder.Host.UseSystemd();
+				Server.ConfigureServices?.Invoke(builder.Services);
+			} else if (OSInfo.IsWindows)
+			{
+				builder.Host.UseWindowsService();
+				Server.ConfigureServices?.Invoke(builder.Services);
+			}
 			ConfigureServices(builder.Services);
 
 			if (NetTcpPort.HasValue)
@@ -174,7 +181,10 @@ namespace SolidCP.Web.Services
 				{
 					options.AllowSynchronousIO = true;
 
-					if (OSInfo.IsUnix && IsUnixSystemd) options.UseSystemd();
+					if (OSInfo.IsSystemd)
+					{
+						options.UseSystemd();
+					}
 
 					if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
 						{

@@ -11,6 +11,7 @@ namespace SolidCP.EnterpriseServer
             UsernamePasswordValidator.Init();
             Web.Clients.CertificateValidator.Init();
 			//Web.Clients.AssemblyLoader.Init(null, null, false);
+			Web.Services.Server.ConfigureServices = services => services.AddHostedService<Code.ScheduleWorker>();
 			Web.Services.StartupCore.Init(args);
         }
     }

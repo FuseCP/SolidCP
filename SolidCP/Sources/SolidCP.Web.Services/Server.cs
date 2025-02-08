@@ -6,6 +6,7 @@ using SolidCP.Providers.OS;
 using CoreWCF;
 using CoreWCF.Channels;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 #else
 using System.Web;
 #endif
@@ -33,6 +34,7 @@ namespace SolidCP.Web.Services
 		}
 
 		public static Action<WebApplication> UseWebForms = null;
+		public static Action<IServiceCollection> ConfigureServices = null;
 #else
 		public static string UserHostAddress => System.Web.HttpContext.Current.Request.UserHostAddress;
 		public static string MapPath(string path) => System.Web.Hosting.HostingEnvironment.MapPath(path);

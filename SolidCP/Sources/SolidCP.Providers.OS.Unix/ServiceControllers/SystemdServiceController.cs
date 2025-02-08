@@ -203,7 +203,7 @@ WantedBy=multi-user.target
 			}
 		}
 
-		public override bool IsInstalled => Directory.Exists("/run/systemd/system");
+		public override bool IsInstalled => OSInfo.IsSystemd;
 
 		public Shell Shell => Shell.Default;
 	}

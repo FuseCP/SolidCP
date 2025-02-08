@@ -153,7 +153,8 @@
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" Properties="Configuration=$(BuildConfiguration)" />
 		
 		<!-- Restore WebPortal now, after we've built EnterpriseServer, so EnterpriseServer.Client won't reference EnterpriseServer anymore. -->
-		<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
+		<!--<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />-->
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
 		
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
@@ -472,6 +473,7 @@
 	</Target>
 	
 	<Target Name="CreateUniversalSetupBuild" DependsOnTargets="ZipDeploy">
+		<!-- Not needed anymore, use CreateSetupBuild -->
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
