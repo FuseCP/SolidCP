@@ -79,7 +79,7 @@
 		<ftphost></ftphost>
 		<ftpUsername></ftpUsername>
 		<ftpPassword></ftpPassword>
-</PropertyGroup>
+	</PropertyGroup>
 
 	<PropertyGroup Label="WebPlatformFeed">
 		<!-- URI where to locate the installer's distributive online -->
@@ -98,15 +98,8 @@
 	</Target>
 
 	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" />
-		<!-- Cannot restore WebPortal here, since it'll try to restore EnterpriseServer too because EnterpriseServer.Client will reference EnterpriseServer,
-			so we need to build EnterpriseServer before restoring WebPortal, and then EnterpriseServer.Client won't reference EnterpriseServer anymore -->
-		<!--<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />-->
-		<!--  The following does not work due to project imports in SolidCP.Providers.Virtualization.Proxmox
-			 that depend on PackageReference
-			<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />-->
-		<!-- This works -->
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServerCombined.sln" />
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
 	</Target>
 
@@ -150,13 +143,9 @@
 	<Target Name="CompileSources" DependsOnTargets="BackupModelSnapshots">
 		<!-- SolidCP -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration)" />
-		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.EnterpriseServer.sln" Properties="Configuration=$(BuildConfiguration)" />
-		
-		<!-- Restore WebPortal now, after we've built EnterpriseServer, so EnterpriseServer.Client won't reference EnterpriseServer anymore. -->
-		<!--<Exec Command="$(TrunkFolder)\Sources\.nuget\NuGet.exe restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />-->
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebPortal.sln" />
-		
-		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServerCombined.sln" Properties="Configuration=$(BuildConfiguration)" />
+
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.WebDavPortal.sln" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- Tools -->
@@ -304,8 +293,8 @@
 			Condition=" '$(UseAspNetPrecompile)' == 'true' " />
 	</Target>
 
-		<Target Name="CreateSchedulerBuild" DependsOnTargets="CreatePortalBuild">
-		<ItemGroup>
+	<Target Name="CreateSchedulerBuild" DependsOnTargets="CreatePortalBuild">
+		<!--<ItemGroup>
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\.svn\**" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\obj\**" />
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\bin\*.xml" />
@@ -319,7 +308,7 @@
 			<SchBuildExclude Include="$(SchedulerServiceSrc)\**\*.csproj" />
 			<SchedulerServiceBuildFiles Include="$(SchedulerServiceSrc)\**\*.*" Exclude="@(SchBuildExclude)" />
 		</ItemGroup>
-		<Copy SourceFiles="@(SchedulerServiceBuildFiles)" DestinationFolder="$(SchedulerServiceBuild)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(SchedulerServiceBuildFiles)" DestinationFolder="$(SchedulerServiceBuild)\%(RecursiveDir)" />-->
 	</Target>
 
 
