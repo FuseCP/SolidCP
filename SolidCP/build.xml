@@ -470,7 +470,7 @@
 		<!-- build MSI package -->
 
 	</Target>
-
+	
 	<Target Name="CreateUniversalSetupBuild" DependsOnTargets="ZipDeploy">
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
@@ -492,7 +492,7 @@
 		<!-- build MSI package -->
 	</Target>
 
-	<Target Name="CreateInstallPackages" DependsOnTargets="CreateUniversalSetupBuild" Condition="'$(BuildLinuxInstallPackages)' == 'true'">
+	<Target Name="CreateInstallPackages" DependsOnTargets="ZipDeploy" Condition="'$(BuildLinuxInstallPackages)' == 'true'">
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
@@ -955,10 +955,12 @@
   </Target>
 
 	<Target Name="CreateStandaloneBootstrapper" DependsOnTargets="DeploySqlScripts">
-        <MSBuild Projects='$(RootFolder)\SolidCP.Installer\Sources\Setup.WIXBootstrapper\Setup.WIXBootstrapper.csproj' Properties='Configuration=$(BuildConfiguration)' Targets='Build'>
+        <!--<MSBuild Projects='$(RootFolder)\SolidCP.Installer\Sources\Setup.WIXBootstrapper\Setup.WIXBootstrapper.csproj' Properties='Configuration=$(BuildConfiguration)' Targets='Build'>
            <Output TaskParameter="TargetOutputs" ItemName="StandaloneBootstrapper" />
         </MSBuild>
-		<Copy SourceFiles="@(StandaloneBootstrapper)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(StandaloneBootstrapper)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />-->
+		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller.Setup.sln" Properties="Configuration=$(BuildConfiguration)" Targets="Build" />
+		<Copy SourceFiles="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller.Setup\bin\$(BuildConfiguration)\SolidCP.Installer.msi" DestinationFolder="$(DeployFolder)" />
 	</Target>
 
 	<!-- Deploy -->
@@ -1054,7 +1056,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-dSHeuristics.zip&quot; &quot;$(SolidCP-dSHeuristicsInstall)\*&quot;" />
   </Target>
 
-  <Target Name="Deploy" DependsOnTargets="CreateInstallPackages;CreateUniversalSetupBuild" />
+  <Target Name="Deploy" DependsOnTargets="CreateInstallPackages" />
 	
   <Target Name="uploadwebpi" DependsOnTargets="BuildWebPlatformInstallerFeed">
 		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPFeed-$(Version).xml" LocalFile="$(DeployFolder)\SolidCPFeed.xml" />

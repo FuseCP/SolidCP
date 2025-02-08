@@ -88,6 +88,12 @@ public abstract partial class Installer
 		enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
 		conf.Save(confFile);
 
+		confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "web.config");
+		conf = XElement.Load(confFile);
+
+		ConfigureCertificateNetFX(settings, conf);
+		conf.Save(confFile);
+
 		ConfigureAppsettings(Settings.WebPortal);
 
 		if (settings.EmbedEnterpriseServer)

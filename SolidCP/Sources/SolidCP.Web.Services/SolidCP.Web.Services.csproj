@@ -10,11 +10,11 @@
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 	</PropertyGroup>
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0'">
-		<PackageReference Include="CoreWCF.Http" Version="1.6.0" />
-		<PackageReference Include="CoreWCF.NetTcp" Version="1.6.0" />
-		<PackageReference Include="CoreWCF.Primitives" Version="1.6.0" />
-		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.6.0" />
-		<PackageReference Include="CoreWCF.WebHttp" Version="1.6.0" />
+		<PackageReference Include="CoreWCF.Http" Version="1.7.0" />
+		<PackageReference Include="CoreWCF.NetTcp" Version="1.7.0" />
+		<PackageReference Include="CoreWCF.Primitives" Version="1.7.0" />
+		<PackageReference Include="CoreWCF.NetFramingBase" Version="1.7.0" />
+		<PackageReference Include="CoreWCF.WebHttp" Version="1.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
 		<!--

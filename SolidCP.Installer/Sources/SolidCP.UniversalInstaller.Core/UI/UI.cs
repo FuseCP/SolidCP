@@ -127,7 +127,7 @@ namespace SolidCP.UniversalInstaller
 
 			public SetupWizard(UI ui) => UI = ui;
 
-			public virtual SetupWizard Introduction(CommonSettings settings) => this;
+			public virtual SetupWizard Introduction(ComponentSettings settings) => this;
 			public virtual SetupWizard Certificate(CommonSettings settings) => this;
 			public virtual SetupWizard CheckPrerequisites() => this;
 			public virtual SetupWizard ConfirmUninstall(ComponentSettings settings) => this;

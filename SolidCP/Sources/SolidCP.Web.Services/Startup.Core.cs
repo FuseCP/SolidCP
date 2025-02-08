@@ -338,7 +338,7 @@ namespace SolidCP.Web.Services
 
 		public static void ConfigureWCF(IApplicationBuilder app)
 		{
-			app.UseMiddleware<SwaggerMiddleware>();
+			app.UseSwagger();
 			app.UseSwaggerUI();
 
 			app.UseServiceModel(builder =>

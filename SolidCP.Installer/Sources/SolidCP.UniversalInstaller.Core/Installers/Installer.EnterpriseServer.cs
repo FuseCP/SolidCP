@@ -216,46 +216,7 @@ public abstract partial class Installer
 		var configuration = XElement.Load(confFile);
 
 		// server certificate
-		if (!webPortalEmbedded)
-		{
-			var serviceModel = configuration.Element("system.serviceModel");
-			if (serviceModel == null)
-			{
-				serviceModel = new XElement("system.serviceModel");
-				configuration.Add(serviceModel);
-			}
-			var behaviors = serviceModel.Element("behaviors");
-			if (behaviors == null)
-			{
-				behaviors = new XElement("behaviors");
-				serviceModel.Add(behaviors);
-			}
-			var serviceBehaiors = behaviors.Element("serviceBehaviors");
-			if (serviceBehaiors == null)
-			{
-				serviceBehaiors = new XElement("serviceBehaviors");
-				behaviors.Add(serviceBehaiors);
-			}
-			var behavior = serviceBehaiors.Element("behavior");
-			if (behavior == null)
-			{
-				behavior = new XElement("behavior");
-				serviceBehaiors.Add(behavior);
-			}
-			var serviceCredentials = behavior.Element("serviceCredentials");
-			if (serviceCredentials == null)
-			{
-				serviceCredentials = new XElement("serviceCredentials");
-				behavior.Add(serviceCredentials);
-			}
-			var cert = serviceCredentials.Element("serviceCertificate");
-			if (cert != null) cert.Remove();
-			cert = new XElement("serviceCertificate", new XAttribute("storeName", settings.CertificateStoreName),
-				new XAttribute("storeLocation", settings.CertificateStoreLocation),
-				new XAttribute("X509FindType", settings.CertificateFindType),
-				new XAttribute("findValue", settings.CertificateFindValue));
-			serviceCredentials.Add(cert);
-		}
+		if (!webPortalEmbedded) ConfigureCertificateNetFX(settings, configuration);
 
 		// CryptoKey
 		if (string.IsNullOrEmpty(settings.CryptoKey))

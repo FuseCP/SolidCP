@@ -43,7 +43,7 @@ namespace SolidCP.UniversalInstaller.WinForms
         {
         }
 		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-		public CommonSettings Settings { get; set; }
+		public ComponentSettings Settings { get; set; }
 		protected override void InitializePageInternal()
 		{
 			string product = Settings.ComponentName;

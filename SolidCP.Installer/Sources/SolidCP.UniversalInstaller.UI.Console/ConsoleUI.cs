@@ -39,7 +39,7 @@ namespace SolidCP.UniversalInstaller
 			protected bool HasExited => CurrentPage < 0 || CurrentPage >= Pages.Count;
 			protected Action Current => CurrentPage >= 0 && CurrentPage < Pages.Count ? Pages[CurrentPage] : () => { };
 
-			public override UI.SetupWizard Introduction(CommonSettings settings)
+			public override UI.SetupWizard Introduction(ComponentSettings settings)
 			{
 				Pages.Add(() =>
 				{

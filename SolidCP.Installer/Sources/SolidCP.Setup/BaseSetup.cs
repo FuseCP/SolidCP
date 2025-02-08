@@ -135,7 +135,7 @@ public class BaseSetup
 		if (ParseArgs(args) && CheckInstallerVersion())
 		{
 			var wizard = UI.Current.Wizard
-				.Introduction(CommonSettings)
+				.Introduction(ComponentSettings)
 				.CheckPrerequisites()
 				.LicenseAgreement();
 			if (!IsStandalone)
@@ -158,14 +158,27 @@ public class BaseSetup
 
 			} else
 			{
+				// Set EnterpriseServer setting for embedded EnterpriseServer
+				Settings.EnterpriseServer.WebSiteDomain = "";
+				Settings.EnterpriseServer.WebSitePort = 9002;
+				Settings.EnterpriseServer.WebSiteIp = "";
+				Settings.EnterpriseServer.Username = "";
+				Settings.EnterpriseServer.Password = "";
+				Settings.EnterpriseServer.Urls = "http://localhost:9002";
+				Settings.EnterpriseServer.ConfigureCertificateManually = true;
+
 				wizard = wizard
 					.InstallFolder(Settings.Standalone)
 					.Web(Settings.WebPortal)
 					.InsecureHttpWarning(Settings.WebPortal)
 					.Certificate(Settings.WebPortal)
 					.UserAccount(Settings.WebPortal)
-					.Database()
 					.ServerAdminPassword()
+					.Database()
+					.Web(Settings.Server)
+					.InsecureHttpWarning(Settings.Server)
+					.Certificate(Settings.Server)
+					.UserAccount(Settings.Server)
 					.ServerPassword();
 			}
 			return wizard;

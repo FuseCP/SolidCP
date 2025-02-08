@@ -8,7 +8,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			public SetupWizard(UI ui): base(ui) { }
 
-			public override UI.SetupWizard Introduction(CommonSettings settings) => this;
+			public override UI.SetupWizard Introduction(ComponentSettings settings) => this;
 			public override UI.SetupWizard Certificate(CommonSettings settings) => this;
 			public override UI.SetupWizard CheckPrerequisites() => this;
 			public override UI.SetupWizard ConfirmUninstall(ComponentSettings settings) => this;

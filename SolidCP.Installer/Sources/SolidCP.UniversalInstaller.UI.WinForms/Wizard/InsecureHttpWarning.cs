@@ -71,7 +71,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		bool iis7 => OSInfo.IsWindows && OSInfo.Windows.WebServer.Version.Major >= 7;
 
-		bool IsHttps => (iis7 || !OSInfo.IsWindows) && Utils.IsHttps(Settings.Urls);
+		bool IsHttps => (iis7 || !OSInfo.IsWindows) && Utils.IsHttps(Installer.Current.GetUrls(Settings));
 
 		public override bool Hidden => IsHttps || OSInfo.IsWindows;
 

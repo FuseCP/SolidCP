@@ -79,6 +79,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 			manualCert.Checked = false;
 			tabControl.Selected += SetAllowedMoveNext;
 			manualCert.CheckedChanged += SetAllowedMoveNext;
+			if (OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support cert file & Let's Encrypt also on Windows
+			{
+				// remove cert file & Let's Encrypt tab pages
+				tabControl.TabPages.RemoveAt(1);
+				tabControl.TabPages.RemoveAt(2);
+			}
 
 			string[] names, locations;
 			CertificateStoreInfo.GetStoreNames(out names, out locations);
@@ -110,7 +116,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		bool IsSecure(string urls) => (urls ?? "").Split(',', ';')
 			.Any(url => !string.IsNullOrEmpty(url) && IsSecure(new Uri(url)));
 
-		public override bool Hidden => !IsSecure(Settings.Urls);
+		public override bool Hidden => false; // always needs certificate, at least for WSHttpBinding. !IsSecure(Settings.Urls);
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{
 			base.OnAfterDisplay(e);

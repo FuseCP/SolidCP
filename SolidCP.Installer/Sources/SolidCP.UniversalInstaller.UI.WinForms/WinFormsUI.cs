@@ -64,7 +64,7 @@ namespace SolidCP.UniversalInstaller {
 				Add(new WinForms.InstallFolderPage() { Settings = settings });
 				return this;
 			}
-			public override UI.SetupWizard Introduction(CommonSettings settings)
+			public override UI.SetupWizard Introduction(ComponentSettings settings)
 			{
 				Add(new WinForms.IntroductionPage() { Settings = settings });
 				return this;

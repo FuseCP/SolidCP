@@ -53,6 +53,7 @@ namespace SolidCP.UniversalInstaller
 		public string LetsEncryptCertificateEmail { get; set; }
 		public bool ConfigureCertificateManually { get; set; }
 		public Version Version { get; set; }
+		public bool RunOnNetCore { get; set; } = !OSInfo.IsWindows;
 	}
 	public class ServerSettings: CommonSettings
 	{
