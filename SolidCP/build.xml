@@ -145,7 +145,8 @@
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServerCombined.sln" Properties="Configuration=$(BuildConfiguration)" />
 
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.WebDavPortal.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" />
+		
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration)" />
 
 		<!-- Tools -->
@@ -951,7 +952,7 @@
         </MSBuild>
 		<Copy SourceFiles="@(StandaloneBootstrapper)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />-->
 		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller.Setup.sln" Properties="Configuration=$(BuildConfiguration)" Targets="Build" />
-		<Copy SourceFiles="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller.Setup\bin\$(BuildConfiguration)\SolidCP.Installer.msi" DestinationFolder="$(DeployFolder)" />
+		<Copy SourceFiles="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.UniversalInstaller.Setup\$(BuildConfiguration)\SolidCP.Installer.msi" DestinationFolder="$(DeployFolder)" />
 	</Target>
 
 	<!-- Deploy -->
