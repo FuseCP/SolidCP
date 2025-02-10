@@ -4,6 +4,11 @@
         <name>MSBuild.Community.Tasks</name>
     </assembly>
     <members>
+        <member name="T:MSBuild.Community.Tasks.AddUsings">
+            <summary>
+            Adds using statements to C# files.
+            </summary>
+        </member>
         <member name="T:MSBuild.Community.Tasks.AspNet.InstallAspNet">
             <summary>
             Installs and register script mappings for ASP.NET
@@ -475,6 +480,16 @@
             Describes certain byte measurements as nice strings.
             </summary>
         </member>
+        <member name="T:MSBuild.Community.Tasks.ChangeNamespace">
+            <summary>
+            Changes the namespace of C# files.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.ChangeNamespace.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:CommentOut"/> class.
+            </summary>
+        </member>
         <member name="T:MSBuild.Community.Tasks.Checksum">
             <summary>
             Calculates checksum of a file set. 
@@ -497,6 +512,16 @@
         <member name="P:MSBuild.Community.Tasks.Checksum.Algorithm">
             <summary>
             Algorithm to be used. Defaults to MD5. 
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.CommentOut">
+            <summary>
+            Comments out regions in code files.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.CommentOut.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:CommentOut"/> class.
             </summary>
         </member>
         <member name="T:MSBuild.Community.Tasks.Computer">
@@ -552,6 +577,67 @@
             <returns>
             <see langword="true"/> if the task ran successfully; otherwise <see langword="false"/>.
             </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.ContentFilter">
+            <summary>
+            Task to filter an Input list or a file list by the file's content with a Regex expression.
+            Output list contains items from Input list or the file items whose content matched given expression
+            </summary>
+            <example>Matches from TestGroup those names ending in a, b or c
+            <code><![CDATA[
+            <ItemGroup>
+               <TestGroup Include="foo.my.foo.foo.test.o" />
+               <TestGroup Include="foo.my.faa.foo.test.a" />
+               <TestGroup Include="foo.my.fbb.foo.test.b" />
+               <TestGroup Include="foo.my.fcc.foo.test.c" />
+               <TestGroup Include="foo.my.fdd.foo.test.d" />
+               <TestGroup Include="foo.my.fee.foo.test.e" />
+               <TestGroup Include="foo.my.fff.foo.test.f" />
+            </ItemGroup>
+            <Target Name="Test">
+               <!-- Outputs only items that end with a, b or c -->
+               <RegexMatch Input="@(TestGroup)" Expression="[a-c]$">
+                  <Output ItemName ="MatchReturn" TaskParameter="Output" />
+               </RegexMatch>
+               <Message Text="&#xA;Output Match:&#xA;@(MatchReturn, '&#xA;')" />
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="F:MSBuild.Community.Tasks.ContentFilter._useDefaultEncoding">
+            Maintain the behaviour of the original implementation for compatibility
+            (i.e. initialize _useDefaultEncoding with false) and use utf-8-without-bom,  
+            which is Microsoft's default encoding, only when Encoding property is set 
+            to "utf-8-without-bom". 
+        </member>
+        <member name="P:MSBuild.Community.Tasks.ContentFilter.Encoding">
+            <summary>
+            The character encoding used to read and write the file.
+            </summary>
+            <remarks>Any value returned by <see cref="P:System.Text.Encoding.WebName"/> is valid input.
+            <para>The default is <c>utf-8</c></para>
+            <para>Additionally, <c>utf-8-without-bom</c>can be used.</para></remarks>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.ContentFilter.Execute">
+            <summary>
+            Performs the Match task
+            </summary>
+            <returns><see langword="true"/> if the task ran successfully; 
+            otherwise <see langword="false"/>.</returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.CustomReplace">
+            <summary>
+            Replace text in file(s) using a Regular Expression contained in an items Metadata.
+            The Metadata fields that can be used on items are:
+            ReplaceExpression: The Regular Expression used to replace.
+            ReplaceText: The text used to replace (including regex references).
+            ReplaceOptions: Regex options for the operation.
+            </summary>
+            <example>Search for a version number and update the revision.
+            <code><![CDATA[
+            <CustomUpdate Files="@(Compile)" />
+            ]]></code>
+            </example>
         </member>
         <member name="T:MSBuild.Community.Tasks.DeleteTree">
             <summary>
@@ -4372,6 +4458,12 @@
             Determines whether assemblies are installed or uninstalled.
             </summary>
         </member>
+        <member name="T:MSBuild.Community.Tasks.ItemFilter">
+            <summary>
+            Filters the Input items. If Include is set, only items from the Include list are taken, if Exclude is set, all exclude items are excluded.
+            If Items is set, items the same in Input and Items, the item from Items is taken. 
+            </summary>
+        </member>
         <member name="T:MSBuild.Community.Tasks.JavaScript.CssCompress">
             <summary>
             MSBuild task to minimize the size of a css file.
@@ -4830,6 +4922,731 @@
             </summary>
             <returns>
             true if the task successfully executed; otherwise, false.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Messages">
+            <summary>
+            Logs several messages
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksAdd">
+            <summary>
+            	Custom MSBuild task that calls the MKS Add command.
+            </summary>
+            <example>Add one or more nonmember files located in a sandbox directory to a project.
+            <code><![CDATA[
+            <Target Name="Add">
+            	<MksAdd 
+            		Cpid=":none"
+            		CreateSubprojects="true"
+            		Description = "'Add MksTest.cs class file.'"
+            		Directory="$(SandboxDir)"
+            		Exclude="file:*.pj" 
+            		NonMembers="$(SandboxDir)\MksTest.cs"
+            		OnExistingArchive="newarchive"
+            		Recurse="false"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksAdd.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.CommandText">
+            <summary>
+            	Returns the text for the MKS Add CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.Cpid">
+            <summary>
+            	The name of the identifying change package that is notified of this action.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.CreateSubprojects">
+            <summary>
+            	Control whether to create subprojects for each subdirectory encountered when adding members.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.Description">
+            <summary>
+            	The description of the changes associated with the members to Add.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.Directory">
+            <summary>
+            	The directory for Add to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.Exclude">
+            <summary>
+            	Specify one or more files to exclude when adding members.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.Include">
+            <summary>
+            	Specify one or more files to include when adding members.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.NonMembers">
+            <summary>
+            	Identifies a specific file to add to your sandbox; use spaces to specify more than one.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.OnExistingArchive">
+            <summary>
+            	Control whether to allow sharing of this member's history between projects, or to create a new archive if
+            	there is already an existing archive for the member.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksAdd.Recurse">
+            <summary>
+            	Specificy whether to recursively add any subprojects and members.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksAdd.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksAdd.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksCheckin">
+            <summary>
+            	Custom MSBuild task that calls the MKS Checkin command.
+            </summary>
+            <example>Checks in and saves changes to sandbox members.
+            <code><![CDATA[
+            <Target Name="Checkin">
+            	<MksCheckin 
+            		Cpid=":none"
+            		CheckinUnchanged="nocheckinUnchanged"
+            		Description="'Checkin Mks class files.'"
+            		Directory="$(SandboxDir)"
+            		ForceConfirm="true"
+            		Recurse="false"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCheckin.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.CheckinUnchanged">
+            <summary>
+            	Control whether to force the checkin so that the new revision is checked in even if it is not different 
+            	from the preceding one.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.CommandText">
+            <summary>
+            	Returns the text for the MKS Checkin CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.Cpid">
+            <summary>
+            	The name of the identifying change package that is notified of this action.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.Description">
+            <summary>
+            	The description of the changes associated with the members to Checkin.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.Directory">
+            <summary>
+            	The directory for Checkin to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckin.Recurse">
+            <summary>
+            	Specificy whether to recursively checkin any subprojects.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCheckin.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCheckin.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksCheckpoint">
+            <summary>
+            	Custom MSBuild task that calls the MKS Checkpoint command.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCheckpoint.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckpoint.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckpoint.CommandText">
+            <summary>
+            	Returns the text for the MKS Checkpoint CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckpoint.Description">
+            <summary>
+            	The description of the changes associated with the project to Checkpoint.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckpoint.Directory">
+            <summary>
+            	The directory for the Checkpoint to be executed in.  Any files and members in the selection are treated 
+            	as being relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCheckpoint.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCheckpoint.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCheckpoint.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksCreateSandbox">
+            <summary>
+            	Custom MSBuild task that calls the MKS Create Sandbox command.
+            </summary>
+            <example>Creates a new sandbox on the client machine in a specified directory.
+            <code><![CDATA[
+            <Target Name="CreateSandbox">
+            	<MksCreateSandbox 
+            		Directory="$(SandboxDir)"
+            		Populate="true"
+            		Project="$(MksProject)" 
+            		Recurse="true"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCreateSandbox.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCreateSandbox.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCreateSandbox.CommandText">
+            <summary>
+            	Returns the text for the MKS Create Sandbox CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCreateSandbox.Directory">
+            <summary>
+            	Identify a location on the MKS Source Integrity client system for the new sandbox. Use spaces to identify 
+            	more than one directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCreateSandbox.Populate">
+            <summary>
+            	Control whether to populate the sandbox with read-only working files for all members.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCreateSandbox.Project">
+            <summary>
+            	Specifies the location of a project.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksCreateSandbox.Recurse">
+            <summary>
+            	Specificy whether to recursively create sanboxes for any subprojects.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCreateSandbox.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksCreateSandbox.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksDropSandbox">
+            <summary>
+            	Custom MSBuild task that calls the MKS Drop Sandbox command.
+            </summary>
+            <example>Unregisters a sandbox from the Integrity Client.
+            <code><![CDATA[
+            <Target Name="DropSandbox">
+            	<MksDropSandbox 
+            		Delete="all" 
+            		Directory="$(SandboxDir)"
+            		ForceConfirm="true"
+            		Sandbox="project.pj"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksDropSandbox.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDropSandbox.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDropSandbox.CommandText">
+            <summary>
+            	Returns the text for the MKS Create Sandbox CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDropSandbox.Delete">
+            <summary>
+            	Identify a location on the MKS Source Integrity client system to drop the sandbox. Use spaces to identify 
+            	more than one directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDropSandbox.Directory">
+            <summary>
+            	Identify a location on the MKS Source Integrity client system to drop the sandbox. Use spaces to identify 
+            	more than one directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDropSandbox.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDropSandbox.Sandbox">
+            <summary>
+            	Identify a location on the MKS Source Integrity client system to drop the sandbox. Use spaces to identify 
+            	more than one directory.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksDropSandbox.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksDropSandbox.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksDrop">
+            <summary>
+            	Custom MSBuild task that calls the MKS Drop command.
+            </summary>
+            <example>Drops specified members and subprojects from a project.
+            <code><![CDATA[
+            <Target Name="Drop">
+            	<MksDrop 
+            		Cpid=":none"
+            		Delete="false" 
+            		Directory="$(SandboxDir)"
+            		ForceConfirm="true" 
+            		Members="MksTest.cs"
+            		Sandbox="project.pj"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksDrop.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.CommandText">
+            <summary>
+            	Returns the text for the MKS Drop CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.Cpid">
+            <summary>
+            	The name of the identifying change package that is notified of this action.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.Delete">
+            <summary>
+            	Control whether the working file should be deleted immediately from your sandbox.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.Directory">
+            <summary>
+            	The directory for Drop to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.Members">
+            <summary>
+            	Identifies a specific member or subproject; use spaces to specify more than one.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksDrop.Sandbox">
+            <summary>
+            	Specifies the location of a sandbox.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksDrop.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksDrop.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksLock">
+            <summary>
+            	Custom MSBuild task that calls the MKS Lock command.
+            </summary>
+            <example>Locks one or more project members.
+            <code><![CDATA[
+            <Target Name="Lock">
+            	<MksLock 
+            		Cpid=":none"
+            		Directory="$(SandboxDir)"
+            		ForceConfirm="true"
+            		Recurse="true"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>	
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksLock.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.CommandText">
+            <summary>
+            	Returns the text for the MKS Lock CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.Cpid">
+            <summary>
+            	The name of the identifying change package that is notified of this action.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.Directory">
+            <summary>
+            	The directory for Lock to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.Filter">
+            <summary>
+            	The filteroption to define a list of members to Lock.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.Project">
+            <summary>
+            	Identify specific project members to lock; use spaces to specify more than one member.  If no members are
+            	specified then the lock applies to all project members.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksLock.Recurse">
+            <summary>
+            	Specificy whether to recursively lock any subprojects.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksLock.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksLock.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksMakeWritable">
+            <summary>
+            	Custom MSBuild task that calls the MKS Make Writable command.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksMakeWritable.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksMakeWritable.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksMakeWritable.CommandText">
+            <summary>
+            	Returns the text for the MKS Make Writable CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksMakeWritable.Directory">
+            <summary>
+            	The directory for Resync to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksMakeWritable.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksMakeWritable.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksMakeWritable.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksResync">
+            <summary>
+            	Custom MSBuild task that calls the MKS Resync command.
+            </summary>
+            <example>Compares the contents of project members with their corresponding working files in the sandbox and 
+            replaces the working file with an exact copy of the member revision, if differences are detected or if no 
+            working file exists.
+            <code><![CDATA[
+            <Target Name="Resync">
+            	<MksResync 
+            		Directory="$(SandboxDir)"
+            		Filter="changed:newer,changed:missing,changed:newmem" 
+            		ForceConfirm="true"
+            		Recurse="true"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>		
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksResync.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksResync.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksResync.CommandText">
+            <summary>
+            	Returns the text for the MKS Resync CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksResync.Directory">
+            <summary>
+            	The directory for Resync to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksResync.Filter">
+            <summary>
+            	The filteroption to define a list of members to Resync.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksResync.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksResync.Recurse">
+            <summary>
+            	Specificy whether to recursively lock any subprojects.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksResync.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksResync.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
+            </returns>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Mks.MksUnlock">
+            <summary>
+            	Custom MSBuild task that calls the MKS Unlock command.
+            </summary>
+            <example>Unlocks a member.
+            <code><![CDATA[
+            <Target Name="Unlock">
+            	<MksUnlock 
+            		Directory="$(SandboxDir)"
+            		ForceConfirm="true"
+            		Recurse="true"		
+            	/>
+            </Target>
+            ]]></code>
+            </example>		
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksUnlock.#ctor">
+            <summary>
+            	Contructor that initializes ToolTask properties.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksUnlock.ToolName">
+            <summary>
+            	The name of the program for the MKS CLI executable.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksUnlock.CommandText">
+            <summary>
+            	Returns the text for the MKS Unlock CLI command.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksUnlock.Directory">
+            <summary>
+            	The directory for Unlock to be executed in.  Any files and members in the selection are treated as being
+            	relative to that directory.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksUnlock.Filter">
+            <summary>
+            	The filteroption to define a list of members to Unlock.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksUnlock.ForceConfirm">
+            <summary>
+            	Control the responses of either "yes" or "no" to all prompts.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Mks.MksUnlock.Recurse">
+            <summary>
+            	Specificy whether to recursively unlock any subprojects.
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksUnlock.GenerateCommandLineCommands">
+            <summary>
+            	Returns a string value containing the command line arguments to pass directly to the executable file.
+            </summary>
+            <returns>
+            	A string value containing the command line arguments to pass directly to the executable file.
+            </returns>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Mks.MksUnlock.GenerateFullPathToTool">
+            <summary>
+            	Returns the fully qualified path to the executable file.
+            </summary>
+            <returns>
+            	The fully qualified path to the executable file.
             </returns>
         </member>
         <member name="T:MSBuild.Community.Tasks.MV">
@@ -7198,6 +8015,118 @@
             true if the task successfully executed; otherwise, false.
             </returns>
         </member>
+        <member name="T:MSBuild.Community.Tasks.Rename">
+            <summary>
+            Renames items with a Regular Expression replace.
+            </summary>
+        </member>
+        <member name="T:MSBuild.Community.Tasks.Replace">
+            <summary>
+            Replace text in file(s) using a Regular Expression.
+            </summary>
+            <example>Search for a version number and update the revision.
+            <code><![CDATA[
+            <Replace Files="version.txt"
+                Regex="(\d+)\.(\d+)\.(\d+)\.(\d+)"
+                Replacement="$1.$2.$3.123" />
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Replace.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileUpdate"/> class.
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Files">
+            <summary>
+            Gets or sets the files to update.
+            </summary>
+            <value>The files.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Scope">
+            <summary>
+            Gets or sets the Scope regex. The scope is a regex, upon whose matches the replacement is done only.
+            </summary>
+            <value>The regex.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Regex">
+            <summary>
+            Gets or sets the regex.
+            </summary>
+            <value>The regex.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Options">
+            <summary>
+            Regex options as comma separated string corresponding to the RegexOptions enum:
+                Compiled
+                CultureInvariant
+                ECMAScript 
+                ExplicitCapture
+                IgnoreCase
+                IgnorePatternWhitespace
+                Multiline
+                None
+                RightToLeft
+                Singleline
+            </summary>
+            <enum cref="T:System.Text.RegularExpressions.RegexOptions" />
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Count">
+            <summary>
+            Gets or sets the maximum number of times the replacement can occur.
+            </summary>
+            <value>The replacement count.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.ScopeCount">
+            <summary>
+            Gets or sets the maximum number of times the replacement can occur.
+            </summary>
+            <value>The replacement count.</value>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Replacement">
+            <summary>
+            Gets or sets the replacement text.
+            </summary>
+            <value>The replacement text.</value>
+        </member>
+        <member name="F:MSBuild.Community.Tasks.Replace._useDefaultEncoding">
+            Maintain the behaviour of the original implementation for compatibility
+            (i.e. initialize _useDefaultEncoding with false) and use utf-8-without-bom,  
+            which is Microsoft's default encoding, only when Encoding property is set 
+            to "utf-8-without-bom". 
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.Encoding">
+            <summary>
+            The character encoding used to read and write the file.
+            </summary>
+            <remarks>Any value returned by <see cref="P:System.Text.Encoding.WebName"/> is valid input.
+            <para>The default is <c>utf-8</c></para>
+            <para>Additionally, <c>utf-8-without-bom</c>can be used.</para></remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.WarnOnNoUpdate">
+            <summary>
+            When TRUE, a warning will be generated to show which file was not updated.
+            </summary>
+            <remarks>N/A</remarks>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.ItemsNotUpdated">
+            <summary>
+            Returns list of items that were not updated
+            </summary>
+        </member>
+        <member name="P:MSBuild.Community.Tasks.Replace.AllItemsUpdated">
+            <summary>
+            Returns true if all items were updated, else false
+            </summary>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.Replace.Execute">
+            <summary>
+            When overridden in a derived class, executes the task.
+            </summary>
+            <returns>
+            true if the task successfully executed; otherwise, false.
+            </returns>
+        </member>
         <member name="T:MSBuild.Community.Tasks.RoboCopy">
             <summary>
             Task wrapping the Window Resource Kit Robocopy.exe command.
@@ -7792,7 +8721,7 @@
             </summary>
             <value>The sandcastle enviroment.</value>
         </member>
-        <member name="P:MSBuild.Community.Tasks.Sandcastle.SandcastleToolBase.EnviromentVariables">
+        <member name="P:MSBuild.Community.Tasks.Sandcastle.SandcastleToolBase.EnvironmentVariables">
             <summary>
             Gets or sets the enviroment variables.
             </summary>
@@ -11040,6 +11969,39 @@
             true if the task successfully executed; otherwise, false.
             </returns>
         </member>
+        <member name="T:MSBuild.Community.Tasks.UpdateFilter">
+            <summary>
+            Task to filter an Input list with a Regex expression.
+            Output list contains items from Input list that matched given expression
+            </summary>
+            <example>Matches from TestGroup those names ending in a, b or c
+            <code><![CDATA[
+            <ItemGroup>
+               <TestGroup Include="foo.my.foo.foo.test.o" />
+               <TestGroup Include="foo.my.faa.foo.test.a" />
+               <TestGroup Include="foo.my.fbb.foo.test.b" />
+               <TestGroup Include="foo.my.fcc.foo.test.c" />
+               <TestGroup Include="foo.my.fdd.foo.test.d" />
+               <TestGroup Include="foo.my.fee.foo.test.e" />
+               <TestGroup Include="foo.my.fff.foo.test.f" />
+            </ItemGroup>
+            <Target Name="Test">
+               <!-- Outputs only items that end with a, b or c -->
+               <RegexMatch Input="@(TestGroup)" Expression="[a-c]$">
+                  <Output ItemName ="MatchReturn" TaskParameter="Output" />
+               </RegexMatch>
+               <Message Text="&#xA;Output Match:&#xA;@(MatchReturn, '&#xA;')" />
+            </Target>
+            ]]></code>
+            </example>
+        </member>
+        <member name="M:MSBuild.Community.Tasks.UpdateFilter.Execute">
+            <summary>
+            Performs the Match task
+            </summary>
+            <returns><see langword="true"/> if the task ran successfully; 
+            otherwise <see langword="false"/>.</returns>
+        </member>
         <member name="T:MSBuild.Community.Tasks.User">
             <summary>
             Provides information about the build user.
@@ -12344,6 +13306,69 @@
             <returns>
             true if the task successfully executed; otherwise, false.
             </returns>
+        </member>
+        <member name="T:Microsoft.Cci.ILocalScope">
+            <summary>
+            A range of CLR IL operations that comprise a lexical scope, specified as an IL offset and a length.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.ILocalScope.Offset">
+            <summary>
+            The offset of the first operation in the scope.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.ILocalScope.Length">
+            <summary>
+            The length of the scope. Offset+Length equals the offset of the first operation outside the scope, or equals the method body length.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Cci.INamespaceScope">
+            <summary>
+            A description of the lexical scope in which a namespace type has been nested. This scope is tied to a particular
+            method body, so that partial types can be accommodated.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.INamespaceScope.UsedNamespaces">
+            <summary>
+            Zero or more used namespaces. These correspond to using clauses in C#.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Cci.IUsedNamespace">
+            <summary>
+            A namespace that is used (imported) inside a namespace scope.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.IUsedNamespace.Alias">
+            <summary>
+            An alias for a namespace. For example the "x" of "using x = y.z;" in C#. Empty if no alias is present.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.IUsedNamespace.NamespaceName">
+            <summary>
+            The name of a namepace that has been aliased.  For example the "y.z" of "using x = y.z;" or "using y.z" in C#.
+            </summary>
+        </member>
+        <member name="T:Microsoft.Cci.IName">
+            <summary>
+            The name of an entity. Typically name instances come from a common pool. Within the pool no two distinct instances will have the same Value or UniqueKey.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.IName.UniqueKey">
+            <summary>
+            An integer that is unique within the pool from which the name instance has been allocated. Useful as a hashtable key.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.IName.UniqueKeyIgnoringCase">
+            <summary>
+            An integer that is unique within the pool from which the name instance has been allocated. Useful as a hashtable key.
+            All name instances in the pool that have the same string value when ignoring the case of the characters in the string
+            will have the same key value.
+            </summary>
+        </member>
+        <member name="P:Microsoft.Cci.IName.Value">
+            <summary>
+            The string value corresponding to this name.
+            </summary>
         </member>
     </members>
 </doc>
