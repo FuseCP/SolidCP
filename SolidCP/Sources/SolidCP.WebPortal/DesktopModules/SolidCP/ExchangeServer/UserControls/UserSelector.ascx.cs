@@ -308,19 +308,7 @@ namespace SolidCP.Portal.ExchangeServer.UserControls
         {
             if (e.CommandName == "SelectAccount")
             {
-                string[] parts = e.CommandArgument.ToString().Split('|');
-
-                /*
-                OrganizationUser account = new OrganizationUser();
-                account.AccountName = parts[0];
-                account.DisplayName = parts[1];
-                account.PrimaryEmailAddress = parts[2];
-                account.AccountId = Utils.ParseInt(parts[3]);
-                account.SamAccountName = parts[4];
-                account.SubscriberNumber = parts[5];
-                 */
-
-                int AccountId = Utils.ParseInt(parts[3]);
+                int AccountId = Utils.ParseInt(e.CommandArgument.ToString());
 
                 OrganizationUser account = ES.Services.Organizations.GetUserGeneralSettings(PanelRequest.ItemID, AccountId);
 
