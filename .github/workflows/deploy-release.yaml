@@ -64,7 +64,7 @@ jobs:
       UseAspNetPrecompile: "true"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
-      MsBuildSwitches: "/v:i /m"
+      MsBuildSwitches: "/v:m /m"
       GitHubAction: true
 
     steps:
@@ -120,12 +120,12 @@ jobs:
           SolidCP\Deploy\Release\Database
           !SolidCP\Deploy\Release\Install
           !SolidCP\Deploy\Release\Update
-        compression-level: 0
+        compression-level: 9
 
     - name: Run unit tests
       working-directory: SolidCP\Sources
       run: echo "does not work yet."
-      #  dotnet test SolidCP.EnterpriseServer.Tests
+      #  dotnet test SolidCP.Tests.sln
 
     # Execute all unit tests in the solution
     # - name: Execute unit tests

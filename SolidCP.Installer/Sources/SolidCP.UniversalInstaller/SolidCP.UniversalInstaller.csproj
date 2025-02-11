@@ -144,4 +144,11 @@
         <Delete Files="@(DllsToDelete)" />
     </Target>
 
+    <Target Name="CopyOutput" AfterTargets="Build" Condition="$(TargetFramework) == 'net48'">
+        <ItemGroup>
+            <OutputExe Include="$(OutputPath)\**\SolidCP.Installer.exe" />
+        </ItemGroup>
+        <Copy SourceFiles="@(OutputExe)" DestinationFolder="..\SolidCP.UniversalInstaller.Msi" />
+    </Target>
+
 </Project>
