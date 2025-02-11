@@ -83,18 +83,18 @@ jobs:
         wsl --update
         wsl --version
 
-    - name: Install WSL Ubuntu 24.04 with rpm tools
+    - name: Install WSL Alpine with rpm tools
       uses: Vampire/setup-wsl@v3
       with: 
-        distribution: Ubuntu-24.04
-        additional-packages: rpm rpmlint
+        distribution: Alpine
+        additional-packages: rpm-dev
         use-cache: 'true'
         #use-cache: 'false'
 
     - name: Show WSL distro info
       run: |
         wsl --list --verbose
-        wsl --distribution Ubuntu-24.04 echo '"rpmbuild: $(which rpmbuild)"'
+        wsl --distribution Alpine echo '"rpmbuild: $(which rpmbuild)"'
 
     - name: Checkout
       uses: actions/checkout@v4
