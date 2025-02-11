@@ -468,6 +468,9 @@ Example: &lt;b&gt;[NetBIOSName].domain.local&lt;/b&gt; (max-15-symbols.domain.zo
   <data name="chkCanSetComputerName.Text" xml:space="preserve">
     <value>Can set a computer name</value>
   </data>
+  <data name="chkServerAdminOnly.Text" xml:space="preserve">
+    <value>Administrators only</value>
+  </data>
   <data name="chkCanSetNetwork.Text" xml:space="preserve">
     <value>Can set Ip addresses</value>
   </data>

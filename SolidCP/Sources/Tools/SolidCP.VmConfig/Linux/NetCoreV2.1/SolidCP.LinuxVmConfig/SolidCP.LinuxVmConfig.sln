@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28922.388
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.LinuxVmConfig", "SolidCP.LinuxVmConfig\SolidCP.LinuxVmConfig.csproj", "{11F6A86C-61A0-4F91-9CDE-2915C69B4F62}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.LinuxVmConfig.Common", "SolidCP.LinuxVmConfig.Common\SolidCP.LinuxVmConfig.Common.csproj", "{34A584D4-6845-406D-85F1-65EA30B44872}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{11F6A86C-61A0-4F91-9CDE-2915C69B4F62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11F6A86C-61A0-4F91-9CDE-2915C69B4F62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11F6A86C-61A0-4F91-9CDE-2915C69B4F62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11F6A86C-61A0-4F91-9CDE-2915C69B4F62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34A584D4-6845-406D-85F1-65EA30B44872}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34A584D4-6845-406D-85F1-65EA30B44872}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34A584D4-6845-406D-85F1-65EA30B44872}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34A584D4-6845-406D-85F1-65EA30B44872}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A80F86F1-2895-4589-B06B-53939F5D2CC3}
+	EndGlobalSection
+EndGlobal

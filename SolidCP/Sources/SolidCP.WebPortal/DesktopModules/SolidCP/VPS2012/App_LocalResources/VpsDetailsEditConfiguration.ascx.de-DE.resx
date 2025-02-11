@@ -231,6 +231,15 @@
   <data name="valHddSize.ErrorMessage" xml:space="preserve">
     <value>Geben Sie einen numerischen Wert ein</value>
   </data>
+  <data name="valCoresStatus.Text" xml:space="preserve">
+    <value>(verfügbaren Bereich: {0} Kerne)</value>
+  </data>
+  <data name="valHddStatus.Text" xml:space="preserve">
+    <value>(verfügbaren Bereich: {0} GB, {1} GB können zu weiteren Festplatten hinzugefügt werden, der Gesamtspeicherplatz darf nicht überschritten werden {2} GB)</value>
+  </data>
+  <data name="valRamStatus.Text" xml:space="preserve">
+    <value>(verfügbaren Bereich: {0} MB, 256 MB Schritte, 1 GB Ist 1024 MB, Die meisten Betriebssysteme erfordern mindestens 2048 MB)</value>
+  </data>
   <data name="chkDmzNetworkEnabled.Text" xml:space="preserve">
     <value>DMZ Netzwerk aktiviert</value>
   </data>

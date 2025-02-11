@@ -53,6 +53,7 @@ namespace SolidCP.Providers.Virtualization
         public bool ProvisionAdministratorPassword { get; set; }
         public bool ProvisionComputerName { get; set; }
         public bool ProvisionNetworkAdapters { get; set; }
+        public bool ServerAdminOnly { get; set; }
         public string DeployScriptParams { get; set; }
         public string CDKey { get; set; }
         public string TimeZoneId { get; set; }

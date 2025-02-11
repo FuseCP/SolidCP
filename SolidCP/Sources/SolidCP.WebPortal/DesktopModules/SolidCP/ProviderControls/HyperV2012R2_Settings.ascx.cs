@@ -642,6 +642,8 @@ namespace SolidCP.Portal.ProviderControls
 
                 if (!template.EnableSecureBoot) template.SecureBootTemplate = "";
 
+                template.ServerAdminOnly = GetCheckBoxValue(item, "chkServerAdminOnly");
+
                 template.RemoteDesktop = true; // obsolete
                 template.ProvisionComputerName = GetCheckBoxValue(item, "chkCanSetComputerName");
                 template.ProvisionAdministratorPassword = GetCheckBoxValue(item, "chkCanSetAdminPass");

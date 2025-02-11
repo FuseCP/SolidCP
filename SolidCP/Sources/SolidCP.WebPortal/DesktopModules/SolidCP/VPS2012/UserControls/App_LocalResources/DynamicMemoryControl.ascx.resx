@@ -127,13 +127,13 @@
     <value>Enter the minimum memory</value>
   </data>
   <data name="optionDymanicMemory.Text" xml:space="preserve">
-    <value>Dymanic memory enabled</value>
+    <value>Dynamic memory enabled</value>
   </data>
   <data name="secDymanicMemory.Text" xml:space="preserve">
-    <value>Dymanic memory</value>
+    <value>Dynamic memory</value>
   </data>
   <data name="locDymanicMemorySummary.Text" xml:space="preserve">
-    <value>Dymanic memory enabled:</value>
+    <value>Dynamic memory enabled:</value>
   </data>
   <data name="chkDynamicMemoryEnabled" xml:space="preserve">
     <value>Dynamic memory enabled</value>

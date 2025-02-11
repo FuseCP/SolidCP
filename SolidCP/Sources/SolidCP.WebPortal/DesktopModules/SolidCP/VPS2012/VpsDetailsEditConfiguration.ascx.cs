@@ -33,6 +33,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Web.Configuration;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using SolidCP.Providers.Virtualization;
@@ -93,36 +94,262 @@ namespace SolidCP.Portal.VPS2012
                 QuotaValueInfo cpuQuota2 = cntx.Quotas[Quotas.VPS2012_CPU_NUMBER];
                 int cpuQuotausable = (cpuQuota2.QuotaAllocatedValue - cpuQuota2.QuotaUsedValue) + vm.CpuCores;
 
-                if (cpuQuota2.QuotaAllocatedValue == -1)
-                {
-                    for (int i = 1; i < maxCores + 1; i++)
-                        ddlCpu.Items.Add(i.ToString());
+                // add VpsMaxCoresPerVM key to web.config appsettings section for a different cpu assignment behavior to take effect
+                string vpsMaxCoresPerVM = WebConfigurationManager.AppSettings.Get("VpsMaxCoresPerVM");
+                bool showCpuLabel = false;
 
-                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                if (!String.IsNullOrEmpty(vpsMaxCoresPerVM))
+                {
+                    maxCores = Int32.Parse(vpsMaxCoresPerVM);
+                    showCpuLabel = true;
                 }
-                else if (cpuQuota2.QuotaAllocatedValue >= cpuQuota2.QuotaUsedValue)
+
+                string cpuRange = "0";
+                int cpuAvailable = 0;
+
+                if (maxCores > 0)
                 {
-                    if (cpuQuotausable > maxCores)
+                    if (cpuQuota2.QuotaAllocatedValue == -1)
                     {
-                        for (int i = 1; i < maxCores + 1; i++)
-                            ddlCpu.Items.Add(i.ToString());
-
-                        ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                        cpuAvailable = maxCores;
                     }
-                    else
+                    else if (cpuQuota2.QuotaAllocatedValue > 0)
                     {
-                        for (int i = 1; i < cpuQuotausable + 1; i++)
-                            ddlCpu.Items.Add(i.ToString());
-
-                        ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                        if (cpuQuota2.QuotaAllocatedValue > (cpuQuota2.QuotaUsedValue - vm.CpuCores))
+                        {
+                            if (cpuQuotausable > maxCores)
+                            {
+                                cpuAvailable = maxCores;
+                            }
+                            else
+                            {
+                                cpuAvailable = cpuQuotausable;
+                            }
+                        }
                     }
+                }
+
+                int cpuDisplayed = cpuAvailable;
+
+                if (cpuDisplayed < vm.CpuCores)
+                {
+                    cpuDisplayed = vm.CpuCores;
+                }
+
+                if (cpuDisplayed <= 0)
+                {
+                    ddlCpu.Items.Add("0");
                 }
                 else
                 {
-                    for (int i = 1; i < vm.CpuCores + 1; i++)
+                    for (int i = 1; i <= cpuDisplayed; i++)
                         ddlCpu.Items.Add(i.ToString());
 
-                    ddlCpu.SelectedIndex = ddlCpu.Items.Count - 1; // select last (maximum) item
+                    if (cpuAvailable == 1) { cpuRange = "1"; } else { cpuRange = "1 - " + cpuAvailable; }
+                }
+
+                valCoresStatus.Text = String.Format(GetLocalizedString("valCoresStatus.Text"), cpuRange);
+                valCoresStatus.Visible = showCpuLabel;
+
+                // RAM
+                if (cntx.Quotas.ContainsKey(Quotas.VPS2012_RAM))
+                {
+
+                    string vpsMinRamPerVM = WebConfigurationManager.AppSettings.Get("VpsMinRamPerVM");
+                    string vpsMaxRamPerVM = WebConfigurationManager.AppSettings.Get("VpsMaxRamPerVM");
+
+                    int minRam = 0;
+                    int maxRam = 0;
+                    string ramRange = "0";
+                    bool showRamLabel = false;
+
+                    if (!String.IsNullOrEmpty(vpsMinRamPerVM) && !String.IsNullOrEmpty(vpsMaxRamPerVM))
+                    {
+                        minRam = Int32.Parse(vpsMinRamPerVM);
+                        maxRam = Int32.Parse(vpsMaxRamPerVM);
+                        showRamLabel = true;
+                    }
+
+                    QuotaValueInfo ramQuota = cntx.Quotas[Quotas.VPS2012_RAM];
+
+                    if (ramQuota.QuotaAllocatedValue == -1)
+                    {
+                        if (!showRamLabel)
+                        {
+                            ramRange = "unlimited";
+                        }
+                        else
+                        {
+                            ramRange = minRam + " - " + maxRam;
+                        }
+                    }
+                    else if (ramQuota.QuotaAllocatedValue > 0)
+                    {
+
+                        if (ramQuota.QuotaAllocatedValue > (ramQuota.QuotaUsedValue - vm.RamSize))
+                        {
+
+                            int availSize = ramQuota.QuotaAllocatedValue - ramQuota.QuotaUsedValue + vm.RamSize;
+                            int ramRemaining = 0;
+
+                            if (availSize > 0)
+                            {
+
+                                if (!showRamLabel)
+                                {
+                                    ramRemaining = availSize;
+                                }
+                                else
+                                {
+
+                                    if (availSize >= maxRam)
+                                    {
+                                        ramRemaining = maxRam;
+                                    }
+                                    else if (availSize < maxRam && availSize >= minRam)
+                                    {
+                                        ramRemaining = availSize;
+                                    }
+
+                                }
+                            }
+
+                            if (ramRemaining > 0)
+                            {
+                                ramRange = minRam + " - " + ramRemaining;
+                            }
+
+                        }
+                    }
+
+                    valRamStatus.Text = String.Format(GetLocalizedString("valRamStatus.Text"), ramRange);
+                    valRamStatus.Visible = showRamLabel;
+
+                }
+
+                // HDD
+                if (cntx.Quotas.ContainsKey(Quotas.VPS2012_HDD))
+                {
+
+                    string vpsMinHddPerVM = WebConfigurationManager.AppSettings.Get("VpsMinHddPerVM");
+                    string vpsMaxHddPerVM = WebConfigurationManager.AppSettings.Get("VpsMaxHddPerVM");
+
+                    int minHdd = 0;
+                    int maxHdd = 0;
+                    //int maxHddAdds = 0;
+
+                    int hddAddsSize = 0;
+                    int hddTotalSize = 0;
+
+                    string hddRange = "0";
+                    string hddAdds = "0";
+                    string hddTotal = "0";
+
+                    bool showHddLabel = false;
+
+                    if (!String.IsNullOrEmpty(vpsMinHddPerVM) && !String.IsNullOrEmpty(vpsMaxHddPerVM))
+                    {
+                        minHdd = Int32.Parse(vpsMinHddPerVM);
+                        maxHdd = Int32.Parse(vpsMaxHddPerVM);
+                        showHddLabel = true;
+                    }
+
+                    QuotaValueInfo hddQuota = cntx.Quotas[Quotas.VPS2012_HDD];
+                    if (hddQuota.QuotaAllocatedValue == -1)
+                    {
+
+                        if (!showHddLabel)
+                        {
+                            hddRange = "unlimited";
+                            hddAdds = "unlimited";
+                        }
+                        else
+                        {
+                            if (vm.HddSize[0] >= maxHdd)
+                            {
+                                hddRange = vm.HddSize[0].ToString();
+                            }
+                            else
+                            {
+                                hddRange = vm.HddSize[0] + " - " + maxHdd;
+                            }
+
+                            hddAdds = "1 - " + maxHdd;
+                        }
+
+                        hddTotal = "unlimited";
+
+                    }
+                    else
+                    {
+
+                        if (vm.HddSize.Length > 1)
+                        {
+                            for (int i = 1; i < vm.HddSize.Length; i++)
+                            {
+                                if (vm.HddSize[i] == 0 || String.IsNullOrEmpty(vm.VirtualHardDrivePath[i])) continue;
+                                hddAddsSize += vm.HddSize[i];
+                            }
+                        }
+
+                        hddTotalSize = vm.HddSize[0] + hddAddsSize;
+
+                        if (hddQuota.QuotaAllocatedValue > 0)
+                        {
+
+                            if (hddQuota.QuotaAllocatedValue < hddQuota.QuotaUsedValue)
+                            {
+
+                                int hddQuotaUsed = hddQuota.QuotaUsedValue - hddTotalSize;
+
+                                if (hddQuota.QuotaAllocatedValue > (hddQuotaUsed + hddAddsSize))
+                                {
+                                    int newMaxSize = hddQuota.QuotaAllocatedValue - hddQuotaUsed + hddAddsSize;
+                                    newMaxSize = newMaxSize > maxHdd ? maxHdd : newMaxSize;
+                                    hddRange = newMaxSize.ToString();
+                                }
+
+                                if (hddQuota.QuotaAllocatedValue > hddQuotaUsed)
+                                {
+                                    int newTotalSize = hddQuota.QuotaAllocatedValue - hddQuotaUsed;
+                                    hddTotal = newTotalSize.ToString();
+                                }
+
+                            }
+                            else if (hddQuota.QuotaAllocatedValue == hddQuota.QuotaUsedValue)
+                            {
+                                hddRange = vm.HddSize[0].ToString();
+                                hddTotal = hddTotalSize.ToString();
+                            }
+                            else
+                            {
+                                int hddRemaining = hddQuota.QuotaAllocatedValue - hddQuota.QuotaUsedValue;
+                                int hddMaxLimit;
+
+                                if (vm.HddSize[0] >= maxHdd)
+                                {
+                                    hddRange = vm.HddSize[0].ToString();
+                                }
+                                else
+                                {
+                                    hddMaxLimit = vm.HddSize[0] + hddRemaining;
+                                    hddMaxLimit = hddMaxLimit > maxHdd ? maxHdd : hddMaxLimit;
+                                    hddRange = vm.HddSize[0] + " - " + hddMaxLimit;
+                                }
+
+                                int hddAddsMaxLimit = hddRemaining > maxHdd ? maxHdd : hddRemaining;
+                                hddAdds = "1 - " + hddAddsMaxLimit;
+
+                                int hddTotalMaxLimit = hddRemaining + hddTotalSize;
+                                hddTotal = hddTotalMaxLimit.ToString();
+
+                            }
+                        }
+
+                    }
+
+                    valHddStatus.Text = String.Format(GetLocalizedString("valHddStatus.Text"), hddRange, hddAdds, hddTotal);
+                    valHddStatus.Visible = showHddLabel;
 
                 }
 
