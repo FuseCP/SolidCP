@@ -10,9 +10,9 @@
 Option Strict Off
 Option Explicit On
 
-<Assembly: System.Reflection.AssemblyInformationalVersion("2.0.0"),  _
- Assembly: System.Reflection.AssemblyCopyright("Copyright © 2024 SolidCP."),  _
- Assembly: System.Reflection.AssemblyFileVersion("2.0.0"),  _
+<Assembly: System.Reflection.AssemblyFileVersion("2.0.0"),  _
  Assembly: System.Reflection.AssemblyCompany("SolidCP"),  _
- Assembly: System.Reflection.AssemblyVersion("2.0.0")> 
+ Assembly: System.Reflection.AssemblyVersion("2.0.0"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersion("2.0.0"),  _
+ Assembly: System.Reflection.AssemblyCopyright("Copyright © 2024 SolidCP.")> 
 
