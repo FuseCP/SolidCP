@@ -100,7 +100,12 @@ namespace SolidCP.Web.Services
 			var builder = WebApplication.CreateBuilder(args);
 			Configuration.ProbingPaths = builder.Configuration["probingPaths"];
 			AssemblyLoaderNetCore.Init();
-			var urls = builder.Configuration["applicationUrls"];
+			string urls = null;
+			var urlsParPos = Array.IndexOf(args, "--urls");
+			if (urlsParPos >= 0 && urlsParPos < args.Length - 1) urls = args[urlsParPos + 1];
+			urls = urls ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ??
+				Environment.GetEnvironmentVariable("DOTNET_URLS") ??
+				builder.Configuration["applicationUrls"];
 			foreach (var url in urls.Split(';'))
 			{
 				var uri = new Uri(url);

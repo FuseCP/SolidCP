@@ -660,7 +660,7 @@ namespace SolidCP.Providers.Utils
             }
 
             // reset NTFS permissions on destination file/folder
-            SecurityUtils.ResetNtfsPermissions(destinationPath);
+            if (OSInfo.IsWindows) SecurityUtils.ResetNtfsPermissions(destinationPath);
         }
 
         public static void CopyFile(string sourcePath, string destinationPath)
@@ -679,7 +679,7 @@ namespace SolidCP.Providers.Utils
             }
 
             // reset NTFS permissions on destination file/folder
-            SecurityUtils.ResetNtfsPermissions(destinationPath);
+            if (OSInfo.IsWindows) SecurityUtils.ResetNtfsPermissions(destinationPath);
         }
 
         private static void CopyDirectory(string sourceDir, string destinationDir)

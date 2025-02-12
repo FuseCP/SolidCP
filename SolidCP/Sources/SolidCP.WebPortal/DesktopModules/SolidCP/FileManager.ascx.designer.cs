@@ -1010,24 +1010,33 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.ModalPopupExtender RenameFileModal;
-        
+
+		/// <summary>
+		/// PermissionsWindowsFilePanel control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Panel PermissionsWindowsFilePanel;
+	
         /// <summary>
-        /// PermissionsFilePanel control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel PermissionsFilePanel;
-        
-        /// <summary>
-        /// gvFilePermissions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvFilePermissions;
+		/// PermissionsUnixFilePanel control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.Panel PermissionsUnixFilePanel;
+
+		/// <summary>
+		/// gvFilePermissions control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.GridView gvFilePermissions;
         
         /// <summary>
         /// chkReplaceChildPermissions control.
@@ -1037,33 +1046,78 @@ namespace SolidCP.Portal {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.CheckBox chkReplaceChildPermissions;
-        
-        /// <summary>
-        /// btnCancelPermissions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::CPCC.StyleButton btnCancelPermissions;
-        
-        /// <summary>
-        /// btnSetPermissions control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::CPCC.StyleButton btnSetPermissions;
-        
-        /// <summary>
-        /// btnSetPermissionsFile control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton btnSetPermissionsFile;
+
+
+		/// <summary>
+		/// chkReplaceChildPermissionsUnix control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.CheckBox chkReplaceChildPermissionsUnix;
+
+		protected global::System.Web.UI.WebControls.CheckBox chkReadOwner;
+		protected global::System.Web.UI.WebControls.CheckBox chkWriteOwner;
+		protected global::System.Web.UI.WebControls.CheckBox chkExecuteOwner;
+		protected global::System.Web.UI.WebControls.CheckBox chkReadGroup;
+		protected global::System.Web.UI.WebControls.CheckBox chkWriteGroup;
+		protected global::System.Web.UI.WebControls.CheckBox chkExecuteGroup;
+		protected global::System.Web.UI.WebControls.CheckBox chkReadOthers;
+		protected global::System.Web.UI.WebControls.CheckBox chkWriteOthers;
+		protected global::System.Web.UI.WebControls.CheckBox chkExecuteOthers;
+		protected global::System.Web.UI.WebControls.TextBox txtOwner;
+		protected global::System.Web.UI.WebControls.TextBox txtGroup;
+		protected global::System.Web.UI.WebControls.Literal lblOwner;
+		protected global::System.Web.UI.WebControls.Literal lblGroup;
+		protected global::System.Web.UI.WebControls.Literal lblOthers;
+		protected global::System.Web.UI.WebControls.Label lblOwnerText;
+		protected global::System.Web.UI.WebControls.Label lblGroupText;
+		protected global::System.Web.UI.WebControls.ImageButton btnRenameOwner;
+		protected global::System.Web.UI.WebControls.ImageButton btnRenameGroup;
+
+		/// <summary>
+		/// btnCancelPermissions control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::CPCC.StyleButton btnCancelPermissions;
+		/// <summary>
+		/// btnCancelPermissions control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::CPCC.StyleButton btnCancelPermissionsUnix;
+
+		/// <summary>
+		/// btnSetPermissions control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::CPCC.StyleButton btnSetPermissions;
+		/// <summary>
+		/// btnSetPermissions control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::CPCC.StyleButton btnSetPermissionsUnix;
+
+		/// <summary>
+		/// btnSetPermissionsFile control.
+		/// </summary>
+		/// <remarks>
+		/// Auto-generated field.
+		/// To modify move field declaration from designer file to code-behind file.
+		/// </remarks>
+		protected global::System.Web.UI.WebControls.LinkButton btnSetPermissionsFile;
         
         /// <summary>
         /// PermissionsFileModal control.

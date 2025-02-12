@@ -5,7 +5,7 @@
 			"launchUrl": "https://localhost:9007/",
 			"environmentVariables": {
 				"ASPNETCORE_ENVIRONMENT": "Development",
-				"APPSETTING_appliationUrls": "https://localhost:9011;http://localhost:9012;net.tcp://localhost:9013"
+				"ASPNETCORE_URLS": "https://localhost:9011;http://localhost:9012;net.tcp://localhost:9013"
 			},
 			"distributionName": ""
 		},

@@ -208,6 +208,7 @@
 
     <Target Name="CopyCoreWebConfig" AfterTargets="Build">
         <Copy SourceFiles="Core.Web.config" DestinationFiles="bin_dotnet\Web.config" />
+        <Message Text="Copied Core.Web.config" Importance="high" />
     </Target>
 
     <!--<Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">

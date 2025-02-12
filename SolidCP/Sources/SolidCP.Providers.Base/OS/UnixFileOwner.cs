@@ -9,4 +9,10 @@ namespace SolidCP.Providers.OS
 		public string Owner { get; set; }
 		public string Group { get; set; }
 	}
+
+	public class UnixFilePermissions : UnixFileOwner
+	{
+		public UnixFileMode Permissions { get; set; }
+	}
+
 }

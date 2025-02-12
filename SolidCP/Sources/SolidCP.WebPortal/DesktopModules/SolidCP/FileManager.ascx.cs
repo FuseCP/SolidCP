@@ -687,9 +687,45 @@ function SetCreateZipFocus()
             // hide form
             PermissionsFileModal.Hide();
         }
-        #endregion
+		protected void btnSetPermissionsUnix_Click(object sender, EventArgs e)
+		{
+			// create file
+			string path = (string)ViewState["EditPermissions"];
+			string owner = txtOwner.Text;
+			string group = txtGroup.Text;
+			try
+			{
+				Providers.OS.UnixFileMode mode = default;
+				if (chkReadOwner.Checked) mode |= Providers.OS.UnixFileMode.UserRead;
+				if (chkWriteOwner.Checked) mode |= Providers.OS.UnixFileMode.UserWrite;
+				if (chkExecuteOwner.Checked) mode |= Providers.OS.UnixFileMode.UserExecute;
+				if (chkReadGroup.Checked) mode |= Providers.OS.UnixFileMode.GroupRead;
+				if (chkWriteGroup.Checked) mode |= Providers.OS.UnixFileMode.GroupWrite;
+				if (chkExecuteGroup.Checked) mode |= Providers.OS.UnixFileMode.GroupExecute;
+				if (chkReadOthers.Checked) mode |= Providers.OS.UnixFileMode.OtherRead;
+				if (chkWriteOthers.Checked) mode |= Providers.OS.UnixFileMode.OtherWrite;
+				if (chkExecuteOthers.Checked) mode |= Providers.OS.UnixFileMode.OtherExecute;
 
-        private string[] GetSelectedFiles()
+				// update permissions
+				int result = ES.Services.Files.SetUnixFilePermissions(PanelSecurity.PackageId, path, owner, group, mode, chkReplaceChildPermissionsUnix.Checked);
+
+				if (result < 0)
+				{
+					messageBox.ShowResultMessage(result);
+					return;
+				}
+			}
+			catch (Exception ex)
+			{
+				messageBox.ShowErrorMessage("FILES_UPDATE_PERMISSIONS", ex);
+			}
+
+			// hide form
+			PermissionsFileModal.Hide();
+		}
+		#endregion
+
+		private string[] GetSelectedFiles()
         {
             List<string> files = new List<string>();
             foreach (GridViewRow row in gvFiles.Rows)
@@ -750,15 +786,41 @@ function SetCreateZipFocus()
                 // read file content
                 try
                 {
-                    string path = GetFullRelativePath((string)e.CommandArgument);
-                    ViewState["EditPermissions"] = path;
-                    UserPermission[] users = ES.Services.Files.GetFilePermissions(PanelSecurity.PackageId, path);
+					string path = GetFullRelativePath((string)e.CommandArgument);
+					ViewState["EditPermissions"] = path;
 
-                    gvFilePermissions.DataSource = users;
-                    gvFilePermissions.DataBind();
+					var packageId = PanelSecurity.PackageId;
+					var package = ES.Services.Packages.GetPackage(packageId);
+					var server = ES.Services.Servers.GetServerById(package.ServerId);
+					if (server.OSPlatform == OSPlatform.Windows)
+					{
+						UserPermission[] users = ES.Services.Files.GetFilePermissions(PanelSecurity.PackageId, path);
 
-                    // show permissions panel
-                    PermissionsFileModal.Show();
+						gvFilePermissions.DataSource = users;
+						gvFilePermissions.DataBind();
+
+						PermissionsFileModal.PopupControlID = "PermissionsWindowsFilePanel";
+					}
+					else
+					{
+						var permissions = ES.Services.Files.GetUnixFilePermissions(PanelSecurity.PackageId, path);
+						txtOwner.Text = lblOwnerText.Text = permissions.Owner;
+						txtGroup.Text = lblGroupText.Text = permissions.Group;
+						chkReadOwner.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.UserRead);
+						chkWriteOwner.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.UserWrite);
+						chkExecuteOwner.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.UserExecute);
+						chkReadGroup.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.GroupRead);
+						chkWriteGroup.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.GroupWrite);
+						chkExecuteGroup.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.GroupExecute);
+						chkReadOthers.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.OtherRead);
+						chkWriteOthers.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.OtherWrite);
+						chkExecuteOthers.Checked = permissions.Permissions.HasFlag(Providers.OS.UnixFileMode.OtherExecute);
+
+						PermissionsFileModal.PopupControlID = "PermissionsUnixFilePanel";
+					}
+
+					// show permissions panel
+					PermissionsFileModal.Show();
                 }
                 catch (Exception ex)
                 {
@@ -872,7 +934,10 @@ function SetCreateZipFocus()
         {
             PermissionsFileModal.Hide();
         }
-
+		protected void btnCancelPermissionsUnix_Click(object sender, EventArgs e)
+		{
+			PermissionsFileModal.Hide();
+		}
 		private void RegisterJsLocalizedMessages()
 		{
 			if (!Page.ClientScript.IsClientScriptBlockRegistered("FM_UNZIP_FILES_MESSAGE"))
