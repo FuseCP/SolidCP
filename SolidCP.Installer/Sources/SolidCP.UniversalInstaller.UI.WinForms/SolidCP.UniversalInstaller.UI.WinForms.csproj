@@ -6,6 +6,7 @@
         <LangVersion>13</LangVersion>
         <UseWindowsForms>true</UseWindowsForms>
         <PackageId>SolidCP.UniversalInstaller.UI.WinForms</PackageId>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
@@ -57,6 +58,7 @@
             <SpecificVersion>False</SpecificVersion>
         </Reference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net48'">

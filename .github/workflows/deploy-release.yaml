@@ -61,7 +61,7 @@ jobs:
     env:
       Configuration: ${{ matrix.configuration }}
       IncludeReleasePdbs: "true"
-      UseAspNetPrecompile: "true"
+      UseAspNetPrecompile: "false"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
       MsBuildSwitches: "/v:m /m"
