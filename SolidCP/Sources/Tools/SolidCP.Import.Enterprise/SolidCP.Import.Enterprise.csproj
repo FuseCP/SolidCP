@@ -8,7 +8,8 @@
         <ApplicationIcon>application.ico</ApplicationIcon>
         <StartupObject>SolidCP.Import.Enterprise.Program</StartupObject>
         <PublishUrl>publish\</PublishUrl>
-                <NoWarn>NU1605</NoWarn>
+        <NoWarn>NU1605</NoWarn>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
         <OutputPath>bin\debug\</OutputPath>
@@ -37,6 +38,7 @@
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
         <PackageReference Include="System.ValueTuple" Version="4.5.0" />
         <PackageReference Include="Twilio" Version="6.6.1" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
     <ItemGroup>
         <Reference Include="JWT">
