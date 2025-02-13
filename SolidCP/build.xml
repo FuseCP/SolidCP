@@ -107,7 +107,13 @@
 	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServerCombined.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk.sln" />
+		<Exec Command="dotnet restore $(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils.sln" />
+		<Exec Command="dotnet restore $(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" />
 		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
@@ -152,8 +158,7 @@
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServerCombined.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" />
-		
+
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 
 		<!-- Tools -->
@@ -421,7 +426,7 @@
 	</Target>
 
 	<Target Name="CreateLocalizationToolkitBuild" DependsOnTargets="CreateSCPTransportAgentBuild">
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\SolidCP.LocalizationToolkit.csproj" />
+		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit.sln" />
 
 		<!-- compile toolkit -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\SolidCP.LocalizationToolkit.csproj" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)">
@@ -434,7 +439,7 @@
 		<Exec Command="@(LocalizationToolkitExe) -L $(PortalSrc)"/>
 
 		<!-- build MSI package -->
-		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit.Wix\SolidCP.LocalizationToolkit.Wix.wixproj" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);DefineSolutionProperties=false">
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit.Wix\SolidCP.LocalizationToolkit.Wix.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);DefineSolutionProperties=false">
 			<Output
                 TaskParameter="TargetOutputs"
                 ItemName="LocalizationToolkitMsi" />

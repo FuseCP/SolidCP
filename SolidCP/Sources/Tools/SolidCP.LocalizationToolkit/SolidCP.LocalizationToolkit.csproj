@@ -5,6 +5,8 @@
         <ApplicationIcon>Application.ico</ApplicationIcon>
         <TargetFramework>net48</TargetFramework>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>bin\$(Configuration)\</OutputPath>
     </PropertyGroup>
     <ItemGroup>

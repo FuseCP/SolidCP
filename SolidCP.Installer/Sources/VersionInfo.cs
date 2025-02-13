@@ -8,15 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-using System;
-using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-
-[assembly: AssemblyInformationalVersion("2.0.0")]
-[assembly: AssemblyCompany("SolidCP")]
-[assembly: AssemblyCopyright("Copyright © 2024 SolidCP.")]
-[assembly: AssemblyFileVersion("2.0.0")]
-[assembly: AssemblyVersion("2.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersion("2.0.0")]
+[assembly: System.Reflection.AssemblyCompany("SolidCP")]
+[assembly: System.Reflection.AssemblyCopyright("Copyright © 2024 SolidCP.")]
+[assembly: System.Reflection.AssemblyFileVersion("2.0.0")]
+[assembly: System.Reflection.AssemblyVersion("2.0.0")]
 
 
