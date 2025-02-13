@@ -12,6 +12,7 @@
         <AssemblyName>Setup</AssemblyName>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
         <EmbeddReferences>false</EmbeddReferences>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
     <Target Name="CopyResources" BeforeTargets="ResolveReferences">
         <Message Text="Copying Installer Resources" Importance="high" />
@@ -83,6 +84,7 @@
             <Private>False</Private>
             <SpecificVersion>False</SpecificVersion>
         </Reference>
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
         <Reference Include="System.ComponentModel.DataAnnotations" />
         <Reference Include="System.configuration" />
         <Reference Include="System.Configuration.Install" />
