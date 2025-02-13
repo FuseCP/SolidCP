@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.LocalizationToolkit
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SolidCP.LocalizationToolkit.Setup", "SolidCP.LocalizationToolkit.Setup\Setup.vdproj", "{57EAE767-DEAD-4E34-8576-0A19C21C13BE}"
 EndProject
-Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "SolidCP.LocalizationToolkit.Wix", "SolidCP.LocalizationToolkit.Wix\SolidCP.LocalizationToolkit.Wix.wixproj", "{3F3F1C39-6719-4862-BB45-4C227F13B821}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,14 +37,6 @@ Global
 		{57EAE767-DEAD-4E34-8576-0A19C21C13BE}.Release|Any CPU.Build.0 = Release
 		{57EAE767-DEAD-4E34-8576-0A19C21C13BE}.Release|x86.ActiveCfg = Release
 		{57EAE767-DEAD-4E34-8576-0A19C21C13BE}.Release|x86.Build.0 = Release
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Debug|Any CPU.Build.0 = Debug|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Debug|x86.ActiveCfg = Debug|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Debug|x86.Build.0 = Debug|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Release|Any CPU.ActiveCfg = Release|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Release|Any CPU.Build.0 = Release|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Release|x86.ActiveCfg = Release|x86
-		{3F3F1C39-6719-4862-BB45-4C227F13B821}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
