@@ -457,7 +457,7 @@
 		<Exec Command="dotnet restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
 
 		<!-- compile Installer -->
-		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
+		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
