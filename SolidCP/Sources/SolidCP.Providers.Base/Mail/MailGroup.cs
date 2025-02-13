@@ -42,6 +42,12 @@ namespace SolidCP.Providers.Mail
 	{
 		private string[] members = new string[0];
 		private bool enabled;
+        private bool hidefromgal;
+        private bool enablechat;
+        private bool internalonly;
+        private bool includealldomainusers;
+        private string displayname;
+        private bool allowsending;
 
 		public MailGroup()
 		{
@@ -58,5 +64,37 @@ namespace SolidCP.Providers.Mail
 			get { return this.members; }
 			set { this.members = value; }
 		}
-	}
+
+        public bool HideFromGAL
+				{
+            get { return this.hidefromgal; }
+            set { this.hidefromgal = value; }
+        }
+
+        public bool EnableChat
+				{
+            get { return this.enablechat; }
+            set { this.enablechat = value; }
+        }
+        public bool InternalOnly
+				{
+            get { return this.internalonly; }
+            set { this.internalonly = value; }
+        }
+        public bool IncludeAllDomainUsers
+        {
+            get { return this.includealldomainusers; }
+            set { this.includealldomainusers = value; }
+        }
+        public string DisplayName
+        {
+            get { return this.displayname; }
+            set { this.displayname = value; }
+        }
+        public bool AllowSending
+        {
+            get { return this.allowsending; }
+            set { this.allowsending = value; }
+        }
+    }
 }

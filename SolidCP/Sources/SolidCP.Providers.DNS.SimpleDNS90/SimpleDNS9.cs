@@ -514,6 +514,9 @@ namespace SolidCP.Providers.DNS
             if (record == null)
                 throw new ArgumentNullException(nameof(record));
 
+            if (record.RecordTTL == 0)
+                record.RecordTTL = RecordDefaultTTL;
+
             //Declare content to be Patched
             var content = new List<ZoneRecordsResponse>
             {
@@ -534,6 +537,12 @@ namespace SolidCP.Providers.DNS
                 throw new ArgumentNullException(nameof(zoneName));
             if (records.Length == 0 || records[0] == null)
                 return;
+
+            foreach (DnsRecord record in records)
+            {
+                if (record.RecordTTL == 0)
+                    record.RecordTTL = RecordDefaultTTL;
+            }
 
             //Declare content to be patched
             var content = records.Select(record => record.ToZoneRecordsResponse(zoneName)).ToList();

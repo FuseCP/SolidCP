@@ -1461,13 +1461,18 @@ namespace SolidCP.Providers.Mail
 						mailAlias.Name = alias["name"].ToString() + "@" + domainName;
 
 					List<string> members = new List<string>();
-					foreach (string member in alias["targets"])
+					if (alias["targets"] != null)
 					{
-						members.Add(member);
+						foreach (string member in alias["targets"])
+						{
+							members.Add(member);
+						}
 					}
 
+                    mailAlias.IncludeAllDomainUsers = alias["includeAllDomainUsers"];
 
-					if(members.ToArray().Length == 1)
+
+                    if (members.ToArray().Length == 1 && mailAlias.IncludeAllDomainUsers == false)
 					{
 						Log.WriteInfo("GetMailAliases - Found {0}", alias["name"].ToString());
 						mailAlias.ForwardTo = alias["targets"][0].ToString();
@@ -1650,13 +1655,18 @@ namespace SolidCP.Providers.Mail
 					mailGroup.Name = alias["name"] + "@" + domainName;
 
 					List<string> members = new List<string>();
-					foreach (string member in alias["targets"])
-
+					if (alias["targets"] != null)
 					{
-						members.Add(member);
-                    }
+						foreach (string member in alias["targets"])
 
-					if (members.ToArray().Length > 1)
+						{
+							members.Add(member);
+						}
+					}
+
+					mailGroup.IncludeAllDomainUsers = alias["includeAllDomainUsers"];
+
+                    if (members.ToArray().Length != 1 || mailGroup.IncludeAllDomainUsers == true)
 					{
 						mailGroup.Members = members.ToArray();
 						groups.Add(mailGroup);
@@ -1697,7 +1707,14 @@ namespace SolidCP.Providers.Mail
 				group.Name = groupName;
 				group.Members = targetsString;
 				group.Enabled = true; // by default
-				return group;
+				group.DisplayName = result["alias"]["displayName"];
+                group.HideFromGAL = result["alias"]["hideFromGAL"];
+                group.EnableChat = result["alias"]["enableForXmpp"];
+				group.InternalOnly = result["alias"]["internalOnly"];
+				group.IncludeAllDomainUsers = result["alias"]["includeAllDomainUsers"];
+                group.AllowSending = result["alias"]["allowSending"];
+
+                return group;
 			}
 			catch (Exception ex)
 			{
@@ -1712,8 +1729,14 @@ namespace SolidCP.Providers.Mail
 				var aliasArray = new
 				{
 					name = GetAccountName(group.Name),
-					aliasTargetList = group.Members
-				};
+                    displayName = group.DisplayName,
+                    aliasTargetList = group.Members,
+                    hideFromGAL = group.HideFromGAL,
+                    enableForXmpp = group.EnableChat,
+                    internalOnly = group.InternalOnly,
+                    includeAllDomainUsers = group.IncludeAllDomainUsers,
+                    allowSending = group.AllowSending
+                };
 
 				var mailAliasPram = new
 				{
@@ -1760,8 +1783,14 @@ namespace SolidCP.Providers.Mail
 				var aliasArray = new
 				{
 					name = GetAccountName(group.Name),
-					aliasTargetList = group.Members
-				};
+					displayName = group.DisplayName,
+					aliasTargetList = group.Members,
+					hideFromGAL = group.HideFromGAL,
+                    enableForXmpp = group.EnableChat,
+                    internalOnly = group.InternalOnly,
+                    includeAllDomainUsers = group.IncludeAllDomainUsers,
+                    allowSending = group.AllowSending
+                };
 
 				var mailAliasPram = new
 				{

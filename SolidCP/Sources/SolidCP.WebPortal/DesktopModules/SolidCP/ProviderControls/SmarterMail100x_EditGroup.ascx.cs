@@ -44,11 +44,23 @@ namespace SolidCP.Portal.ProviderControls
         public void BindItem(MailGroup item)
         {
             mailEditItems.Items = item.Members;
+            chkEnableGAL.Checked = !item.HideFromGAL;
+            chkEnableChat.Checked = item.EnableChat;
+            chkInternalOnly.Checked = item.InternalOnly;
+            chkIncludeAllDomainUsers.Checked = item.IncludeAllDomainUsers;
+            txtDisplayName.Text = item.DisplayName;
+            chkAllowSending.Checked = item.AllowSending;
         }
 
         public void SaveItem(MailGroup item)
         {
             item.Members = mailEditItems.Items;
+            item.HideFromGAL = !chkEnableGAL.Checked;
+            item.EnableChat = chkEnableChat.Checked;
+            item.InternalOnly = chkInternalOnly.Checked;
+            item.IncludeAllDomainUsers = chkIncludeAllDomainUsers.Checked;
+            item.DisplayName = txtDisplayName.Text;
+            item.AllowSending = chkAllowSending.Checked;
         }
     }
 

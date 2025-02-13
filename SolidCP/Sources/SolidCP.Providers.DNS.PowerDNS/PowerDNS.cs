@@ -61,6 +61,10 @@ namespace SolidCP.Providers.DNS
         const string ExpireLimit = "ExpireLimit";
         const string MinimumTTL = "MinimumTTL";
 
+        //Record Settings
+        const string RecordDefaultTTL = "RecordDefaultTTL";
+        const string RecordMinimumTTL = "RecordMinimumTTL";
+
         //name servers
         const string NameServers = "NameServers";
 
@@ -166,6 +170,16 @@ namespace SolidCP.Providers.DNS
         public string DbPassword
         {
             get { return ProviderSettings[PDNSDbPassword]; }
+        }
+
+        public string DNSRecordDefaultTTL
+        {
+            get { return ProviderSettings[RecordDefaultTTL]; }
+        }
+
+        public string DNSRecordMinimumTTL
+        {
+            get { return ProviderSettings[RecordMinimumTTL]; }
         }
 
         #endregion
@@ -566,6 +580,9 @@ namespace SolidCP.Providers.DNS
             {
                 record.RecordName = zoneName;
             }
+
+            if (record.RecordTTL == 0)
+                record.RecordTTL = Convert.ToInt32(DNSRecordDefaultTTL);
 
             AddRecord(
                   domainId

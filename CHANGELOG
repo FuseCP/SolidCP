@@ -1,3 +1,20 @@
+Version 1.5.1
+- [SmarterMail100] Fix for GetGroup showing the wrong emails when more than one group is returned.
+- [SmarterMail100] Fix for large numbers when going from MB to kb for domain settings
+- [SimpleDNS Plus 9.x] Fixed issue where domain name is not used & added support for getting and setting TTL
+- [MailEnable] Fix for MailAlias when an password policy is set.
+- [SmarterMail100] Removing tinymce character limit as found in #206
+- [SimpleDNS Plus 9.x] Fix issue from earlier commit which broke deleting domains.
+- [SimpleDNS Plus 9.x] Fixed issue where txt record may not be recorded correctly. #52
+- [MailEnable] Added Delete Message on Forward to Portal. It appears to already be in Server and working.
+- [SimpleDNS] Added Provider Zone settings #210 #211
+- Adding the RecordDefaultTTL and RecordMinimumTTL property to existing DNS providers
+- [SimpleDNS Plus 9.x] Fix for preview domain when DNS server supports setting TTL. Fixes records added with 0 TTL.
+- [SmarterMail100] Added extra group options and fixing import bug when no target emails set. - Work sponsored by Enterprise Guardian Inc.
+- [HyperV] Fix for #212 (Additional VHDX bug)
+- [SmarterMail100] Added option to Allow send from group address
+
+
 Version 1.5.0
 - [SQL] GetSearchObject - wrong join fixed
 - MFA form will resent pin instead of logging in when enter key is pressed

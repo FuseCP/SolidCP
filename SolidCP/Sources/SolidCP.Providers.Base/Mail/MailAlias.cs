@@ -41,11 +41,17 @@ namespace SolidCP.Providers.Mail
 	public class MailAlias : MailAccount
 	{
 	    private string forwardTo;
-        
+        private bool includealldomainusers;
 	    public string ForwardTo
 		{
 			get { return this.forwardTo; }
 			set { this.forwardTo = value; }
 		}
-	}
+
+        public bool IncludeAllDomainUsers
+        {
+            get { return this.includealldomainusers; }
+            set { this.includealldomainusers = value; }
+        }
+    }
 }

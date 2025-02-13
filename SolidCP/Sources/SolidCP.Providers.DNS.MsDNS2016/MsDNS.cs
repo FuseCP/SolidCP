@@ -65,6 +65,9 @@ namespace SolidCP.Providers.DNS
                 if (String.IsNullOrEmpty(name))
                     name = ".";
 
+                if (record.RecordTTL == 0)
+                    record.RecordTTL = DNSRecordDefaultTTL;
+
                 if (record.RecordType == DnsRecordType.A)
                     ps.Add_DnsServerResourceRecordA(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.AAAA)
