@@ -1,120 +1,78 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>
-    </ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{73A51A0A-9CF3-4516-BF25-28E5E4129FC9}</ProjectGuid>
-    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SolidCP.WebDavPortal</RootNamespace>
     <AssemblyName>SolidCP.WebDavPortal</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>net48</TargetFramework>
     <MvcBuildViews>false</MvcBuildViews>
-    <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
-    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
-    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
-    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
-    <TargetFrameworkProfile />
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <UseGlobalApplicationHostFile />
-    <Use64BitIISExpress />
+    <OutputPath>bin\</OutputPath>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>portable</DebugType>
-    <Optimize>true</Optimize>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+      <DebugType>portable</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>portable</DebugType>
   </PropertyGroup>
+  <PropertyGroup>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
   <ItemGroup>
-    <Reference Include="Antlr3.Runtime, Version=3.5.0.2, Culture=neutral, PublicKeyToken=eb42632606e9261f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
-    </Reference>
-    <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
-      <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.8.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
-    </Reference>
+    <PackageReference Include="Antlr" Version="3.5.0.2" />
+    <PackageReference Include="AutoMapper" Version="3.3.1" />
+    <PackageReference Include="bootstrap" Version="3.4.1" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
+    <PackageReference Include="jQuery.Cookie" Version="1.4.1" />
+    <PackageReference Include="jquery.datatables" Version="1.10.15" />
+    <PackageReference Include="jQuery.FileUpload" Version="10.4.0" />
+    <PackageReference Include="jQuery.UI.Combined" Version="1.13.3" />
+    <PackageReference Include="jQuery.Validation" Version="1.21.0" />
+    <PackageReference Include="Microsoft.AspNet.Mvc" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNet.Razor" Version="3.2.9" />
+    <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
+    <PackageReference Include="Microsoft.AspNet.WebApi" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Client" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.Core" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNet.WebApi.WebHost" Version="5.2.9" />
+    <PackageReference Include="Microsoft.AspNet.WebPages" Version="3.2.9" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+    <PackageReference Include="Microsoft.jQuery.Unobtrusive.Validation" Version="4.0.0" />
+    <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
+    <PackageReference Include="Modernizr" Version="2.8.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Ninject" Version="3.3.6" />
+    <PackageReference Include="Ninject.Web.Common" Version="3.3.2" />
+    <PackageReference Include="Respond" Version="1.4.2" />
+    <PackageReference Include="RestSharp" Version="112.1.0" />
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="WebDAV.dll" Version="1.0.0.0" />
+    <PackageReference Include="WebGrease" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
     <Reference Include="Microsoft.CobaltCore">
       <HintPath>..\..\Lib\References\Microsoft\Microsoft.CobaltCore.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject, Version=3.3.6.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.3.3.6\lib\net45\Ninject.dll</HintPath>
-    </Reference>
-    <Reference Include="Ninject.Web.Common, Version=3.3.2.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
-      <HintPath>..\packages\Ninject.Web.Common.3.3.2\lib\net45\Ninject.Web.Common.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=112.1.0.0, Culture=neutral, PublicKeyToken=598062e77f915f75, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.112.1.0\lib\net48\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.9\lib\net45\System.Net.Http.Formatting.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Encodings.Web, Version=8.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Encodings.Web.8.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Text.Json, Version=8.0.0.5, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.8.0.5\lib\net462\System.Text.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -123,127 +81,27 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Abstractions" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.9\lib\net45\System.Web.Http.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Http.WebHost, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.WebHost.5.2.9\lib\net45\System.Web.Http.WebHost.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.9.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.9\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.9\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Routing" />
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.9\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Net.Http">
-    </Reference>
-    <Reference Include="System.Net.Http.WebRequest">
-    </Reference>
-    <Reference Include="System.Web.Optimization">
-      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WebDAV">
-      <HintPath>..\packages\WebDAV.dll.1.0.0.0\lib\WebDAV.dll</HintPath>
-    </Reference>
-    <Reference Include="WebGrease">
-      <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.WebRequest" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\BundleConfig.cs" />
-    <Compile Include="App_Start\FilterConfig.cs" />
-    <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Configurations\ActionSelectors\OwaActionSelector.cs" />
-    <Compile Include="Configurations\Constraints\OrganizationRouteConstraint.cs" />
-    <Compile Include="Configurations\ControllerConfigurations\OwaControllerConfiguration.cs" />
-    <Compile Include="Constants\Formats.cs" />
-    <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\BaseController.cs" />
-    <Compile Include="Controllers\ErrorController.cs" />
-    <Compile Include="Controllers\FileSystemController.cs" />
-    <Compile Include="Controllers\Api\OwaController.cs" />
-    <Compile Include="CustomAttributes\FormValueRequiredAttribute.cs" />
-    <Compile Include="CustomAttributes\LdapAuthorizationAttribute.cs" />
-    <Compile Include="CustomAttributes\PhoneNumberAttribute.cs" />
-    <Compile Include="CustomAttributes\OrganizationPasswordPolicyAttribute.cs" />
-    <Compile Include="CustomAttributes\UniqueAdPhoneNumberAttribute.cs" />
-    <Compile Include="DependencyInjection\NinjectDependecyResolver.cs" />
-    <Compile Include="DependencyInjection\PortalDependencies.cs" />
-    <Compile Include="DependencyInjection\Providers\HttpSessionStateProvider.cs" />
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Extensions\UriExtensions.cs" />
-    <Compile Include="Extensions\UrlHelperExtensions.cs" />
-    <Compile Include="FileOperations\FileOpenerManager.cs" />
-    <Compile Include="FileOperations\FileOpenerType.cs" />
-    <Compile Include="Global.asax.cs">
+    <Compile Update="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\DataTableHelper.cs" />
-    <Compile Include="Helpers\ViewDataHelper.cs" />
-    <Compile Include="HttpHandlers\AccessTokenHandler.cs" />
-    <Compile Include="HttpHandlers\FileTransferRequestHandler.cs" />
-    <Compile Include="Mapping\AutoMapperPortalConfiguration.cs" />
-    <Compile Include="Mapping\Profiles\Account\UserProfileProfile.cs" />
-    <Compile Include="Mapping\Profiles\Webdav\ResourceTableItemProfile.cs" />
-    <Compile Include="ModelBinders\DataTables\JqueryDataTableModelBinder.cs" />
-    <Compile Include="Models\AccountModel.cs" />
-    <Compile Include="Models\Account\Enums\PincodeSendMethod.cs" />
-    <Compile Include="Models\Account\PasswordChangeModel.cs" />
-    <Compile Include="Models\Account\PasswordResetLoginModel.cs" />
-    <Compile Include="Models\Account\PasswordResetFinalStepModel.cs" />
-    <Compile Include="Models\Account\PasswordResetPincodeSendOptionsModel.cs" />
-    <Compile Include="Models\Account\PasswordResetPincodeModel.cs" />
-    <Compile Include="Models\Account\UserProfile.cs" />
-    <Compile Include="Models\Common\AjaxModel.cs" />
-    <Compile Include="Models\Common\DataTable\JqueryDataTableBaseEntity.cs" />
-    <Compile Include="Models\Common\DataTable\JqueryDataTablesResponse.cs" />
-    <Compile Include="Models\Common\DataTable\JqueryDataTableColumn.cs" />
-    <Compile Include="Models\Common\DataTable\JqueryDataTableOrder.cs" />
-    <Compile Include="Models\Common\DataTable\JqueryDataTableRequest.cs" />
-    <Compile Include="Models\Common\DataTable\JqueryDataTableSearch.cs" />
-    <Compile Include="Models\Common\EditorTemplates\PasswordEditor.cs" />
-    <Compile Include="Models\Common\Enums\MessageType.cs" />
-    <Compile Include="Models\Common\Message.cs" />
-    <Compile Include="Models\DirectoryIdentity.cs" />
-    <Compile Include="Models\ErrorModel.cs" />
-    <Compile Include="Models\FileSystem\DeleteFilesModel.cs" />
-    <Compile Include="Models\FileSystem\ResourceTableItemModel.cs" />
-    <Compile Include="Models\FileSystem\UploadFileResult.cs" />
-    <Compile Include="Models\ModelForWebDav.cs" />
-    <Compile Include="Models\OfficeOnlineModel.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Resources\Messages.Designer.cs">
+    <Compile Update="Resources\Messages.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Messages.resx</DependentUpon>
     </Compile>
-    <Compile Include="Resources\UI.Designer.cs">
+    <Compile Update="Resources\UI.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>UI.resx</DependentUpon>
     </Compile>
-    <Compile Include="App_Start\Routes\AccountRouteNames.cs" />
-    <Compile Include="App_Start\Routes\FileSystemRouteNames.cs" />
-    <Compile Include="App_Start\Routes\OwaRouteNames.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="android-chrome-144x144.png" />
@@ -676,96 +534,27 @@
     <Content Include="Views\Account\PasswordResetPincodeSendOptions.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\FileSystem\Enums\" />
-    <Folder Include="Views\Base\" />
-    <Folder Include="Views\Owa\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CPCC\CPCC.csproj">
-      <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
-      <Name>CPCC</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
-      <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
-      <Name>SolidCP.EnterpriseServer.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
-      <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
-      <Name>SolidCP.EnterpriseServer.Client</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
-      <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
-      <Name>SolidCP.Providers.Base</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj">
-      <Project>{e91e52f3-9555-4d00-b577-2b1dbdd87ca7}</Project>
-      <Name>SolidCP.Server.Utils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
-      <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
-      <Name>SolidCP.Web.Clients</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\SolidCP.WebDav.Core\SolidCP.WebDav.Core.csproj">
-      <Project>{ba147805-9ef1-45f2-bf32-a5825d4e950d}</Project>
-      <Name>SolidCP.WebDav.Core</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\CPCC\CPCC.csproj" />
+    <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+    <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
+    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+    <ProjectReference Include="..\SolidCP.WebDav.Core\SolidCP.WebDav.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resources\Messages.resx">
+    <EmbeddedResource Update="Resources\Messages.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Messages.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\UI.resx">
+    <EmbeddedResource Update="Resources\UI.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>UI.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
-  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
-    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
-  </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
-        <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>3289</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:9005/</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-        </WebProjectProperties>
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
-  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
-  </Target>
-  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target> -->
 </Project>

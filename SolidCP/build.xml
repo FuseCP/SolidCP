@@ -158,7 +158,6 @@
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.Server.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServerCombined.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 
-
 		<MSBuild Projects="$(TrunkFolder)\Sources\SolidCP.WebDavPortal.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 
 		<!-- Tools -->
@@ -560,6 +559,10 @@
 
     <Target Name="Build" DependsOnTargets="WiXCreateRedistFileListBuild">
 		<!-- Do nothing -->
+	</Target>
+
+	<Target Name="Test">
+		<Exec Command="dotnet test $(TrunkFolder)\Sources\SolidCP.Test.sln" />
 	</Target>
 
   <!-- Create full distributives -->
