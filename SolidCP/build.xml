@@ -472,9 +472,8 @@
 		<!--<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />-->
 
 		<!-- build MSI package -->
-		<!-- build MSI package -->
-		<Exec Command="&quot;$(DevEnv)&quot; &quot;$(InstallerProjectRoot)\SolidCP.UniversalInstaller.Setup.sln&quot; /build &quot;$(BuildConfiguration)|$(Platform)&quot;" />
-		<Copy SourceFiles="$(InstallerProjectRoot)\SolidCP.UniversalInstaller.Setup\$(Configuration)\*.msi" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
+		<Exec Command="&quot;$(DevEnv)&quot; &quot;$(InstallerProjectRoot)\SolidCP.UniversalInstaller.Msi.sln&quot; /build &quot;$(BuildConfiguration)|$(Platform)&quot;" />
+		<Copy SourceFiles="$(InstallerProjectRoot)\SolidCP.UniversalInstaller.Msi\$(Configuration)\*.msi" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
 
 	</Target>
 	
