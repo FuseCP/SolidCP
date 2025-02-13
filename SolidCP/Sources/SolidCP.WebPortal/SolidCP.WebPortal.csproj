@@ -43,8 +43,8 @@
         <PropertyGroup>
             <WindowsDir>$(WINDIR)</WindowsDir>
             <WindowsDir Condition="!Exists('$(WindowsDir)')">C:\Windows</WindowsDir>
-            <AspNetCompiler>$(WindowsDir)\Microsoft.NET\Framework64\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
-            <AspNetCompiler Condition="!Exists('$(AspNetCompiler)')">$(WindowsDir)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+            <AspNetCompiler>$(WindowsDir)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+            <AspNetCompiler Condition="!Exists('$(AspNetCompiler)')">$(WindowsDir)\Microsoft.NET\Framework64\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
         </PropertyGroup>
         <Message Text="$(AspNetCompiler)" Importance="high" />
 
