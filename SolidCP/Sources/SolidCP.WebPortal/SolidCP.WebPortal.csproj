@@ -38,9 +38,17 @@
     <Target Name="Precompile" DependsOnTargets="DeleteConfigObjFiles">
         <Exec Command="$(AspNetCompiler) -p . -v /" />
     </Target>
-    <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
+    <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles" Condition="$(OS) == 'Windows_NT'">
         <Message Text="Precompile WebPortal" Importance="high" />
-        <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" />
+        <PropertyGroup>
+            <AspNetCompiler>$(WINDÎR)\Microsoft.NET\Framework64\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+            <AspNetCompiler Condition="!Exists('$(AspNetCompiler)')">$(WINDÎR)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+        </PropertyGroup>
+        <Message Text="$(AspNetCompiler)" Importance="high" />
+
+        <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" Condition="$(MSBuildRuntimeType) == 'Full'" />
+        <Exec Command="$(AspNetCompiler) -v / -p . -f $(DeployDir)" Condition="$(MSBuildRuntimeType) == 'Core'" />        
+        
         <ItemGroup>
             <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
         </ItemGroup>
