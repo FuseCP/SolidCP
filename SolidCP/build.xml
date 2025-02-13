@@ -454,10 +454,10 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
-		<Exec Command="dotnet restore $(InstallerProjectRoot)\SolidCP.Installer.sln" />
+		<Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.Installer.sln" />
 
 		<!-- compile Installer -->
-		<MSBuild Projects="$(InstallerProjectRoot)\SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
+		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
@@ -472,7 +472,7 @@
 		<!--<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.Updater\SolidCP.Updater.csproj" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />-->
 
 		<!-- build MSI package -->
-		<Exec Command="&quot;$(DevEnv)&quot; &quot;$(InstallerProjectRoot)\SolidCP.UniversalInstaller.Msi.sln&quot; /build &quot;$(BuildConfiguration)|$(Platform)&quot;" />
+		<Exec Command="&quot;$(DevEnv)&quot; &quot;$(InstallerProjectRoot)SolidCP.UniversalInstaller.Msi.sln&quot; /build &quot;$(BuildConfiguration)|$(Platform)&quot;" />
 		<ItemGroup>
 			<InstallerMsi Include="$(InstallerProjectRoot)SolidCP.UniversalInstaller.Msi\$(Configuration)\*.msi" />
 		</ItemGroup>
