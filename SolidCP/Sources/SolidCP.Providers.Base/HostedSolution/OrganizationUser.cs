@@ -44,7 +44,7 @@ namespace SolidCP.Providers.HostedSolution
         private string subscriberNumber;
 
         private string primaryEmailAddress;
-        private string accountPassword;
+        //private string accountPassword;
         private string samAccountName;
         private string displayName;
         private string accountName;
