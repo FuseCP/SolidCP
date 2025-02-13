@@ -14,6 +14,7 @@
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
         <EmbeddReferences>false</EmbeddReferences>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
     <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' " AfterTargets="Build">
         <Copy SourceFiles="..\..\Build\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
@@ -52,7 +53,8 @@
       <None Remove="Resources\SolidCP.Updater.exe" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" OutputItemType="EmbeddedResource" />
+        <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
     <ItemGroup Condition="$(EmbeddReferences) == 'true'">
         <PackageReference Include="PortableCostura.Fody" Version="6.0.2">
