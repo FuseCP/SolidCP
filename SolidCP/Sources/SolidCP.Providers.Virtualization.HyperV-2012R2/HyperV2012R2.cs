@@ -58,6 +58,8 @@ using System.Configuration;
 using System.Linq;
 using SolidCP.Providers.Virtualization.Extensions;
 using SolidCP.Providers.OS;
+using Microsoft.Management.Infrastructure;
+using Microsoft.Management.Infrastructure.Generic;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -67,6 +69,16 @@ namespace SolidCP.Providers.Virtualization
         protected string ServerNameSettings
         {
             get { return ProviderSettings["ServerName"]; }
+        }
+
+        public CimSessionMode CimSessionMode
+        {
+            get {
+                if (string.IsNullOrEmpty(ProviderSettings["CimSessionMode"])){
+                    return CimSessionMode.DCom;
+                }
+                return (CimSessionMode)Enum.Parse(typeof(CimSessionMode), ProviderSettings["CimSessionMode"]); 
+            }
         }
 
         public int AutomaticStartActionSettings
@@ -138,11 +150,32 @@ namespace SolidCP.Providers.Virtualization
         {
             get { return _wmi ?? (_wmi = new Wmi(ServerNameSettings, Constants.WMI_VIRTUALIZATION_NAMESPACE)); }
         }
+
+        private MiManager _mi;
+        private readonly object _cimClientLock = new object();
+        private MiManager mi
+        {
+            get
+            {
+                lock (_cimClientLock)
+                {
+                    if (_mi == null || _mi.IsDisposed)
+                    {
+                        _mi = new MiManager(ServerNameSettings, CimSessionMode, Constants.WMI_VIRTUALIZATION_NAMESPACE);
+                    }
+                    return _mi;
+                }
+            }
+        }
+        private readonly Lazy<VirtualMachineHelper> _virtualMachineHelper;
+        public VirtualMachineHelper VirtualMachineHelper => _virtualMachineHelper.Value;
+
         #endregion
 
         #region Constructors
         public HyperV2012R2()
         {
+            _virtualMachineHelper = new Lazy<VirtualMachineHelper>(() => new VirtualMachineHelper(PowerShell, mi));
         }
         #endregion
 
@@ -168,9 +201,45 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                Command cmd = new Command("Get-VM");
-                cmd.Parameters.Add("Id", vmId);
-                Collection<PSObject> result = PowerShell.Execute(cmd, true);
+                var commands = new List<Command>
+                {
+                    new Command("Get-VM")
+                    {
+                        Parameters = { { "Id", vmId } } //Get-VM -Id vmId
+                    },
+                    new Command("Select-Object") { 
+                        //Filtering data, this is x2 slower (1100 miliseconds) then just Get-VM without select,
+                        //but x8 time faster then try to get Get-VMIntegrationService separatly (8000 miliseconds)
+                        Parameters = {
+                            {
+                                "Property", new string[] { // Select -Property ...
+                                    "Id", 
+                                    "Name",
+                                    "State",
+                                    "CpuUsage",
+                                    "Version",
+                                    "MemoryDemand",
+                                    "MemoryStartup",
+                                    "UpTime",
+                                    "Status",
+                                    "Generation",
+                                    "ProcessorCount",
+                                    "ParentSnapshotId",
+                                    "PrimaryOperationalStatus", //we can get it in this way, without Get-VMIntegrationService
+                                    "CreationTime",
+                                    "ReplicationState",
+                                    "IsClustered",
+                                }
+                            }
+                        }
+                    }
+                };
+
+                Collection<PSObject> result = PowerShell.Execute(commands, true, true);
+
+                //Command cmd = new Command("Get-VM");
+                //cmd.Parameters.Add("Id", vmId);
+                //Collection<PSObject> result = PowerShell.Execute(cmd, true);
 
                 if (result != null && result.Count > 0)
                 {
@@ -184,7 +253,7 @@ namespace SolidCP.Providers.Virtualization
                     if (Convert.ToDouble(vm.Version) > Convert.ToDouble(Constants.ConfigurationVersion))
                         vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryDemand")) / Constants.Size1M);
                     else
-                        vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryAssigned")) / Constants.Size1M);
+                        vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryStartup")) / Constants.Size1M);
 
                     vm.RamSize = Convert.ToInt32(ConvertNullableToInt64(result[0].GetProperty("MemoryStartup")) / Constants.Size1M);
                     vm.Uptime = Convert.ToInt64(result[0].GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
@@ -192,14 +261,14 @@ namespace SolidCP.Providers.Virtualization
                     vm.Generation = result[0].GetInt("Generation");
                     vm.ProcessorCount = result[0].GetInt("ProcessorCount");
                     vm.ParentSnapshotId = result[0].GetString("ParentSnapshotId");
-                    vm.Heartbeat = VirtualMachineHelper.GetVMHeartBeatStatus(PowerShell, vm.Name);
+                    vm.Heartbeat = VirtualMachineHelper.GetVMHeartBeatStatusFromGetVmResult(result, vm.Name);
                     vm.CreatedDate = result[0].GetProperty<DateTime>("CreationTime");
                     vm.ReplicationState = result[0].GetEnum<ReplicationState>("ReplicationState");
                     vm.IsClustered = result[0].GetBool("IsClustered");
 
                     if (extendedInfo)
                     {
-                        vm.CpuCores = VirtualMachineHelper.GetVMProcessors(PowerShell, vm.Name);
+                        vm.CpuCores = VirtualMachineHelper.GetVMProcessors(vm.Name);
 
                         // BIOS 
                         BiosInfo biosInfo = BiosHelper.Get(PowerShell, vm.Name, vm.Generation);
@@ -307,9 +376,9 @@ namespace SolidCP.Providers.Virtualization
                     vmachines.Add(vm);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return vmachines;
@@ -566,7 +635,7 @@ namespace SolidCP.Providers.Virtualization
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
                 BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
-                VirtualMachineHelper.UpdateProcessors(PowerShell, realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
+                VirtualMachineHelper.UpdateProcessors(realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
                 HardDriveHelper.Update(PowerShell, wmi, realVm, vm, ServerNameSettings);
@@ -944,7 +1013,7 @@ namespace SolidCP.Providers.Virtualization
             bool isServerStatusOK = (vm.Heartbeat != OperationalStatus.Ok || vm.Heartbeat != OperationalStatus.Paused);
             
             if (isServerStatusOK)
-                VirtualMachineHelper.Stop(PowerShell, vm.Name, force, ServerNameSettings);
+                VirtualMachineHelper.Stop(vm.Name, force);
             else
                 ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.TurnOff, null);
 
@@ -1036,7 +1105,7 @@ namespace SolidCP.Providers.Virtualization
                 SnapshotHelper.Delete(PowerShell, vm.Name);                
                 //something else???
             }            
-            VirtualMachineHelper.Delete(PowerShell, vm.Name, vmId, ServerNameSettings, clusterName);
+            VirtualMachineHelper.Delete(vm.Name, vmId, clusterName);
 
             return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
         }
@@ -1646,13 +1715,20 @@ namespace SolidCP.Providers.Virtualization
             List<KvpExchangeDataItem> pairs = new List<KvpExchangeDataItem>();
 
             // load VM
-            ManagementObject objVm = GetVirtualMachineObject(vmId);
+            CimInstance cimVm = mi.GetCimInstanceWithSelect(
+                "Msvm_ComputerSystem",
+                "Name, ElementName",
+                "Name = '{0}'", vmId); //Name = "GUID"
 
-            ManagementObject objKvpExchange = null;
+            CimKeyedCollection<CimProperty> objKvpExchange = null;
+            //ManagementObject objVm = GetVirtualMachineObject(vmId);
+            //ManagementObject objKvpExchange = null;
 
             try
             {
-                objKvpExchange = wmi.GetRelatedWmiObject(objVm, "msvm_KvpExchangeComponent");
+                //objKvpExchange = wmi.GetRelatedWmiObject(objVm, "msvm_KvpExchangeComponent");
+                CimInstance cimInstKvpExchange = mi.GetAssociatedCimInstance(cimVm, "Msvm_KvpExchangeComponent", "Msvm_SystemDevice");
+                objKvpExchange = cimInstKvpExchange.CimInstanceProperties;
             }
             catch
             {
@@ -1662,7 +1738,7 @@ namespace SolidCP.Providers.Virtualization
             }
 
             // return XML pairs
-            string[] xmlPairs = (string[])objKvpExchange[exchangeItemsName];
+            string[] xmlPairs = (string[])objKvpExchange[exchangeItemsName].Value;
 
             if (xmlPairs == null)
                 return pairs;
@@ -1686,70 +1762,6 @@ namespace SolidCP.Providers.Virtualization
             }
 
             return pairs; 
-            
-            //HostedSolutionLog.LogStart("GetKVPItems");
-            //HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
-            //HostedSolutionLog.DebugInfo("exchangeItemsName: {0}", exchangeItemsName);
-
-            //List<KvpExchangeDataItem> pairs = new List<KvpExchangeDataItem>();
-
-            //try
-            //{
-            //    var vm = GetVirtualMachine(vmId);
-
-            //    Command cmdGetVm = new Command("Get-WmiObject");
-
-            //    cmdGetVm.Parameters.Add("Namespace", WMI_VIRTUALIZATION_NAMESPACE);
-            //    cmdGetVm.Parameters.Add("Class", "Msvm_ComputerSystem");
-            //    cmdGetVm.Parameters.Add("Filter", "ElementName = '" + vm.Name + "'");
-
-            //    Collection<PSObject> result = PowerShell.Execute(cmdGetVm, false);
-
-            //    if (result != null && result.Count > 0)
-            //    {
-            //        dynamic resultDynamic = result[0];//.Invoke();
-            //        var kvp = resultDynamic.GetRelated("Msvm_KvpExchangeComponent");
-
-            //        // return XML pairs
-            //        string[] xmlPairs = null; 
-                    
-            //        foreach (dynamic a in kvp)
-            //        {
-            //            xmlPairs = a[exchangeItemsName];
-            //            break;
-            //        }
-                    
-            //        if (xmlPairs == null)
-            //            return pairs;
-
-            //        // join all pairs
-            //        StringBuilder sb = new StringBuilder();
-            //        sb.Append("<result>");
-            //        foreach (string xmlPair in xmlPairs)
-            //            sb.Append(xmlPair);
-            //        sb.Append("</result>");
-
-            //        // parse pairs
-            //        XmlDocument doc = new XmlDocument();
-            //        doc.LoadXml(sb.ToString());
-
-            //        foreach (XmlNode nodeName in doc.SelectNodes("/result/INSTANCE/PROPERTY[@NAME='Name']/VALUE"))
-            //        {
-            //            string name = nodeName.InnerText;
-            //            string data = nodeName.ParentNode.ParentNode.SelectSingleNode("PROPERTY[@NAME='Data']/VALUE").InnerText;
-            //            pairs.Add(new KvpExchangeDataItem(name, data));
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    HostedSolutionLog.LogError("GetKVPItems", ex);
-            //    throw;
-            //}
-
-            //HostedSolutionLog.LogEnd("GetKVPItems");
-
-            //return pairs; 
         }
 
         public JobResult AddKVPItems(string vmId, KvpExchangeDataItem[] items)
