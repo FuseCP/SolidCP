@@ -55,6 +55,7 @@ namespace SolidCP.Providers.Virtualization
         GuestOperatingSystem = 106,
         Snapshots = 107,
         AsynchronousTasks = 108,
-        HealthState  = 109
+        HealthState  = 109,
+        VirtualSystemSubType = 135 //VM Generation
     }
 }
