@@ -60,6 +60,7 @@ namespace SolidCP.Providers.Virtualization
                 if (RunSpace != null && RunSpace.RunspaceStateInfo.State == RunspaceState.Opened)
                 {
                     RunSpace.Close();
+                    RunSpace.Dispose();
                     RunSpace = null;
                 }
             }
@@ -78,11 +79,22 @@ namespace SolidCP.Providers.Virtualization
         {
             return Execute(cmd, addComputerNameParameter, false);
         }
+
+        public Collection<PSObject> Execute(IEnumerable<Command> cmd, bool addComputerNameParameter)
+        {
+            return ExecuteInternal(cmd, addComputerNameParameter, false);
+        }
+
         public Collection<PSObject> Execute(Command cmd, bool addComputerNameParameter, bool withExceptions)
         {
             if (isStatic)
                 throw new Exception("Invoke error: You can't execute this method from a static object!");
 
+            return ExecuteInternal(cmd, addComputerNameParameter, withExceptions);
+        }
+
+        public Collection<PSObject> Execute(IEnumerable<Command> cmd, bool addComputerNameParameter, bool withExceptions)
+        {
             return ExecuteInternal(cmd, addComputerNameParameter, withExceptions);
         }
 
@@ -134,28 +146,36 @@ namespace SolidCP.Providers.Virtualization
             }
             return results;
         }
-        private Collection<PSObject> ExecuteInternal(Command cmd, bool addComputerNameParameter, bool withExceptions)//, bool asJobScript, bool ignoreStaticCheck)
+
+        private Collection<PSObject> ExecuteInternal(Command commands, bool addComputerNameParameter, bool withExceptions)
+        {
+            return ExecuteInternal(new List<Command> { commands }, addComputerNameParameter, withExceptions);
+        }
+
+        private Collection<PSObject> ExecuteInternal(IEnumerable<Command> commands, bool addComputerNameParameter, bool withExceptions)
         {
             HostedSolutionLog.LogStart("Execute");
 
             List<object> errorList = new List<object>();
 
-            HostedSolutionLog.DebugCommand(cmd);
             Collection<PSObject> results = null;
-
-            // Add computerName parameter to command if it is remote server
-            if (addComputerNameParameter)
-            {
-                if (!string.IsNullOrEmpty(_remoteComputerName))
-                    cmd.Parameters.Add("ComputerName", _remoteComputerName);
-            }
 
             // Create a pipeline
             Pipeline pipeLine = RunSpace.CreatePipeline();
             using (pipeLine)
             {
-                // Add the command
-                pipeLine.Commands.Add(cmd);
+                var commandsList = commands.ToList();
+
+                if (addComputerNameParameter && !string.IsNullOrWhiteSpace(_remoteComputerName)) {
+                    commandsList[0].Parameters.Add("ComputerName", _remoteComputerName.Trim());
+                }
+                foreach (Command cmd in commandsList)
+                {
+                    HostedSolutionLog.DebugCommand(cmd);
+                    // Add the command
+                    pipeLine.Commands.Add(cmd);
+                }
+                
                 // Execute the pipeline and save the objects returned.
                 results = pipeLine.Invoke();
 
