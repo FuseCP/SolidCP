@@ -298,7 +298,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public void GetServerPlatform(string serverUrl, string password, bool passwordIsSHA256, out OSPlatform platform, out bool? isCore)
+        public void GetServerPlatform(string serverUrl, out OSPlatform platform, out bool? isCore)
 		{
 			platform = OSPlatform.Unknown;
 			isCore = null;
@@ -312,9 +312,9 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-                var os = new Server.Client.OperatingSystem();
-				ServiceProviderProxy.ServerInit(os, serverUrl, password, passwordIsSHA256);
-				var p = os.GetOSPlatform();
+				var discovery = new Server.Client.AutoDiscovery();
+                discovery.Url = serverUrl;
+				var p = discovery.GetOSPlatform();
 				platform = p.OSPlatform;
 				isCore = p.IsCore;
 			}
@@ -473,11 +473,11 @@ namespace SolidCP.EnterpriseServer
 
 				OSPlatform osPlatform;
 				bool? isCore;
-				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
-
-				GetServerPlatform(server.ServerUrl, server.Password, passwordIsSHA256, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
+
+				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
 				server.PasswordIsSHA256 = passwordIsSHA256;
 			}
 
@@ -533,13 +533,13 @@ namespace SolidCP.EnterpriseServer
 				if (availResult < 0)
 					return availResult;
 
-				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
-
 				OSPlatform osPlatform = OSPlatform.Unknown;
 				bool? isCore = null;
-				GetServerPlatform(server.ServerUrl, server.Password, passwordIsSHA256, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
+
+				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
 				server.PasswordIsSHA256 = passwordIsSHA256;
 			}
 

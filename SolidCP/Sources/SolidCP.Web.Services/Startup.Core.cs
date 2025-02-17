@@ -132,7 +132,7 @@ namespace SolidCP.Web.Services
 			Configuration.CertificateFile = CertificateFile = builder.Configuration.GetValue<string>("ServerCertificate:File");
 			Configuration.CertificatePassword = CertificatePassword = builder.Configuration.GetValue<string>("ServerCertificate:Password");
 			Configuration.Password = Password = builder.Configuration.GetValue<string>("Server:Password") ?? String.Empty;
-			Configuration.AllowedHosts = AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "0.0.0.0";
+			Configuration.AllowedHosts = AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "*";
 			Configuration.TraceLevel = TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
 			Configuration.KeyFile = KeyFile = builder.Configuration.GetValue<string>("ServerCertificate:KeyFile");
 			Configuration.ExposeWebServices = ExposeWebServices = builder.Configuration.GetValue<string>("exposeWebServices") ?? "";
@@ -151,19 +151,18 @@ namespace SolidCP.Web.Services
 				Log($"Trace level set to {TraceLevel}");
 			}
 			Configuration.IsLocalService = Configuration.AllowedHosts.Split(';')
-				.All(host => DnsService.IsHostLAN(host)); // local network ip
+				.All(host => host != "*" && host != "0.0.0.0" && DnsService.IsHostLAN(host)); // local network ip
 
 			builder.Services.AddRazorPages();
 			builder.Services.AddHttpContextAccessor();
 			if (OSInfo.IsSystemd)
 			{
 				builder.Host.UseSystemd();
-				Server.ConfigureServices?.Invoke(builder.Services);
 			} else if (OSInfo.IsWindows)
 			{
 				builder.Host.UseWindowsService();
-				Server.ConfigureServices?.Invoke(builder.Services);
 			}
+			Server.ConfigureServices?.Invoke(builder.Services);
 			ConfigureServices(builder.Services);
 
 			if (NetTcpPort.HasValue)
@@ -185,7 +184,6 @@ namespace SolidCP.Web.Services
 				builder.WebHost.UseKestrel(options =>
 				{
 					options.AllowSynchronousIO = true;
-
 					if (OSInfo.IsSystemd)
 					{
 						options.UseSystemd();
@@ -232,7 +230,6 @@ namespace SolidCP.Web.Services
 									// if (Certificate == null) return;
 
 									listenOptions.ServerCertificate = Certificate;
-
 								});
 
 							if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
@@ -261,7 +258,7 @@ namespace SolidCP.Web.Services
 			var tunnelHandler = new TunnelHandlerCore();
 			tunnelHandler.Init(app);
 
-			Server.UseWebForms?.Invoke(app);
+			Server.ConfigureApp?.Invoke(app);
 
 			app.Run();
 		}

@@ -33,7 +33,7 @@ namespace SolidCP.Web.Services
 			}
 		}
 
-		public static Action<WebApplication> UseWebForms = null;
+		public static Action<WebApplication> ConfigureApp = null;
 		public static Action<IServiceCollection> ConfigureServices = null;
 #else
 		public static string UserHostAddress => System.Web.HttpContext.Current.Request.UserHostAddress;
