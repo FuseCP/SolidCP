@@ -1,4 +1,5 @@
-﻿using SolidCP.Providers.HostedSolution;
+﻿using Microsoft.Management.Infrastructure;
+using SolidCP.Providers.HostedSolution;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -82,6 +83,27 @@ namespace SolidCP.Providers.Virtualization
             job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"]);
             job.ErrorDescription = (string)objJob["ErrorDescription"];
             job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"]);
+            return job;
+        }
+
+        public static ConcreteJob CreateFromCimObject(CimInstance cimJob)
+        {
+            if (cimJob == null || cimJob.CimInstanceProperties.Count == 0)
+                return null;
+
+            var objJob = cimJob.CimInstanceProperties;
+
+            ConcreteJob job = new ConcreteJob();
+            job.Id = (string)objJob["InstanceID"].Value;
+            job.JobState = (ConcreteJobState)Convert.ToInt32(objJob["JobState"].Value);
+            job.Caption = (string)objJob["Caption"].Value;
+            job.Description = (string)objJob["Description"].Value;
+            job.StartTime = (System.DateTime)objJob["StartTime"].Value;
+            // TODO proper parsing of WMI time spans, e.g. 00000000000001.325247:000
+            job.ElapsedTime = DateTime.Now; //wmi.ToDateTime((string)objJob["ElapsedTime"]);
+            job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"].Value);
+            job.ErrorDescription = (string)objJob["ErrorDescription"].Value;
+            job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"].Value);
             return job;
         }
 

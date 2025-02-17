@@ -180,7 +180,7 @@ namespace SolidCP.Providers.Virtualization
         #endregion
 
         #region Virtual Machines
-        
+
         public VirtualMachine GetVirtualMachine(string vmId)
         {
             return GetVirtualMachineInternal(vmId, false);
@@ -189,7 +189,7 @@ namespace SolidCP.Providers.Virtualization
         public VirtualMachine GetVirtualMachineEx(string vmId)
         {
             return GetVirtualMachineInternal(vmId, true);
-        }
+        }        
 
         protected VirtualMachine GetVirtualMachineInternal(string vmId, bool extendedInfo)
         {
@@ -433,38 +433,22 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                HostedSolutionLog.LogInfo("Before Get-VM command");
-                //TODO: Check different structure of Keeping data.
-                //Command cmd = new Command("Get-VM | Select Id, Name, ReplicationState", true); //TODO: add to Powershell method, which would works with multiple commands
+                CimInstance[] cimVms = mi.EnumerateCimInstances("Msvm_ComputerSystem");
 
-                StringBuilder scriptCommand = new StringBuilder("Get-VM");
-                string stringFormat = " -{0} {1}";
-                if (!string.IsNullOrEmpty(ServerNameSettings))
-                    scriptCommand.AppendFormat(stringFormat, "ComputerName", ServerNameSettings);                
-                scriptCommand.AppendFormat(" | {0}", "Select Id, Name, ReplicationState");
-
-                Command cmd = new Command(scriptCommand.ToString(), true);
-                Collection<PSObject> result = PowerShell.Execute(cmd, false, true);
-
-                HostedSolutionLog.LogInfo("After Get-VM command");
-                foreach (PSObject current in result)
+                HostedSolutionLog.LogInfo("After CIM command");
+                foreach (CimInstance currentCim in cimVms)
                 {
+                    var current = currentCim.CimInstanceProperties;
+                    if (!string.Equals(current["Caption"].Value as string, "Virtual Machine", StringComparison.Ordinal)) //we need only VMs
+                        continue;
+
                     HostedSolutionLog.LogInfo("- start VM -");
                     var vm = new VirtualMachine();
-                    HostedSolutionLog.LogInfo("create");
-                    vm.VirtualMachineId = current.GetProperty("Id").ToString();
+                    vm.VirtualMachineId = (string)current["Name"].Value;
                     HostedSolutionLog.LogInfo("VirtualMachineId {0}", vm.VirtualMachineId);
-                    vm.Name = current.GetString("Name");
+                    vm.Name = (string)current["ElementName"].Value;
                     HostedSolutionLog.LogInfo("Name {0}", vm.Name);
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    ////////////// We do not use this data, if it needs create a new method, this is overloaded!! ////////////
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    //vm.State = current.GetEnum<VirtualMachineState>("State");
-                    //HostedSolutionLog.LogInfo("State {0}", vm.State);
-                    //vm.Uptime = Convert.ToInt64(current.GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
-                    //HostedSolutionLog.LogInfo("Uptime {0}", vm.Uptime);
-                    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-                    vm.ReplicationState = current.GetEnum<ReplicationState>("ReplicationState"); //better to move for a special Replica Method.
+                    vm.ReplicationState = (ReplicationState)Convert.ToInt32(current["ReplicationState"].Value);
                     HostedSolutionLog.LogInfo("ReplicationState {0}", vm.ReplicationState);
                     vmachines.Add(vm);
                     HostedSolutionLog.LogInfo("- end VM -");
@@ -484,10 +468,70 @@ namespace SolidCP.Providers.Virtualization
 
         public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
         {
-            ManagementBaseObject objSummary = GetVirtualMachineSummaryInformation(vmId, (SummaryInformationRequest)size);
-            wmi.Dump(objSummary);
-            return GetTumbnailFromSummaryInformation(objSummary, size);
+            //ManagementBaseObject objSummary = GetVirtualMachineSummaryInformation(vmId, (SummaryInformationRequest)size);
+            CimInstance cimSummary = VirtualMachineHelper.GetSummaryInformation(vmId, (SummaryInformationRequest)size);
+            //wmi.Dump(objSummary);
+            return GetTumbnailFromSummaryInformation(cimSummary, size);
+            //return GetTumbnailFromSummaryInformation(objSummary, size);
             //return (byte[]) (new ImageConverter()).ConvertTo(new Bitmap(80, 60), typeof (byte[]));
+        }
+
+        private byte[] GetTumbnailFromSummaryInformation(CimInstance cimSummary, ThumbnailSize size)
+        {
+            var objSummary = cimSummary.CimInstanceProperties;
+
+            int width = 80;
+            int height = 60;
+
+            if (size == ThumbnailSize.Medium160x120)
+            {
+                width = 160;
+                height = 120;
+            }
+            else if (size == ThumbnailSize.Large320x240)
+            {
+                width = 320;
+                height = 240;
+            }
+
+            byte[] imgData = (byte[])objSummary["ThumbnailImage"].Value;
+
+            // create new bitmap
+            Bitmap bmp = new Bitmap(width, height);
+
+            if (imgData != null)
+            {
+                // lock bitmap
+                Rectangle rect = new Rectangle(0, 0, width, height);
+                BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
+
+                // get address of the first line
+                IntPtr ptr = bmpData.Scan0;
+
+                // coby thumbnail bytes into bitmap
+                System.Runtime.InteropServices.Marshal.Copy(imgData, 0, ptr, imgData.Length);
+
+                // unlock image
+                bmp.UnlockBits(bmpData);
+            }
+            else
+            {
+                // fill grey rectangle
+                Graphics g = Graphics.FromImage(bmp);
+                SolidBrush brush = new SolidBrush(Color.LightGray);
+                g.FillRectangle(brush, 0, 0, width, height);
+            }
+
+            MemoryStream stream = new MemoryStream();
+            bmp.Save(stream, ImageFormat.Png);
+
+            stream.Flush();
+            byte[] buffer = stream.ToArray();
+
+            bmp.Dispose();
+            stream.Dispose();
+
+            return buffer;
         }
 
         private byte[] GetTumbnailFromSummaryInformation(ManagementBaseObject objSummary, ThumbnailSize size)
@@ -606,7 +650,7 @@ namespace SolidCP.Providers.Virtualization
                 }
 
                 // Update common settings
-                UpdateVirtualMachine(vm);
+                UpdateVirtualMachineInternal(vm);
             }
             catch (Exception ex)
             {
@@ -619,18 +663,28 @@ namespace SolidCP.Providers.Virtualization
 
         public VirtualMachine UpdateVirtualMachine(VirtualMachine vm)
         {
-            HostedSolutionLog.LogStart("UpdateVirtualMachine");
-            HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vm.VirtualMachineId);
-
             try
             {
                 // check snapshots
                 List<VirtualMachineSnapshot> snapshots = GetVirtualMachineSnapshots(vm.VirtualMachineId);
-                if (snapshots.Count > 0)
-                {
+                if (snapshots.Count > 0) {
                     throw new Exception("Configuration changes can only be made when no snapshots have been taken.");
                 }
+                vm = UpdateVirtualMachineInternal(vm);
+            }
+            catch (Exception) {
+                throw;
+            }
+            return vm;
+        }
 
+        private VirtualMachine UpdateVirtualMachineInternal(VirtualMachine vm)
+        {
+            HostedSolutionLog.LogStart("UpdateVirtualMachineInternal");
+            HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vm.VirtualMachineId);
+
+            try
+            {     
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
@@ -643,12 +697,12 @@ namespace SolidCP.Providers.Virtualization
             }
             catch (Exception ex)
             {
-                HostedSolutionLog.LogError("UpdateVirtualMachine", ex);
+                HostedSolutionLog.LogError("UpdateVirtualMachineInternal", ex);
                 throw;
             }
 
-            HostedSolutionLog.LogEnd("UpdateVirtualMachine");
-           
+            HostedSolutionLog.LogEnd("UpdateVirtualMachineInternal");
+
             return vm;
         }
 
@@ -1761,7 +1815,7 @@ namespace SolidCP.Providers.Virtualization
                 pairs.Add(new KvpExchangeDataItem(name, data));
             }
 
-            return pairs; 
+            return pairs;
         }
 
         public JobResult AddKVPItems(string vmId, KvpExchangeDataItem[] items)
@@ -2160,8 +2214,8 @@ namespace SolidCP.Providers.Virtualization
             ConcreteJob job;
             try
             {
-                ManagementObject result = wmi.GetWmiObject("CIM_Job", "InstanceID = '{0}'", jobId);
-                job = JobHelper.CreateFromWmiObject(result);
+                var result = mi.GetCimInstance("CIM_Job", "InstanceID = '{0}'", jobId);
+                job = JobHelper.CreateFromCimObject(result);
             }
             catch (Exception ex)
             {
@@ -2188,8 +2242,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                Collection<PSObject> result = PowerShellWithJobs.GetJob(jobId);
-                job = JobHelper.CreateFromPSObject(result);
+                job = JobHelper.CreateFromPSObject(PowerShellWithJobs.GetJob(jobId));
             }
             catch (Exception ex)
             {
