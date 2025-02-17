@@ -30,6 +30,14 @@
                     Text="*" meta:resourcekey="ServerNameValidator" Display="Dynamic" SetFocusOnError="true" />
             </td>
 	    </tr>
+        <tr id="ServerCimSessionModeRow" runat="server">
+            <td colspan="2">
+                <asp:RadioButtonList ID="radioCimSessionMode" runat="server">
+                    <asp:ListItem Value="0" meta:resourcekey="radioCimSessionModeDCom" Selected="True">DCom</asp:ListItem>
+                    <asp:ListItem Value="1" meta:resourcekey="radioCimSessionModeWSMan">WSMan (experemental)</asp:ListItem>
+                </asp:RadioButtonList>
+            </td>
+        </tr>
 	    <tr id="ServerErrorRow" runat="server">
 	        <td colspan="2">
 	            <asp:Label ID="locErrorReadingNetworksList" runat="server"
