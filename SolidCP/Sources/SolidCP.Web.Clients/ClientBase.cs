@@ -242,7 +242,8 @@ namespace SolidCP.Web.Clients
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
 		public bool IsSsh => Protocol == Protocols.Ssh || url.StartsWith("ssh://");
-		public bool IsSecureProtocol => IsSsl || IsSsh;
+		public bool IsSecureProtocol => IsSsl || IsSsh ||
+			UseMessageSecurityOverHttp && Protocol == Protocols.WSHttp && OSInfo.IsNetFX && IsEncrypted;
 
 		public bool IsHttp => Protocol <= Protocols.WSHttp;
 		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
