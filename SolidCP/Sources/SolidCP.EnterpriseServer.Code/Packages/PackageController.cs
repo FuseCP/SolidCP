@@ -1415,7 +1415,7 @@ namespace SolidCP.EnterpriseServer
             DataSet dsItems = Database.GetServiceItems(SecurityContext.User.UserId,
                 packageId, groupName, typeName, recursive);
 
-            FlatternItemsTable(dsItems, 0, itemType);
+            FlattenItemsTable(dsItems, 0, itemType);
 
             return dsItems;
         }
@@ -1479,7 +1479,7 @@ namespace SolidCP.EnterpriseServer
                 SecurityContext.User.UserId, packageId, groupName, typeName, serverId, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
-            FlatternItemsTable(dsItems, 1, itemType);
+            FlattenItemsTable(dsItems, 1, itemType);
 
             return dsItems;
         }
@@ -1765,7 +1765,7 @@ namespace SolidCP.EnterpriseServer
 
 			return item;
 		}
-		private void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
+		private void FlattenItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
         {
             DataTable dtItems = dsItems.Tables[itemsTablePosition];
             DataTable dtProps = dsItems.Tables[itemsTablePosition + 1];
