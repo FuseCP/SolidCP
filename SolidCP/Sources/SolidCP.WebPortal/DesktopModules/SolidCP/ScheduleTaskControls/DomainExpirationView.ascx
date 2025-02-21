@@ -12,10 +12,10 @@
     </tr>
     <tr>
         <td class="SubHead" nowrap>
-            <asp:Label ID="lblIncludeNonExistenDomains" runat="server" meta:resourcekey="lblIncludeNonExistenDomains" Text="Include Non-Existen Domains:"></asp:Label>
+            <asp:Label ID="lblSendNonExistentDomains" runat="server" meta:resourcekey="cbIncludeNonExistentDomains" Text="Include Non-Existent Domains:"></asp:Label>
         </td>
         <td>
-            <asp:CheckBox runat="server" ID="cbIncludeNonExistenDomains" /><br/>
+            <asp:CheckBox runat="server" ID="cbIncludeNonExistentDomains" meta:resourcekey="cbIncludeNonExistentDomains" /><br/>
         </td>
     </tr>
     <tr>
