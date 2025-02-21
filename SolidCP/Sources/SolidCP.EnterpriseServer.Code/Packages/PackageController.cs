@@ -1779,7 +1779,8 @@ namespace SolidCP.EnterpriseServer
 				    prop.PropertyType == typeof(int) ||
 				    prop.PropertyType == typeof(long) ||
 				    prop.PropertyType == typeof(bool) ||
-				    prop.PropertyType == typeof(Guid)))
+				    prop.PropertyType == typeof(Guid) ||
+                    prop.PropertyType.IsEnum))
                     dtItems.Columns.Add(prop.Name, prop.PropertyType);
             }
 
@@ -1808,8 +1809,10 @@ namespace SolidCP.EnterpriseServer
                         propValue = (sVal != "") ? Boolean.Parse(sVal) : false;
                     if (columnType == typeof(Guid))
                         propValue = (!string.IsNullOrEmpty(sVal)) ? new Guid(sVal) : Guid.Empty;
+					if (columnType.IsEnum)
+						propValue = (sVal != "") ? Enum.Parse(columnType, sVal) : Convert.ChangeType(0, columnType);
 
-                    drItem[columnName] = propValue;
+					drItem[columnName] = propValue;
                 }
             }
         }

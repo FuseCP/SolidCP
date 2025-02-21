@@ -145,8 +145,6 @@ namespace SolidCP.Portal
 
         private void BindApplications()
         {
-
-
             WebAppGalleryHelpers helper = new WebAppGalleryHelpers();
 
             GalleryApplicationsResult result = helper.GetGalleryApplications("ZooTemplate", PanelSecurity.PackageId);
@@ -158,9 +156,7 @@ namespace SolidCP.Portal
             if (null != allowedEngines)
             {
                 foreach (GalleryApplication application in applications)
-                {
-                    
-
+                {            
                     foreach (string keyword in application.Keywords)
                     {
                         bool appAlreadyAdded = false;
