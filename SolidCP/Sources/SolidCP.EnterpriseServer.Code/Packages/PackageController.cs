@@ -1774,7 +1774,12 @@ namespace SolidCP.EnterpriseServer
             PropertyInfo[] props = itemType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo prop in props)
             {
-                if (!dtItems.Columns.Contains(prop.Name) && !prop.PropertyType.IsArray)
+                if (!dtItems.Columns.Contains(prop.Name) && !prop.PropertyType.IsArray &&
+				    (prop.PropertyType == typeof(string) ||
+				    prop.PropertyType == typeof(int) ||
+				    prop.PropertyType == typeof(long) ||
+				    prop.PropertyType == typeof(bool) ||
+				    prop.PropertyType == typeof(Guid)))
                     dtItems.Columns.Add(prop.Name, prop.PropertyType);
             }
 
