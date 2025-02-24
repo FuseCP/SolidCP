@@ -10,6 +10,7 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+        <UserSecretsId>f2178b6b-fdfa-4b50-ba11-779a6fcd69f3</UserSecretsId>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
