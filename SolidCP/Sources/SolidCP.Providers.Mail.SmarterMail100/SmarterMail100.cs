@@ -43,6 +43,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.Collections;
+using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 
 namespace SolidCP.Providers.Mail
 {
@@ -504,9 +506,12 @@ namespace SolidCP.Providers.Mail
 
 				//TODO: Above options
 
+				//AccessControls
+				domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE] = result["domainSettings"]["blockedCountriesAtAuth"]["type"].ToString();
+				domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES] = string.Join(",", result["domainSettings"]["blockedCountriesAtAuth"]["countries"]);
 
-				// get catch-all address
-				if (!String.IsNullOrEmpty(domain.CatchAllAccount))
+                // get catch-all address
+                if (!String.IsNullOrEmpty(domain.CatchAllAccount))
 				{
 					// get catch-all group
 					string groupName = SYSTEM_CATCH_ALL + "@" + domain.Name;
@@ -588,9 +593,16 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				var domainSettingsArray = new
+				var blockedCountriesAtAuthArray = new
 				{
-                    enableMailForwarding = domain.Enabled
+					type = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE],
+					countries = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES].Split(',')
+				};
+
+                var domainSettingsArray = new
+				{
+                    blockedCountriesAtAuth = blockedCountriesAtAuthArray,
+					enableMailForwarding = domain.Enabled
                 };
 
 				var domainSettingsPram = new
@@ -726,8 +738,13 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
+				var blockedCountriesAtAuthArray = new
+				{
+                    type = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE],
+					countries = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES].Split(',')
+                };
 
-				var throttleSettingsArray = new
+                var throttleSettingsArray = new
 				{
 					bandwidthAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
 					bandwidthPerHour = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR],
@@ -737,6 +754,7 @@ namespace SolidCP.Providers.Mail
 
 				var domainSettingsArray = new
 				{
+                    blockedCountriesAtAuth = blockedCountriesAtAuthArray,
 					catchAll = domain.CatchAllAccount,
 					showDomainAliasMenu = domain.ShowDomainAliasMenu,
 					showListMenu = domain.ShowListMenu,

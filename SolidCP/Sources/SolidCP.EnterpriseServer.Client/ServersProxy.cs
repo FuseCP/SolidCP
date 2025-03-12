@@ -148,6 +148,10 @@ namespace SolidCP.EnterpriseServer
 
         private System.Threading.SendOrPostCallback GetServerFilePathOperationCompleted;
 
+        private System.Threading.SendOrPostCallback GetQuotaHiddenOperationCompleted;
+
+        private System.Threading.SendOrPostCallback UpdateQuotaHiddenOperationCompleted;
+
         private System.Threading.SendOrPostCallback GetPrivateNetworVLANsPagedOperationCompleted;
 
         private System.Threading.SendOrPostCallback AddPrivateNetworkVLANOperationCompleted;
@@ -483,6 +487,12 @@ namespace SolidCP.EnterpriseServer
 
         /// <remarks/>
         public event GetServerFilePathCompletedEventHandler GetServerFilePathCompleted;
+
+        /// <remarks />
+        public event GetQuotaHiddenCompletedEventHandler GetQuotaHiddenCompleted;
+
+        /// <remarks />
+        public event UpdateQuotaHiddenCompletedEventHandler UpdateQuotaHiddenCompleted;
 
         /// <remarks/>
         public event GetPrivateNetworVLANsPagedCompletedEventHandler GetPrivateNetworVLANsPagedCompleted;
@@ -3513,6 +3523,104 @@ namespace SolidCP.EnterpriseServer
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
                 this.GetServerFilePathCompleted(this, new GetServerFilePathCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetQuotaHidden", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public string GetQuotaHidden(string quotaName, int groupID)
+        {
+            object[] results = this.Invoke("GetQuotaHidden", new object[] {
+                    quotaName, groupID});
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetQuotaHidden(string quotaName, int groupID, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetQuotaHidden", new object[] {
+                    quotaName, groupID}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public string EndGetQuotaHidden(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((string)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetQuotaHiddenAsync(string quotaName, int groupID)
+        {
+            this.GetQuotaHiddenAsync(quotaName, groupID, null);
+        }
+
+        /// <remarks/>
+        public void GetQuotaHiddenAsync(string quotaName, int groupID, object userState)
+        {
+            if ((this.GetQuotaHiddenOperationCompleted == null))
+            {
+                this.GetQuotaHiddenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetQuotaHiddenOperationCompleted);
+            }
+            this.InvokeAsync("GetQuotaHidden", new object[] {
+                    quotaName, groupID}, this.GetQuotaHiddenOperationCompleted, userState);
+        }
+
+        private void OnGetQuotaHiddenOperationCompleted(object arg)
+        {
+            if ((this.GetQuotaHiddenCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetQuotaHiddenCompleted(this, new GetQuotaHiddenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/UpdateQuotaHidden", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public int UpdateQuotaHidden(string quotaName, int groupID, bool hideQuota)
+        {
+            object[] results = this.Invoke("UpdateQuotaHidden", new object[] {
+                    quotaName, groupID, hideQuota});
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginUpdateQuotaHidden(string quotaName, int groupID, bool hideQuota, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("UpdateQuotaHidden", new object[] {
+                    quotaName, groupID, hideQuota}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public int EndUpdateQuotaHidden(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((int)(results[0]));
+        }
+
+        /// <remarks/>
+        public void UpdateQuotaHiddenAsync(string quotaName, int groupID, bool hideQuota)
+        {
+            this.UpdateQuotaHiddenAsync(quotaName, groupID, hideQuota, null);
+        }
+
+        /// <remarks/>
+        public void UpdateQuotaHiddenAsync(string quotaName, int groupID, bool hideQuota, object userState)
+        {
+            if ((this.UpdateQuotaHiddenOperationCompleted == null))
+            {
+                this.UpdateQuotaHiddenOperationCompleted = new System.Threading.SendOrPostCallback(this.OnUpdateQuotaHiddenOperationCompleted);
+            }
+            this.InvokeAsync("UpdateQuotaHidden", new object[] {
+                    quotaName, groupID, hideQuota}, this.UpdateQuotaHiddenOperationCompleted, userState);
+        }
+
+        private void OnUpdateQuotaHiddenOperationCompleted(object arg)
+        {
+            if ((this.UpdateQuotaHiddenCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.UpdateQuotaHiddenCompleted(this, new UpdateQuotaHiddenCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -9553,6 +9661,66 @@ namespace SolidCP.EnterpriseServer
             {
                 this.RaiseExceptionIfNecessary();
                 return ((string)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    public delegate void GetQuotaHiddenCompletedEventHandler(object sender, GetQuotaHiddenCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetQuotaHiddenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetQuotaHiddenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public string Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((string)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    public delegate void UpdateQuotaHiddenCompletedEventHandler(object sender, UpdateQuotaHiddenCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class UpdateQuotaHiddenCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal UpdateQuotaHiddenCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public int Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((int)(this.results[0]));
             }
         }
     }

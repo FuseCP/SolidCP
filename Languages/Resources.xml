@@ -387,6 +387,16 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.MailAccess</Key>
+    <DefaultValue>Mail Access Control</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.MailAccessProperties</Key>
+    <DefaultValue>Mail Access Control Properties</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
     <Key>ModuleTitle.MailAccountProperties</Key>
     <DefaultValue>Mail Account Properties</DefaultValue>
   </Resource>
@@ -1664,6 +1674,16 @@
     <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
     <Key>PageTitle.SpaceMailDomains</Key>
     <DefaultValue>{user} - {space} - Mail Domains</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
+    <Key>PageName.SpaceMailAccess</Key>
+    <DefaultValue>Access Control</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
+    <Key>PageTitle.SpaceMailAccess</Key>
+    <DefaultValue>{user} - {space} - Mail AccessControl</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Pages.ascx.resx</File>
@@ -16479,6 +16499,66 @@
     <File>DesktopModules\SolidCP\App_LocalResources\LyncPhoneNumbers.ascx.resx</File>
     <Key>secQuotas.Text</Key>
     <DefaultValue>Quotas</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccess.ascx.resx</File>
+    <Key>btnAddAccount.Text</Key>
+    <DefaultValue>Create Mail Account</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnCancel.Text</Key>
+    <DefaultValue>Cancel</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnDelete.OnClientClick</Key>
+    <DefaultValue>return confirmation();</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnDelete.Text</Key>
+    <DefaultValue>Delete</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnDeleteText.Text</Key>
+    <DefaultValue>Delete</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnUpdate.OnClientClick</Key>
+    <DefaultValue>ShowProgressDialog('Updating Domain Settings...');</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnUpdate.Text</Key>
+    <DefaultValue>Update</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>btnUpdateText.Text</Key>
+    <DefaultValue>Update</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>cmdDeletePointer.AlternateText</Key>
+    <DefaultValue>Remove Pointer</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>cmdDeletePointer.OnClientClick</Key>
+    <DefaultValue>return confirm('Are you sure you want to remove pointer?');</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>gvPointers.Empty</Key>
+    <DefaultValue>No Mail Domain Pointers</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\MailAccessEditAccess.ascx.resx</File>
+    <Key>gvPointersName.Header</Key>
+    <DefaultValue>Name</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\MailAccounts.ascx.resx</File>
@@ -44664,6 +44744,26 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SimpleDNS_Settings.ascx.resx</File>
     <Key>lblServiceConfig.Text</Key>
     <DefaultValue>Service Configuration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccess.ascx.resx</File>
+    <Key>lblAuthType.Text</Key>
+    <DefaultValue>Countries To Block:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccess.ascx.resx</File>
+    <Key>ddlAuthType1.Text</Key>
+    <DefaultValue>Specified Countries</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccess.ascx.resx</File>
+    <Key>ddlAuthType2.Text</Key>
+    <DefaultValue>All But Specified Countries</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccess.ascx.resx</File>
+    <Key>lblCountry.Text</Key>
+    <DefaultValue>Country: </DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\SmarterMail100x_EditAccount.ascx.resx</File>

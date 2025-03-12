@@ -3,6 +3,12 @@
 <%@ Import Namespace="SolidCP.Portal" %>
 <table cellpadding="7" cellspacing="0" width="100%">
 	<tr>
+	    <td class="SubHead">
+		    <asp:Label ID="lblAccessControlsHidden" runat="server" meta:resourcekey="lblAccessControlsHidden" Text="Enable Access Control Quota:"></asp:Label>
+		</td>
+		<td><asp:CheckBox runat="server" ID="cbAccessControlsHidden" meta:resourcekey="cbAccessControlsHidden"/></td>
+	</tr>
+	<tr>
 	 <td class="SubHead" nowrap width="200">
 		    <asp:Label ID="lblServiceUrl" runat="server" meta:resourcekey="lblServiceUrl" Text="Web Services URL:"></asp:Label>
 		</td>

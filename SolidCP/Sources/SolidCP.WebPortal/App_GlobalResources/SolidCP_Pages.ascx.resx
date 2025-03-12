@@ -267,6 +267,12 @@
   <data name="PageTitle.SpaceMailDomains" xml:space="preserve">
     <value>{user} - {space} - Mail Domains</value>
   </data>
+  <data name="PageName.SpaceMailAccess" xml:space="preserve">
+    <value>Access Control</value>
+  </data>
+	<data name="PageTitle.SpaceMailAccess" xml:space="preserve">
+    <value>{user} - {space} - Mail AccessControl</value>
+  </data>
   <data name="PageName.SpaceDatabases" xml:space="preserve">
     <value>Databases</value>
   </data>

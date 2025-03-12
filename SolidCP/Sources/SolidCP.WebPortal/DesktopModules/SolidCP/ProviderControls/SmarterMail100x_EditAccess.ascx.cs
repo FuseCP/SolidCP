@@ -31,67 +31,63 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
-using System.Data;
-using System.Configuration;
-using System.Collections;
-using System.Web;
-using System.Web.Security;
+using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
 using SolidCP.EnterpriseServer;
-using System.Collections.Generic;
-using System.Xml;
+using SolidCP.Providers.Database;
 using SolidCP.Providers.Mail;
+using System.Xml;
 using System.Linq;
 
-namespace SolidCP.Portal
+namespace SolidCP.Portal.ProviderControls
 {
-    public partial class SettingsMailPolicy : SolidCPControlBase, IUserSettingsEditorControl
+    public partial class SmarterMail100x_EditAccess : SolidCPControlBase, IMailEditDomainControl
     {
-        public void BindSettings(UserSettings settings)
+        private List<Country> selectedCountries
         {
-            // accounts
-            accountNamePolicy.Value = settings["AccountNamePolicy"];
-            accountPasswordPolicy.Value = settings["AccountPasswordPolicy"];
-
-            // general
-            txtCatchAll.Text = settings["CatchAllName"];
-
-            // Access
-            ddlAuthType.SelectedValue = settings["AcessAuthTypePolicy"];
-
-            string SelectedCountryCodes = settings["AccessSelectedCountry"];
-            if (!string.IsNullOrEmpty(SelectedCountryCodes))
+            get
             {
-                ViewState["SelectedCountryCodes"] = SelectedCountryCodes;
-                LoadSelectedCountries();
+                List<Country> countries = ViewState["SelectedCountries"] as List<Country>;
+                if (countries == null)
+                {
+                    countries = new List<Country>();
+                    ViewState["SelectedCountries"] = countries;
+                }
+                return countries;
             }
+            set { ViewState["SelectedCountries"] = value; }
+        }
+
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            PackageInfo info = ES.Services.Packages.GetPackage(PanelSecurity.PackageId);
 
             if (!IsPostBack)
             {
                 LoadSelectedCountries();
                 BindAvailableCountriesDropdown();
             }
-
         }
 
-        public void SaveSettings(UserSettings settings)
+        public void BindItem(MailDomain item)
         {
-            // accounts
-            settings["AccountNamePolicy"] = accountNamePolicy.Value;
-            settings["AccountPasswordPolicy"] = accountPasswordPolicy.Value;
+            ddlAuthType.SelectedValue = item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE];
 
-            // databases
-            settings["CatchAllName"] = txtCatchAll.Text.Trim();
+            string SelectedCountryCodes = item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES];
+            if (!string.IsNullOrEmpty(SelectedCountryCodes))
+            {
+                ViewState["SelectedCountryCodes"] = SelectedCountryCodes;
+                LoadSelectedCountries();
+            }
+        }
 
-            // Access
-            settings["AcessAuthTypePolicy"] = ddlAuthType.SelectedValue;
-
+        public void SaveItem(MailDomain item)
+        {
+            item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE] = ddlAuthType.SelectedValue;
+                
             List<string> codesToSave = selectedCountries.Select(c => c.Code).ToList();
-            settings["AccessSelectedCountry"] = string.Join(",", codesToSave);
+            item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES] = string.Join(",", codesToSave);
         }
 
         private void BindAvailableCountriesDropdown()
@@ -156,6 +152,7 @@ namespace SolidCP.Portal
             gvSelectedCountries.DataBind();
         }
 
+
         protected void btnAddCountry_Click(object sender, EventArgs e)
         {
             string code = ddlAddCountry.SelectedValue;
@@ -175,26 +172,13 @@ namespace SolidCP.Portal
             BindSelectedCountriesGrid();
         }
 
-        private List<Country> selectedCountries
-        {
-            get
-            {
-                List<Country> countries = ViewState["SelectedCountries"] as List<Country>;
-                if (countries == null)
-                {
-                    countries = new List<Country>();
-                    ViewState["SelectedCountries"] = countries;
-                }
-                return countries;
-            }
-            set { ViewState["SelectedCountries"] = value; }
-        }
-
         [Serializable]
         public class Country
         {
             public string Code { get; set; }
             public string Name { get; set; }
         }
+
+
     }
 }

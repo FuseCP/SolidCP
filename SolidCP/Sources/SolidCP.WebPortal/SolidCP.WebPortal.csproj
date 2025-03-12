@@ -223,6 +223,7 @@
     <Content Include="App_Themes\Default\Icons\lync_users_48.png" />
     <Content Include="App_Themes\Default\Icons\mailboxes_48.png" />
     <Content Include="App_Themes\Default\Icons\mailboxplans_48.png" />
+    <Content Include="App_Themes\Default\Icons\mail_accepted_domains_48.png" />
     <Content Include="App_Themes\Default\Icons\mail_accounts_48.png" />
     <Content Include="App_Themes\Default\Icons\mail_domains_48.png" />
     <Content Include="App_Themes\Default\Icons\mail_forwardings_48.png" />

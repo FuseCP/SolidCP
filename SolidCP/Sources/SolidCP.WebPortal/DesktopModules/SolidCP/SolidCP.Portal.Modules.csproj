@@ -223,6 +223,8 @@
     <Compile Include="Code\ProviderControls\IDatabaseEditUserControl.cs" />
     <Compile Include="Code\ProviderControls\IFtpEditAccountControl.cs" />
     <Compile Include="Code\ProviderControls\IHostingServiceProviderSettings.cs" />
+    <Compile Include="Code\ProviderControls\IMailEditAccessControl.cs" />
+    <None Include="Code\ProviderControls\IMailEditAccessControlcs" />
     <Compile Include="Code\ProviderControls\IVirtualMachineSettingsControl.cs" />
     <Compile Include="Code\ProviderControls\IMailEditAccountControl.cs" />
     <Compile Include="Code\ProviderControls\IMailEditDomainControl.cs" />
@@ -269,6 +271,17 @@
     <Compile Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx.designer.cs">
       <DependentUpon>ExchangeJournalingMailboxGeneralSettings.ascx</DependentUpon>
     </Compile>
+    <Compile Include="MailAccess.ascx.cs">
+      <DependentUpon>MailAccess.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MailAccessEditAccess.ascx.cs">
+      <DependentUpon>MailAccessEditAccess.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MailAccessEditAccess.ascx.designer.cs">
+      <DependentUpon>MailAccessEditAccess.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ProviderControls\CerberusFTP6_EditAccount.ascx.cs">
       <DependentUpon>CerberusFTP6_EditAccount.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -282,6 +295,13 @@
     </Compile>
     <Compile Include="ProviderControls\SmarterMail100x_EditAccount.ascx.designer.cs">
       <DependentUpon>SmarterMail100x_EditAccount.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditAccess.ascx.cs">
+      <DependentUpon>SmarterMail100x_EditAccess.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ProviderControls\SmarterMail100x_EditAccess.ascx.designer.cs">
+      <DependentUpon>SmarterMail100x_EditAccess.ascx</DependentUpon>
     </Compile>
     <Compile Include="ProviderControls\SmarterMail100x_EditDomain.ascx.cs">
       <DependentUpon>SmarterMail100x_EditDomain.ascx</DependentUpon>
@@ -5636,8 +5656,11 @@
     <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />
     <Content Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx" />
+    <Content Include="MailAccess.ascx" />
+    <Content Include="MailAccessEditAccess.ascx" />
     <Content Include="ProviderControls\CerberusFTP6_EditAccount.ascx" />
     <Content Include="ProviderControls\SmarterMail100x_EditAccount.ascx" />
+    <Content Include="ProviderControls\SmarterMail100x_EditAccess.ascx" />
     <Content Include="ProviderControls\SmarterMail100x_EditDomain.ascx" />
     <Content Include="ProviderControls\SmarterMail100x_EditDomain_Features.ascx" />
     <Content Include="ProviderControls\SmarterMail100x_EditDomain_Sharing.ascx" />
@@ -6655,6 +6678,16 @@
     <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_Settings.ascx.resx" />
     <Content Include="App_LocalResources\SettingsVerificationCodeLetter.ascx.de-DE.resx" />
     <Content Include="App_LocalResources\SettingsVerificationCodeLetter.ascx.resx" />
+    <Content Include="App_LocalResources\MailAccess.ascx.resx" />
+    <Content Include="App_LocalResources\MailAccessEditAccess.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="App_LocalResources\MailDomainsEditDomain.ascx - Copy %282%29.resx">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditAccess.ascx.resx">
+      <SubType>Designer</SubType>
+    </Content>
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />

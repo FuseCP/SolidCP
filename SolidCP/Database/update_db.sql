@@ -20408,3 +20408,46 @@ CLOSE service_cursor
 DEALLOCATE service_cursor
 END
 GO
+
+-- Mail Qupota for Access Controls editing. This is also hidden on default as currently only works on Smartermail100.x Provider
+IF NOT EXISTS (SELECT * FROM [dbo].[Quotas] WHERE [QuotaName] = 'Mail.AllowAccessControls')
+BEGIN
+	INSERT [dbo].[Quotas] ([QuotaID], [GroupID], [QuotaOrder], [QuotaName], [QuotaDescription], [QuotaTypeID], [ServiceQuota], [ItemTypeID], [HideQuota], [PerOrganization]) VALUES (754, 4, 9, N'Mail.AllowAccessControls', N'Allow changes to access controls', 1, 0, NULL, 1, NULL)
+END
+GO
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetQuotaHidden')
+DROP PROCEDURE GetQuotaHidden
+GO
+CREATE PROCEDURE [dbo].[GetQuotaHidden]
+(
+	@QuotaName nvarchar(50),
+	@GroupID int,
+	@HideQuota bit OUTPUT
+)
+AS
+SELECT
+	@HideQuota = HideQuota
+FROM Quotas AS Q
+WHERE QuotaName = @QuotaName AND GroupID = @GroupID
+-- print  @ideQuota
+RETURN
+GO
+
+
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'UpdateQuotaHidden')
+DROP PROCEDURE UpdateQuotaHidden
+GO
+CREATE PROCEDURE [dbo].[UpdateQuotaHidden]
+(
+	@QuotaName nvarchar(50),
+	@GroupID int,
+	@HideQuota bit
+)
+AS
+UPDATE Quotas
+SET
+	HideQuota = @HideQuota
+WHERE QuotaName = @QuotaName AND GroupID = @GroupID
+RETURN
+GO
