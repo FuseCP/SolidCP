@@ -19,7 +19,6 @@
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.1" />
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.1" />
-        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />
@@ -45,5 +44,8 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 	</ItemGroup>
 </Project>

@@ -3383,8 +3383,8 @@ namespace SolidCP.EnterpriseServer
 											 (pointer.DomainName.ToLower() == domain.DomainName.ToLower()))
 										{
 											WebServerController.AddWebSitePointer(w.Id,
-																								 (pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
-																								 domain.DomainId, false, true, true);
+												(pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
+												domain.DomainId, false, true, true);
 										}
 									}
 								}

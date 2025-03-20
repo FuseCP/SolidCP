@@ -883,7 +883,7 @@ public abstract partial class Installer
 				if (cert != null) cert.Remove();
 				cert = new XElement("serviceCertificate", new XAttribute("storeName", settings.CertificateStoreName),
 					new XAttribute("storeLocation", settings.CertificateStoreLocation),
-					new XAttribute("X509FindType", settings.CertificateFindType),
+					new XAttribute("x509FindType", settings.CertificateFindType),
 					new XAttribute("findValue", settings.CertificateFindValue));
 				serviceCredentials.Add(cert);
 			}
