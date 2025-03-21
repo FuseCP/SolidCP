@@ -518,7 +518,7 @@ final class SolidCP_EnterpriseServer
 			// Create the SoapClient
 			$client = new SoapClient($host, array('compression' => (($this->_compression) ? (SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP) : ''), 'keep_alive' => false, 'cache_wsdl' => ($this->_caching) ? 1 : 0));
 
-			$hasUser = !empty($this->_username);
+			$hasUser = !empty($this->_password);
 			if ($hasUser) {
 				$soapHeader = new SoapHeader('http://HostPanelPro/credentials', 'Credentials', array('Username' => $this->_username, 'Password' => $this->_password ));
 				$client -> __setSoapHeaders($soapHeader);
