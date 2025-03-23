@@ -88,6 +88,8 @@ namespace SolidCP.Portal.ProviderControls
                 
             List<string> codesToSave = selectedCountries.Select(c => c.Code).ToList();
             item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES] = string.Join(",", codesToSave);
+
+            item[MailDomain.SMARTERMAIL100_SET_BLOCKED_COUNTRIES] = "1";
         }
 
         private void BindAvailableCountriesDropdown()

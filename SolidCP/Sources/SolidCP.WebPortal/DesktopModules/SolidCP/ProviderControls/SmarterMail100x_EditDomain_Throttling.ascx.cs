@@ -45,21 +45,30 @@ namespace SolidCP.Portal.ProviderControls
         public void SaveItem(MailDomain item)
         {
             item[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR] = txtMessagesPerHour.Text;
-            item[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR_ENABLED] = cbMessagesPerHour.Checked.ToString();
+            item[MailDomain.SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION] = ddlMessagesAction.SelectedValue;
+            //item[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR_ENABLED] = cbMessagesPerHour.Checked.ToString();
             item[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR] = txtBandwidthPerHour.Text;
-            item[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED] = cbBandwidthPerHour.Checked.ToString();
+            item[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION] = ddlBandwidthAction.SelectedValue;
+            //item[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED] = cbBandwidthPerHour.Checked.ToString();
             item[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR] = txtBouncesPerHour.Text;
-            item[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED] = cbBouncesPerHour.Checked.ToString();
+            item[MailDomain.SMARTERMAIL100_BOUNCES_PER_HOUR_Action] = ddlBouncesPerHourAction.SelectedValue;
+            //item[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED] = cbBouncesPerHour.Checked.ToString();
+
         }
 
         public void BindItem(MailDomain item)
         {
             txtMessagesPerHour.Text = item[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR];
-            cbMessagesPerHour.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR_ENABLED]);
+            ddlMessagesAction.SelectedValue = item[MailDomain.SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION];
+            //cbMessagesPerHour.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR_ENABLED]);
             txtBandwidthPerHour.Text = item[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR];
-            cbBandwidthPerHour.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED]);
+            ddlBandwidthAction.SelectedValue = item[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION];
+            //cbBandwidthPerHour.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR_ENABLED]);
             txtBouncesPerHour.Text = item[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR];
-            cbBouncesPerHour.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED]);
+            ddlBouncesPerHourAction.SelectedValue = item[MailDomain.SMARTERMAIL100_BOUNCES_PER_HOUR_Action];
+            //cbBouncesPerHour.Checked = Convert.ToBoolean(item[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR_ENABLED]);
+
+
         }
 
         public void InitValidators()
