@@ -76,8 +76,16 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void ReadStandaloneServerConfiguration() { }
 
+		public virtual string PathWithSpaces(string path)
+		{
+			return Regex.Replace(path, "(?<=[a-z])([A-Z])", " $1");
+		}
 		public virtual void ConfigureStandaloneServer() {
 			Settings.WebPortal.EmbedEnterpriseServer = true;
+			if (!EnterpriseServerFolder.Contains(' '))
+			{
+				EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
+			}
 			Settings.WebPortal.EnterpriseServerPath = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
 			ConfigureWebPortal();
 			ConfigureEnterpriseServer();

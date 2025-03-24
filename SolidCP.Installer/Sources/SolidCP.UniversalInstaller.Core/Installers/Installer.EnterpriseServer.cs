@@ -106,6 +106,11 @@ public abstract partial class Installer
 	{
 		var settings = Settings.EnterpriseServer;
 		var connstr = settings.DbInstallConnectionString;
+		if (string.IsNullOrEmpty(settings.DatabaseUser))
+		{
+			settings.DatabaseUser = DefaultDatabaseUser;
+			settings.DatabasePassword = Utils.GetRandomString(32);
+		}
 		var user = settings.DatabaseUser;
 		var password = settings.DatabasePassword;
 		var db = settings.DatabaseName;
@@ -225,15 +230,15 @@ public abstract partial class Installer
 			settings.CryptoKey = CryptoUtils.GetRandomString(20);
 		}
 		var appSettings = configuration.Element("appSettings");
-		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
+		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
 		if (cryptoKey == null)
 		{
-			cryptoKey = new XElement("add", new XAttribute("key", "CryptoKey"), new XAttribute("value", settings.CryptoKey));
+			cryptoKey = new XElement("add", new XAttribute("key", "HostPanelPro.CryptoKey"), new XAttribute("value", settings.CryptoKey));
 			appSettings.Add(cryptoKey);
 		}
 		else
 		{
-			cryptoKey.Attribute("CryptoKey").SetValue(settings.CryptoKey);
+			cryptoKey.Attribute("value").SetValue(settings.CryptoKey);
 		}
 
 		// Connection String

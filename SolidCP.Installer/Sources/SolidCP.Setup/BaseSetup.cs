@@ -129,7 +129,8 @@ public class BaseSetup
 	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
 	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
 	public virtual bool HasEnterpriseServerInstallation
-		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder));
+		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)) ||
+			Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)));
 	public virtual UI.SetupWizard Wizard(object args)
 	{
 		if (ParseArgs(args) && CheckInstallerVersion())
@@ -153,10 +154,21 @@ public class BaseSetup
 				if (IsEnterpriseServer) wizard = wizard
 					.ServerAdminPassword();
 
-				if (IsWebPortal && HasEnterpriseServerInstallation) wizard = wizard
-					.EmbedEnterpriseServer();
+				if (IsWebPortal)
+				{
+					if (HasEnterpriseServerInstallation)
+					{
+						wizard = wizard.EmbedEnterpriseServer();
+					}
+					else
+					{
+						wizard = wizard.EnterpriseServerUrl();
+						Settings.WebPortal.EnterpriseServerUrl = "http://localhost:9002";
+					}
+				}
 
-			} else
+			}
+			else
 			{
 				// Set EnterpriseServer setting for embedded EnterpriseServer
 				Settings.EnterpriseServer.WebSiteDomain = "";

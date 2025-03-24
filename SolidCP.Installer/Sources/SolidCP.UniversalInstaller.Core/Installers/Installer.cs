@@ -30,7 +30,7 @@ public abstract partial class Installer
 	public const bool RunAsAdmin = true;
 	public virtual string SolidCP => "SolidCP";
 	public virtual string ServerFolder => "Server";
-	public virtual string EnterpriseServerFolder => "EnterpriseServer";
+	public virtual string EnterpriseServerFolder { get; set; } = "EnterpriseServer";
 	public virtual string WebPortalFolder => "Portal";
 	public virtual string WebDavPortalFolder => "WebDavPortal";
 	public virtual string ServerUser => $"{SolidCP}Server";
