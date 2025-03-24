@@ -86,9 +86,12 @@ namespace SolidCP.UniversalInstaller
         /// <param name="content">The array of bytes to write.</param>
         public static void AppendFileContent(string fileName, byte[] content)
         {
-            FileStream stream = new FileStream(fileName, FileMode.Append, FileAccess.Write);
-            stream.Write(content, 0, content.Length);
-            stream.Close();
+            if (Directory.Exists(Path.GetDirectoryName(fileName)))
+            {
+                FileStream stream = new FileStream(fileName, FileMode.Append, FileAccess.Write);
+                stream.Write(content, 0, content.Length);
+                stream.Close();
+            }
         }
 
         /// <summary>
