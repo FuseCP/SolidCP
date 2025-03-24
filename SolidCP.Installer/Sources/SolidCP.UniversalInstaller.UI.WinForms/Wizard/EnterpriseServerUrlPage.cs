@@ -43,6 +43,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using SolidCP.UniversalInstaller;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller.WinForms
 {
@@ -90,7 +91,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		private void LoadUrl()
 		{
-			try
+			/*try
 			{
 				Settings.EnterpriseServerUrl = string.Empty;
 
@@ -123,7 +124,23 @@ namespace SolidCP.UniversalInstaller.WinForms
 			catch(Exception ex)
 			{
 				Log.WriteError("Site settings error", ex);
-			}			
+			}*/
+			
+			var path = DefaultEntServerPath;
+			Settings.EmbedEnterpriseServer = path != null;
+			Settings.EnterpriseServerPath = path;
+			if (Settings.EmbedEnterpriseServer)
+			{
+				Settings.EnterpriseServerUrl = "assembly://HostPanelPro.EnterpriseServer";
+			}
+			else
+			{
+				if (string.IsNullOrEmpty(Settings.EnterpriseServerUrl))
+				{
+
+					Settings.EnterpriseServerUrl = "http://localhost:9002";
+				}
+			}
 		}
 
 		protected internal override void OnBeforeMoveNext(CancelEventArgs e)
@@ -194,7 +211,32 @@ namespace SolidCP.UniversalInstaller.WinForms
 			return true;
 		}
 
-		private string DefaultEntServerPath => $"..\\{Global.EntServer.ComponentName}";
+
+		private string DefaultEntServerPath
+		{
+			get
+			{
+				var folder1 = $"..\\{Installer.Current.EnterpriseServerFolder}";
+				var folder2 = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
+				if (!OSInfo.IsWindows)
+				{
+					folder1 = folder1.Replace('\\', '/');
+					folder2 = folder2.Replace('\\', '/');
+				}
+				if (Directory.Exists(folder1))
+				{
+					return folder1;
+				}
+				else if (Directory.Exists(folder2))
+				{
+					return folder2;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
 		private string AbsolutePath(string relativePath) => Path.IsPathRooted(relativePath) ? relativePath :
 			Path.GetFullPath(Path.Combine(Settings.InstallFolder, relativePath));
         private string RelativePath(string absolutePath) => GetRelativePath(Settings.InstallFolder, absolutePath);
@@ -257,7 +299,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			
 			if (chkBoxEmbed.Checked) {
 				txtURL.Text = "assembly://SolidCP.EnterpriseServer";
-				if (string.IsNullOrEmpty(txtPath.Text))
+				if (string.IsNullOrEmpty(txtPath.Text) && DefaultEntServerPath != null)
 				{
 					txtPath.Text = DefaultEntServerPath;
 				}

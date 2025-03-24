@@ -156,17 +156,8 @@ public class BaseSetup
 
 				if (IsWebPortal)
 				{
-					if (HasEnterpriseServerInstallation)
-					{
-						wizard = wizard.EmbedEnterpriseServer();
-					}
-					else
-					{
-						wizard = wizard.EnterpriseServerUrl();
-						Settings.WebPortal.EnterpriseServerUrl = "http://localhost:9002";
-					}
+					wizard = wizard.EnterpriseServerUrl();
 				}
-
 			}
 			else
 			{
