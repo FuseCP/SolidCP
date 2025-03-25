@@ -93,11 +93,21 @@ public abstract partial class Installer
 
 		ConfigureCertificateNetFX(settings, conf);
 
+		conf.Save(confFile);
+
 		ConfigureAppsettings(Settings.WebPortal);
 
 		if (settings.EmbedEnterpriseServer)
 		{
+			if (settings.EnterpriseServerPath.EndsWith("\\") ||
+				settings.EnterpriseServerPath.EndsWith("/"))
+			{
+				settings.EnterpriseServerPath = settings.EnterpriseServerPath.Substring(0, settings.EnterpriseServerPath.Length - 1);
+			}
+
 			ConfigureEnterpriseServerNetFX(true);
+
+			conf = XElement.Load(confFile);
 
 			// add external probing paths
 			var appSettings = conf.Element("appSettings");

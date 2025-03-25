@@ -1590,7 +1590,7 @@ SELECT DatabaseVersion FROM Version");
 					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
 					{
 						if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
-						else if (newDatabase) AddUserToDatabase(masterConnectionString, databaseName, user);
+						else throw new NotSupportedException($"Database user {user} already exists.");
 					}
 
 					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,

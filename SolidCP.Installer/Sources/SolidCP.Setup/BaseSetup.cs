@@ -97,6 +97,8 @@ public class BaseSetup
 			{
 				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(json, new VersionConverter(), new StringEnumConverter());
 
+				CommonSettings.Version = Installer.Current.Settings.Installer.Component.Version;
+
 				UI.SetCurrent(Installer.Current.Settings.Installer.UI);
 			}
 			else

@@ -115,14 +115,17 @@ namespace SolidCP.UniversalInstaller.WinForms
 					e.Cancel = false;
 					return;
 				}
+				else
+				{
+					Settings.UpdateServerAdminPassword = true;
+				}
 
 				if (!CheckFields())
 				{
 					e.Cancel = true;
 					return;
 				}
-				// Use the same password for peer account
-				//Settings.ServerAdminPassword = SetupVariables.PeerAdminPassword = txtPassword.Text;
+				Settings.ServerAdminPassword = txtPassword.Text;
 				//
 				Settings.UpdateServerAdminPassword = true;
 			}

@@ -139,8 +139,9 @@ namespace SolidCP.EnterpriseServer.Data
                             throw new NotSupportedException("Oracle is not supported.");
 #endif
                             break;
-                    }
-                }
+						default: throw new NotSupportedException($"DbType {DbType} is not supported.");
+					}
+				}
                 return dbConnection;
 			}
 		}

@@ -397,12 +397,12 @@ Always Trust Server Certificate: [x]
 
 [  Next  ]  [  Back  ]")
 								.Load(settings)
-								.Apply(f => f[3].Checked = settings.TrustDatabaseServerCertificate)
+								.Apply(f => f[3].Checked = settings.DatabaseTrustServerCertificate)
 								.ShowDialog();
 							if (form["Next"].Clicked)
 							{
 								form.Save(settings);
-								settings.TrustDatabaseServerCertificate = form[3].Checked;
+								settings.DatabaseTrustServerCertificate = form[3].Checked;
 								Next();
 							}
 							else

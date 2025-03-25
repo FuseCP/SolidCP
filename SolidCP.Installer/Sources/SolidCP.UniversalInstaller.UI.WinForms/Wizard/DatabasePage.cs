@@ -222,6 +222,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 							ShowWarning("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
 							return;
 						}
+
+						var csb = new ConnectionStringBuilder(connectionString);
+						csb["TrustServerCertificate"] = "false";
+						Settings.DatabaseTrustServerCertificate = !CheckConnection(csb.ToString());
 					}
 				}
 				else

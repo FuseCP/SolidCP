@@ -66,11 +66,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.txtPassword = new System.Windows.Forms.TextBox();
 			this.lblIntro = new System.Windows.Forms.Label();
 			this.chkChangePassword = new System.Windows.Forms.CheckBox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// lblConfirmPassword
 			// 
-			this.lblConfirmPassword.Location = new System.Drawing.Point(53, 124);
+			this.lblConfirmPassword.Location = new System.Drawing.Point(50, 155);
 			this.lblConfirmPassword.Name = "lblConfirmPassword";
 			this.lblConfirmPassword.Size = new System.Drawing.Size(106, 23);
 			this.lblConfirmPassword.TabIndex = 4;
@@ -78,7 +79,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// 
 			// txtConfirmPassword
 			// 
-			this.txtConfirmPassword.Location = new System.Drawing.Point(165, 124);
+			this.txtConfirmPassword.Location = new System.Drawing.Point(162, 155);
 			this.txtConfirmPassword.Name = "txtConfirmPassword";
 			this.txtConfirmPassword.PasswordChar = '*';
 			this.txtConfirmPassword.Size = new System.Drawing.Size(170, 20);
@@ -86,7 +87,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// 
 			// lblPassword
 			// 
-			this.lblPassword.Location = new System.Drawing.Point(53, 92);
+			this.lblPassword.Location = new System.Drawing.Point(50, 123);
 			this.lblPassword.Name = "lblPassword";
 			this.lblPassword.Size = new System.Drawing.Size(106, 23);
 			this.lblPassword.TabIndex = 2;
@@ -94,7 +95,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// 
 			// txtPassword
 			// 
-			this.txtPassword.Location = new System.Drawing.Point(165, 92);
+			this.txtPassword.Location = new System.Drawing.Point(162, 123);
 			this.txtPassword.Name = "txtPassword";
 			this.txtPassword.PasswordChar = '*';
 			this.txtPassword.Size = new System.Drawing.Size(170, 20);
@@ -102,21 +103,21 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// 
 			// lblIntro
 			// 
-			this.lblIntro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lblIntro.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblIntro.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.lblIntro.Location = new System.Drawing.Point(0, 0);
 			this.lblIntro.Name = "lblIntro";
 			this.lblIntro.Size = new System.Drawing.Size(457, 58);
 			this.lblIntro.TabIndex = 0;
 			this.lblIntro.Text = "Please, specify a password which will be used to access this Server from the Ente" +
-				"rprise Server component. Click Next to continue.";
+    "rprise Server component. Click Next to continue.";
 			// 
 			// chkChangePassword
 			// 
 			this.chkChangePassword.Checked = true;
 			this.chkChangePassword.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.chkChangePassword.Location = new System.Drawing.Point(56, 52);
+			this.chkChangePassword.Location = new System.Drawing.Point(53, 83);
 			this.chkChangePassword.Name = "chkChangePassword";
 			this.chkChangePassword.Size = new System.Drawing.Size(279, 25);
 			this.chkChangePassword.TabIndex = 1;
@@ -124,10 +125,21 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.chkChangePassword.UseVisualStyleBackColor = true;
 			this.chkChangePassword.CheckedChanged += new System.EventHandler(this.OnChangePasswordChecked);
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(50, 58);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(102, 13);
+			this.label1.TabIndex = 6;
+			this.label1.Text = "Server Password";
+			// 
 			// ServerPasswordPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.chkChangePassword);
 			this.Controls.Add(this.lblConfirmPassword);
 			this.Controls.Add(this.txtConfirmPassword);
@@ -149,6 +161,6 @@ namespace SolidCP.UniversalInstaller.WinForms
 		private System.Windows.Forms.TextBox txtPassword;
 		private System.Windows.Forms.Label lblIntro;
 		private System.Windows.Forms.CheckBox chkChangePassword;
-
+		private System.Windows.Forms.Label label1;
 	}
 }
