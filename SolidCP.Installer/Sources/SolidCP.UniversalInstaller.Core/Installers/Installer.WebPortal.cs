@@ -92,14 +92,34 @@ public abstract partial class Installer
 		conf = XElement.Load(confFile);
 
 		ConfigureCertificateNetFX(settings, conf);
-		conf.Save(confFile);
 
 		ConfigureAppsettings(Settings.WebPortal);
 
 		if (settings.EmbedEnterpriseServer)
 		{
 			ConfigureEnterpriseServerNetFX(true);
+
+			// add external probing paths
+			var appSettings = conf.Element("appSettings");
+			var paths = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "ExternalProbingPaths");
+			if (paths == null)
+			{
+				paths = new XElement("add", new XAttribute("key", "ExternalProbingPaths"));
+				appSettings.Add(paths);
+			}
+
+			paths.Attribute("value").SetValue($@"{settings.EnterpriseServerPath}\bin;{settings.EnterpriseServerPath}\bin\Code;{settings.EnterpriseServerPath}\bin\netstandard");
+
+			var exposews = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "ExposeWebServices");
+			if (exposews == null)
+			{
+				exposews = new XElement("add", new XAttribute("key", "ExposeWebServices"));
+				appSettings.Add(exposews);
+			}
+			exposews.Attribute("value").SetValue(settings.ExposeEnterpriseServerWebServices ? "EnterpriseServer" : "false");
 		}
+
+		conf.Save(confFile);
 
 		InstallLog("Configured Web Portal.");
 	}

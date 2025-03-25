@@ -819,7 +819,7 @@ public abstract partial class Installer
 		{
 			if (webSettings.EmbedEnterpriseServer)
 			{
-				appsettings.probingPaths = @$"..\bin\netstandard;..\..\{EnterpriseServerFolder}\bin_dotnet;..\..\{EnterpriseServerFolder}\bin\netstandard";
+				appsettings.probingPaths = @$"..\bin\netstandard;{webSettings.EnterpriseServerPath}\bin_dotnet;{webSettings.EnterpriseServerPath}\bin\netstandard";
 				var esJsonFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "appsettings.json");
 				if (File.Exists(esJsonFile))
 				{
