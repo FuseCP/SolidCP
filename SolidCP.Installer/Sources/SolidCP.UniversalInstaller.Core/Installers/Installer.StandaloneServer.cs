@@ -67,12 +67,17 @@ namespace SolidCP.UniversalInstaller
 		public virtual void UpdateStandaloneServerConfig() { }
 
 		public virtual void InstallStandaloneServerWebsite() => InstallWebPortalWebsite();
+		public virtual void RemoveSetupFolder()
+		{
+			Directory.Delete(Path.Combine(InstallWebRootPath, "Setup"), true);
+		}
 		public virtual void RemoveStandaloneServerFolder()
 		{
 			RemoveEnterpriseServerFolder();
 			RemoveServerFolder();
 			RemoveWebPortalFolder();
 			RemoveWebDavPortalFolder();
+			RemoveSetupFolder();
 		}
 
 		public virtual void RemoveStandaloneServer()
