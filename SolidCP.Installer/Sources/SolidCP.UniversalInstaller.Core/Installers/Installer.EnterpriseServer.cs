@@ -104,6 +104,13 @@ public abstract partial class Installer
 		var settings = Settings.EnterpriseServer;
 		var connstr = settings.DbInstallConnectionString;
 		DatabaseUtils.DeleteDatabase(connstr, settings.DatabaseName);
+		if (string.IsNullOrEmpty(settings.DatabaseUser))
+		{
+			settings.DatabaseUser = (settings.DatabaseName + "User").Replace(" ", "_");
+			settings.DatabasePassword = Utils.GetRandomString(32);
+		}
+		DatabaseUtils.DeleteUser(connstr, settings.DatabaseUser);
+		DatabaseUtils.DeleteLogin(connstr, settings.DatabaseUser);
 		InstallLog("Deleted Database");
 	}
 	public virtual void CountInstallDatabaseStatements()
