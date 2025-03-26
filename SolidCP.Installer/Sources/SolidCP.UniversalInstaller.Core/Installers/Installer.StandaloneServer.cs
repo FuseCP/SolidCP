@@ -23,12 +23,14 @@ namespace SolidCP.UniversalInstaller
 			SetEnterpriseServerFilePermissions();
 			SetServerFilePermissions();
 			SetWebPortalFilePermissions();
+			SetWebDavPortalFilePermissions();
 		}
 		public virtual void SetStandaloneServerFileOwner()
 		{
 			SetEnterpriseServerFileOwner();
 			SetServerFileOwner();
 			SetWebPortalFileOwner();
+			SetWebDavPortalFileOwner();
 		}
 		public virtual void SetStandaloneServerSettings() { }
 		public virtual void InstallStandaloneServer()
@@ -43,6 +45,8 @@ namespace SolidCP.UniversalInstaller
 			ConfigureStandaloneServer();
 			InstallServerWebsite();
 			InstallWebPortalWebsite();
+			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
+			else RemoveWebDavPortalFolder();
 		}
 		public virtual void UpdateStandaloneServer()
 		{
@@ -57,6 +61,8 @@ namespace SolidCP.UniversalInstaller
 			ConfigureStandaloneServer();
 			InstallServerWebsite();
 			InstallWebPortalWebsite();
+			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
+			else RemoveWebDavPortalFolder();
 		}
 		public virtual void UpdateStandaloneServerConfig() { }
 
@@ -66,11 +72,14 @@ namespace SolidCP.UniversalInstaller
 			RemoveEnterpriseServerFolder();
 			RemoveServerFolder();
 			RemoveWebPortalFolder();
+			RemoveWebDavPortalFolder();
 		}
 
 		public virtual void RemoveStandaloneServer()
 		{
+			if (OSInfo.IsWindows) RemoveWebDavPortalWebsite();
 			RemoveWebPortalWebsite();
+			RemoveServerWebsite();
 			RemoveStandaloneServerFolder();
 			DeleteDatabase();
 		}
@@ -87,9 +96,10 @@ namespace SolidCP.UniversalInstaller
 				EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
 			}
 			Settings.WebPortal.EnterpriseServerPath = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
-			ConfigureWebPortal();
-			ConfigureEnterpriseServer();
 			ConfigureServer();
+			ConfigureEnterpriseServer();
+			ConfigureWebPortal();
+			if (OSInfo.IsWindows) ConfigureWebDavPortal();
 		}
 
 		public virtual void CopyStandaloneServer(Func<string, string> filter = null)
