@@ -476,53 +476,7 @@ namespace SolidCP.UniversalInstaller
 		/// <returns>true if updater started successfully</returns>
 		internal bool StartUpdateProcess(string fileName)
 		{
-			Log.WriteStart("Starting updater");
-			string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), ".exe");
-			using (Stream writeStream = File.Create(tmpFile))
-			{
-				using (Stream readStream = typeof(Installer).Assembly.GetManifestResourceStream("SolidCP.Installer.Resources.SolidCP.Updater.exe"))
-				{
-					byte[] buffer = new byte[(int)readStream.Length];
-					readStream.Read(buffer, 0, buffer.Length);
-					writeStream.Write(buffer, 0, buffer.Length);
-				}
-			}
-			string targetFile = GetType().Module.FullyQualifiedName;
-			//
-			string url = Installer.Current.Settings.Installer.WebServiceUrl;
-			//
-			string proxyServer = string.Empty;
-			string user = string.Empty;
-			string password = string.Empty;
-
-			// check if we need to add a proxy to access Internet
-			bool useProxy = Installer.Current.Settings.Installer.Proxy != null;
-			if (useProxy)
-			{
-				proxyServer = Installer.Current.Settings.Installer.Proxy.Address;
-				user = Installer.Current.Settings.Installer.Proxy.Username;
-				password = Installer.Current.Settings.Installer.Proxy.Password;
-			}
-
-			ProcessStartInfo info = new ProcessStartInfo();
-			info.FileName = tmpFile;
-
-			//prepare command line args
-			StringBuilder sb = new StringBuilder();
-			sb.AppendFormat("\\url:\"{0}\" ", url);
-			sb.AppendFormat("\\target:\"{0}\" ", targetFile);
-			sb.AppendFormat("\\file:\"{0}\" ", fileName);
-			sb.AppendFormat("\\proxy:\"{0}\" ", proxyServer);
-			sb.AppendFormat("\\user:\"{0}\" ", user);
-			sb.AppendFormat("\\password:\"{0}\" ", password);
-			info.Arguments = sb.ToString();
-			Process process = Process.Start(info);
-			if (process.Handle != IntPtr.Zero)
-			{
-				User32.SetForegroundWindow(process.Handle);
-			}
-			Log.WriteEnd("Updater started");
-			return (process.Handle != IntPtr.Zero);
+			return Installer.Current.UpdateInstaller(fileName);
 		}
 		#endregion
 

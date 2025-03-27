@@ -462,10 +462,14 @@
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
 			<!--<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />-->
-			<InstallerBinaries Include="$(InstallerProjectBin)\net48\*.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="**\Setup2.dll" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
+			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
+			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
 			<InstallerExe Include="$(InstallerProjectBin)\net48\SolidCP.Installer.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
+		<Copy SourceFiles="@(SetupDll)" DestinationFolder="$(SetupBuildFolder)" />
 		<Copy SourceFiles="@(InstallerExe)" DestinationFolder="$(DeployFolder)" />
 
 		<!-- Compile updater.exe -->
@@ -1045,7 +1049,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip&quot; &quot;$(EnterpriseServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
-		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update.zip&quot; &quot;$(InstallerBuild)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update.zip&quot; &quot;$(InstallerBuild)\$(BuildConfiguration)\*&quot;" />
 
 		<!-- zip tools
 		<Zip Files="@(ImportCsvInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-CsvBulk-$(Version).zip" WorkingDirectory="$(ImportCsvInstall)" />

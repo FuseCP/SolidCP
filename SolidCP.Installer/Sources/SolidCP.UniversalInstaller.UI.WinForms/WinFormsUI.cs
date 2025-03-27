@@ -7,6 +7,8 @@ using System.Threading;
 using System.Windows.Forms;
 using Renci.SshNet.Messages;
 using SolidCP.Providers.OS;
+using SolidCP.Updater;
+
 
 namespace SolidCP.UniversalInstaller {
 
@@ -302,6 +304,11 @@ namespace SolidCP.UniversalInstaller {
 
 		public override void ShowWaitCursor() => Cursor.Current = Cursors.WaitCursor;
 		public override void EndWaitCursor() => Cursor.Current = Cursors.Default;
+	
+		public override void Update()
+		{
+			Application.Run(new UpdaterForm());
+		}
 	}
 }
 

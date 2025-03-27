@@ -4,7 +4,6 @@ using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
-//using Ionic.Zip;
 using System.IO.Compression;
 using System.Globalization;
 using System.Security.Policy;
@@ -14,14 +13,15 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using static System.Net.Mime.MediaTypeNames;
-using SolidCP.UniversalInstaller.Core;
 using System.Collections;
-using Microsoft.Web.Administration;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
+using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Microsoft.Web.Administration;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -1052,5 +1052,72 @@ public abstract partial class Installer
 			}
 			return current;
 		}
+	}
+
+	public bool UpdateInstaller(string fileName)
+	{
+		Log.WriteStart("Starting updater");
+		string entry = Assembly.GetEntryAssembly().Location;
+		string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(entry));
+		
+		File.Copy(entry, tmpFile);
+
+		//
+		string url = Installer.Current.Settings.Installer.WebServiceUrl;
+		//
+		string proxyServer = string.Empty;
+		string user = string.Empty;
+		string password = string.Empty;
+
+		// check if we need to add a proxy to access Internet
+		bool useProxy = Installer.Current.Settings.Installer.Proxy != null;
+		if (useProxy)
+		{
+			proxyServer = Installer.Current.Settings.Installer.Proxy.Address;
+			user = Installer.Current.Settings.Installer.Proxy.Username;
+			password = Installer.Current.Settings.Installer.Proxy.Password;
+		}
+
+		//prepare command line args
+		StringBuilder sb = new StringBuilder();
+
+		ProcessStartInfo info = new ProcessStartInfo();
+		var isExe = Path.GetExtension(tmpFile).Equals(".exe", StringComparison.OrdinalIgnoreCase);
+		if (isExe) info.FileName = tmpFile;
+		else
+		{
+			var runtime = Path.ChangeExtension(entry, ".runtimeconfig.json");
+			var runtimedest = Path.ChangeExtension(tmpFile, ".runtimeconfig.json");
+			File.Copy(runtime, runtimedest);
+			info.FileName = Shell.Find(OSInfo.IsWindows ? "dotnet.exe" : "dotnet");
+			sb.Append($"\"{tmpFile}\" ");
+		}
+		sb.Append("-update ");
+		sb.Append($"-ui={UI.Current.GetType().Name.Replace("UI", "").ToLower()} ");
+		sb.AppendFormat("-url:\"{0}\" ", url);
+		sb.AppendFormat("-target:\"{0}\" ", entry);
+		sb.AppendFormat("-file:\"{0}\" ", fileName);
+		sb.AppendFormat("-proxy:\"{0}\" ", proxyServer);
+		sb.AppendFormat("-user:\"{0}\" ", user);
+		sb.AppendFormat("-password:\"{0}\" ", password);
+		info.Arguments = sb.ToString();
+		Process process = Process.Start(info);
+		if (process.Handle != IntPtr.Zero)
+		{
+			User32.SetForegroundWindow(process.Handle);
+		}
+		Log.WriteEnd("Updater started");
+
+		if (UI.IsConsole && !Providers.OS.OSInfo.IsWindows)
+		{
+			UI.ShowWaitCursor();
+			process.WaitForExit();
+			UI.EndWaitCursor();
+
+			Console.WriteLine("HostPanelPro Installer has been updated. Please restart it...");
+			Installer.Current.Exit();
+		}
+
+		return (process.Handle != IntPtr.Zero);
 	}
 }

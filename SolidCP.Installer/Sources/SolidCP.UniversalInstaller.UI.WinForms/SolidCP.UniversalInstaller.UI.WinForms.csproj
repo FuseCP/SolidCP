@@ -275,6 +275,16 @@
         <Compile Update="Wizard\WizardPageBase.cs">
             <SubType>UserControl</SubType>
         </Compile>
+        <Compile Update="UpdaterForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="UpdaterForm.Designer.cs">
+            <DependentUpon>UpdaterForm.cs</DependentUpon>
+        </Compile>
+        <EmbeddedResource Update="UpdaterForm.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>UpdaterForm.cs</DependentUpon>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>

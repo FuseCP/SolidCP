@@ -180,6 +180,7 @@ namespace SolidCP.UniversalInstaller
 			
 			return res == Result.OK;
 		}
+		public abstract void Update();
 		public virtual object MainForm { get; set; }
 	}
 }

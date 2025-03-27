@@ -11,6 +11,16 @@
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <DebugType>embedded</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+        <DebugType>embedded</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
         <Compile Include="..\SolidCP.UniversalInstaller\AssemblyLoader.cs" />
