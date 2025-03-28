@@ -520,7 +520,7 @@ final class SolidCP_EnterpriseServer
 
 			$hasUser = !empty($this->_password);
 			if ($hasUser) {
-				$soapHeader = new SoapHeader('http://HostPanelPro/credentials', 'Credentials', array('Username' => $this->_username, 'Password' => $this->_password ));
+				$soapHeader = new SoapHeader('http://hostpanelpro/credentials', 'Credentials', array('Username' => $this->_username, 'Password' => $this->_password ));
 				$client -> __setSoapHeaders($soapHeader);
 			}
 

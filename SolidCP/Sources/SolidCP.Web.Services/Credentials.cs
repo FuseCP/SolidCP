@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Web.Services
 {
-    [DataContract(Namespace = "http://solidcp/credentials")]
+    [DataContract(Namespace = "http://hostpanelpro/credentials")]
     public class Credentials
     {
         [DataMember]
