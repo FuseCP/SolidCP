@@ -86,6 +86,13 @@ public class Program
 			else if (args.Any(arg => arg.Equals("-ui=console", StringComparison.OrdinalIgnoreCase))) UI.Current = UI.ConsoleUI;
 
 			Installer.Current.UI.Init();
+
+			if (args.Any(arg => arg.Equals("-update", StringComparison.OrdinalIgnoreCase)))
+			{
+				Installer.Current.UI.DownloadInstallerUpdate();
+				return;
+			}
+
 			Installer.Current.OnExit += Loader.Unload;
 
 			EndWaitCursor();

@@ -67,8 +67,12 @@ namespace SolidCP.UniversalInstaller
 		{
 			throw new NotImplementedException();
 		}
-		
-		public override void Update()
+
+		public override void DownloadInstallerUpdate()
+		{
+			throw new NotImplementedException();
+		}
+		public override bool CheckForInstallerUpdate(bool appStartup = false)
 		{
 			throw new NotImplementedException();
 		}

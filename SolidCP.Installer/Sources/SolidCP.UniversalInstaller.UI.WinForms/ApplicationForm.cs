@@ -440,33 +440,9 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="fileName">File name</param>
 		/// <returns>true if update is available for download; otherwise false</returns>
-		internal bool CheckForUpdate(out string fileName)
+		internal bool CheckForUpdate(out ComponentUpdateInfo component)
 		{
-			bool ret = false;
-			fileName = string.Empty;
-			Log.WriteStart("Checking for a new version");
-			//
-			var webService = Installer.Current.InstallerWebService;
-			var info = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
-			//
-			Log.WriteEnd("Checked for a new version");
-			if (info != null)
-			{
-				Version currentVersion = GetType().Assembly.GetName().Version;
-				Version newVersion = null;
-				if (info.Version != default) newVersion = info.Version;
-				else {
-					Log.WriteError("Version error");
-					return false;
-				}
-				if (newVersion > currentVersion)
-				{
-					ret = true;
-					fileName = info.UpgradeFilePath;
-					Log.WriteInfo(string.Format("Version {0} is available for download", newVersion));
-				}
-			}
-			return ret;
+			return Installer.Current.CheckForInstallerUpdate(out component);
 		}
 
 		/// <summary>
@@ -474,9 +450,9 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="fileName">File name</param>
 		/// <returns>true if updater started successfully</returns>
-		internal bool StartUpdateProcess(string fileName)
+		internal bool StartUpdateProcess(ComponentUpdateInfo component)
 		{
-			return Installer.Current.UpdateInstaller(fileName);
+			return Installer.Current.DownloadInstallerUpdate(component);
 		}
 		#endregion
 

@@ -156,11 +156,11 @@ namespace SolidCP.UniversalInstaller.Controls
 		/// <returns></returns>
 		private bool CheckForUpdate()
 		{
-			string fileName;
 			bool updateAvailable = false;
+			ComponentUpdateInfo component;
 			try
 			{
-				updateAvailable = AppContext.AppForm.CheckForUpdate(out fileName);
+				updateAvailable = AppContext.AppForm.CheckForUpdate(out component);
 				AppContext.AppForm.FinishProgress();
 			}
 			catch (Exception ex)
@@ -177,7 +177,7 @@ namespace SolidCP.UniversalInstaller.Controls
 				string message = string.Format("This version of {0} is out of date.\nWould you like to download the latest version?", appName);
 				if (MessageBox.Show(AppContext.AppForm, message, appName, MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
 				{
-					return AppContext.AppForm.StartUpdateProcess(fileName);
+					return AppContext.AppForm.StartUpdateProcess(component);
 				}
 			}
 			else

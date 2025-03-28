@@ -808,6 +808,7 @@ Password: [!ProxyPassword                           ]
 				proxy.Password = form["ProxyPassword"].Text;
 			}
 			else Settings.Installer.Proxy = null;
+			Installer.Current.SaveSettings();
 		}
 		else if (form["View Log"].Clicked)
 		{
@@ -973,25 +974,32 @@ There is a new version {component.ComponentName}, {update.VersionName} available
 		}
 	}
 
-	public void CheckForInstallerUpdate()
+	public override bool CheckForInstallerUpdate(bool appStartup = false)
 	{
+		if (appStartup &&
+			(!Settings.Installer.CheckForUpdate ||
+			Environment.GetCommandLineArgs().Any(arg => arg.Equals("nockeck", StringComparison.OrdinalIgnoreCase))))
+			return false;
+
 		var release = Installer.Current.Releases;
 		var version = Settings.Installer.Version;
-		ShowWaitCursor();
-		var update = release.GetLatestComponentUpdate("cfg core");
-		EndWaitCursor();
-		if (update == null || update.Version == version)
+		ComponentUpdateInfo update;
+		var hasUpdate = Installer.Current.CheckForInstallerUpdate(out update) && update != null;
+		if (!hasUpdate)
 		{
-			var title = $"SolidCP Installer, {version}";
-			var form = new ConsoleForm($@"{title}
+			if (!appStartup)
+			{
+				var title = $"SolidCP Installer, {version}";
+				var form = new ConsoleForm($@"{title}
 {new string('=', title.Length)}
 
 Component is already the newest version, there are no updates available;
 
 [  Back  ]
 ")
-				.ShowDialog();
-			ApplicationSettings();
+					.ShowDialog();
+				ApplicationSettings();
+			}
 		}
 		else
 		{
@@ -1004,12 +1012,15 @@ There is a new version SolidCP Installer, {update.Version}, available that can b
 [  Install  ]  [  Back  ]
 ")
 				.ShowDialog();
-			if (form["Back"].Clicked) ApplicationSettings();
+			if (form["Back"].Clicked)
+			{
+				if (!appStartup) ApplicationSettings();
+			}
 			else
 			{
 				try
 				{
-					Installer.Current.UpdateInstaller(update.UpgradeFilePath);
+					Installer.Current.DownloadInstallerUpdate(update);
 					Installer.Current.Exit();
 				}
 				catch (Exception ex)
@@ -1021,6 +1032,7 @@ There is a new version SolidCP Installer, {update.Version}, available that can b
 				}
 			}
 		}
+		return hasUpdate;
 	}
 
 	public override string GetRootPassword()
@@ -1591,7 +1603,7 @@ SolidCP cannot be installed on this System.
 		CancelWaitCursor.Cancel();
 	}
 
-	public override void Update()
+	public override void DownloadInstallerUpdate()
 	{
 		new Updater().Update();
 	}

@@ -145,6 +145,27 @@ namespace SolidCP.UniversalInstaller {
 			base.ReadArguments(args);
 			MainForm = args["ParentForm"];
 		}
+
+		public override bool CheckForInstallerUpdate(bool appSetup = false)
+		{
+			ComponentUpdateInfo component;
+			if (appSetup && Installer.Settings.Installer.CheckForUpdate &&
+				!Environment.GetCommandLineArgs().Any(arg => arg.Equals("nockech", StringComparison.OrdinalIgnoreCase)) &&
+				Installer.Current.CheckForInstallerUpdate(out component))
+			{
+				if (MessageBox.Show("There is an update for HostPanelPro Installer available. Do you want to install the update?",
+					"Update for Installer available", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					if (Installer.Current.DownloadInstallerUpdate(component))
+					{
+						Installer.Current.Exit();
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+		
 		public override void RunMainUI()
 		{
 			try
@@ -304,8 +325,8 @@ namespace SolidCP.UniversalInstaller {
 
 		public override void ShowWaitCursor() => Cursor.Current = Cursors.WaitCursor;
 		public override void EndWaitCursor() => Cursor.Current = Cursors.Default;
-	
-		public override void Update()
+
+		public override void DownloadInstallerUpdate()
 		{
 			Application.Run(new UpdaterForm());
 		}

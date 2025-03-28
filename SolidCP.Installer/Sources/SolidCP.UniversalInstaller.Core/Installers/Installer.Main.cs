@@ -78,6 +78,7 @@ namespace SolidCP.UniversalInstaller
 			SetAppDomainUnhandledException();
 
 			LoadSettings();
+			UI.Current.CheckForInstallerUpdate(true);
 			//
 			//Utils.FixConfigurationSectionDefinition();
 

@@ -1053,7 +1053,37 @@ public abstract partial class Installer
 		}
 	}
 
-	public bool UpdateInstaller(string fileName)
+	public bool CheckForInstallerUpdate(out ComponentUpdateInfo component)
+	{
+		bool ret = false;
+		Log.WriteStart("Checking for a new version");
+		//
+		UI.ShowWaitCursor();
+		var webService = Installer.Current.InstallerWebService;
+		component = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
+		UI.EndWaitCursor();
+		//
+		Log.WriteEnd("Checked for a new version");
+		if (component != null)
+		{
+			Version currentVersion = GetType().Assembly.GetName().Version;
+			Version newVersion = null;
+			if (component.Version != default) newVersion = component.Version;
+			else
+			{
+				Log.WriteError("Version error");
+				return false;
+			}
+			if (newVersion > currentVersion)
+			{
+				ret = true;
+				Log.WriteInfo(string.Format("Version {0} is available for download", newVersion));
+			}
+		}
+		return ret;
+	}
+
+	public bool DownloadInstallerUpdate(ComponentUpdateInfo component)
 	{
 		Log.WriteStart("Starting updater");
 		string entry = Assembly.GetEntryAssembly().Location;
@@ -1096,7 +1126,7 @@ public abstract partial class Installer
 		sb.Append($"-ui={UI.Current.GetType().Name.Replace("UI", "").ToLower()} ");
 		sb.AppendFormat("-url:\"{0}\" ", url);
 		sb.AppendFormat("-target:\"{0}\" ", entry);
-		sb.AppendFormat("-file:\"{0}\" ", fileName);
+		sb.AppendFormat("-file:\"{0}\" ", component.UpgradeFilePath);
 		sb.AppendFormat("-proxy:\"{0}\" ", proxyServer);
 		sb.AppendFormat("-user:\"{0}\" ", user);
 		sb.AppendFormat("-password:\"{0}\" ", password);
