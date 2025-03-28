@@ -253,6 +253,5 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-        <ProjectReference Include="..\SolidCP.Updater\SolidCP.Updater.csproj" />
     </ItemGroup>
 </Project>

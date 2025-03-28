@@ -169,15 +169,16 @@ namespace SolidCP.Updater
 				Directory.Delete(tempDir, true);
 
 				ProcessStartInfo info = new ProcessStartInfo();
+				var ui = $"-ui={UI.Current.GetType().Name.Replace("UI", "").ToLower()}";
 				var isExe = Path.GetExtension(targetFile).Equals(".exe", StringComparison.OrdinalIgnoreCase);
 				if (isExe)
 				{
 					info.FileName = targetFile;
-					info.Arguments = "nocheck";
+					info.Arguments = $"{ui} nocheck";
 				} else
 				{
 					info.FileName = Providers.OS.Shell.Standard.Find(Providers.OS.OSInfo.IsWindows ? "dotnet.exe" : "dotnet");
-					info.Arguments = $"\"{targetFile}\" nocheck";
+					info.Arguments = $"\"{targetFile}\" {ui} nocheck";
 				}
 				
 				//info.WindowStyle = ProcessWindowStyle.Normal;
