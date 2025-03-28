@@ -75,34 +75,19 @@ public class Updater
 
 			ProcessStartInfo info = new ProcessStartInfo();
 			var isExe = Path.GetExtension(targetFile).Equals(".exe", StringComparison.OrdinalIgnoreCase);
+			var winconsole = UI.Current.IsConsole && Providers.OS.OSInfo.IsWindows;
 			if (isExe)
 			{
-				if (UI.Current.IsConsole && Providers.OS.OSInfo.IsWindows)
-				{
-					info.FileName = Providers.OS.Shell.Standard.Find("cmd.exe");
-					info.Arguments = $"/C \"{targetFile}\" nocheck";
-					info.UseShellExecute = true;
-					info.CreateNoWindow = false;
-				} else {
-					info.FileName = targetFile;
-					info.Arguments = "nocheck";
-					info.UseShellExecute = false;
-					info.CreateNoWindow = false;
-				}
+				info.FileName = targetFile;
+				info.Arguments = $"nocheck";
 			}
 			else
 			{
-				if (UI.Current.IsConsole && Providers.OS.OSInfo.IsWindows)
-				{
-					info.FileName = Providers.OS.Shell.Standard.Find("cmd.exe"); 
-					var dotnet = Providers.OS.Shell.Standard.Find(Providers.OS.OSInfo.IsWindows ? "dotnet.exe" : "dotnet");
-					info.Arguments = $"/C \"{dotnet}\" \"{targetFile}\" nocheck";
-				}
-				else {
-					info.FileName = Providers.OS.Shell.Standard.Find(Providers.OS.OSInfo.IsWindows ? "dotnet.exe" : "dotnet");
-					info.Arguments = $"\"{targetFile}\" nocheck";
-				}
+				info.FileName = Providers.OS.Shell.Standard.Find(Providers.OS.OSInfo.IsWindows ? "dotnet.exe" : "dotnet");
+				info.Arguments = $"\"{targetFile}\" nocheck";
 			}
+			info.UseShellExecute = winconsole;
+			info.CreateNoWindow = !winconsole;
 
 			//info.WindowStyle = ProcessWindowStyle.Normal;
 			Process process = Process.Start(info);

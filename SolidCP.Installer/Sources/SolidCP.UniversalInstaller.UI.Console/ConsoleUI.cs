@@ -977,7 +977,9 @@ There is a new version {component.ComponentName}, {update.VersionName} available
 	{
 		var release = Installer.Current.Releases;
 		var version = Settings.Installer.Version;
+		ShowWaitCursor();
 		var update = release.GetLatestComponentUpdate("cfg core");
+		EndWaitCursor();
 		if (update == null || update.Version == version)
 		{
 			var title = $"SolidCP Installer, {version}";
@@ -997,13 +999,27 @@ Component is already the newest version, there are no updates available;
 			var form = new ConsoleForm($@"{title}
 {new string('=', title.Length)}
 
-There is a new version SolidCP Installer, {update.VersionName} available that can be installed.
+There is a new version SolidCP Installer, {update.Version}, available that can be installed.
 
 [  Install  ]  [  Back  ]
 ")
 				.ShowDialog();
 			if (form["Back"].Clicked) ApplicationSettings();
-			else Installer.Current.UpdateInstaller(update);
+			else
+			{
+				try
+				{
+					Installer.Current.UpdateInstaller(update.UpgradeFilePath);
+					Installer.Current.Exit();
+				}
+				catch (Exception ex)
+				{
+					form = new ConsoleForm($@"There was an error updating the installer: {ex.Message}
+
+[  Ok  ]");
+					form.ShowDialog();
+				}
+			}
 		}
 	}
 

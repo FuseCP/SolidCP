@@ -275,7 +275,6 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
-	public bool UpdateInstaller(ComponentUpdateInfo info) => false;
 	protected bool? Net8RuntimeInstalled { get; set; }
 	public bool CheckNet8RuntimeInstalled()
 	{
@@ -1083,6 +1082,7 @@ public abstract partial class Installer
 
 		ProcessStartInfo info = new ProcessStartInfo();
 		var isExe = Path.GetExtension(tmpFile).Equals(".exe", StringComparison.OrdinalIgnoreCase);
+		var winconsole = UI.IsConsole && OSInfo.IsWindows;
 		if (isExe) info.FileName = tmpFile;
 		else
 		{
@@ -1101,6 +1101,9 @@ public abstract partial class Installer
 		sb.AppendFormat("-user:\"{0}\" ", user);
 		sb.AppendFormat("-password:\"{0}\" ", password);
 		info.Arguments = sb.ToString();
+		info.UseShellExecute = winconsole;
+		info.CreateNoWindow = !winconsole;
+
 		Process process = Process.Start(info);
 		if (process.Handle != IntPtr.Zero)
 		{
