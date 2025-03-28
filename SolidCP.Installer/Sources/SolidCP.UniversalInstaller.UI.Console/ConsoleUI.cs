@@ -791,7 +791,7 @@ Password: [!ProxyPassword                           ]
 					f["ProxyPassword"].Text = Settings.Installer.Proxy.Password;
 				} else
 				{
-					f[0].Checked = false;
+					f[2].Checked = false;
 					f["ProxyAddress"].Text = f["ProxyUsername"].Text = f["ProxyPassword"].Text = "";
 				}
 			})
