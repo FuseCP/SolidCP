@@ -501,6 +501,13 @@ final class SolidCP_EnterpriseServer
 		}
 	}
 	
+	public function testEcho($text) {
+        return $this->execute('esTest', 'Echo', array('msg' => $text));
+    }	
+
+	public function osPlatform() {
+		return $this->execute('esTest', 'OSPlatform', null);
+	}
 	/**
 	 * Executes the request on the Enterprise Server and returns the results
 	 * 
@@ -520,7 +527,13 @@ final class SolidCP_EnterpriseServer
 
 			$hasUser = !empty($this->_password);
 			if ($hasUser) {
-				$soapHeader = new SoapHeader('http://solidcp/credentials', 'Credentials', array('Username' => $this->_username, 'Password' => $this->_password ));
+				$pwd = $this->_password;
+				$pwd = str_replace("&", "&amp;", $pwd);
+				$pwd = str_replace("<", "&lt;", $pwd);
+				$pwd = str_replace(">", "&gt;", $pwd);
+				$auth = "<Credentials xmlns=\"http://hostpanelpro/headers/Credentials\"><Password xmlns=\"http://hostpanelpro/credentials\">$pwd</Password><Username xmlns=\"http://hostpanelpro/credentials\">$this->_username</Username></Credentials>";
+				$auth_block = new SoapVar( $auth, XSD_ANYXML, NULL, NULL, NULL, NULL );
+				$soapHeader = new SoapHeader('http://hostpanelpro/headers/Credentials', 'Credentials', $auth_block);
 				$client -> __setSoapHeaders($soapHeader);
 			}
 
