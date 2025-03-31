@@ -153,6 +153,8 @@ namespace SolidCP.Web.Services
 			Configuration.IsLocalService = Configuration.AllowedHosts.Split(';')
 				.All(host => host != "*" && host != "0.0.0.0" && DnsService.IsHostLAN(host)); // local network ip
 
+			Server.ConfigurationComplete?.Invoke();
+
 			builder.Services.AddRazorPages();
 			builder.Services.AddHttpContextAccessor();
 			if (OSInfo.IsSystemd)
@@ -162,7 +164,7 @@ namespace SolidCP.Web.Services
 			{
 				builder.Host.UseWindowsService();
 			}
-			Server.ConfigureServices?.Invoke(builder.Services);
+			Server.ConfigureBuilder?.Invoke(builder);
 			ConfigureServices(builder.Services);
 
 			if (NetTcpPort.HasValue)
