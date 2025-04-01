@@ -48,7 +48,7 @@
         <Compile Remove="bin_dotnet\**\*.*" />
         <None Remove="**\*.asmx" />
     </ItemGroup>
-
+    
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" Private="false" ExcludeAssets="all" />
