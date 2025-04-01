@@ -458,7 +458,6 @@
     <Content Include="bin\Microsoft.ReportViewer.Common.dll" />
     <Content Include="bin\Microsoft.ReportViewer.ProcessingObjectModel.dll" />
     <Content Include="bin\Microsoft.ReportViewer.WebForms.dll" />
-    <Content Include="bin\Microsoft.Web.Services3.dll" />
     <Content Include="bin\SolidCP.Portal.Ecommerce.Modules.dll" />
     <Content Include="bin\SolidCP.Portal.Ecommerce.Modules.pdb" />
     <Content Include="bin\SolidCP.Portal.Modules.dll" />

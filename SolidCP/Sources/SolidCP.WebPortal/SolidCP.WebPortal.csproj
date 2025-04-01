@@ -71,7 +71,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="AntiXSS" Version="4.3.0" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
         <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
         <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
         <PackageReference Include="WebGrease" Version="1.6.0" />
@@ -91,7 +91,7 @@
         <Reference Include="System.Web.Optimization" />
         <Reference Include="System.Xml" />
     </ItemGroup>
-    <ItemGroup Condition="$(TargetFramework) != 'net48'">
+    <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.8" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.8" ExcludeAssets="runtime" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.8" />
