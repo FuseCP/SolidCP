@@ -19,9 +19,9 @@
     <ItemGroup>
         <PackageReference Include="DotNetZip" Version="1.16.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.1" />
-        <PackageReference Include="System.DirectoryServices" Version="9.0.1" />
-        <PackageReference Include="System.Management" Version="9.0.1" />
+        <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.3" />
+        <PackageReference Include="System.DirectoryServices" Version="9.0.3" />
+        <PackageReference Include="System.Management" Version="9.0.3" />
         <PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
     </ItemGroup>
     <ItemGroup>
