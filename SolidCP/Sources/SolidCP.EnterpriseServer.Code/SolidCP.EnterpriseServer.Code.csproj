@@ -105,4 +105,11 @@
         <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
         <ProjectReference Include="..\SolidCP.Server\WebServices\SolidCP.Build\SolidCP.Server.Client.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs">
+            <Link>Properties\VersionInfo.cs</Link>
+        </Compile>
+    </ItemGroup>
+
 </Project>
