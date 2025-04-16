@@ -8,24 +8,22 @@
 </style>
 <div class="middle-content page-login">
     <div class="login-table-row">
-        <div class="top-bar text-center login-table-cell"><a href='<%= Page.ResolveUrl("~/") %>'>
-            <asp:Image runat="server" SkinID="Logo" alt="" /></a></div>
-    </div>
-    <div class="container-fluid primary-content"  id="SkinContent">
-
-            <div class="row-fluid">
-                <div class="col-sm-4 centering">
-                   
-                    <asp:PlaceHolder ID="ContentPane" runat="server"></asp:PlaceHolder>
-                 
-                    <div class="login-footer">
-                        <scp:SiteFooter ID="SiteFooter2" runat="server" />
-                    </div>
-                </div>
-
-    </div>
-
+        <div class="top-bar text-center login-table-cell">
+            <a href='<%= Page.ResolveUrl("~/") %>'>
+                <asp:Image runat="server" SkinID="Logo" alt="" />
+            </a>
         </div>
+    </div>
+    <div class="container-fluid primary-content" id="SkinContent">
+        <div class="row-fluid">
+            <div class="col-sm-4 centering">
+                <asp:PlaceHolder ID="ContentPane" runat="server"></asp:PlaceHolder>
+                <div class="login-footer">
+                    <scp:SiteFooter ID="SiteFooter2" runat="server" />
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Javascript -->
