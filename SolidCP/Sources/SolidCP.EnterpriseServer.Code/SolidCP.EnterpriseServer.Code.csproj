@@ -85,6 +85,7 @@
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.6.0.2" />
+        <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.2" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
