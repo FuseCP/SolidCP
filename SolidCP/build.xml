@@ -45,12 +45,13 @@
 		<SolidCP-Auto-Upgrade-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Auto-Upgrade-Tool</SolidCP-Auto-Upgrade-ToolSrc>
 		<SolidCP-dSHeuristicsSrc>$(TrunkFolder)\Sources\Tools\SolidCP-dSHeuristics</SolidCP-dSHeuristicsSrc>
 		<FixDefaultPublicFolderMailboxSrc>$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox\bin\$(BuildConfiguration)</FixDefaultPublicFolderMailboxSrc>
-		<DevEnv>$(ProgramFiles)\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.com</DevEnv>
-		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles)\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.com</DevEnv>
-		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles)\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com</DevEnv>
-		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.com</DevEnv>
-		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.com</DevEnv>
-		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com</DevEnv>
+		<ProgramFiles64>$(ProgramFiles.Replace(" (x86)", ""))</ProgramFiles64>
+		<DevEnv>$(ProgramFiles64)\Microsoft Visual Studio\2022\Community\Common7\IDE\devenv.com</DevEnv>
+		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles64)\Microsoft Visual Studio\2022\Professional\Common7\IDE\devenv.com</DevEnv>
+		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles64)\Microsoft Visual Studio\2022\Enterprise\Common7\IDE\devenv.com</DevEnv>
+		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles64)\Microsoft Visual Studio\2019\Community\Common7\IDE\devenv.com</DevEnv>
+		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles64)\Microsoft Visual Studio\2019\Professional\Common7\IDE\devenv.com</DevEnv>
+		<DevEnv Condition="!Exists('$(DevEnv)')">$(ProgramFiles64)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\devenv.com</DevEnv>
 
 		<ServerBuild>$(BuildFolder)\Server</ServerBuild>
 		<EnterpriseServerBuild>$(BuildFolder)\EnterpriseServer</EnterpriseServerBuild>
@@ -447,7 +448,7 @@
 		<Copy SourceFiles="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\bin\$(BuildConfiguration)\Data\en-US\Resources.xml" DestinationFolder="$(RootFolder)\Languages" />
 	</Target>
 
-	<Target Name="CreateSetupBuild" DependsOnTargets="CreateLocalizationToolkitBuild">
+	<Target Name="CreateSetupBuild"> <!-- DependsOnTargets="CreateLocalizationToolkitBuild">-->
 
 		<PropertyGroup>
 			<InstallerProjectRoot>$(RootFolder)\SolidCP.Installer\Sources\</InstallerProjectRoot>
