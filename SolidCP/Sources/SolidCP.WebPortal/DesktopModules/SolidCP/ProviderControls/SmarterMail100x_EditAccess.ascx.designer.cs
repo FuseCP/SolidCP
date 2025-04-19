@@ -7,74 +7,74 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal
+namespace SolidCP.Portal.ProviderControls
 {
 
 
-    public partial class MailDomainsEditDomain
+    public partial class SmarterMail100x_EditAccess
     {
 
         /// <summary>
-        /// asyncTasks control.
+        /// lblAuthType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::SolidCP.Portal.EnableAsyncTasksSupport asyncTasks;
+        protected global::System.Web.UI.WebControls.Label lblAuthType;
 
         /// <summary>
-        /// litDomainName control.
+        /// ddlAuthType control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal litDomainName;
+        protected global::System.Web.UI.WebControls.DropDownList ddlAuthType;
 
         /// <summary>
-        /// btnAddPointer control.
+        /// Localize1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddPointer;
+        protected global::System.Web.UI.WebControls.Localize Localize1;
 
         /// <summary>
-        /// gvPointers control.
+        /// ddlAddCountry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPointers;
+        protected global::System.Web.UI.WebControls.DropDownList ddlAddCountry;
 
         /// <summary>
-        /// providerControl control.
+        /// btnAddCountry control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.PlaceHolder providerControl;
+        protected global::System.Web.UI.WebControls.Button btnAddCountry;
 
         /// <summary>
-        /// btnCancel control.
+        /// Localize2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CPCC.StyleButton btnCancel;
+        protected global::System.Web.UI.WebControls.Localize Localize2;
 
         /// <summary>
-        /// btnUpdate control.
+        /// gvSelectedCountries control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::CPCC.StyleButton btnUpdate;
+        protected global::System.Web.UI.WebControls.GridView gvSelectedCountries;
     }
 }

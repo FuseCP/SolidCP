@@ -1289,7 +1289,31 @@ namespace SolidCP.EnterpriseServer
 			return ad.GetServerFilePath(); // ad.GetServer
 		}
 
-		#endregion
+        public static string GetQuotaHidden(string quotaName, int groupID)
+        {
+            // load service
+            String l_stURL = DataProvider.GetQuotaHidden(quotaName, groupID);
+
+            if (String.IsNullOrEmpty(l_stURL))
+                return string.Empty;
+
+            return l_stURL;
+        }
+
+        public static int UpdateQuotaHidden(string quotaName, int groupID, bool hideQuota)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
+                | DemandAccount.IsActive);
+            if (accountCheck < 0) return accountCheck;
+
+            // update server
+            DataProvider.UpdateQuotaHidden(quotaName, groupID, hideQuota);
+
+            return 0;
+        }
+
+        #endregion
 
         #region Private / DMZ Network VLANs
         public VLANsPaged GetPrivateNetworkVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)

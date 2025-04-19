@@ -96,7 +96,8 @@ order by rg.groupOrder
 		public const string MAIL_MAXGROUPMEMBERS = "Mail.MaxGroupMembers";  // Max Group Recipients
 		public const string MAIL_MAXLISTMEMBERS = "Mail.MaxListMembers";  // Max List Recipients
         public const string MAIL_DISABLESIZEEDIT = "Mail.DisableSizeEdit"; // Disable Mailbox Size Edit
-		public const string EXCHANGE2007_ORGANIZATIONS = "Exchange2007.Organizations";  // Exchange 2007 Organizations
+        public const string MAIL_ALLOWACCESSCONTROLS = "Mail.AllowAccessControls"; // Allow editing access controls
+        public const string EXCHANGE2007_ORGANIZATIONS = "Exchange2007.Organizations";  // Exchange 2007 Organizations
 		public const string EXCHANGE2007_DISKSPACE = "Exchange2007.DiskSpace";  // Organization Disk Space, MB
 		public const string EXCHANGE2007_MAILBOXES = "Exchange2007.Mailboxes";  // Mailboxes per Organization
 		public const string EXCHANGE2007_CONTACTS = "Exchange2007.Contacts";  // Contacts per Organization

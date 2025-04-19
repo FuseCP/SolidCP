@@ -35,6 +35,8 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Data;
 using System.IO;
+using System.IO.Packaging;
+using System.Web.Script.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
 using SolidCP.EnterpriseServer;
@@ -1093,8 +1095,22 @@ namespace SolidCP.EnterpriseServer
 			if (PackageController.GetPackageItemByName(item.PackageId, item.Name, typeof(MailDomain)) != null)
 				return 0; // OK, domain already exists
 
-			// place log record
-			TaskManager.StartTask("MAIL_DOMAIN", "ADD", item.Name);
+            //Get mailPolicy settings
+            UserInfo user = PackageController.GetPackageOwner(item.PackageId);
+			UserSettings mailPolicy = UserController.GetUserSettings(user.UserId, UserSettings.MAIL_POLICY);
+
+            PackageContext cntx = PackageController.GetPackageContext(item.PackageId);
+			bool mailaccesscontrols = false;
+            mailaccesscontrols = (cntx.Quotas[Quotas.MAIL_ALLOWACCESSCONTROLS].QuotaAllocatedValue == 1);
+
+			if (mailaccesscontrols == false)
+			{
+                mailPolicy["AcessAuthTypePolicy"] = "1";
+                mailPolicy["AccessSelectedCountry"] = "";
+            }
+
+            // place log record
+            TaskManager.StartTask("MAIL_DOMAIN", "ADD", item.Name);
 
 			// create domain
 			try
@@ -1107,8 +1123,11 @@ namespace SolidCP.EnterpriseServer
 
 				item.Enabled = true;
 
-				// add service item
-				mail.CreateDomain(item);
+                item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE] = mailPolicy["AcessAuthTypePolicy"] ?? "1";
+                item[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES] = mailPolicy["AccessSelectedCountry"] ?? "";
+
+                // add service item
+                mail.CreateDomain(item);
 
 				// save domain item
 				int itemId = PackageController.AddPackageItem(item);

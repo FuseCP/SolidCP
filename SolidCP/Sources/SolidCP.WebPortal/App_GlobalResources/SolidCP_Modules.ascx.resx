@@ -348,6 +348,12 @@
   <data name="ModuleTitle.SignIn" xml:space="preserve">
     <value>Sign In to Control Panel</value>
   </data>
+  <data name="ModuleTitle.MailAccess" xml:space="preserve">
+    <value>Mail Access Control</value>
+  </data>
+  <data name="ModuleTitle.MailAccessProperties" xml:space="preserve">
+    <value>Mail Access Control Properties</value>
+  </data>
   <data name="ModuleTitle.MailAccountProperties" xml:space="preserve">
     <value>Mail Account Properties</value>
   </data>

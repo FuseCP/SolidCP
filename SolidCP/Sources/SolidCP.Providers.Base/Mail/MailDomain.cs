@@ -72,6 +72,9 @@ namespace SolidCP.Providers.Mail
         public const string SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION = "messagesAction";
         public const string SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION = "bandwidthAction";
         public const string SMARTERMAIL100_BOUNCES_PER_HOUR_Action = "bouncesAction";
+        public const string SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE = "blockedCountriesAtAuthType";
+		public const string SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES = "blockedCountriesAtAuthCountries";
+        public const string SMARTERMAIL100_SET_BLOCKED_COUNTRIES = "blockedCountriesAtAuthSet";
         #endregion
 
         //license type

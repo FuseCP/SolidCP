@@ -11,7 +11,7 @@ namespace SolidCP.Portal
 {
 
 
-    public partial class MailDomainsEditDomain
+    public partial class MailAccessEditAccess
     {
 
         /// <summary>
@@ -31,24 +31,6 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Literal litDomainName;
-
-        /// <summary>
-        /// btnAddPointer control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddPointer;
-
-        /// <summary>
-        /// gvPointers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvPointers;
 
         /// <summary>
         /// providerControl control.

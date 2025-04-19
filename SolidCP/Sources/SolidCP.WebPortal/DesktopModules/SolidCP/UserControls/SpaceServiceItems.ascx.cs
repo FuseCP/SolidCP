@@ -239,6 +239,10 @@ namespace SolidCP.Portal.UserControls
                         checkboxColumn.Visible = true;
                     }
                     break;
+                case "Mail.AllowAccessControls":
+                    gvItems.Columns[6].Visible = false;
+                    break;
+
             }
         }
 
