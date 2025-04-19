@@ -375,7 +375,7 @@ namespace SolidCP.EnterpriseServer
         }
 
         [WebMethod]
-        public string GetQuotaHidden(string quotaName, int groupID)
+        public bool GetQuotaHidden(string quotaName, int groupID)
         {
             return ServerController.GetQuotaHidden(quotaName, groupID);
         }
