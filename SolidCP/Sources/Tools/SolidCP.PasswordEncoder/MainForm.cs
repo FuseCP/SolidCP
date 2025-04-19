@@ -61,8 +61,12 @@ namespace SolidCP.PasswordEncoder
             if (ValueEntered())
                 Result.Text = CryptoUtils.SHA1(Value.Text.Trim());
         }
-
-        private bool CryptoKeyEntered()
+		private void Sha256Button_Click(object sender, EventArgs e)
+		{
+			if (ValueEntered())
+				Result.Text = CryptoUtils.SHA256(Value.Text.Trim());
+		}
+		private bool CryptoKeyEntered()
         {
             if (CryptoKey.Text.Trim() == "")
             {

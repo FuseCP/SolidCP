@@ -17,9 +17,9 @@
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="7.2.0" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.1" />
-		<!--
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.3" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.3" />
+        <!--
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />
     <ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Primitives\src\CoreWCF.Primitives.csproj" />
@@ -46,6 +46,6 @@
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+	  <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
 	</ItemGroup>
 </Project>

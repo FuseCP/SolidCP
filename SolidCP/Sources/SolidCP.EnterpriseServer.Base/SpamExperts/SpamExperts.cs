@@ -9,9 +9,9 @@ namespace SolidCP.EnterpriseServer
     {
 
 
-        string emailAddress;
-        bool isPrimary;
-        bool isUserPrincipalName;
+        //string emailAddress;
+        //bool isPrimary;
+        //bool isUserPrincipalName;
 
 
         public bool SEEnabled

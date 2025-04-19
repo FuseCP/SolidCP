@@ -46,7 +46,7 @@ namespace SolidCP.Portal.ScheduleTaskControls
         private static readonly string DaysBeforeParameter = "DAYS_BEFORE";
         private static readonly string MailToParameter = "MAIL_TO";
         private static readonly string EnableNotificationParameter = "ENABLE_NOTIFICATION";
-        private static readonly string IncludeNonExistenDomainsParameter = "INCLUDE_NONEXISTEN_DOMAINS";
+        private static readonly string IncludeNonExistentDomainsParameter = "INCLUDE_NONEXISTEN_DOMAINS";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -64,7 +64,7 @@ namespace SolidCP.Portal.ScheduleTaskControls
             this.SetParameter(this.txtDaysBeforeNotify, DaysBeforeParameter);
             this.SetParameter(this.txtMailTo, MailToParameter);
             this.SetParameter(this.cbEnableNotify, EnableNotificationParameter);
-            this.SetParameter(this.cbIncludeNonExistenDomains, IncludeNonExistenDomainsParameter);
+            this.SetParameter(this.cbIncludeNonExistentDomains, IncludeNonExistentDomainsParameter);
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace SolidCP.Portal.ScheduleTaskControls
             ScheduleTaskParameterInfo daysBefore = this.GetParameter(this.txtDaysBeforeNotify, DaysBeforeParameter);
             ScheduleTaskParameterInfo mailTo = this.GetParameter(this.txtMailTo, MailToParameter);
             ScheduleTaskParameterInfo enableNotification = this.GetParameter(this.cbEnableNotify, EnableNotificationParameter);
-            ScheduleTaskParameterInfo includeNonExistenDomains = this.GetParameter(this.cbIncludeNonExistenDomains, IncludeNonExistenDomainsParameter);
+            ScheduleTaskParameterInfo includeNonExistenDomains = this.GetParameter(this.cbIncludeNonExistentDomains, IncludeNonExistentDomainsParameter);
 
             return new ScheduleTaskParameterInfo[4] { daysBefore, mailTo, enableNotification, includeNonExistenDomains };
         }

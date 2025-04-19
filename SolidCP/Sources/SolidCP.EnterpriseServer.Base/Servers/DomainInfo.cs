@@ -54,10 +54,10 @@ namespace SolidCP.EnterpriseServer
         private bool isDomainPointer;
         private int previewDomainId;
         private string previewDomainName;
-        private int recorddefaultTTL;
-        private int zoneServiceID;
-        private int recordminimumTTL;
-        private int minimumTTL;
+        //private int recorddefaultTTL;
+        //private int zoneServiceID;
+        //private int recordminimumTTL;
+        //private int minimumTTL;
 
         [LogProperty]
         public int DomainId

@@ -1,4 +1,9 @@
 ﻿# Migrating an existing SQL Server Database to MySQL
+Be aware that by running EnterpriseServer on MySQL SolidCP will perform slower than with SQL Server,
+because it does not use Stored Procedures but Entity Framework. But if you are using SQL Express,
+the database size limit of 5GB might be an issue due to the size of the AuditLog. So you might
+consider using MySQL as an alternative.
+
 (There's a [video on Youtube](https://www.youtube.com/watch?v=1nKWa6v4lGA) explaining the process
 of migrating the EnterpriseServer database to MySQL.) In Order to migrate an existing SQL Server
 database to MySQL follow these steps:

@@ -242,7 +242,7 @@ namespace SolidCP.EnterpriseServer
                     return Error<GalleryApplicationsResult>(GalleryErrors.MsDeployIsNotInstalled);
 
 				// get applications
-                result = webServer.GetGalleryApplications(SecurityContext.User.UserId,categoryId);
+                result = webServer.GetGalleryApplications(SecurityContext.User.UserId, categoryId);
 
                 if (!result.IsSuccess)
                     return Error<GalleryApplicationsResult>(result, GalleryErrors.GetApplicationsError);

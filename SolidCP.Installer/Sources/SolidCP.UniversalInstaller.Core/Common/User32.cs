@@ -35,23 +35,23 @@ using System.Runtime.InteropServices;
 
 namespace SolidCP.UniversalInstaller;
 
-internal sealed class User32
+public sealed class User32
 {
 	/// <summary>
 	/// Win32 API Constants for ShowWindowAsync()
 	/// </summary>
-	internal const int SW_HIDE = 0;
-	internal const int SW_SHOWNORMAL = 1;
-	internal const int SW_SHOWMINIMIZED = 2;
-	internal const int SW_SHOWMAXIMIZED = 3;
-	internal const int SW_SHOWNOACTIVATE = 4;
-	internal const int SW_RESTORE = 9;
-	internal const int SW_SHOWDEFAULT = 10;
+	public const int SW_HIDE = 0;
+	public const int SW_SHOWNORMAL = 1;
+	public const int SW_SHOWMINIMIZED = 2;
+	public const int SW_SHOWMAXIMIZED = 3;
+	public const int SW_SHOWNOACTIVATE = 4;
+	public const int SW_RESTORE = 9;
+	public const int SW_SHOWDEFAULT = 10;
 
 	[DllImport("user32.dll")]
-	internal static extern bool SetForegroundWindow(IntPtr hWnd);
+	public static extern bool SetForegroundWindow(IntPtr hWnd);
 	[DllImport("user32.dll")]
-	internal static extern bool IsIconic(IntPtr hWnd);
+	public static extern bool IsIconic(IntPtr hWnd);
 	[DllImport("user32.dll")]
-	internal static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
+	public static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
 }

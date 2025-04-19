@@ -33,8 +33,9 @@ namespace SolidCP.Web.Services
 			}
 		}
 
-		public static Action<WebApplication> UseWebForms = null;
-		public static Action<IServiceCollection> ConfigureServices = null;
+		public static Action<WebApplication> ConfigureApp = null;
+		public static Action ConfigurationComplete = null;
+		public static Action<WebApplicationBuilder> ConfigureBuilder = null;
 #else
 		public static string UserHostAddress => System.Web.HttpContext.Current.Request.UserHostAddress;
 		public static string MapPath(string path) => System.Web.Hosting.HostingEnvironment.MapPath(path);

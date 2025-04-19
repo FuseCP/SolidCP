@@ -105,7 +105,7 @@ public abstract partial class Installer
 			{
 				Settings.Server.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
 				Settings.Server.CertificateStoreName = cert.Attribute("storeName")?.Value;
-				Settings.Server.CertificateFindType = cert.Attribute("X509FindType")?.Value;
+				Settings.Server.CertificateFindType = cert.Attribute("x509FindType")?.Value;
 				Settings.Server.CertificateFindValue = cert.Attribute("findValue")?.Value;
 			}
 

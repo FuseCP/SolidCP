@@ -149,14 +149,15 @@ namespace SolidCP.Web.Clients
 
 				if (url.StartsWith("http://"))
 				{
-					if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
-
 					if (url.HasApi("basic")) protocol = Protocols.BasicHttp;
 					else if (url.HasApi("net")) protocol = Protocols.NetHttp;
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
 					else protocol = Protocols.BasicHttp;
+				
+					/* if (IsEncrypted && !IsLocal &&
+						!(protocol == Protocols.WSHttp && UseMessageSecurityOverHttp)) throw new NotSupportedException("This protocol is not secure over this connection."); */
 				}
 				else if (url.StartsWith("https://"))
 				{
@@ -241,7 +242,8 @@ namespace SolidCP.Web.Clients
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
 		public bool IsSsh => Protocol == Protocols.Ssh || url.StartsWith("ssh://");
-		public bool IsSecureProtocol => IsSsl || IsSsh;
+		public bool IsSecureProtocol => IsSsl || IsSsh ||
+			UseMessageSecurityOverHttp && Protocol == Protocols.WSHttp && OSInfo.IsNetFX && IsEncrypted;
 
 		public bool IsHttp => Protocol <= Protocols.WSHttp;
 		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
@@ -533,6 +535,8 @@ namespace SolidCP.Web.Clients
 							{
 								var ws = new WSHttpBinding(SecurityMode.Message);
 								ws.MaxReceivedMessageSize = MaximumMessageSize;
+								ws.Security.Message.EstablishSecurityContext = true;
+								ws.Security.Message.NegotiateServiceCredential = true;
 								binding = ws;
 							}
 							else if (!isEncrypted || IsLocal)

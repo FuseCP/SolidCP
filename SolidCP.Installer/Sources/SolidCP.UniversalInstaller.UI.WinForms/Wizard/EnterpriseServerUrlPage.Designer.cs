@@ -101,11 +101,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// chkBoxEmbed
 			// 
 			this.chkBoxEmbed.AutoSize = true;
-			this.chkBoxEmbed.Location = new System.Drawing.Point(6, 108);
+			this.chkBoxEmbed.Location = new System.Drawing.Point(6, 102);
 			this.chkBoxEmbed.Name = "chkBoxEmbed";
-			this.chkBoxEmbed.Size = new System.Drawing.Size(235, 17);
+			this.chkBoxEmbed.Size = new System.Drawing.Size(439, 30);
 			this.chkBoxEmbed.TabIndex = 15;
-			this.chkBoxEmbed.Text = "Embed Enterprise Server into Portal website:";
+			this.chkBoxEmbed.Text = "Embed Enterprise Server into Portal website (SolidCP runs faster when you em" +
+	"bed\r\nEnterprise Server):";
 			this.chkBoxEmbed.UseVisualStyleBackColor = true;
 			this.chkBoxEmbed.CheckedChanged += new System.EventHandler(this.chkBoxEmbed_CheckedChanged);
 			// 

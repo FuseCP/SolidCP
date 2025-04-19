@@ -80,7 +80,7 @@ namespace SolidCP.UniversalInstaller
 		public Action<ConsoleField> Validate = null;
 		public Action Click = null;
 		public bool Clicked { get; set; } = false;
-		public bool Checked { get; set; } = false;
+		public virtual bool Checked { get; set; } = false;
 		public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Black;
 		public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
 		public virtual ConsoleForm Parent { get; set; } = null;
@@ -347,21 +347,23 @@ namespace SolidCP.UniversalInstaller
 
 	public class Choice : Button
 	{
-
-		public Choice() : base() { }
+		public Choice() : base() { Checked = false; }
 		public override bool Editable => true;
 
 		public override void ReceiveFocus()
 		{
 			HasFocus = true;
 		}
-
+		public override bool Checked
+		{
+			get => !Regex.IsMatch(Text, @"^[ \t\[\]]*$");
+			set => Text = value ? "x" : " ";
+		}
 		public override bool Edit(ConsoleKeyInfo key)
 		{
 			if (key.Key == ConsoleKey.Spacebar)
 			{
 				Checked = !Checked;
-				Text = Checked ? "x" : " ";
 				Show();
 				return false;
 			}

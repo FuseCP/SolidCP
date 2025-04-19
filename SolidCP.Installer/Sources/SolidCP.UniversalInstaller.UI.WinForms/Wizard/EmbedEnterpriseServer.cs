@@ -34,6 +34,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using System.Xml;
+using SolidCP.Providers.OS;
 using SolidCP.UniversalInstaller;
 
 namespace SolidCP.UniversalInstaller.WinForms
@@ -68,8 +69,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 			get
 			{
 				var installerPath = Settings.InstallFolder;
-				var webClientsPath = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "SolidCP.Web.Clients.dll"));
-				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder && File.Exists(webClientsPath);
+				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "HostPanelPro.Web.Clients.dll"));
+				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "HostPanelPro.Web.Clients.dll"));
+				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder &&
+					(File.Exists(webClientsPath1) || File.Exists(webClientsPath2));
 			}
 		}
 
@@ -110,7 +113,18 @@ namespace SolidCP.UniversalInstaller.WinForms
 				Settings.EmbedEnterpriseServer = urlNode.InnerText.StartsWith("assembly://");
 				if (Settings.EmbedEnterpriseServer && string.IsNullOrEmpty(Settings.EnterpriseServerPath))
 				{
-					Settings.EnterpriseServerPath = $"..\\{Global.EntServer.ComponentName}";
+					if (Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)))
+					{
+						Settings.EnterpriseServerPath = $"..\\{Installer.Current.EnterpriseServerFolder}";
+					}
+					else if (Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder))))
+					{
+						Settings.EnterpriseServerPath = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
+					}
+					if (!OSInfo.IsWindows)
+					{
+						Settings.EnterpriseServerPath = Settings.EnterpriseServerPath.Replace('\\', Path.DirectorySeparatorChar);
+					}
 				}
 			}
 			catch (Exception ex)

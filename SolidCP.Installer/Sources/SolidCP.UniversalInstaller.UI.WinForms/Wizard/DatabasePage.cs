@@ -37,6 +37,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using SolidCP.Providers.Common;
@@ -204,7 +205,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 					{
 						// check SQL server version
 						string sqlVersion = GetSqlServerVersion(connectionString);
-						if (string.Compare(sqlVersion, "12.") <= 0)
+						string major = Regex.Match(sqlVersion, "^[0-9]+(?=\\.)").Value;
+						if (major.Length < 2) major = "0" + major;
+						if (string.Compare(major, "12") <= 0)
 						{
 							// SQL Server 2014 engine required
 							e.Cancel = true;
@@ -219,6 +222,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 							ShowWarning("Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode.");
 							return;
 						}
+
+						var csb = new ConnectionStringBuilder(connectionString);
+						csb["TrustServerCertificate"] = "false";
+						Settings.DatabaseTrustServerCertificate = !CheckConnection(csb.ToString());
 					}
 				}
 				else

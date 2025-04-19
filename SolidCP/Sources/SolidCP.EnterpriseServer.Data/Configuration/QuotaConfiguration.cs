@@ -686,6 +686,8 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 				ServiceQuota = false },
 			new Quota() { QuotaId = 753, GroupId = 7, QuotaDescription = "Allow editing TTL in DNS Editor", QuotaName = "DNS.EditTTL", QuotaOrder = 2, QuotaTypeId = 1,
 				ServiceQuota = false },
+			new Quota() { QuotaId = 754, GroupId = 4, QuotaDescription = "Allow changes to access controls", QuotaName = "Mail.AllowAccessControls", QuotaOrder = 9, QuotaTypeId = 1,
+				ServiceQuota = false, HideQuota = true },
 			new Quota() { QuotaId = 760, GroupId = 76, ItemTypeId = 79, QuotaDescription = "Databases", QuotaName = "MsSQL2025.Databases", QuotaOrder = 1,
 				QuotaTypeId = 2, ServiceQuota = false },
 			new Quota() { QuotaId = 761, GroupId = 76, ItemTypeId = 80, QuotaDescription = "Users", QuotaName = "MsSQL2025.Users", QuotaOrder = 2,

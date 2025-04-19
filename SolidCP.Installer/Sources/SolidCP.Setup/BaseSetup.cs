@@ -97,6 +97,17 @@ public class BaseSetup
 			{
 				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(json, new VersionConverter(), new StringEnumConverter());
 
+				if (CommonSettings != null)
+				{
+					CommonSettings.Version = Installer.Current.Settings.Installer.Component.Version;
+				}
+				else
+				{
+					var version = Installer.Current.Settings.Installer.Component.Version;
+					Settings.EnterpriseServer.Version = Settings.Server.Version =
+						Settings.WebPortal.Version = version;
+				}
+
 				UI.SetCurrent(Installer.Current.Settings.Installer.UI);
 			}
 			else
@@ -129,7 +140,14 @@ public class BaseSetup
 	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
 	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
 	public virtual bool HasEnterpriseServerInstallation
-		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder));
+		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)) ||
+			Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)));
+
+	public void SetEnterpriseServerFolder()
+	{
+		if (IsStandalone) Installer.Current.EnterpriseServerFolder = Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder);
+	}
+
 	public virtual UI.SetupWizard Wizard(object args)
 	{
 		if (ParseArgs(args) && CheckInstallerVersion())
@@ -153,10 +171,12 @@ public class BaseSetup
 				if (IsEnterpriseServer) wizard = wizard
 					.ServerAdminPassword();
 
-				if (IsWebPortal && HasEnterpriseServerInstallation) wizard = wizard
-					.EmbedEnterpriseServer();
-
-			} else
+				if (IsWebPortal)
+				{
+					wizard = wizard.EnterpriseServerUrl();
+				}
+			}
+			else
 			{
 				// Set EnterpriseServer setting for embedded EnterpriseServer
 				Settings.EnterpriseServer.WebSiteDomain = "";
@@ -166,6 +186,7 @@ public class BaseSetup
 				Settings.EnterpriseServer.Password = "";
 				Settings.EnterpriseServer.Urls = "http://localhost:9002";
 				Settings.EnterpriseServer.ConfigureCertificateManually = true;
+				SetEnterpriseServerFolder();
 
 				wizard = wizard
 					.InstallFolder(Settings.Standalone)
@@ -179,7 +200,11 @@ public class BaseSetup
 					.InsecureHttpWarning(Settings.Server)
 					.Certificate(Settings.Server)
 					.UserAccount(Settings.Server)
-					.ServerPassword();
+					.ServerPassword()
+					.Web(Settings.WebDavPortal)
+					.InsecureHttpWarning(Settings.WebDavPortal)
+					.Certificate(Settings.WebDavPortal)
+					.UserAccount(Settings.WebDavPortal);
 			}
 			return wizard;
 		}
@@ -240,12 +265,13 @@ public class BaseSetup
 		if (ParseArgs(args))
 		{
 			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
+			SetEnterpriseServerFolder();
 
 			if (CheckInstallerVersion())
 			{
 				var res = UI.Current.Wizard
-					.Introduction(CommonSettings)
-					.ConfirmUninstall(CommonSettings)
+					.Introduction(ComponentSettings)
+					.ConfirmUninstall(ComponentSettings)
 					.RunWithProgress(title, installer, ComponentSettings)
 					.Finish()
 					.Show() ? Result.OK : Result.Cancel;

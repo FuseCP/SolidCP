@@ -43,6 +43,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Globalization;
 using System.Collections;
+using static System.Net.Mime.MediaTypeNames;
+using System.Linq;
 
 namespace SolidCP.Providers.Mail
 {
@@ -504,9 +506,12 @@ namespace SolidCP.Providers.Mail
 
 				//TODO: Above options
 
+				//AccessControls
+				domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE] = result["domainSettings"]["blockedCountriesAtAuth"]["type"].ToString();
+				domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES] = string.Join(",", result["domainSettings"]["blockedCountriesAtAuth"]["countries"]);
 
-				// get catch-all address
-				if (!String.IsNullOrEmpty(domain.CatchAllAccount))
+                // get catch-all address
+                if (!String.IsNullOrEmpty(domain.CatchAllAccount))
 				{
 					// get catch-all group
 					string groupName = SYSTEM_CATCH_ALL + "@" + domain.Name;
@@ -588,9 +593,16 @@ namespace SolidCP.Providers.Mail
 				if (!success)
 					throw new Exception(result["message"]);
 
-				var domainSettingsArray = new
+				var blockedCountriesAtAuthArray = new
 				{
-                    enableMailForwarding = domain.Enabled
+					type = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE],
+					countries = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES].Split(',')
+				};
+
+                var domainSettingsArray = new
+				{
+                    blockedCountriesAtAuth = blockedCountriesAtAuthArray,
+					enableMailForwarding = domain.Enabled
                 };
 
 				var domainSettingsPram = new
@@ -726,17 +738,94 @@ namespace SolidCP.Providers.Mail
 		{
 			try
 			{
+                dynamic domainSettings = ExecGetCommand("settings/sysadmin/domain-settings/" + domain.Name).Result;
 
-				var throttleSettingsArray = new
+                bool domainSettingssuccess = Convert.ToBoolean(domainSettings["success"]);
+                if (!domainSettingssuccess)
+                    throw new Exception(domainSettings["message"]);
+
+                if (domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE] == null)
+                {
+					Log.WriteInfo("Auth type not set");
+                    domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE] = domainSettings["domainSettings"]["blockedCountriesAtAuth"]["type"].ToString();
+                    domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES] = string.Join(",", domainSettings["domainSettings"]["blockedCountriesAtAuth"]["countries"]);
+
+                }
+
+				if (domain[MailDomain.SMARTERMAIL100_SET_BLOCKED_COUNTRIES] == "1")
+				{
+                    Log.WriteInfo("SMARTERMAIL100_SET_BLOCKED_COUNTRIES IS 1");
+					//Features
+                    //domain.ShowContentFilteringMenu
+                    domain.ShowDomainAliasMenu = Convert.ToBoolean(domainSettings["domainSettings"]["showDomainAliasMenu"]);
+                    domain.ShowListMenu = Convert.ToBoolean(domainSettings["domainSettings"]["showListMenu"]);
+                    domain.ShowSpamMenu = Convert.ToBoolean(domainSettings["domainSettings"]["showSpamMenu"]);
+                    //Domain Reports
+                    //Enable POP Retrieval
+                    //Enable Catch - Alls
+                    //Enable IMAP Retreival
+                    //Enable Mail Signing
+                    //Enable Email Reports
+                    //Enable SyncML
+
+
+                    //Sharing
+                    domain.IsGlobalAddressList = Convert.ToBoolean(domainSettings["domainSettings"]["sharedGlobalAddressList"]);
+                    domain.SharedCalendars = Convert.ToBoolean(domainSettings["domainSettings"]["calendarPublicAvailability"]);
+                    //domain.SharedContacts 
+                    //domain.SharedFolders
+                    //domain.SharedNotes
+                    //domain.SharedTasks
+
+                    //Throttling
+                    domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR] = domainSettings["domainSettings"]["throttleSettings"]["messagesPerHour"].ToString();
+                    domain[MailDomain.SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION] = domainSettings["domainSettings"]["throttleSettings"]["messagesAction"].ToString();
+                    domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR] = domainSettings["domainSettings"]["throttleSettings"]["bandwidthPerHour"].ToString();
+                    domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION] = domainSettings["domainSettings"]["throttleSettings"]["bouncesAction"].ToString();
+                    domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR] = domainSettings["domainSettings"]["throttleSettings"]["bouncesPerHour"].ToString();
+                    domain[MailDomain.SMARTERMAIL100_BOUNCES_PER_HOUR_Action] = domainSettings["domainSettings"]["throttleSettings"]["bandwidthAction"].ToString();
+
+                    //Limits
+                    domain.MaxDomainSizeInMB = (int)Convert.ToInt64((long)domainSettings["domainSettings"]["maxSize"] / 1048576);
+                    domain.MaxDomainAliases = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxDomainAliases"].ToString());
+                    domain.MaxDomainUsers = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxUsers"].ToString());
+                    domain.MaxAliases = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxAliases"].ToString());
+                    domain.MaxLists = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxLists"].ToString());
+                    domain.MaxMessageSize = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxMessageSize"].ToString());
+                    domain.MaxRecipients = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxRecipients"].ToString());
+
+
+                    domain.MaxMailboxSizeInMB = (int)Convert.ToInt64((long)domainSettings["domainSettings"]["maxMailboxSize"] / 1048576);
+                    domain.MaxRecipients = (int)Convert.ToInt64(domainSettings["domainSettings"]["maxRecipients"].ToString());
+                    domain.RequireSmtpAuthentication = Convert.ToBoolean(domainSettings["domainSettings"]["requireSmtpAuthentication"]);
+                    domain.ListCommandAddress = domainSettings["domainSettings"]["listCommandAddress"].ToString();
+
+                    // get additional domain settings
+                    domain.CatchAllAccount = domainSettings["domainSettings"]["catchAll"].ToString();
+                    domain.Enabled = Convert.ToBoolean(domainSettings["domainSettings"]["isEnabled"]);
+                    domain.BypassForwardBlackList = Convert.ToBoolean(domainSettings["domainSettings"]["bypassForwardBlackList"]);
+
+                }
+
+				var blockedCountriesAtAuthArray = new
+				{
+                    type = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_TYPE],
+					countries = domain[MailDomain.SMARTERMAIL100_BLOCKED_COUNTRIES_AT_AUTH_COUNTRIES].Split(',')
+                };
+
+                var throttleSettingsArray = new
 				{
 					bandwidthAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
 					bandwidthPerHour = domain[MailDomain.SMARTERMAIL5_BANDWIDTH_PER_HOUR],
 					bouncesAction = domain[MailDomain.SMARTERMAIL100_BANDWIDTH_PER_HOUR_ACTION],
-					bouncesPerHour = domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR]
+					bouncesPerHour = domain[MailDomain.SMARTERMAIL5_BOUNCES_PER_HOUR],
+					messagesAction = domain[MailDomain.SMARTERMAIL100_MESSAGES_PER_HOUR_ACTION],
+					messagesPerHour = domain[MailDomain.SMARTERMAIL5_MESSAGES_PER_HOUR]
 				};
 
 				var domainSettingsArray = new
 				{
+                    blockedCountriesAtAuth = blockedCountriesAtAuthArray,
 					catchAll = domain.CatchAllAccount,
 					showDomainAliasMenu = domain.ShowDomainAliasMenu,
 					showListMenu = domain.ShowListMenu,

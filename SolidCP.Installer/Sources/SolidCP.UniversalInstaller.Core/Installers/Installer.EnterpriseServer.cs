@@ -81,6 +81,10 @@ public abstract partial class Installer
 			var db = settings.DatabaseName;
 
 			DatabaseUtils.InstallFreshDatabase(connstr, db, user, password, progress => Log.WriteLine("."));
+
+			var cryptor = new Cryptor(settings.CryptoKey);
+			DatabaseUtils.SetServerAdminPassword(connstr, db, cryptor.Encrypt(settings.ServerAdminPassword));
+
 			InstallLog("Installed Database");
 		})
 			.WithRollback(DeleteDatabase);
@@ -100,12 +104,24 @@ public abstract partial class Installer
 		var settings = Settings.EnterpriseServer;
 		var connstr = settings.DbInstallConnectionString;
 		DatabaseUtils.DeleteDatabase(connstr, settings.DatabaseName);
+		if (string.IsNullOrEmpty(settings.DatabaseUser))
+		{
+			settings.DatabaseUser = (settings.DatabaseName + "User").Replace(" ", "_");
+			settings.DatabasePassword = Utils.GetRandomString(32);
+		}
+		DatabaseUtils.DeleteUser(connstr, settings.DatabaseUser);
+		DatabaseUtils.DeleteLogin(connstr, settings.DatabaseUser);
 		InstallLog("Deleted Database");
 	}
 	public virtual void CountInstallDatabaseStatements()
 	{
 		var settings = Settings.EnterpriseServer;
 		var connstr = settings.DbInstallConnectionString;
+		if (string.IsNullOrEmpty(settings.DatabaseUser))
+		{
+			settings.DatabaseUser = DefaultDatabaseUser;
+			settings.DatabasePassword = Utils.GetRandomString(32);
+		}
 		var user = settings.DatabaseUser;
 		var password = settings.DatabasePassword;
 		var db = settings.DatabaseName;
@@ -179,7 +195,7 @@ public abstract partial class Installer
 		{
 			Settings.EnterpriseServer.CertificateStoreLocation = cert.Attribute("storeLocation")?.Value;
 			Settings.EnterpriseServer.CertificateStoreName = cert.Attribute("storeName")?.Value;
-			Settings.EnterpriseServer.CertificateFindType = cert.Attribute("X509FindType")?.Value;
+			Settings.EnterpriseServer.CertificateFindType = cert.Attribute("x509FindType")?.Value;
 			Settings.EnterpriseServer.CertificateFindValue = cert.Attribute("findValue")?.Value;
 		}
 
@@ -218,37 +234,82 @@ public abstract partial class Installer
 		// server certificate
 		if (!webPortalEmbedded) ConfigureCertificateNetFX(settings, configuration);
 
+		var appSettings = configuration.Element("appSettings");
+
+		if (webPortalEmbedded)
+		{
+			// read CryptoKey
+			var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, WebPortalFolder, Settings.WebPortal.EnterpriseServerPath, "web.config"));
+			if (File.Exists(esConfFile))
+			{
+				var esConf = XElement.Load(esConfFile);
+				var esAppSettings = esConf.Element("appSettings");
+
+
+				var esCryptoKey = esAppSettings?.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
+				if (esCryptoKey != null)
+				{
+					settings.CryptoKey = esCryptoKey.Attribute("value")?.Value;
+				}
+
+				foreach (var esSetting in esAppSettings.Elements("add"))
+				{
+					var key = esSetting.Attribute("key")?.Value;
+					var setting = appSettings.Elements("add").FirstOrDefault(s => s.Attribute("key")?.Value == key);
+					if (setting == null)
+					{
+						appSettings.Add(esSetting);
+					}
+					else
+					{
+						setting.Attribute("value").SetValue(esSetting.Attribute("value")?.Value);
+					}
+				}
+
+				var esConStrings = esConf.Element("connectionStrings");
+				var conStrings = configuration.Element("connectionStrings");
+				conStrings.ReplaceWith(esConStrings);
+
+				var esSwagger = esConf.Element("swaggerwcf");
+				var swagger = configuration.Element("swaggerwcf");
+				swagger.ReplaceWith(esSwagger);
+			}
+		}
+
 		// CryptoKey
 		if (string.IsNullOrEmpty(settings.CryptoKey))
 		{
 			// generate random crypto key
 			settings.CryptoKey = CryptoUtils.GetRandomString(20);
 		}
-		var appSettings = configuration.Element("appSettings");
-		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "CryptoKey");
+
+		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
 		if (cryptoKey == null)
 		{
-			cryptoKey = new XElement("add", new XAttribute("key", "CryptoKey"), new XAttribute("value", settings.CryptoKey));
+			cryptoKey = new XElement("add", new XAttribute("key", "HostPanelPro.CryptoKey"), new XAttribute("value", settings.CryptoKey));
 			appSettings.Add(cryptoKey);
 		}
 		else
 		{
-			cryptoKey.Attribute("CryptoKey").SetValue(settings.CryptoKey);
+			cryptoKey.Attribute("value").SetValue(settings.CryptoKey);
 		}
 
-		// Connection String
-		var connectionStrings = configuration.Element("connectionStrings");
-		var cstring = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-		var authentication = settings.DatabaseWindowsAuthentication ? "Integrated Security=true" : $"User ID={settings.DatabaseUser};Password={settings.DatabasePassword}";
-		cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database=SolidCP;{authentication}");
-
-		// Swagger Version
-		var swaggerwcf = configuration.Element("swaggerWcf");
-		var swagsetting = swaggerwcf?.Element("settings");
-		var versionInfo = swagsetting?.Elements("setting").FirstOrDefault(e => e.Attribute("name")?.Value == "InfoVersion");
-		if (versionInfo != null)
+		if (!webPortalEmbedded)
 		{
-			versionInfo.Attribute("value").SetValue(Settings.EnterpriseServer.Version.ToString());
+			// Connection String
+			var connectionStrings = configuration.Element("connectionStrings");
+			var cstring = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
+			var authentication = settings.DatabaseWindowsAuthentication ? "Integrated Security=true" : $"User ID={settings.DatabaseUser};Password={settings.DatabasePassword}";
+			cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database={settings.DatabaseName};{authentication}{(settings.DatabaseTrustServerCertificate ? ";TrustServerCertificate=true" : "")}");
+
+			// Swagger Version
+			var swaggerwcf = configuration.Element("swaggerwcf");
+			var swagsetting = swaggerwcf?.Element("settings");
+			var versionInfo = swagsetting?.Elements("setting").FirstOrDefault(e => e.Attribute("name")?.Value == "InfoVersion");
+			if (versionInfo != null)
+			{
+				versionInfo.Attribute("value").SetValue(Settings.EnterpriseServer.Version.ToString());
+			}
 		}
 
 		configuration.Save(confFile);

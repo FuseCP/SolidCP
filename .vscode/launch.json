@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Listen for XDebug",
+            "type": "php",
+            "request": "launch",
+            "port": 9000,
+            "runtimeExecutable": "C:\\bin\\php-8.4.5-nts-Win32-vs17-x64\\php.exe"
+        },
+        {
+            "name": "Launch currently open script",
+            "type": "php",
+            "request": "launch",
+            "program": "${file}",
+            "cwd": "${fileDirname}",
+            "port": 9000,
+            "runtimeExecutable": "C:\\bin\\php-8.4.5-nts-Win32-vs17-x64\\php.exe"
+        {
             "name": "SolidCP.Server net8",
             "type": "coreclr",
             "request": "launch",

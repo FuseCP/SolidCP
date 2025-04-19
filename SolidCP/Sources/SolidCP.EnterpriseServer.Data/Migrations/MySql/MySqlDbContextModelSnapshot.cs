@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -8741,6 +8741,17 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             QuotaDescription = "Allow editing TTL in DNS Editor",
                             QuotaName = "DNS.EditTTL",
                             QuotaOrder = 2,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 754,
+                            GroupId = 4,
+                            HideQuota = true,
+                            QuotaDescription = "Allow changes to access controls",
+                            QuotaName = "Mail.AllowAccessControls",
+                            QuotaOrder = 9,
                             QuotaTypeId = 1,
                             ServiceQuota = false
                         },

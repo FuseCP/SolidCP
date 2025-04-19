@@ -11,12 +11,12 @@ public class Program
 	public static void Main(string[] args)
 	{
 		Configuration.IsPortal = true;
-		Server.UseWebForms = app =>
+		Server.ConfigurationComplete = () => AssemblyLoader.Init(Configuration.ProbingPaths, Configuration.ExposeWebServices, true);
+		Server.ConfigureApp = app =>
 		{
 			app.UseWebForms(options => options.AddHandleExtensions(".less"));
-			AssemblyLoader.Init(Configuration.ProbingPaths, Configuration.ExposeWebServices, true);
 		};
-		Server.ConfigureServices = services =>
+		Server.ConfigureBuilder = services =>
 		{
 			var es = Assembly.Load("SolidCP.EnterpriseServer");
 			if (es != null)

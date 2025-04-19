@@ -15,6 +15,24 @@ namespace SolidCP.Portal.ProviderControls
     {
 
         /// <summary>
+        /// lblAccessControlsHidden control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblAccessControlsHidden;
+
+        /// <summary>
+        /// cbAccessControlsHidden control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox cbAccessControlsHidden;
+
+        /// <summary>
         /// lblServiceUrl control.
         /// </summary>
         /// <remarks>

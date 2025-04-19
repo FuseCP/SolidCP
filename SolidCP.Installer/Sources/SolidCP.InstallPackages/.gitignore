@@ -7,3 +7,5 @@ Debian/*.tar
 Fedora/*.tar
 Debian/*.deb
 Fedora/*.rpm
+Debian/usr/
+Fedora/usr/

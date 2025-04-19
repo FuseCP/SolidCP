@@ -11,6 +11,7 @@ IF not defined SolidCPVersion ( Set SolidCPVersion=2.0.0)
 IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=2.0.0)
 IF not defined Configuration ( Set Configuration=Debug)
 
+
 IF EXIST "%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\bin\MSBuild.exe" (
 	Set SCPMSBuild="%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe"
 	Set SCPVSVer=17.0

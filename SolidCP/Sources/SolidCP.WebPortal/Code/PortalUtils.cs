@@ -784,8 +784,9 @@ namespace SolidCP.Portal
 
 		public static string GetThemedImage(string imageUrl)
 		{
-			Page page = (Page)HttpContext.Current.Handler;
-			return page.ResolveUrl("~/App_Themes/" + page.Theme + "/Images/" + imageUrl);
+			Page page = HttpContext.Current.Handler as Page;
+			if (page != null) return page.ResolveUrl("~/App_Themes/" + page.Theme + "/Images/" + imageUrl);
+			else return VirtualPathUtility.ToAbsolute("~/App_Themes/Default/Images/" + imageUrl);
 		}
 
 		public static string GetThemedIcon(string iconUrl)

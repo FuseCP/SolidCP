@@ -66,6 +66,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.txtPassword = new System.Windows.Forms.TextBox();
 			this.chkChangePassword = new System.Windows.Forms.CheckBox();
 			this.lblNote = new System.Windows.Forms.Label();
+			this.label1 = new System.Windows.Forms.Label();
 			this.SuspendLayout();
 			// 
 			// lblConfirmPassword
@@ -114,18 +115,29 @@ namespace SolidCP.UniversalInstaller.WinForms
 			// 
 			// lblNote
 			// 
-			this.lblNote.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
+			this.lblNote.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
 			this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.lblNote.Location = new System.Drawing.Point(0, 184);
 			this.lblNote.Name = "lblNote";
 			this.lblNote.Size = new System.Drawing.Size(457, 38);
 			this.lblNote.TabIndex = 6;
 			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label1.Location = new System.Drawing.Point(53, 27);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(135, 13);
+			this.label1.TabIndex = 7;
+			this.label1.Text = "Serveradmin Password";
+			// 
 			// ServerAdminPasswordPage
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.Controls.Add(this.label1);
 			this.Controls.Add(this.lblNote);
 			this.Controls.Add(this.chkChangePassword);
 			this.Controls.Add(this.lblConfirmPassword);
@@ -147,6 +159,6 @@ namespace SolidCP.UniversalInstaller.WinForms
 		private System.Windows.Forms.TextBox txtPassword;
 		private System.Windows.Forms.CheckBox chkChangePassword;
 		private System.Windows.Forms.Label lblNote;
-
+		private System.Windows.Forms.Label label1;
 	}
 }

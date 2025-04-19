@@ -959,7 +959,7 @@ namespace SolidCP.Setup.Actions
 				if (cert != null) cert.Remove();
 				cert = new XElement("serviceCertificate", new XAttribute("storeName", vars.CertificateStore),
 					new XAttribute("storeLocation", vars.CertificateStoreLocation),
-					new XAttribute("X509FindType", vars.CertificateFindType),
+					new XAttribute("x509FindType", vars.CertificateFindType),
 					new XAttribute("findValue", vars.CertificateFindValue));
 				serviceCredentials.Add(cert);
 				doc.Save(file);

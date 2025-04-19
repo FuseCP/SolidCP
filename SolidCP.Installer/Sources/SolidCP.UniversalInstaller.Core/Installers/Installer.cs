@@ -4,7 +4,6 @@ using SolidCP.Providers;
 using SolidCP.Providers.Web;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
-//using Ionic.Zip;
 using System.IO.Compression;
 using System.Globalization;
 using System.Security.Policy;
@@ -14,14 +13,15 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Net;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using static System.Net.Mime.MediaTypeNames;
-using SolidCP.UniversalInstaller.Core;
 using System.Collections;
-using Microsoft.Web.Administration;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
+using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Microsoft.Web.Administration;
+using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -30,7 +30,7 @@ public abstract partial class Installer
 	public const bool RunAsAdmin = true;
 	public virtual string SolidCP => "SolidCP";
 	public virtual string ServerFolder => "Server";
-	public virtual string EnterpriseServerFolder => "EnterpriseServer";
+	public virtual string EnterpriseServerFolder { get; set; } = "EnterpriseServer";
 	public virtual string WebPortalFolder => "Portal";
 	public virtual string WebDavPortalFolder => "WebDavPortal";
 	public virtual string ServerUser => $"{SolidCP}Server";
@@ -275,7 +275,6 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
-	public bool UpdateInstaller(ComponentUpdateInfo info) => false;
 	protected bool? Net8RuntimeInstalled { get; set; }
 	public bool CheckNet8RuntimeInstalled()
 	{
@@ -819,7 +818,7 @@ public abstract partial class Installer
 		{
 			if (webSettings.EmbedEnterpriseServer)
 			{
-				appsettings.probingPaths = @$"..\bin\netstandard;..\..\{EnterpriseServerFolder}\bin_dotnet;..\..\{EnterpriseServerFolder}\bin\netstandard";
+				appsettings.probingPaths = @$"..\bin\netstandard;{webSettings.EnterpriseServerPath}\bin_dotnet;{webSettings.EnterpriseServerPath}\bin\netstandard";
 				var esJsonFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "appsettings.json");
 				if (File.Exists(esJsonFile))
 				{
@@ -883,7 +882,7 @@ public abstract partial class Installer
 				if (cert != null) cert.Remove();
 				cert = new XElement("serviceCertificate", new XAttribute("storeName", settings.CertificateStoreName),
 					new XAttribute("storeLocation", settings.CertificateStoreLocation),
-					new XAttribute("X509FindType", settings.CertificateFindType),
+					new XAttribute("x509FindType", settings.CertificateFindType),
 					new XAttribute("findValue", settings.CertificateFindValue));
 				serviceCredentials.Add(cert);
 			}
@@ -1052,5 +1051,106 @@ public abstract partial class Installer
 			}
 			return current;
 		}
+	}
+
+	public bool CheckForInstallerUpdate(out ComponentUpdateInfo component)
+	{
+		bool ret = false;
+		Log.WriteStart("Checking for a new version");
+		//
+		UI.ShowWaitCursor();
+		var webService = Installer.Current.InstallerWebService;
+		component = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
+		UI.EndWaitCursor();
+		//
+		Log.WriteEnd("Checked for a new version");
+		if (component != null)
+		{
+			Version currentVersion = GetType().Assembly.GetName().Version;
+			Version newVersion = null;
+			if (component.Version != default) newVersion = component.Version;
+			else
+			{
+				Log.WriteError("Version error");
+				return false;
+			}
+			if (newVersion > currentVersion)
+			{
+				ret = true;
+				Log.WriteInfo(string.Format("Version {0} is available for download", newVersion));
+			}
+		}
+		return ret;
+	}
+
+	public bool DownloadInstallerUpdate(ComponentUpdateInfo component)
+	{
+		Log.WriteStart("Starting updater");
+		string entry = Assembly.GetEntryAssembly().Location;
+		string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(entry));
+		
+		File.Copy(entry, tmpFile);
+
+		//
+		string url = Installer.Current.Settings.Installer.WebServiceUrl;
+		//
+		string proxyServer = string.Empty;
+		string user = string.Empty;
+		string password = string.Empty;
+
+		// check if we need to add a proxy to access Internet
+		bool useProxy = Installer.Current.Settings.Installer.Proxy != null;
+		if (useProxy)
+		{
+			proxyServer = Installer.Current.Settings.Installer.Proxy.Address;
+			user = Installer.Current.Settings.Installer.Proxy.Username;
+			password = Installer.Current.Settings.Installer.Proxy.Password;
+		}
+
+		//prepare command line args
+		StringBuilder sb = new StringBuilder();
+
+		ProcessStartInfo info = new ProcessStartInfo();
+		var isExe = Path.GetExtension(tmpFile).Equals(".exe", StringComparison.OrdinalIgnoreCase);
+		var winconsole = UI.IsConsole && OSInfo.IsWindows;
+		if (isExe) info.FileName = tmpFile;
+		else
+		{
+			var runtime = Path.ChangeExtension(entry, ".runtimeconfig.json");
+			var runtimedest = Path.ChangeExtension(tmpFile, ".runtimeconfig.json");
+			File.Copy(runtime, runtimedest);
+			info.FileName = Shell.Find(OSInfo.IsWindows ? "dotnet.exe" : "dotnet");
+			sb.Append($"\"{tmpFile}\" ");
+		}
+		sb.Append("-update ");
+		sb.Append($"-ui={UI.Current.GetType().Name.Replace("UI", "").ToLower()} ");
+		sb.AppendFormat("-url:\"{0}\" ", url);
+		sb.AppendFormat("-target:\"{0}\" ", entry);
+		sb.AppendFormat("-file:\"{0}\" ", component.UpgradeFilePath);
+		sb.AppendFormat("-proxy:\"{0}\" ", proxyServer);
+		sb.AppendFormat("-user:\"{0}\" ", user);
+		sb.AppendFormat("-password:\"{0}\" ", password);
+		info.Arguments = sb.ToString();
+		info.UseShellExecute = winconsole;
+		info.CreateNoWindow = !winconsole;
+
+		Process process = Process.Start(info);
+		if (process.Handle != IntPtr.Zero)
+		{
+			User32.SetForegroundWindow(process.Handle);
+		}
+		Log.WriteEnd("Updater started");
+
+		if (UI.IsConsole && !Providers.OS.OSInfo.IsWindows)
+		{
+			UI.ShowWaitCursor();
+			process.WaitForExit();
+			UI.EndWaitCursor();
+
+			Console.WriteLine("HostPanelPro Installer has been updated. Please restart it...");
+			Installer.Current.Exit();
+		}
+
+		return (process.Handle != IntPtr.Zero);
 	}
 }

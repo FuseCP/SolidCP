@@ -5,11 +5,15 @@
         <ApplicationIcon>Application.ico</ApplicationIcon>
         <TargetFramework>net48</TargetFramework>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>bin\$(Configuration)\</OutputPath>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
     <ItemGroup>
         <Reference Include="System.Deployment" />
         <Reference Include="System.Windows.Forms" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\..\VersionInfo.cs" Link="VersionInfo.cs" />

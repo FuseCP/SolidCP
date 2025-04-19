@@ -23,12 +23,14 @@ namespace SolidCP.UniversalInstaller
 			SetEnterpriseServerFilePermissions();
 			SetServerFilePermissions();
 			SetWebPortalFilePermissions();
+			SetWebDavPortalFilePermissions();
 		}
 		public virtual void SetStandaloneServerFileOwner()
 		{
 			SetEnterpriseServerFileOwner();
 			SetServerFileOwner();
 			SetWebPortalFileOwner();
+			SetWebDavPortalFileOwner();
 		}
 		public virtual void SetStandaloneServerSettings() { }
 		public virtual void InstallStandaloneServer()
@@ -43,6 +45,8 @@ namespace SolidCP.UniversalInstaller
 			ConfigureStandaloneServer();
 			InstallServerWebsite();
 			InstallWebPortalWebsite();
+			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
+			else RemoveWebDavPortalFolder();
 		}
 		public virtual void UpdateStandaloneServer()
 		{
@@ -57,31 +61,50 @@ namespace SolidCP.UniversalInstaller
 			ConfigureStandaloneServer();
 			InstallServerWebsite();
 			InstallWebPortalWebsite();
+			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
+			else RemoveWebDavPortalFolder();
 		}
 		public virtual void UpdateStandaloneServerConfig() { }
 
 		public virtual void InstallStandaloneServerWebsite() => InstallWebPortalWebsite();
+		public virtual void RemoveSetupFolder()
+		{
+			Directory.Delete(Path.Combine(InstallWebRootPath, "Setup"), true);
+		}
 		public virtual void RemoveStandaloneServerFolder()
 		{
 			RemoveEnterpriseServerFolder();
 			RemoveServerFolder();
 			RemoveWebPortalFolder();
+			RemoveWebDavPortalFolder();
+			RemoveSetupFolder();
 		}
 
 		public virtual void RemoveStandaloneServer()
 		{
+			if (OSInfo.IsWindows) RemoveWebDavPortalWebsite();
 			RemoveWebPortalWebsite();
+			RemoveServerWebsite();
 			RemoveStandaloneServerFolder();
 			DeleteDatabase();
 		}
 		public virtual void ReadStandaloneServerConfiguration() { }
 
+		public virtual string PathWithSpaces(string path)
+		{
+			return Regex.Replace(path, "(?<=[a-z])([A-Z])", " $1");
+		}
 		public virtual void ConfigureStandaloneServer() {
 			Settings.WebPortal.EmbedEnterpriseServer = true;
+			if (!EnterpriseServerFolder.Contains(' '))
+			{
+				EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
+			}
 			Settings.WebPortal.EnterpriseServerPath = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
-			ConfigureWebPortal();
-			ConfigureEnterpriseServer();
 			ConfigureServer();
+			ConfigureEnterpriseServer();
+			ConfigureWebPortal();
+			if (OSInfo.IsWindows) ConfigureWebDavPortal();
 		}
 
 		public virtual void CopyStandaloneServer(Func<string, string> filter = null)

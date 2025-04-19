@@ -289,6 +289,7 @@ namespace SolidCP.Providers.HostedSolution
 			{
 				return false;
 			}
+			if (spKey == null) spKey = spKey32;
 
 			string spVal = (string)spKey.GetValue("SharePoint");
 			return (String.Compare(spVal, "installed", true) == 0);

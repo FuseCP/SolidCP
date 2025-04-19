@@ -1178,9 +1178,9 @@ namespace SolidCP.Providers.Mail
             var nonAlphaNum = apiObject.GetProperty("C_Accounts_Policies_Pass_NonAlphaNum");
             var alpha = apiObject.GetProperty("C_Accounts_Policies_Pass_Alpha");
 
-            return System.Web.Security.Membership.GeneratePassword(minLength, nonAlphaNum) +
-                GetRandowChars("0123456789", digits) +
-                GetRandowChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", alpha);
+            return System.Web.Security.Membership.GeneratePassword((int)minLength, (int)nonAlphaNum) +
+                GetRandowChars("0123456789", (int)digits) +
+                GetRandowChars("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", (int)alpha);
         }
 
         public void UpdateMailAlias(MailAlias mailAlias)
@@ -1706,7 +1706,10 @@ namespace SolidCP.Providers.Mail
 
         public void Dispose()
         {
-            Marshal.FinalReleaseComObject(_currentApiObject);
-        }
-    }
+			if (_currentApiObject != null)
+			{
+				Marshal.FinalReleaseComObject(_currentApiObject);
+			}
+		}
+	}
 }

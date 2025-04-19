@@ -3963,7 +3963,46 @@ namespace SolidCP.EnterpriseServer
 					 new SqlParameter("@ServiceID", serviceId));
 			}
 		}
+		public bool GetQuotaHidden(string quotaName, int groupID)
+		{
+			if (UseEntityFramework)
+			{
+				return Quotas
+					.Where(quota => quota.QuotaName == quotaName && quota.GroupId == groupID)
+					.Select(quota => quota.HideQuota)
+					.FirstOrDefault() ?? false;
+			}
+			else
+			{
+				SqlParameter prmHideQuota = new SqlParameter("@HideQuota", SqlDbType.Bit);
+				prmHideQuota.Direction = ParameterDirection.Output;
 
+				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "GetQuotaHidden",
+					new SqlParameter("@QuotaName", quotaName),
+					new SqlParameter("@GroupID", groupID),
+					prmHideQuota);
+
+				return (prmHideQuota.Value as bool?) == true;
+			}
+		}
+
+		public int UpdateQuotaHidden(string quotaName, int groupID, bool hideQuota)
+		{
+			if (UseEntityFramework)
+			{
+				return Quotas.Where(quota => quota.QuotaName == quotaName && quota.GroupId == groupID)
+					.ExecuteUpdate(quota => new Data.Entities.Quota { HideQuota = hideQuota });
+			}
+			else
+			{
+				return SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
+					ObjectQualifier + "UpdateQuotaHidden",
+					new SqlParameter("@QuotaName", quotaName),
+					new SqlParameter("@GroupID", groupID),
+					new SqlParameter("@HideQuota", hideQuota.ToString()));
+			}
+		}
 		#endregion
 
 		#region Private Network VLANs

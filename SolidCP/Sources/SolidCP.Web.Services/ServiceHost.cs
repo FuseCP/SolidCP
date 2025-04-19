@@ -181,6 +181,8 @@ namespace SolidCP.Web.Services
 						if (isEncrypted && UseMessageSecurityOverHttp)
 						{
 							var wsHttpBinding = new WSHttpBinding(SecurityMode.Message) { Name = "ws.message" };
+							wsHttpBinding.Security.Message.EstablishSecurityContext = true;
+							wsHttpBinding.Security.Message.NegotiateServiceCredential = true;
 							AddEndpoint(contract, wsHttpBinding, adr);
 						}
 						else if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)

@@ -1514,15 +1514,18 @@ SELECT DatabaseVersion FROM Version");
 				{
 					while (null != (sql = script.ReadNextStatement()))
 					{
-						sql = ProcessInstallVariables?.Invoke(sql) ?? sql;
-						command.CommandText = sql;
-						try
+						if (!string.IsNullOrWhiteSpace(sql))
 						{
-							command.ExecuteNonQuery();
-						}
-						catch (Exception ex)
-						{
-							throw new Exception("Error executing SQL command: " + sql, ex);
+							sql = ProcessInstallVariables?.Invoke(sql) ?? sql;
+							command.CommandText = sql;
+							try
+							{
+								command.ExecuteNonQuery();
+							}
+							catch (Exception ex)
+							{
+								throw new Exception("Error executing SQL command: " + sql, ex);
+							}
 						}
 
 						i++;
@@ -1530,6 +1533,7 @@ SELECT DatabaseVersion FROM Version");
 						{
 							OnProgressChange?.Invoke((float)i / n);
 						}
+
 					}
 				}
 				else
@@ -1575,13 +1579,18 @@ SELECT DatabaseVersion FROM Version");
 						return;
 					}
 
-					if (!DatabaseExists(masterConnectionString, databaseName)) CreateDatabase(masterConnectionString, databaseName);
+					bool newDatabase = false;
+					if (!DatabaseExists(masterConnectionString, databaseName))
+					{
+						CreateDatabase(masterConnectionString, databaseName);
+						newDatabase = true;
+					}
 					else throw new InvalidOperationException($"Database {databaseName} already exists.");
 
 					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
 					{
 						if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
-						else AddUserToDatabase(masterConnectionString, databaseName, user);
+						else throw new NotSupportedException($"Database user {user} already exists.");
 					}
 
 					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,

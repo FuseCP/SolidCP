@@ -6,6 +6,7 @@
         <LangVersion>13</LangVersion>
         <UseWindowsForms>true</UseWindowsForms>
         <PackageId>SolidCP.UniversalInstaller.UI.WinForms</PackageId>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
 
     <PropertyGroup Condition="$(TargetFramework) == 'net48'">
@@ -57,6 +58,7 @@
             <SpecificVersion>False</SpecificVersion>
         </Reference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net48'">
@@ -273,6 +275,16 @@
         <Compile Update="Wizard\WizardPageBase.cs">
             <SubType>UserControl</SubType>
         </Compile>
+        <Compile Update="UpdaterForm.cs">
+            <SubType>Form</SubType>
+        </Compile>
+        <Compile Update="UpdaterForm.Designer.cs">
+            <DependentUpon>UpdaterForm.cs</DependentUpon>
+        </Compile>
+        <EmbeddedResource Update="UpdaterForm.resx">
+            <SubType>Designer</SubType>
+            <DependentUpon>UpdaterForm.cs</DependentUpon>
+        </EmbeddedResource>
     </ItemGroup>
 
     <ItemGroup>

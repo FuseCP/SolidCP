@@ -180,6 +180,8 @@ namespace SolidCP.UniversalInstaller
 			
 			return res == Result.OK;
 		}
+		public abstract void DownloadInstallerUpdate();
+		public abstract bool CheckForInstallerUpdate(bool appStartup = false);
 		public virtual object MainForm { get; set; }
 	}
 }

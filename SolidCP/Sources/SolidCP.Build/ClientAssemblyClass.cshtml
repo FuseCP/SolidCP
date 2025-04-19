@@ -70,13 +70,11 @@ public class @(Class.Identifier)AssemblyClient: SolidCP.Web.Clients.ClientAssemb
                     }
                     else
                     {
-                    @(par.Identifier)
-
-                    <text> = (@par.Type)_params[@n];</text>
+                        @(par.Identifier)<text> = (@par.Type)_params[@n];</text>
+                    }
                 }
                 n++;
             }
-        }
             if (!method.IsVoid)
             {
                 <text>return _result;</text>

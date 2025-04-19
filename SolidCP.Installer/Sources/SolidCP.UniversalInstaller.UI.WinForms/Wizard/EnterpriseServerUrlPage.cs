@@ -43,6 +43,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using SolidCP.UniversalInstaller;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller.WinForms
 {
@@ -53,31 +54,37 @@ namespace SolidCP.UniversalInstaller.WinForms
 			InitializeComponent();
 		}
 		public WebPortalSettings Settings => Installer.Current.Settings.WebPortal;
+		public bool CanEmbed
+		{
+			get
+			{
+				var installerPath = Settings.InstallFolder;
+				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "HostPanelPro.Web.Clients.dll"));
+				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "HostPanelPro.Web.Clients.dll"));
+				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder &&
+					(File.Exists(webClientsPath1) || File.Exists(webClientsPath2));
+			}
+		}
 		protected override void InitializePageInternal()
 		{
 			base.InitializePageInternal();
-			this.Text = "Enterprise Server URL";
-			this.Description = "Enter the Enterprise Server URL";
+			Text = "Enterprise Server URL";
+			Description = "Enter the Enterprise Server URL";
 
 			if (Installer.Current.Settings.Installer.Action == SetupActions.Setup)
 			{
 				LoadUrl();
 			}
-			this.txtURL.Text = Settings.EnterpriseServerUrl;
-			this.txtPath.Text = Settings.EnterpriseServerPath;
-			this.chkBoxEmbed.Checked = Settings.EmbedEnterpriseServer;
-			this.chkExpose.Checked = Settings.ExposeEnterpriseServerWebServices;
+			txtURL.Text = Settings.EnterpriseServerUrl;
+			txtPath.Text = Settings.EnterpriseServerPath;
+			chkBoxEmbed.Checked = Settings.EmbedEnterpriseServer;
+			chkExpose.Checked = Settings.ExposeEnterpriseServerWebServices;
 
 			chkBoxEmbed_CheckedChanged(this, EventArgs.Empty);
 
-			var installerPath = Settings.InstallFolder;
-			var webClientsPath = Path.GetFullPath(Path.Combine(installerPath, "bin", "SolidCP.Web.Clients.dll"));
-			var canEmbed = File.Exists(webClientsPath);
-			this.chkBoxEmbed.Enabled = canEmbed;
-
-			this.AllowMoveBack = true;
-			this.AllowMoveNext = true;
-			this.AllowCancel = true;
+			AllowMoveBack = true;
+			AllowMoveNext = true;
+			AllowCancel = true;
 		}
 
 		protected internal override void OnAfterDisplay(EventArgs e)
@@ -90,7 +97,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		private void LoadUrl()
 		{
-			try
+			/*try
 			{
 				Settings.EnterpriseServerUrl = string.Empty;
 
@@ -123,7 +130,23 @@ namespace SolidCP.UniversalInstaller.WinForms
 			catch(Exception ex)
 			{
 				Log.WriteError("Site settings error", ex);
-			}			
+			}*/
+			
+			var path = DefaultEntServerPath;
+			Settings.EmbedEnterpriseServer = path != null;
+			Settings.EnterpriseServerPath = path;
+			if (Settings.EmbedEnterpriseServer)
+			{
+				Settings.EnterpriseServerUrl = "assembly://HostPanelPro.EnterpriseServer";
+			}
+			else
+			{
+				if (string.IsNullOrEmpty(Settings.EnterpriseServerUrl))
+				{
+
+					Settings.EnterpriseServerUrl = "http://localhost:9002";
+				}
+			}
 		}
 
 		protected internal override void OnBeforeMoveNext(CancelEventArgs e)
@@ -155,7 +178,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 			if (url.Trim().Length == 0)
 			{
-				return true;
+				ShowWarning("Please enter valid URL");
+				return false;
 			}
 
 			Regex r = new Regex(@"(http|https|assembly)://([\w-]+\.)+[\w-]+(/[\w- ./?%&=]*)?");
@@ -193,22 +217,45 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 			return true;
 		}
-
-		private string DefaultEntServerPath => $"..\\{Global.EntServer.ComponentName}";
+		private string DefaultEntServerPath
+		{
+			get
+			{
+				var folder1 = $"..\\{Installer.Current.EnterpriseServerFolder}";
+				var folder2 = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
+				if (!OSInfo.IsWindows)
+				{
+					folder1 = folder1.Replace('\\', '/');
+					folder2 = folder2.Replace('\\', '/');
+				}
+				if (Directory.Exists(folder1))
+				{
+					return folder1;
+				}
+				else if (Directory.Exists(folder2))
+				{
+					return folder2;
+				}
+				else
+				{
+					return null;
+				}
+			}
+		}
 		private string AbsolutePath(string relativePath) => Path.IsPathRooted(relativePath) ? relativePath :
-			Path.GetFullPath(Path.Combine(Settings.InstallFolder, relativePath));
-        private string RelativePath(string absolutePath) => GetRelativePath(Settings.InstallFolder, absolutePath);
+			Path.GetFullPath(Path.Combine(Settings.InstallFolder, Installer.Current.WebPortalFolder, relativePath));
+		private string RelativePath(string absolutePath) => GetRelativePath(Path.Combine(Settings.InstallFolder, Installer.Current.WebPortalFolder), absolutePath);
 
-        /// <summary>
-        /// Creates a relative path from one file or folder to another.
-        /// </summary>
-        /// <param name="fromPath">Contains the directory that defines the start of the relative path.</param>
-        /// <param name="toPath">Contains the path that defines the endpoint of the relative path.</param>
-        /// <returns>The relative path from the start directory to the end path.</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="fromPath"/> or <paramref name="toPath"/> is <c>null</c>.</exception>
-        /// <exception cref="UriFormatException"></exception>
-        /// <exception cref="InvalidOperationException"></exception>
-        public static string GetRelativePath(string fromPath, string toPath)
+		/// <summary>
+		/// Creates a relative path from one file or folder to another.
+		/// </summary>
+		/// <param name="fromPath">Contains the directory that defines the start of the relative path.</param>
+		/// <param name="toPath">Contains the path that defines the endpoint of the relative path.</param>
+		/// <returns>The relative path from the start directory to the end path.</returns>
+		/// <exception cref="ArgumentNullException"><paramref name="fromPath"/> or <paramref name="toPath"/> is <c>null</c>.</exception>
+		/// <exception cref="UriFormatException"></exception>
+		/// <exception cref="InvalidOperationException"></exception>
+		public static string GetRelativePath(string fromPath, string toPath)
         {
             if (string.IsNullOrEmpty(fromPath))
             {
@@ -250,17 +297,24 @@ namespace SolidCP.UniversalInstaller.WinForms
             return path;
         }
 
-        private void chkBoxEmbed_CheckedChanged(object sender, EventArgs e)
+		string oldUrl = null;
+		private void chkBoxEmbed_CheckedChanged(object sender, EventArgs e)
 		{
 			lblEnterpriseServerPath.Enabled = chkExpose.Enabled = txtPath.Enabled = chkBoxEmbed.Checked;
 			lblURL.Enabled = txtURL.Enabled = !chkBoxEmbed.Checked;
 			
 			if (chkBoxEmbed.Checked) {
+				oldUrl = txtURL.Text;
+				if (oldUrl.StartsWith("assembly://")) oldUrl = null;
 				txtURL.Text = "assembly://SolidCP.EnterpriseServer";
-				if (string.IsNullOrEmpty(txtPath.Text))
+				if (string.IsNullOrEmpty(txtPath.Text) && DefaultEntServerPath != null)
 				{
 					txtPath.Text = DefaultEntServerPath;
 				}
+			}
+			else
+			{
+				txtURL.Text = oldUrl ?? "http://localhost:9002";
 			}
 		}
 

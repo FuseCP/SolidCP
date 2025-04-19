@@ -1415,7 +1415,7 @@ namespace SolidCP.EnterpriseServer
             DataSet dsItems = Database.GetServiceItems(SecurityContext.User.UserId,
                 packageId, groupName, typeName, recursive);
 
-            FlatternItemsTable(dsItems, 0, itemType);
+            FlattenItemsTable(dsItems, 0, itemType);
 
             return dsItems;
         }
@@ -1479,7 +1479,7 @@ namespace SolidCP.EnterpriseServer
                 SecurityContext.User.UserId, packageId, groupName, typeName, serverId, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
-            FlatternItemsTable(dsItems, 1, itemType);
+            FlattenItemsTable(dsItems, 1, itemType);
 
             return dsItems;
         }
@@ -1765,7 +1765,7 @@ namespace SolidCP.EnterpriseServer
 
 			return item;
 		}
-		private void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
+		private void FlattenItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
         {
             DataTable dtItems = dsItems.Tables[itemsTablePosition];
             DataTable dtProps = dsItems.Tables[itemsTablePosition + 1];
@@ -1774,7 +1774,13 @@ namespace SolidCP.EnterpriseServer
             PropertyInfo[] props = itemType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo prop in props)
             {
-                if (!dtItems.Columns.Contains(prop.Name) && !prop.PropertyType.IsArray)
+                if (!dtItems.Columns.Contains(prop.Name) && !prop.PropertyType.IsArray &&
+				    (prop.PropertyType == typeof(string) ||
+				    prop.PropertyType == typeof(int) ||
+				    prop.PropertyType == typeof(long) ||
+				    prop.PropertyType == typeof(bool) ||
+				    prop.PropertyType == typeof(Guid) ||
+                    prop.PropertyType.IsEnum))
                     dtItems.Columns.Add(prop.Name, prop.PropertyType);
             }
 
@@ -1803,8 +1809,10 @@ namespace SolidCP.EnterpriseServer
                         propValue = (sVal != "") ? Boolean.Parse(sVal) : false;
                     if (columnType == typeof(Guid))
                         propValue = (!string.IsNullOrEmpty(sVal)) ? new Guid(sVal) : Guid.Empty;
+					if (columnType.IsEnum)
+						propValue = (sVal != "") ? Enum.Parse(columnType, sVal) : Convert.ChangeType(0, columnType);
 
-                    drItem[columnName] = propValue;
+					drItem[columnName] = propValue;
                 }
             }
         }

@@ -65,7 +65,8 @@ namespace SolidCP.PasswordEncoder
             this.EncryptButton = new System.Windows.Forms.Button();
             this.DecryptButton = new System.Windows.Forms.Button();
             this.Sha1Button = new System.Windows.Forms.Button();
-            this.SuspendLayout();
+			this.sha256 = new System.Windows.Forms.Button();
+			this.SuspendLayout();
             // 
             // label1
             // 
@@ -139,18 +140,29 @@ namespace SolidCP.PasswordEncoder
             // 
             this.Sha1Button.Location = new System.Drawing.Point(174, 103);
             this.Sha1Button.Name = "Sha1Button";
-            this.Sha1Button.Size = new System.Drawing.Size(75, 23);
-            this.Sha1Button.TabIndex = 8;
+			this.Sha1Button.Size = new System.Drawing.Size(55, 23);
+			this.Sha1Button.TabIndex = 8;
             this.Sha1Button.Text = "SHA1";
             this.Sha1Button.UseVisualStyleBackColor = true;
             this.Sha1Button.Click += new System.EventHandler(this.Sha1Button_Click);
-            // 
-            // MainForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+			// 
+			// sha256
+			// 
+			this.sha256.Location = new System.Drawing.Point(235, 103);
+			this.sha256.Name = "sha256";
+			this.sha256.Size = new System.Drawing.Size(75, 23);
+			this.sha256.TabIndex = 9;
+			this.sha256.Text = "SHA256";
+			this.sha256.UseVisualStyleBackColor = true;
+			this.sha256.Click += new System.EventHandler(this.Sha256Button_Click);
+			// 
+			// MainForm
+			// 
+			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(322, 213);
-            this.Controls.Add(this.Sha1Button);
+			this.Controls.Add(this.sha256);
+			this.Controls.Add(this.Sha1Button);
             this.Controls.Add(this.DecryptButton);
             this.Controls.Add(this.EncryptButton);
             this.Controls.Add(this.Result);
@@ -179,6 +191,7 @@ namespace SolidCP.PasswordEncoder
         private System.Windows.Forms.Button EncryptButton;
         private System.Windows.Forms.Button DecryptButton;
         private System.Windows.Forms.Button Sha1Button;
-    }
+		private System.Windows.Forms.Button sha256;
+	}
 }
 
