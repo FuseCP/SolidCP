@@ -53,7 +53,7 @@ jobs:
       matrix:
         configuration: [Release]
 
-    runs-on: windows-latest  # For a list of available runner types, refer to
+    runs-on: windows-2022  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
     timeout-minutes: 60
@@ -64,31 +64,32 @@ jobs:
       UseAspNetPrecompile: "false"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
-      MsBuildSwitches: "/v:m /m"
+      MsBuildSwitches: "/v:n /m"
       GitHubAction: true
 
     steps:
       
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
+    #- name: Add msbuild to PATH
+    #  uses: microsoft/setup-msbuild@v2
     
     # Install the .NET Core workload
-    - name: Install .NET 8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+    #- name: Install .NET 8
+    #  uses: actions/setup-dotnet@v4
+    #  with:
+    #    dotnet-version: 8.0.x
 
-    - name: Update WSL
-      run: |
-        wsl --update
-        
+    #- name: Update WSL
+    #  run: |
+    #    wsl --update
+    #    wsl --version
+
     - name: Install WSL Alpine with rpm tools
       uses: Vampire/setup-wsl@v3
       with: 
         distribution: Alpine
         additional-packages: rpm-dev
-        use-cache: 'true'
-        #use-cache: 'false'
+        use-cache: 'false'
+        #use-cache: 'true'
 
     - name: Show WSL distro info
       run: |
