@@ -64,7 +64,7 @@ jobs:
       UseAspNetPrecompile: "false"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
-      MsBuildSwitches: "/v:n /m"
+      MsBuildSwitches: "/v:m /m"
       GitHubAction: true
 
     steps:
@@ -80,7 +80,6 @@ jobs:
 
     - name: Update WSL
       run: |
-        wsl --update
         wsl --version
 
     - name: Install WSL Alpine with rpm tools
