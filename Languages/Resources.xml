@@ -51942,7 +51942,7 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\DomainExpirationView.ascx.resx</File>
-    <Key>lblIncludeNonExistenDomains.Text</Key>
+    <Key>lblIncludeNonExistentDomains.Text</Key>
     <DefaultValue>Include Non-Existent Domains:</DefaultValue>
   </Resource>
   <Resource>

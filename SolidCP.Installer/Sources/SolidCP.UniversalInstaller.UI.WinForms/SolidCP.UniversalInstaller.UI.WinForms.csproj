@@ -58,7 +58,7 @@
             <SpecificVersion>False</SpecificVersion>
         </Reference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
+        <PackageReference Include="System.Resources.Extensions" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net48'">
