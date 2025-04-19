@@ -88,8 +88,8 @@ jobs:
       with: 
         distribution: Alpine
         additional-packages: rpm-dev
-        use-cache: 'true'
-        #use-cache: 'false'
+        use-cache: 'false'
+        #use-cache: 'true'
 
     - name: Show WSL distro info
       run: |
