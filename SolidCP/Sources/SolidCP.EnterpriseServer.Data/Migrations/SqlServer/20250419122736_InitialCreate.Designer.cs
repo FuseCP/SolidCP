@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SolidCP.EnterpriseServer.Data;
 
@@ -10,25 +11,16 @@ using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
 {
-    public class SqlServerDbContext_1_5_0: SqlServerDbContext {
-#if NetCore
-        public SqlServerDbContext_1_5_0(string connectionString, bool initSeedData = false): base(connectionString, initSeedData) { }
-	    public SqlServerDbContext_1_5_0(DbContext context): base(context) { }
-	    public SqlServerDbContext_1_5_0(DbContextOptions<Context.DbContextBase> options): base(options) { }
-#else
-	    public SqlServerDbContext_1_5_0(DbContext context): base(context) { }        
-#endif
-	}
-    
-    [DbContext(typeof(SqlServerDbContext_1_5_0))]
-    partial class SqlServerDbContextModelSnapshot_1_5_0 : ModelSnapshot
-			
+    [DbContext(typeof(SqlServerDbContext))]
+    [Migration("20250419122736_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.1")
+                .HasAnnotation("ProductVersion", "9.0.3")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -8778,6 +8770,17 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                             QuotaDescription = "Allow editing TTL in DNS Editor",
                             QuotaName = "DNS.EditTTL",
                             QuotaOrder = 2,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 754,
+                            GroupId = 4,
+                            HideQuota = true,
+                            QuotaDescription = "Allow changes to access controls",
+                            QuotaName = "Mail.AllowAccessControls",
+                            QuotaOrder = 9,
                             QuotaTypeId = 1,
                             ServiceQuota = false
                         },

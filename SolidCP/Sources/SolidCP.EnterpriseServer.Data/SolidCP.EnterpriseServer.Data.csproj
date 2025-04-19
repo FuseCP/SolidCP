@@ -184,4 +184,9 @@
         </Compile>
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\PostgreSql\" />
+      <Folder Include="Migrations\Sqlite\" />
+    </ItemGroup>
+
 </Project>

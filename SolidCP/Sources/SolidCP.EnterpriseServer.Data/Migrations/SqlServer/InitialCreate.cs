@@ -93,6 +93,9 @@ GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSCollection]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[UpdateRDSCollection]
 GO
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE object_id = OBJECT_ID(N'[dbo].[UpdateQuotaHidden]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[UpdateQuotaHidden
+]GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePrivateNetworVLAN]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
 GO
@@ -614,6 +617,9 @@ DROP PROCEDURE [dbo].[GetRawServicesByServerID]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetQuotas]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[GetQuotas]
+GO
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE object_id = OBJECT_ID(N'[dbo].[GetQuotaHidden]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetQuotaHidden]
 GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviderServiceQuota]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[GetProviderServiceQuota]

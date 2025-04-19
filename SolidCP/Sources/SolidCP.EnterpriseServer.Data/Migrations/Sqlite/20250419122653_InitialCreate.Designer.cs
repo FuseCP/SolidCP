@@ -11,14 +11,14 @@ using SolidCP.EnterpriseServer.Data;
 namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
 {
     [DbContext(typeof(SqliteDbContext))]
-    [Migration("20250204181838_InitialCreate")]
+    [Migration("20250419122653_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "9.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "9.0.3");
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
@@ -8667,6 +8667,17 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                             QuotaDescription = "Allow editing TTL in DNS Editor",
                             QuotaName = "DNS.EditTTL",
                             QuotaOrder = 2,
+                            QuotaTypeId = 1,
+                            ServiceQuota = false
+                        },
+                        new
+                        {
+                            QuotaId = 754,
+                            GroupId = 4,
+                            HideQuota = true,
+                            QuotaDescription = "Allow changes to access controls",
+                            QuotaName = "Mail.AllowAccessControls",
+                            QuotaOrder = 9,
                             QuotaTypeId = 1,
                             ServiceQuota = false
                         },
