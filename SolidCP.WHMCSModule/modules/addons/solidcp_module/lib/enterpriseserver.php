@@ -516,7 +516,7 @@ final class SolidCP_EnterpriseServer
 	 * @param unknown $params
 	 * @throws Exception
 	 */
-	private function execute($service, $method, $params)
+	public function execute($service, $method, $params)
 	{
 		// Set the Enterprise Server full URL
 		$host = (($this->_secured) ? 'https' : 'http') . "://{$this->_host}:{$this->_port}/{$service}?WSDL";
@@ -536,7 +536,14 @@ final class SolidCP_EnterpriseServer
 				$soapHeader = new SoapHeader('http://hostpanelpro/headers/Credentials', 'Credentials', $auth_block);
 				$client -> __setSoapHeaders($soapHeader);
 			}
-
+		} catch (SoapFault $ex) {
+			// Old version of SolidCP
+			$host = (($this->_secured) ? 'https' : 'http') . "://{$this->_host}:{$this->_port}/{$service}.asmx?WSDL";
+			// Create the SoapClient
+			$client = new SoapClient($host, array('login' => $this->_username, 'password' => $this->_password, 'compression' => (($this->_compression) ? (SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP) : ''), 'keep_alive' => false, 'cache_wsdl' => ($this->_caching) ? 1 : 0));
+		}
+		
+		try {
 			// Execute the request and process the results
 			return call_user_func(array($client, $method), $params);
 		}
