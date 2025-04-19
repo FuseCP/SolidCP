@@ -78,9 +78,10 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Update WSL
-      run: |
-        wsl --version
+    #- name: Update WSL
+    #  run: |
+    #    wsl --update
+    #    wsl --version
 
     - name: Install WSL Alpine with rpm tools
       uses: Vampire/setup-wsl@v3
