@@ -62,11 +62,12 @@
         <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <PackageReference Include="System.Memory" Version="4.6.3" />
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System" />
         <Reference Include="System.Configuration" />
@@ -82,7 +83,6 @@
         <Reference Include="SwaggerWcf">
             <HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
         </Reference>
-        <PackageReference Include="System.Memory" Version="4.5.5" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="CoreWCF.Primitives" Version="1.7.0" />
