@@ -80,6 +80,7 @@ jobs:
 
     #- name: Update WSL
     #  run: |
+    #    wsl --update
     #    wsl --version
 
     - name: Install WSL Alpine with rpm tools
