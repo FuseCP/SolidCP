@@ -465,6 +465,7 @@
 			<!--<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />-->
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="**\Setup2.dll" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.runtimeconfig.json" />
 			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
 			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
 			<InstallerExe Include="$(InstallerProjectBin)\net48\SolidCP.Installer.exe" />
@@ -1052,6 +1053,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update.zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update-Linux.zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
 
 		<!-- zip tools
 		<Zip Files="@(ImportCsvInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-CsvBulk-$(Version).zip" WorkingDirectory="$(ImportCsvInstall)" />
