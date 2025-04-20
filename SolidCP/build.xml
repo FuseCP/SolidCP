@@ -456,9 +456,11 @@
 		</PropertyGroup>
 
 		<Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.Installer.sln" />
+		<Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
+		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
