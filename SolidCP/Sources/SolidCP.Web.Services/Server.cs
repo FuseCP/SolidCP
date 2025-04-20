@@ -23,13 +23,17 @@ namespace SolidCP.Web.Services
 		{
 			get
 			{
-				OperationContext context = OperationContext.Current;
-				if (context == null) return "127.0.0.1";
-				MessageProperties prop = context.IncomingMessageProperties;
-				RemoteEndpointMessageProperty endpoint =
-						 prop[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
-				string ip = endpoint?.Address ?? "127.0.0.1";
-				return ip;
+				try {
+					OperationContext context = OperationContext.Current;
+					if (context == null) return "127.0.0.1";
+					MessageProperties prop = context.IncomingMessageProperties;
+					RemoteEndpointMessageProperty endpoint =
+						prop[RemoteEndpointMessageProperty.Name] as RemoteEndpointMessageProperty;
+					string ip = endpoint?.Address ?? "127.0.0.1";
+					return ip;
+				} catch {
+					return "127.0.0.1";
+				}
 			}
 		}
 
@@ -37,7 +41,15 @@ namespace SolidCP.Web.Services
 		public static Action ConfigurationComplete = null;
 		public static Action<WebApplicationBuilder> ConfigureBuilder = null;
 #else
-		public static string UserHostAddress => System.Web.HttpContext.Current.Request.UserHostAddress;
+		public static string UserHostAddress {
+			get {
+				try {
+					return System.Web.HttpContext.Current.Request.UserHostAddress;
+				} catch {
+					return "127.0.0.1";
+				}
+			}
+		}
 		public static string MapPath(string path) => System.Web.Hosting.HostingEnvironment.MapPath(path);
 #endif
 

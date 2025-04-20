@@ -12,13 +12,15 @@ namespace SolidCP.EnterpriseServer
 			using (var controller = new Controllers())
 			{
 				string cachePassword = null;
+				var hostAddress = Web.Services.Server.UserHostAddress;
+
 				if (Users.TryGetValue(username, out cachePassword) && password == cachePassword)
 				{
 					GetUserTasks.GetOrAdd(username, (username) => Task.Run(async () =>
 					{
 						await Task.Delay(3000);
 
-						UserInfo user = controller.UserController.GetUserByUsernamePassword(username, password, Web.Services.Server.UserHostAddress);
+						UserInfo user = controller.UserController.GetUserByUsernamePassword(username, password, hostAddress, false);
 						if (user == null) Users.TryRemove(username, out cachePassword);
 						Task task;
 						GetUserTasks.TryRemove(username, out task);
@@ -27,7 +29,7 @@ namespace SolidCP.EnterpriseServer
 					return true;
 				}
 
-				UserInfo user = controller.UserController.GetUserByUsernamePassword(username, password, Web.Services.Server.UserHostAddress);
+				UserInfo user = controller.UserController.GetUserByUsernamePassword(username, password, hostAddress, false);
 
 				if (user == null)
 				{

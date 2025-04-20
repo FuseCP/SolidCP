@@ -3095,15 +3095,22 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				var serverUrls = Servers.Join(Packages, s => s.ServerId, p => p.ServerId, (server, package) => new
-				{
-					server.ServerUrl,
-					package.UserId
-				})
-				.Where(s => s.UserId == userId)
-				.Select(s => new { s.ServerUrl });
+				var servers = Packages
+					.Where(package => package.UserId == userId)
+					.Select(package => package.Server);
+				var ids = servers
+					.Where(server => !server.VirtualServer)
+					.Select(server => server.ServerId)
+					.Union(servers
+					.Where(server => server.VirtualServer)
+					.SelectMany(server => server.VirtualServices
+						.Select(vs => vs.Service.Server.ServerId)));
+				var urls = ids
+					.Join(Servers, id => id, server => server.ServerId, (id, server) => new {
+						server.ServerUrl
+					});
 
-				return EntityDataReader(serverUrls);
+				return EntityDataReader(urls);
 			}
 			else
 			{

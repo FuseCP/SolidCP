@@ -40,8 +40,9 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Linq;
-using Google.Authenticator;
 using System.Threading;
+using System.Threading.Tasks;
+using Google.Authenticator;
 using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.EnterpriseServer
@@ -58,20 +59,6 @@ namespace SolidCP.EnterpriseServer
 			// try to get user from database
 			UserInfo user = GetUserInternally(username);
 			return (user != null);
-		}
-
-		public void InitSshServerTunnels(int userId)
-		{
-			// init users SSH tunnel server connections
-			ThreadPool.QueueUserWorkItem(arg =>
-			{
-				using (var controller = AsAsync<UserController>())
-				{
-					var servers = controller.GetUserPackagesServerUrls(userId)
-						.Where(url => CryptoUtils.DecryptServerUrl(url).StartsWith("ssh://"));
-					Web.Clients.ClientBase.StartAllSshTunnels(servers);
-				}
-			});
 		}
 
 		public int AuthenticateUser(string username, string password, string ip)
@@ -143,7 +130,6 @@ namespace SolidCP.EnterpriseServer
 							OneTimePasswordHelper.FireSuccessAuth(user);
 							break;
 						case OneTimePasswordStates.Expired:
-							CachedUsers.Clear(username);
 							if (lockOut >= 0) Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 							TaskManager.WriteWarning("Expired one time password");
 							return BusinessErrorCodes.ERROR_USER_EXPIRED_ONETIMEPASSWORD;
@@ -151,8 +137,6 @@ namespace SolidCP.EnterpriseServer
 				}
 				else
 				{
-					CachedUsers.Clear(username);
-
 					if (lockOut >= 0)
 						Database.UpdateUserFailedLoginAttempt(user.UserId, lockOut, false);
 
@@ -165,22 +149,18 @@ namespace SolidCP.EnterpriseServer
 				// check status
 				if (user.Status == UserStatus.Cancelled)
 				{
-					CachedUsers.Clear(username);
-
 					TaskManager.WriteWarning("Account cancelled");
 					return BusinessErrorCodes.ERROR_USER_ACCOUNT_CANCELLED;
 				}
 
 				if (user.Status == UserStatus.Pending)
 				{
-					CachedUsers.Clear(username);
-
 					TaskManager.WriteWarning("Account pending");
 					return BusinessErrorCodes.ERROR_USER_ACCOUNT_PENDING;
 				}
 
 				// init ssh tunnels to the servers the user uses, so the connection starts up faster
-				InitSshServerTunnels(user.UserId);
+				PreLoadUsersServers(user.UserId);
 
 				// if onetimepassword no MFA
 				if (user.MfaMode > 0 && result != BusinessSuccessCodes.SUCCESS_USER_ONETIMEPASSWORD)
@@ -295,133 +275,42 @@ namespace SolidCP.EnterpriseServer
 			return Database.CanUserChangeMfa(currentUserId, changeUserId, canPeerChangeMfa);
 		}
 
-		public class UserCacheInfo
+		public void PreLoadUsersServers(int userId)
 		{
-			public UserInfoInternal User;
-			public DateTime LastAccess;
+			Task.Run(() =>
+			{
+				using (var controller = AsAsync<UserController>())
+				{
+					var servers = controller.GetUserPackagesServerUrls(userId)
+						.Select(url => CryptoUtils.DecryptServerUrl(url))
+						.ToList();
+					var httpUrls = servers
+						.Where(url => !url.StartsWith("ssh://") && !url.StartsWith("assembly://"))
+						.Take(50);
+					var sshUrls = servers
+						.Where(url => url.StartsWith("ssh://"))
+						.Take(50);
+					var test = new Server.Client.Test();
+					foreach (var url in httpUrls)
+					{
+						test.Url = url;
+						test.TouchAsync();
+					}
+					Web.Clients.ClientBase.StartAllSshTunnels(sshUrls);
+				}
+			});
 		}
-
-		public class UserCache : KeyedCollection<string, UserCacheInfo>
-		{
-			public const int MaxSize = 32;
-			public static readonly TimeSpan MaxAge = TimeSpan.FromMinutes(30);
-
-			protected override string GetKeyForItem(UserCacheInfo item) => item.User.Username;
-
-			public void Truncate()
-			{
-				var now = DateTime.Now;
-				int i = 0;
-				IEnumerable<UserCacheInfo> outdated;
-
-				outdated = Enumerate()
-					.OrderByDescending(user => user.LastAccess)
-					.TakeWhile(user => user.LastAccess < now - MaxAge || Count - i++ > MaxSize);
-
-				foreach (var item in outdated)
-				{
-					lock (this)
-					{
-						Remove(item);
-					}
-				}
-			}
-
-			protected override void InsertItem(int index, UserCacheInfo item)
-			{
-				item.LastAccess = DateTime.Now;
-				base.InsertItem(index, item);
-			}
-			protected override void SetItem(int index, UserCacheInfo item)
-			{
-				item.LastAccess = DateTime.Now;
-				base.SetItem(index, item);
-			}
-
-			public IEnumerable<UserCacheInfo> Enumerate()
-			{
-				int i = 0, count;
-				lock (this) count = Count;
-				while (i < count)
-				{
-					lock (this)
-					{
-						yield return base[i++];
-						count = Count;
-					}
-				}
-			}
-
-			public UserInfoInternal Get(int userId) => Enumerate().FirstOrDefault(u => u.User.UserId == userId)?.User;
-
-			public UserInfoInternal Get(string username)
-			{
-				UserCacheInfo info;
-				lock (this)
-				{
-
-#if NETFRAMEWORK
-					if (Contains(username))
-					{
-						info = base[username];
-						info.LastAccess = DateTime.Now;
-						return info.User;
-					}
-#else
-					if (TryGetValue(username, out info))
-					{
-						info.LastAccess = DateTime.Now;
-						return info.User;
-					}
-#endif
-				}
-				return null;
-			}
-			public void AddToCache(UserInfoInternal user)
-			{
-				lock (this)
-				{
-					if (Contains(user.Username))
-					{
-						var cache = base[user.Username];
-						cache.User = user;
-						cache.LastAccess = DateTime.Now;
-					}
-					else
-					{
-						var cache = new UserCacheInfo() { User = user, LastAccess = DateTime.Now };
-						Add(cache);
-					}
-				}
-				if (Count > 2 * MaxSize) Truncate();
-			}
-			public void Clear(string username)
-			{
-				lock (this)
-				{
-					if (Contains(username)) Remove(username);
-				}
-			}
-			public void Clear(int userId)
-			{
-				var user = Enumerate().FirstOrDefault(u => u.User.UserId == userId);
-				if (user != null)
-				{
-					lock (this) Remove(user);
-				}
-			}
-		}
-
-		static UserCache CachedUsers = new UserCache();
-
-		public UserInfo GetUserByUsernamePassword(string username, string password, string ip)
+		public UserInfo GetUserByUsernamePassword(string username, string password, string ip, bool log = true)
 		{
 			// place log record
 			// TaskManager create backgroundtasklogs in db and them immediately remove and move them into auditlog (if it is a short task).
 			// The TaskManager is great for long tasks, but for short tasks that are called every second (from SOAP calls, for example) it puts a huge load on the DB.
-			//TaskManager.StartTask("USER", "GET_BY_USERNAME_PASSWORD", username);
-			//TaskManager.WriteParameter("IP", ip);
 
+			if (log)
+			{
+				TaskManager.StartTask("USER", "GET_BY_USERNAME_PASSWORD", username);
+				TaskManager.WriteParameter("IP", ip);
+			}
 			if (ip == null) ip = "";
 
 			try
@@ -432,7 +321,7 @@ namespace SolidCP.EnterpriseServer
 				// check if the user exists
 				if (user == null)
 				{
-					//TaskManager.WriteWarning("Account not found");
+					if (log) TaskManager.WriteWarning("Account not found");
 					AuditLog.AddAuditLogWarningRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip, "Account not found" });
 					return null;
 				}
@@ -444,22 +333,20 @@ namespace SolidCP.EnterpriseServer
 					Database.IsFreshDatabase)
 				{
 					// Queue call to AuditLog for better speed in SOAP calls
-					/* ThreadPool.QueueUserWorkItem(state =>
+					if (log)
 					{
-						using (var asyncController = AsAsync<UserController>())
+						ThreadPool.QueueUserWorkItem(state =>
 						{
-							asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
-						}
-					}); */
-
-					CachedUsers.AddToCache(user);
-
+							using (var asyncController = AsAsync<UserController>())
+							{
+								asyncController.AuditLog.AddAuditLogInfoRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip });
+							}
+						});
+					}
 					return new UserInfo(user);
-				}
-				// Don't cache when password is empty (Password could be set manually in the DB later on)
-				else if (!string.IsNullOrEmpty(user.Password))
+				} else
 				{
-					CachedUsers.AddToCache(user);
+					AuditLog.AddAuditLogWarningRecord("USER", "GET_BY_USERNAME_PASSWORD", username, new string[] { "IP: " + ip, "Failed login attempt" });
 				}
 
 				return null;
@@ -472,13 +359,13 @@ namespace SolidCP.EnterpriseServer
 						"Message: " + ex.Message,
 						"StackTrace: " + ex.StackTrace
 					});
-				//throw TaskManager.WriteError(ex);
-				throw ex;
+				if (log) throw TaskManager.WriteError(ex);
+				else throw;
 			}
-			//finally
-			//{
-			//    TaskManager.CompleteTask();
-			//}
+			finally
+			{
+			    if (log) TaskManager.CompleteTask();
+			}
 		}
 
 		public int ChangeUserPassword(string username, string oldPassword, string newPassword, string ip)
@@ -495,9 +382,6 @@ namespace SolidCP.EnterpriseServer
 					TaskManager.WriteWarning("Account not found");
 					return BusinessErrorCodes.ERROR_USER_NOT_FOUND;
 				}
-
-				// Clear cached user
-				CachedUsers.Clear(username);
 
 				// change password
 				Database.ChangeUserPassword(-1, user.UserId,
@@ -642,12 +526,12 @@ namespace SolidCP.EnterpriseServer
 
 		internal UserInfoInternal GetUserInternally(int userId)
 		{
-			return CachedUsers.Get(userId) ?? GetUser(Database.GetUserByIdInternally(userId));
+			return GetUser(Database.GetUserByIdInternally(userId));
 		}
 
 		internal UserInfoInternal GetUserInternally(string username)
 		{
-			return CachedUsers.Get(username) ?? GetUser(Database.GetUserByUsernameInternally(username));
+			return GetUser(Database.GetUserByUsernameInternally(username));
 		}
 
 		public UserInfoInternal GetUser(int userId)
@@ -895,8 +779,6 @@ namespace SolidCP.EnterpriseServer
 
 		public int UpdateUserAsync(string taskId, UserInfo user)
 		{
-			CachedUsers.Clear(user.Username);
-
 			UserAsyncWorker usersWorker = new UserAsyncWorker();
 			usersWorker.ThreadUserId = SecurityContext.User.UserId;
 			usersWorker.TaskId = taskId;
@@ -907,8 +789,6 @@ namespace SolidCP.EnterpriseServer
 
 		public int UpdateUser(string taskId, UserInfo user)
 		{
-			CachedUsers.Clear(user.Username);
-
 			try
 			{
 				// start task
@@ -1003,8 +883,6 @@ namespace SolidCP.EnterpriseServer
 
 		public int DeleteUser(string taskId, int userId)
 		{
-			CachedUsers.Clear(userId);
-
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 			if (accountCheck < 0) return accountCheck;
@@ -1024,8 +902,6 @@ namespace SolidCP.EnterpriseServer
 
 		public int ChangeUserPassword(int userId, string password)
 		{
-			CachedUsers.Clear(userId);
-
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 			if (accountCheck < 0) return accountCheck;
@@ -1061,8 +937,6 @@ namespace SolidCP.EnterpriseServer
 
 		public int ChangeUserStatus(string taskId, int userId, UserStatus status)
 		{
-			CachedUsers.Clear(userId);
-
 			// check account
 			int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo);
 			if (accountCheck < 0) return accountCheck;
