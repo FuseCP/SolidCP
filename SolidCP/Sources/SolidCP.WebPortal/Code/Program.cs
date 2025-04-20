@@ -16,14 +16,14 @@ public class Program
 		{
 			app.UseWebForms(options => options.AddHandleExtensions(".less"));
 		};
-		Server.ConfigureBuilder = services =>
+		Server.ConfigureBuilder = builder =>
 		{
 			var es = Assembly.Load("SolidCP.EnterpriseServer");
 			if (es != null)
 			{
 				var initializer = es.GetType("SolidCP.EnterpriseServer.Code.Initializer");
 				var init = initializer.GetMethod("Init");
-				init?.Invoke(null, new[] { services.Services });
+				init?.Invoke(null, new[] { builder.Services });
 			}
 		};
 		StartupCore.Init(args);
