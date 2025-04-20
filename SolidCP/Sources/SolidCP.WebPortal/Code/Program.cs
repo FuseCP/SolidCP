@@ -23,7 +23,7 @@ public class Program
 			{
 				var initializer = es.GetType("SolidCP.EnterpriseServer.Code.Initializer");
 				var init = initializer.GetMethod("Init");
-				init?.Invoke(null, new[] { services });
+				init?.Invoke(null, new[] { services.Services });
 			}
 		};
 		StartupCore.Init(args);
