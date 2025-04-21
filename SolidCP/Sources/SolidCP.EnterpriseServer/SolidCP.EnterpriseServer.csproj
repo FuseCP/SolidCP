@@ -150,6 +150,8 @@
             <FilesToMove Include="bin\SwaggerWcf.*" />
             <FilesToMove Include="bin\Renci.SshNet.*" />
             <FilesToMove Include="bin\SkiaSharp.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
             <FilesToDelete Include="bin\WebServices\**\*.*" />
             <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
             <!--<FilesToDelete Include="bin\refs\**\*.*" />-->

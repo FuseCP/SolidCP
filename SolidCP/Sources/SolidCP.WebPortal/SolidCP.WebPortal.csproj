@@ -224,6 +224,44 @@
         <Message Text="Copied Core.Web.config" Importance="high" />
     </Target>
 
+    <Target Name="DeleteUnusedDlls" AfterTargets="Build">
+
+        <!-- move lazy loaded assemblies to bin\Code and delete unused assemblies in bin -->
+        <Message Text="Delete unused dll files" Importance="high" />
+        <ItemGroup>
+            <FilesToMove Include="bin\Microsoft.Bcl.*" />
+            <FilesToMove Include="bin\Microsoft.Win32.Registry.*" />
+            <FilesToMove Include="bin\Newtonsoft.Json.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.*" />
+            <FilesToMove Include="bin\Microsoft.Web.Administration.*" />
+            <FilesToMove Include="bin\Microsoft.ReportViewer.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
+            <FilesToMove Include="bin\Microsoft.Web.*" />
+            <FilesToMove Include="bin\SolidCP.Server.Client.*" />
+            <FilesToMove Include="bin\SolidCP.Web.Clients.*" />
+            <FilesToMove Include="bin\MsieJavaScriptEngine.*" />
+            <FilesToMove Include="bin\Renci.SshNet.*" />
+            <FilesToMove Include="bin\SolidCP.EnterpriseServer.Client.*" />
+            <FilesToMove Include="bin\SolidCP.Providers.*" />
+            <FilesToMove Include="bin\WebGrease.*" />
+            <FilesToMove Include="bin\JavaScriptEngineSwitcher.*" />
+            <FilesToMove Include="bin\System.*" />
+            <FilesToMove Include="bin\SwaggerWcf.*" />
+            <FilesToMove Include="bin\SkiaSharp.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToMove Include="bin\Antlr3.*" />
+            <FilesToMove Include="bin\AdvancedStringBuilder.*" />
+            <FilesToMove Include="bin\HtmlSanitationLibrary.*" />
+            <FilesToDelete Include="bin\WebServices\**\*.*" />
+            <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
+            <!--<FilesToDelete Include="bin\refs\**\*.*" />-->
+        </ItemGroup>
+
+        <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Lazy" ContinueOnError="true" />
+        <RemoveDir Directories="bin\WebServices;bin\refs;bin_dotnet\WebServices" ContinueOnError="true" />
+    </Target>
+
     <!--<Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
         
         <ItemGroup>
