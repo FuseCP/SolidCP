@@ -67,6 +67,7 @@
         <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
         <PackageReference Include="System.Memory" Version="4.6.3" />
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System" />
@@ -124,6 +125,18 @@
             <FilesToMove Include="bin\SolidCP.Build.*" />
             <FilesToMove Include="bin\Microsoft.Web.Administration.*" />
             <FilesToMove Include="bin\SwaggerWcf.*" />
+            <FilesToMove Include="bin\SolidCP.Providers.*" />
+            <FilesToMove Include="bin\Microsoft.SharePoint.*" />
+            <FilesToMove Include="bin\Microsoft.Identity.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.*" />
+            <FilesToMove Include="bin\Microsoft.Practices.*" />
+            <FilesToMove Include="bin\Mono.Posix.*" />
+            <FilesToMove Include="bin\MySql.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
+            <FilesToMove Include="bin\SolidCP.Server.WPIService.*" />
+            <FilesToMove Include="bin\WPIServiceContract.*" />
+            <FilesToMove Include="bin\Azure.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
         <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" ContinueOnError="true" />
