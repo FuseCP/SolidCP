@@ -21568,3 +21568,39 @@ SET
 WHERE QuotaName = @QuotaName AND GroupID = @GroupID
 RETURN
 GO
+
+-- GetUserPackagesServerUrls bugfix for VirtualServers
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserPackagesServerUrls]') AND type in (N'P', N'PC'))
+DROP PROCEDURE [dbo].[GetUserPackagesServerUrls]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]
+    (
+    	@UserId INT
+    )
+    AS
+SELECT 
+    [Extent7].[ServerUrl] AS [ServerUrl]
+    FROM   (SELECT DISTINCT 
+        [UnionAll1].[ServerID] AS [C1]
+        FROM  (SELECT 
+            [Extent2].[ServerID] AS [ServerID]
+            FROM  [dbo].[Packages] AS [Extent1]
+            LEFT OUTER JOIN [dbo].[Servers] AS [Extent2] ON [Extent1].[ServerID] = [Extent2].[ServerID]
+            WHERE ([Extent1].[UserID] = @UserId) AND ([Extent2].[VirtualServer] <> 1)
+        UNION ALL
+            SELECT 
+            [Join3].[ServerID1] AS [ServerID]
+            FROM   [dbo].[Packages] AS [Extent3]
+            INNER JOIN [dbo].[Servers] AS [Extent4] ON [Extent3].[ServerID] = [Extent4].[ServerID]
+            INNER JOIN  (SELECT [Extent5].[ServerID] AS [ServerID2], [Extent6].[ServerID] AS [ServerID1]
+                FROM  [dbo].[VirtualServices] AS [Extent5]
+                INNER JOIN [dbo].[Services] AS [Extent6] ON [Extent5].[ServiceID] = [Extent6].[ServiceID] ) AS [Join3] ON [Extent4].[ServerID] = [Join3].[ServerID2]
+            WHERE ([Extent4].[VirtualServer] = 1) AND ([Extent3].[UserID] = @UserId)) AS [UnionAll1] ) AS [Distinct1]
+    INNER JOIN [dbo].[Servers] AS [Extent7] ON [Distinct1].[C1] = [Extent7].[ServerID]
+    
+GO
