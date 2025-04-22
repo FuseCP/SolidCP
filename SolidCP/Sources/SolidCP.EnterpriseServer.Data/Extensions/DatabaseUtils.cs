@@ -513,6 +513,7 @@ namespace SolidCP.EnterpriseServer.Data
 			try
 			{
 				conn = new SqlConnection(connectionString);
+				conn.Open();
 				SqlDataAdapter adapter = new SqlDataAdapter(commandText, conn);
 				DataSet ds = new DataSet();
 				adapter.Fill(ds);
@@ -534,6 +535,7 @@ namespace SolidCP.EnterpriseServer.Data
 				conn = new MySqlConnection(connectionString);
 				MySqlDataAdapter adapter = new MySqlDataAdapter(commandText, conn);
 				DataSet ds = new DataSet();
+				conn.Open();
 				adapter.Fill(ds);
 				return ds;
 			}
@@ -555,6 +557,7 @@ namespace SolidCP.EnterpriseServer.Data
 				var cmd = SqliteCommand();
 				cmd.CommandText = commandText;
 				cmd.Connection = conn;
+				conn.Open();
 
 				using (var dr = cmd.ExecuteReader())
 				{
@@ -1587,7 +1590,8 @@ SELECT DatabaseVersion FROM Version");
 					}
 					else throw new InvalidOperationException($"Database {databaseName} already exists.");
 
-					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
+					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX &&
+						!string.IsNullOrEmpty(user))
 					{
 						if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
 						else throw new NotSupportedException($"Database user {user} already exists.");

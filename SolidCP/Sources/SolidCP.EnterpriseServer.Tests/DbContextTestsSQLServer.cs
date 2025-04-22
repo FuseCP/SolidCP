@@ -4,13 +4,25 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SolidCP.EnterpriseServer;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.Tests
 {
 	[TestClass]
 	public class DbContextTestsSQLServer
 	{
-		public const string ConnectionString = "DbType=SqlServer;Server=(local)\\SQLExpress;Database=SolidCP;uid=sa;pwd=Password12;TrustServerCertificate=true";
+		static readonly object Lock = new object();
+
+		public static string ConnectionString = null;
+
+		[ClassInitialize]
+		public static void InitSqlServerDb(TestContext context)
+		{
+			lock (Lock)
+			{
+				if (ConnectionString == null) ConnectionString = TestWebSite.SetupDatabase(DbType.SqlServer);
+			}
+		}
 
 		[TestMethod]
 		public void TestGetSearchObject()

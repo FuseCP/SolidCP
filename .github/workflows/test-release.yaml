@@ -79,13 +79,13 @@ jobs:
         dotnet build SolidCP.Server.sln
         dotnet build SolidCP.EnterpriseServer.sln
 
-    - name: Run unit tests
+    - name: Run Unit Tests
       working-directory: SolidCP\Sources
       continue-on-error: true
       run: |
         dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release --results-directory ..\..\test-results
 
-    - name: Report unit tests
+    - name: Publish Unit Tests
       id: process-trx
       uses: im-open/process-dotnet-test-results@v3
       with:
@@ -98,7 +98,7 @@ jobs:
         timezone: 'europe/zurich'
         comment-identifier: 'bff-tests'
 
-    - name: Upload Outcome as artifact if character limit reached
+    - name: Upload Outcome as Artifact if Character Limit Reached
       if: steps.process-trx.outputs.test-results-truncated == 'true'
       uses: actions/upload-artifact@v4
       with:

@@ -682,10 +682,13 @@ namespace SolidCP.Providers.Utils
             if (OSInfo.IsWindows) SecurityUtils.ResetNtfsPermissions(destinationPath);
         }
 
-        private static void CopyDirectory(string sourceDir, string destinationDir)
+        public static void CopyDirectory(string sourceDir, string destinationDir)
         {
-            // create directory
-            DirectoryInfo srcDir = new DirectoryInfo(sourceDir);
+            if (!destinationDir.StartsWith(@"\\?\")) destinationDir = @"\\?\" + destinationDir;
+			if (!sourceDir.StartsWith(@"\\?\")) sourceDir = @"\\?\" + sourceDir;
+
+			// create directory
+			DirectoryInfo srcDir = new DirectoryInfo(sourceDir);
             if(!Directory.Exists(destinationDir))
                 Directory.CreateDirectory(destinationDir);
 

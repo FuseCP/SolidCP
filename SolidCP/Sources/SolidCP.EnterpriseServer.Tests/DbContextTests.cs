@@ -23,22 +23,16 @@ namespace SolidCP.Tests
 	[TestClass]
 	public class DbContextTests
 	{
-		const string ConnectionString = "DbType=Sqlite;Data Source=App_Data\\SolidCP.Test.sqlite";
-
 		static readonly object Lock = new object();
+
+		static string ConnectionString = null;
 
 		[ClassInitialize]
 		public static void InitSqliteDb(TestContext context)
 		{
 			lock (Lock)
 			{
-				var appDir = AppDomain.CurrentDomain.BaseDirectory;
-				var dbFile = Path.Combine(appDir, "App_Data", "SolidCP.Test.sqlite");
-				var dbPath = Path.GetDirectoryName(dbFile);
-				if (!Directory.Exists(dbPath)) Directory.CreateDirectory(dbPath);
-				if (File.Exists(dbFile)) File.Delete(dbFile);
-				File.WriteAllText(dbFile, "");
-				DatabaseUtils.ExecuteSql(ConnectionString, DatabaseUtils.InstallScriptSqlite());
+				if (ConnectionString == null) ConnectionString = TestWebSite.SetupDatabase(DbType.Sqlite);
 			}
 		}
 
