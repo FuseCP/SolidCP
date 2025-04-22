@@ -89,8 +89,13 @@
         </Reference>
         <Content Remove="appsettings.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Core.Web.config" />
+    </ItemGroup>
     
     <ItemGroup>
+        <None Include="Core.Web.config" />
         <None Include="Web.config">
             <SubType>Designer</SubType>
         </None>
@@ -122,6 +127,11 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
+
+    <Target Name="CopyCoreWebConfig" AfterTargets="Build">
+        <Copy SourceFiles="Core.Web.config" DestinationFiles="bin_dotnet\Web.config" />
+        <Message Text="Copied Core.Web.config" Importance="high" />
+    </Target>
 
     <Target Name="DeleteUnusedDlls" AfterTargets="Build">
 

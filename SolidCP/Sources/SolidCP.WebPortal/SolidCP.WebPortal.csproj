@@ -238,11 +238,10 @@
             <FilesToMove Include="bin\Microsoft.Extensions.*" />
             <FilesToMove Include="bin\Microsoft.Web.*" />
             <FilesToMove Include="bin\SolidCP.Server.Client.*" />
-            <FilesToMove Include="bin\SolidCP.Web.Clients.*" />
             <FilesToMove Include="bin\MsieJavaScriptEngine.*" />
             <FilesToMove Include="bin\Renci.SshNet.*" />
             <FilesToMove Include="bin\SolidCP.EnterpriseServer.Client.*" />
-            <FilesToMove Include="bin\SolidCP.Providers.*" />
+            <FilesToMove Include="bin\SolidCP.Providers.*" Exclude="bin\SolidCP.Providers.Virtualization.NoVNC.*" />
             <FilesToMove Include="bin\WebGrease.*" />
             <FilesToMove Include="bin\JavaScriptEngineSwitcher.*" />
             <FilesToMove Include="bin\System.*" />
@@ -251,7 +250,8 @@
             <FilesToMove Include="bin\BouncyCastle.*" />
             <FilesToMove Include="bin\Antlr3.*" />
             <FilesToMove Include="bin\AdvancedStringBuilder.*" />
-            <FilesToMove Include="bin\HtmlSanitationLibrary.*" />
+            <FilesToMove Include="bin\AntiXssLibrary.*" />
+            <FilesToMove Include="bin\HtmlSanitizationLibrary.*" />
             <FilesToDelete Include="bin\WebServices\**\*.*" />
             <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
             <!--<FilesToDelete Include="bin\refs\**\*.*" />-->

@@ -9337,4 +9337,41 @@
     <ItemGroup>
         <WCFMetadata Include="Connected Services\" />
     </ItemGroup>
+    
+    <Target Name="DeleteUnusedDlls" AfterTargets="Build" Condition="$(TargetFramework) == 'net48'">
+
+        <!-- move lazy loaded assemblies to $(OutputPath)\Code and delete unused assemblies in bin -->
+        <Message Text="Delete unused dll files" Importance="high" />
+        <ItemGroup>
+            <FilesToMove Include="$(OutputPath)\Microsoft.Bcl.*" />
+            <FilesToMove Include="$(OutputPath)\Microsoft.Win32.Registry.*" />
+            <FilesToMove Include="$(OutputPath)\Newtonsoft.Json.*" />
+            <FilesToMove Include="$(OutputPath)\Microsoft.IdentityModel.*" />
+            <FilesToMove Include="$(OutputPath)\Microsoft.Web.Administration.*" />
+            <FilesToMove Include="$(OutputPath)\Microsoft.ReportViewer.*" />
+            <FilesToMove Include="$(OutputPath)\Microsoft.Extensions.*" />
+            <FilesToMove Include="$(OutputPath)\Microsoft.Web.*" />
+            <FilesToMove Include="$(OutputPath)\SolidCP.Server.Client.*" />
+            <FilesToMove Include="$(OutputPath)\MsieJavaScriptEngine.*" />
+            <FilesToMove Include="$(OutputPath)\Renci.SshNet.*" />
+            <FilesToMove Include="$(OutputPath)\SolidCP.EnterpriseServer.Client.*" />
+            <FilesToMove Include="$(OutputPath)\SolidCP.Providers.*" Exclude="$(OutputPath)\SolidCP.Providers.Virtualization.NoVNC.*" />
+            <FilesToMove Include="$(OutputPath)\WebGrease.*" />
+            <FilesToMove Include="$(OutputPath)\JavaScriptEngineSwitcher.*" />
+            <FilesToMove Include="$(OutputPath)\System.*" />
+            <FilesToMove Include="$(OutputPath)\SwaggerWcf.*" />
+            <FilesToMove Include="$(OutputPath)\SkiaSharp.*" />
+            <FilesToMove Include="$(OutputPath)\BouncyCastle.*" />
+            <FilesToMove Include="$(OutputPath)\Antlr3.*" />
+            <FilesToMove Include="$(OutputPath)\AdvancedStringBuilder.*" />
+            <FilesToMove Include="$(OutputPath)\AntiXssLibrary.*" />
+            <FilesToMove Include="$(OutputPath)\HtmlSanitizationLibrary.*" />
+            <FilesToDelete Include="$(OutputPath)\WebServices\**\*.*" />
+        </ItemGroup>
+
+        <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="$(OutputPath)\Lazy" ContinueOnError="true" />
+        <RemoveDir Directories="$(OutputPath)\WebServices;" ContinueOnError="true" />
+    </Target>
+
 </Project>
