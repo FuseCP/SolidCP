@@ -125,8 +125,13 @@ jobs:
 
     - name: Run unit tests
       working-directory: SolidCP\Sources
-      run: echo "does not work yet."
-      #  dotnet test SolidCP.Tests.sln
+      continue-on-error: true
+      run: |
+        dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release
+
+    #- name: Analyze unit tests
+    #  working-directory: SolidCP\Sources
+    # run: 
 
     # Execute all unit tests in the solution
     # - name: Execute unit tests
