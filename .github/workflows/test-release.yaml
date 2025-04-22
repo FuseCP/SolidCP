@@ -70,10 +70,15 @@ jobs:
         fetch-depth: 0
         submodules: recursive
 
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
+
     - name: Run unit tests
       working-directory: SolidCP\Sources
       continue-on-error: true
       run: |
+        dotnet build SolidCP.Server.sln
+        dotnet build SolidCP.EnterpriseServer.sln
         dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release
 
     #- name: Analyze unit tests

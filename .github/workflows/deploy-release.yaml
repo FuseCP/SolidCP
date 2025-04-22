@@ -127,7 +127,7 @@ jobs:
       working-directory: SolidCP\Sources
       continue-on-error: true
       run: |
-        dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release
+        dotnet test SolidCP.Tests.sln -v n --logger trx --configuration Release
 
     #- name: Analyze unit tests
     #  working-directory: SolidCP\Sources
