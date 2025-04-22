@@ -244,7 +244,7 @@ namespace SolidCP.Server.Tests
                     {
                         Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
                     };
-                    client.Credentials.Password = "uqCP8Qc3EjbAzzjpiSOu+Z+icAqYOtzM7Luy+OTIRZ8=";
+                    client.Credentials.Password = DevServerPassword;
                     client.Protocol = protocol;
 
                     // test echo method
