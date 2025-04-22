@@ -79,12 +79,30 @@ jobs:
       run: |
         dotnet build SolidCP.Server.sln
         dotnet build SolidCP.EnterpriseServer.sln
-        dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release
+        dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release --results-directory ..\..\test-results
 
-    #- name: Analyze unit tests
-    #  working-directory: SolidCP\Sources
-    # run: 
+    - name: Report unit tests
+      id: process-trx
+      uses: im-open/process-dotnet-test-results@v3
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+        base-directory: './test-results'
+        create-status-check: true
+        create-pr-comment: true
+        update-comment-if-one-exists: true
+        ignore-test-failures: true
+        timezone: 'europe/zurich'
+        comment-identifier: 'bff-tests'
 
+    - name: Upload Outcome as artifact if character limit reached
+      if: steps.process-trx.outputs.test-results-truncated == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Cypress-Results
+        path: |
+          ${{ steps.process-trx.outputs.test-results-file-path }}
+        retention-days: 7
+        
     # Execute all unit tests in the solution
     # - name: Execute unit tests
     #   run: dotnet test
