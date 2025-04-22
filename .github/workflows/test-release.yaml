@@ -73,12 +73,16 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
 
+    - name: Build Server & EnterpriseServer
+      working-directory: SolidCP\Sources
+      run: |
+        dotnet build SolidCP.Server.sln
+        dotnet build SolidCP.EnterpriseServer.sln
+
     - name: Run unit tests
       working-directory: SolidCP\Sources
       continue-on-error: true
       run: |
-        dotnet build SolidCP.Server.sln
-        dotnet build SolidCP.EnterpriseServer.sln
         dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release --results-directory ..\..\test-results
 
     - name: Report unit tests
@@ -102,7 +106,7 @@ jobs:
         path: |
           ${{ steps.process-trx.outputs.test-results-file-path }}
         retention-days: 7
-        
+
     # Execute all unit tests in the solution
     # - name: Execute unit tests
     #   run: dotnet test
