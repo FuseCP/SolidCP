@@ -9,8 +9,9 @@ namespace SolidCP.Server.Tests
     [TestClass]
     public class TestSolidCPServerCoreWCF
     {
+        public const string DevServerPassword = "cRDtpNCeBiql5KOQsKVyrA0sAiA=";
 
-        static object Lock = new object();
+		static object Lock = new object();
         static Kestrel Server = null;
         public TestContext TestContext { get; set; }
 
@@ -89,7 +90,7 @@ namespace SolidCP.Server.Tests
                     {
                         Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
                     };
-                    client.Credentials.Password = "aWs7wiWmcyph0oYjIRyMBP2yQZQ=";
+                    client.Credentials.Password = DevServerPassword;
                     client.Protocol = protocol;
                     var res = client.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
                     Assert.Fail();
@@ -156,7 +157,7 @@ namespace SolidCP.Server.Tests
                     {
                         Settings = new string[] { "Provider:ProviderType=SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022", "Provider:ProviderName=Windows2022" }
                     };
-                    client.Credentials.Password = "aWs7wiWmcyph0oYjIRyMBP2yQZQ=";
+                    client.Credentials.Password = DevServerPassword;
                     client.Protocol = protocol;
                     var res = client.DirectoryExists(Environment.GetFolderPath(Environment.SpecialFolder.Windows));
                 }

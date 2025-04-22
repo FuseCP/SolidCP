@@ -9,6 +9,7 @@ namespace SolidCP.Server.Tests
     [TestClass]
     public class TestSolidCPServer
     {
+        public const string DevServerPassword = TestSolidCPServerCoreWCF.DevServerPassword;
 
         static readonly object Lock = new object();
         static Kestrel? KestrelServer = null;
@@ -146,7 +147,7 @@ namespace SolidCP.Server.Tests
             {
                 try
                 {
-                    client.Credentials.Password = "uqCP8Qc3EjbAzzjpiSOu+Z+icAqYOtzM7Luy+OTIRZ8=";
+                    client.Credentials.Password = DevServerPassword;
                     client.Protocol = protocol;
 
                     // test echo method
