@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using IO = System.IO;
 using System.IO;
+using System.Diagnostics;
+using System.Reflection;
 
 namespace SolidCP.Tests
 {
@@ -31,9 +33,11 @@ namespace SolidCP.Tests
 		}
 		public static void CloneTo(string path)
 		{
-			var esPath = IO.Path.GetFullPath(EnterpriseServerPath);
+			var exepath = IO.Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+			var esserver = IO.Path.GetFullPath(IO.Path.Combine(exepath, "..", "..", "..", "..", "SolidCP.EnterpriseServer"));
+
 			Console.WriteLine($"Cloning {IO.Path.GetFileName(EnterpriseServerPath)} ...");
-			CopyDirectory(esPath, path, true);
+			CopyDirectory(esserver, path, true);
 		}
 
 		public void Dispose() => Delete();
