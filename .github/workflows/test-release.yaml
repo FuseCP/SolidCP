@@ -89,7 +89,7 @@ jobs:
       id: process-trx
       uses: im-open/process-dotnet-test-results@v3
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ secrets.ACCESS_TOKEN }}
         base-directory: './test-results'
         create-status-check: true
         create-pr-comment: true
