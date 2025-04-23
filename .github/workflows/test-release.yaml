@@ -47,7 +47,7 @@ on:
 
 jobs:
 
-  test:
+  Test:
 
     strategy:
       matrix:
