@@ -80,7 +80,6 @@ namespace SolidCP.EnterpriseServer
 	/// </summary>
 	public class DataProvider : Data.DbContext
 	{
-
 		public const long MB = 1024 * 1024;
 
 #if UseEntityFramework
@@ -111,7 +110,6 @@ namespace SolidCP.EnterpriseServer
 											.ConfigureAwait(false))?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false; 
 									} catch (Exception ex)
 									{
-
 									}
 								}
 							});
@@ -468,8 +466,6 @@ namespace SolidCP.EnterpriseServer
 
 		public IEnumerable<int> UserParents(int actorId, int userId)
 		{
-			
-
 			var user = Users
 				.Select(u => new { u.UserId, u.OwnerId })
 				.FirstOrDefault(u => u.UserId == userId);
@@ -489,7 +485,6 @@ namespace SolidCP.EnterpriseServer
 
 		public TempIdSet UserChildren(int ownerId, bool recursive = true)
 		{
-
 			var set = new TempIdSet(this);
 			set.Add(ownerId);
 
@@ -524,8 +519,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CheckUserParent(int ownerId, int? userId)
 		{
-			
-
 			if (ownerId == userId) return true;
 
 			var owner = Users
@@ -552,8 +545,6 @@ namespace SolidCP.EnterpriseServer
 
 		public string GetItemComments(int itemId, string itemTypeId, int actorId)
 		{
-			
-
 			var comments = Comments
 				.Join(Users, c => c.UserId, u => u.UserId, (com, user) => new
 				{
@@ -1515,7 +1506,6 @@ namespace SolidCP.EnterpriseServer
 				using (var userChildren = PagedStored == "Users" ?
 					(Recursive ? UserChildren(UserID, Recursive) : new TempIdSet(this)) : null)
 				{
-
 					switch (PagedStored)
 					{
 						case "Domains":
@@ -2031,7 +2021,6 @@ namespace SolidCP.EnterpriseServer
 			}
 			else
 			{
-
 				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					 ObjectQualifier + "GetSearchTableByColumns",
 					 new SqlParameter("@PagedStored", PagedStored),
@@ -2091,8 +2080,6 @@ namespace SolidCP.EnterpriseServer
 
 		public TempIdSet UsersTree(int ownerId, bool recursive)
 		{
-			
-
 			var tree = new TempIdSet(this);
 			tree.Add(ownerId);
 			SaveChanges();
@@ -2177,8 +2164,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CanGetUserDetails(int actorId, int userId)
 		{
-			
-
 			if (actorId == -1 || actorId == userId) return true;
 
 			var actor = Users
@@ -2506,8 +2491,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CanGetUserPassword(int actorId, int userId)
 		{
-			
-
 			if (actorId == -1 || actorId == userId) return true;
 
 			var actor = Users
@@ -2656,8 +2639,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CanCreateUser(int actorId, int ownerId)
 		{
-			
-
 			if (actorId == -1 || actorId == ownerId) return true;
 
 			var actor = Users
@@ -2770,8 +2751,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CanUpdateUserDetails(int actorId, int userId)
 		{
-			
-
 			if (actorId == -1 || actorId == userId) return true;
 
 			var actor = Users
@@ -2981,7 +2960,6 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				
 				if (!CanUpdateUserDetails(actorId, userId)) return;
 
 				var user = Users.FirstOrDefault(u => u.UserId == userId);
@@ -3561,7 +3539,6 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				
 				// check related services
 				if (Services.Any(svc => svc.ServerId == serverId)) return -1;
 
@@ -4187,8 +4164,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CheckPackageParent(int parentPackageId, int packageId)
 		{
-			
-
 			// check if the user requests hiself
 			if (parentPackageId == packageId) return true;
 
@@ -5063,8 +5038,6 @@ namespace SolidCP.EnterpriseServer
 
 		public bool CheckActorPackageRights(int actorId, int? packageId)
 		{
-			
-
 			if (actorId == -1 || packageId == null) return true;
 
 			// check if this is a 'system' package
@@ -5479,8 +5452,6 @@ namespace SolidCP.EnterpriseServer
 
 		public TempIdSet PackagesTree(int packageId, bool recursive = false)
 		{
-			
-
 			var tree = new TempIdSet(this);
 			tree.Add(packageId);
 			SaveChanges();
@@ -7855,8 +7826,6 @@ RETURN
 
 		public bool GetPackageAllocatedResource(int? packageId, int groupId, int? serverId)
 		{
-			
-
 			if (packageId == null) return true;
 
 			if (serverId == null || serverId == 0)
@@ -8548,8 +8517,6 @@ RETURN
 
 		public bool CheckActorParentPackageRights(int actorId, int? packageId)
 		{
-			
-
 			if (actorId == -1 || packageId == null) return true;
 
 			// get package owner
@@ -8565,8 +8532,6 @@ RETURN
 
 		public bool GetPackageServiceLevelResource(int? packageId, int groupId, int? serverId)
 		{
-			
-
 			if (!ResourceGroups.Any(g => g.GroupId == groupId && g.GroupName == "Service Levels")) return false;
 
 			if (packageId == null) return true;
@@ -8640,8 +8605,6 @@ RETURN
 
 		public int GetPackageAllocatedQuota(int? packageId, int quotaId)
 		{
-			
-
 			int result;
 
 			var quotaTypeId = Quotas
@@ -8846,8 +8809,6 @@ RETURN
 
 		public void UpdateHostingPlanQuotas(int actorId, int planId, string quotasXml)
 		{
-			
-
 			var userId = HostingPlans
 				.Where(p => p.PlanId == planId)
 				.Select(p => p.UserId)
@@ -8961,8 +8922,6 @@ RETURN
 
 		public int CheckExceedingQuota(int? packageId, int quotaId, int quotaTypeId)
 		{
-			
-
 			if (packageId == null) return 0;
 
 			var packageQuotaValue = GetPackageAllocatedQuota(packageId, quotaId);
@@ -9028,8 +8987,6 @@ RETURN
 
 		public IEnumerable<ExceedingQuota> GetPackageExceedingQuotas(int? packageId)
 		{
-			
-
 			var package = Packages
 				.Where(p => p.PackageId == packageId)
 				.Select(p => new { p.PlanId, p.ParentPackageId, p.OverrideQuotas })
@@ -9155,7 +9112,6 @@ RETURN
 		// TODO: This method is missing from the stored procedures
 		public int CopyHostingPlan(int planId, int userId, int packageId)
 		{
-
 			if (UseEntityFramework)
 			{
 			}
@@ -9806,8 +9762,6 @@ RETURN
 
 		public int CalculatePackageDiskspace(int packageId)
 		{
-			
-
 			const long MB = 1024 * 1024;
 
 			int diskspace = (int)(((PackagesTreeCaches
@@ -9827,8 +9781,6 @@ RETURN
 
 		public int CalculatePackageBandwidth(int packageId)
 		{
-			
-
 			const long MB = 1024 * 1024;
 
 			var today = DateTime.Now.Date;
@@ -9853,8 +9805,6 @@ RETURN
 
 		public int CalculateQuotaUsage(int packageId, int quotaId)
 		{
-			
-
 			var quota = Quotas
 				.Where(q => q.QuotaId == quotaId)
 				.Select(q => new { q.QuotaTypeId, q.QuotaName })
@@ -10625,8 +10575,6 @@ RETURN
 
 		public IEnumerable<int> PackageParents(int packageId)
 		{
-			
-
 			int? pid = packageId;
 			var parentPackageId = Packages
 				.Where(p => p.PackageId == pid)
@@ -10738,8 +10686,6 @@ RETURN
 
 		public void UpdatePackageQuotas(int actorId, int packageId, string xml)
 		{
-			
-
 			// check rights
 			if (!CheckActorPackageRights(actorId, packageId))
 				throw new AccessViolationException("You are not allowed to access this package");
@@ -10800,7 +10746,6 @@ RETURN
 					.FirstOrDefault();
 				if (package != null)
 				{
-
 					using (var transaction = Database.BeginTransaction())
 					{
 						var oldPlanId = package.PlanId;
@@ -17641,7 +17586,6 @@ RETURN
 		{
 			if (UseEntityFramework)
 			{
-
 				var addresses = DmzIpAddresses
 					.Where(ip => ip.DmzAddressId == dmzAddressId)
 					.Include(ip => ip.Item)
@@ -17690,7 +17634,6 @@ RETURN
 			}
 			else
 			{
-
 				return SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure,
 									"GetItemDmzIPAddresses",
 									new SqlParameter("@ActorID", actorId),
@@ -18751,7 +18694,6 @@ RETURN
 		{
 			if (UseEntityFramework)
 			{
-				
 #if NETFRAMEWORK
 				var user = LyncUsers
 					.FirstOrDefault(u => u.AccountId == accountId);
@@ -22367,7 +22309,6 @@ WHERE PackageID = @PackageID",
 			}
 			else
 			{
-
 				SqlHelper.ExecuteNonQuery(
 					NativeConnectionString,
 					CommandType.StoredProcedure,

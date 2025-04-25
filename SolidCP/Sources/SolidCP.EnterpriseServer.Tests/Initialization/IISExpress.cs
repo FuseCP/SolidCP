@@ -34,15 +34,27 @@ namespace SolidCP.Tests
 
 			// setup iis express
 			var shell = Shell.Standard.Clone;
-			shell.Redirect = true;
-			shell.Log += msg => Debug.WriteLine(msg);
-			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned").Wait();
-			shell.Exec($"\"{appcmd}\" delete site enterprise.tests").Wait();
-            shell.Exec($"\"{appcmd}\" add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost").Wait();
+			shell.Log += msg =>
+			{
+				if (Debugger.IsAttached) Debug.WriteLine($"IIS Express>{msg}");
+				Console.WriteLine($"IIS Express>{msg}");
+			};
+			shell.LogError += msg =>
+			{
+				if (Debugger.IsAttached) Debug.WriteLine($"IIS Express>{msg}");
+				var mainColor = Console.ForegroundColor;
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine($"IIS Express>{msg}");
+				Console.ForegroundColor = mainColor;
+			};
+			shell.CreateNoWindow = true;
+			shell.WindowStyle = ProcessWindowStyle.Minimized;
+			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned");
+			shell.Exec($"\"{appcmd}\" delete site enterprise.tests");
+            shell.Exec($"\"{appcmd}\" add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost");
             
             // start iis express
-			shell.ExecAsync($"\"{iisexpress}\" /site:enterprise.tests");
-			process = shell.Process;
+			process = shell.ExecAsync($"\"{iisexpress}\" /site:enterprise.tests").Process;
 			
 			//if (process.HasExited) throw new Exception($"IIS Express exited with code {process.ExitCode}");
 

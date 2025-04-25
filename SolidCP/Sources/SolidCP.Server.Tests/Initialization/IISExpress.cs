@@ -52,13 +52,12 @@ namespace SolidCP.Server.Tests
 			};
 			shell.CreateNoWindow = true;
 			shell.WindowStyle = ProcessWindowStyle.Minimized;
-			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned").Wait();
-			shell.Exec($"\"{appcmdex}\" delete site solidcp.server.tests").Wait();
-			shell.Exec($"\"{appcmdex}\" add site /name:solidcp.server.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost").Wait();
+			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned");
+			shell.Exec($"\"{appcmdex}\" delete site solidcp.server.tests");
+			shell.Exec($"\"{appcmdex}\" add site /name:solidcp.server.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost");
             
 			// start iis express
-			shell.ExecAsync($"\"{iisexpress}\" /site:solidcp.server.tests");
-			process = shell.Process;
+			process = shell.ExecAsync($"\"{iisexpress}\" /site:solidcp.server.tests").Process;
 
 			//if (process.HasExited) done = true; // throw new Exception($"IIS Express exited with code {process.ExitCode}");
 

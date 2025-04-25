@@ -45,7 +45,7 @@ namespace SolidCP.Tests
 			};
 			shell.CreateNoWindow = true;
 			shell.WindowStyle = ProcessWindowStyle.Minimized;
-			shell.ExecAsync($"\"{exe}\" \"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"", null, new System.Collections.Specialized.StringDictionary()
+			process = shell.ExecAsync($"\"{exe}\" \"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"", null, new System.Collections.Specialized.StringDictionary()
 			{
 				{ "ASPNETCORE_ENVIRONMENT", "Development" },
 				//{ "ASPNETCORE_URLS", $"{HttpUrl};{HttpsUrl}" },
@@ -53,8 +53,7 @@ namespace SolidCP.Tests
 				//{ "ASPNETCORE_Kestrel__Certificates__Default__Password", Certificate.Password },
 				//{ "ServerCertificate__File", pfx },
 				//{ "ServerCertificate__Password", Certificate.Password },);
-			});
-			process = shell.Process;
+			}).Process;
 
 			if (process.HasExited) throw new Exception($"Kestrel exited with code {process.ExitCode}");
 
