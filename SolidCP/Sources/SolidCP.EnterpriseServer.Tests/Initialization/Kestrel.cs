@@ -17,29 +17,32 @@ namespace SolidCP.Tests
 
 		public const string HttpUrl = "http://localhost:9047";
         public const string HttpsUrl = "https://localhost:9048";
+		public const string NetTcpUrl = "net.tcp://localhost:9067";
+		public static Kestrel Current { get; private set; } = null;
 		public Kestrel()
         {
-			var apppath = TestWebSite.Path;
+			var apppath = EnterpriseServer.Path;
 			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
-			var dll = Path.Combine(apppath, "bin", "bin_dotnet", "SolidCP.EnterpriseServer.dll");
+			var workingDir = Path.Combine(apppath, "bin_dotnet");
+			var dll = Path.Combine(workingDir, "SolidCP.EnterpriseServer.dll");
 			var exe = Shell.Standard.Find("dotnet");
+			var pfx = Certificate.CertFilePath;
 
-			var workingDir = Path.GetFileName(exe);
-            var startInfo = new ProcessStartInfo(exe)
+			var startInfo = new ProcessStartInfo(exe)
             {
                 CreateNoWindow = false,
                 UseShellExecute = false,
                 WindowStyle = ProcessWindowStyle.Normal,
                 WorkingDirectory = workingDir,
-				Arguments = $"\"{dll}\" --urls \"http://localhost:9047;https://localhost:9048\"",
+				Arguments = $"\"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"",
 				EnvironmentVariables = {
 					{ "ASPNETCORE_ENVIRONMENT", "Development" },
-					{ "ASPNETCORE_URLS", "http://localhost:9047;https://localhost:9048" },
-					{ "ASPNETCORE_Kestrel__Certificates__Default__Path", Path.Combine(testprojpath, "localhost.pfx") },
-					{ "ASPNETCORE_Kestrel__Certificates__Default__Password", "123456" },
-					{ "ASPNETCORE_ServerCertificate__File", Path.Combine(testprojpath, "localhost.pfx") },
-					{ "ASPNETCORE_ServerCertificate__Password", "123456" },
+					//{ "ASPNETCORE_URLS", $"{HttpUrl};{HttpsUrl}" },
+					//{ "ASPNETCORE_Kestrel__Certificates__Default__Path", pfx },
+					//{ "ASPNETCORE_Kestrel__Certificates__Default__Password", Certificate.Password },
+					//{ "ServerCertificate__File", pfx },
+					//{ "ServerCertificate__Password", Certificate.Password },
 				}
 			};
 			// redirect output to console
@@ -66,26 +69,22 @@ namespace SolidCP.Tests
 
 			// wait for the server to be ready
 			bool done = false;
+			int n = 0;
+			const int max = 20;
             do
             {
                 try
                 {
-					var handler = new HttpClientHandler();
-					handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-					handler.ServerCertificateCustomValidationCallback =
-						(httpRequestMessage, cert, cetChain, policyErrors) =>
-						{
-							return true;
-						};
-					var client = new HttpClient(handler);
-					var response = client.GetAsync("https://localhost:9007").Result;
+					var client = new HttpClient();
+					var response = client.GetAsync(HttpsUrl).Result;
                     done = true;
                 }
                 catch (Exception ex) { }
 
                 if (!done) Thread.Sleep(2000);
-                if (process.HasExited) throw new Exception("Server has terminated.");
-    
+				if (process.HasExited) done = true; //throw new Exception("Server has terminated.");
+				if (n++ >= max) done = true;
+
             } while (!done) ;
         }
 
@@ -94,8 +93,22 @@ namespace SolidCP.Tests
             if (process != null && !process.HasExited) process.Kill();
             process = null;
         }
-		public static void Start() { }
+		
+		public static void Start()
+		{
+			if (Current == null)
+			{
+				Current = new Kestrel();
+			}
+		}
 
-		public static readonly Kestrel Current = new Kestrel();
+		public static void Stop()
+		{
+			if (Current != null)
+			{
+				Current.Dispose();
+				Current = null;
+			}
+		}
 	}
 }

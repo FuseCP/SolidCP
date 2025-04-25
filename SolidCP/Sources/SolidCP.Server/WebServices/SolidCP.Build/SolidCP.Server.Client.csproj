@@ -10,7 +10,6 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 	</PropertyGroup>
 

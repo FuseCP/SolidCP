@@ -49,6 +49,7 @@
 
     <ItemGroup>
       <Folder Include="App_Data\" />
+      <Folder Include="TestResults\" />
     </ItemGroup>
 
 </Project>

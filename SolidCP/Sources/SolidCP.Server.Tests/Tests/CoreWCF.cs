@@ -7,38 +7,16 @@ namespace SolidCP.Server.Tests
     using System.ServiceModel;
 
     [TestClass]
-    public class TestSolidCPServerCoreWCF
+    public class CoreWCF
     {
         public const string DevServerPassword = "cRDtpNCeBiql5KOQsKVyrA0sAiA=";
-
-		static object Lock = new object();
-        static Kestrel Server = null;
         public TestContext TestContext { get; set; }
-
-        [ClassInitialize]
-        public static void InitTest(TestContext context)
-        {
-            lock (Lock)
-            {
-                if (Server == null) Server = new Kestrel();
-            }
-        }
-
-        [ClassCleanup]
-        public static void Dispose()
-        {
-            lock (Lock)
-            {
-                //Server?.Dispose();
-                Server = null;
-            }
-        }
 
         [TestMethod]
         [DataRow(Protocols.BasicHttps)]
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
-        public void TestAnonymousNet6(Protocols protocol)
+        public void TestAnonymousNet8(Protocols protocol)
         {
             using (var client = new AutoDiscovery() { Url = Kestrel.HttpsUrl })
             {
@@ -60,7 +38,7 @@ namespace SolidCP.Server.Tests
         }
 
         [TestMethod]
-        public async Task TestAnonymousNet6Async()
+        public async Task TestAnonymousNet8Async()
         {
             using (var client = new AutoDiscovery() { Url = Kestrel.HttpsUrl })
             {
@@ -80,7 +58,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.BasicHttps)]
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
-        public async Task TestPasswordNet6(Protocols protocol)
+        public async Task TestPasswordNet8(Protocols protocol)
         {
             using (var client = new Client.OperatingSystem() { Url = Kestrel.HttpsUrl })
             {

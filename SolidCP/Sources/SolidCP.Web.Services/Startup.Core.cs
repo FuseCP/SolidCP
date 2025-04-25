@@ -72,7 +72,7 @@ namespace SolidCP.Web.Services
 		static StoreLocation StoreLocation = StoreLocation.LocalMachine;
 		static StoreName StoreName = StoreName.My;
 		static X509FindType FindType = X509FindType.FindBySubjectName;
-		static string Name = null;
+		static string CertificateName = null;
 		static string CertificateFile = null;
 		static string CertificatePassword = null;
 		static string Password;
@@ -128,7 +128,7 @@ namespace SolidCP.Web.Services
 			Configuration.StoreLocation = StoreLocation = builder.Configuration.GetValue<StoreLocation?>("ServerCertificate:StoreLocation") ?? StoreLocation.LocalMachine;
 			Configuration.StoreName = StoreName = builder.Configuration.GetValue<StoreName?>("ServerCertificate:StoreName") ?? StoreName.My;
 			Configuration.FindType = FindType = builder.Configuration.GetValue<X509FindType?>("ServerCertificate:FindType") ?? X509FindType.FindBySubjectName;
-			Configuration.Name = Name = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
+			Configuration.CertificateName = CertificateName = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
 			Configuration.CertificateFile = CertificateFile = builder.Configuration.GetValue<string>("ServerCertificate:File");
 			Configuration.CertificatePassword = CertificatePassword = builder.Configuration.GetValue<string>("ServerCertificate:Password");
 			Configuration.Password = Password = builder.Configuration.GetValue<string>("Server:Password") ?? String.Empty;
@@ -201,13 +201,13 @@ namespace SolidCP.Web.Services
 								{
 									if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
 									{
-										if (!string.IsNullOrEmpty(Name))
+										if (!string.IsNullOrEmpty(CertificateName))
 										{
 											X509Store store = new X509Store(StoreName, StoreLocation);
 											store.Open(OpenFlags.ReadOnly);
-											Certificate = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
+											Certificate = store.Certificates.Find(FindType, CertificateName, false).FirstOrDefault();
 											if (Certificate != null) Log($"Use certificate {Certificate.GetNameInfo(X509NameType.SimpleName, false)} {Certificate.FriendlyName} found in {StoreName} at {StoreLocation}");
-											else Error($"Certificate for {Name} not found in {StoreName} at {StoreLocation}");
+											else Error($"Certificate for {CertificateName} not found in {StoreName} at {StoreLocation}");
 										}
 									}
 									else

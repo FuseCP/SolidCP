@@ -8,7 +8,7 @@ using SolidCP.EnterpriseServer;
 namespace SolidCP.Tests
 {
 	[TestClass]
-	public class CryptoTests
+	public class Crypto
 	{
 
 		[TestMethod]
@@ -20,6 +20,15 @@ namespace SolidCP.Tests
 			Assert.IsTrue(encurl.StartsWith("sshencrypted://"));
 			var decurl = CryptoUtils.DecryptServerUrl(encurl);
 			Assert.AreEqual<string>(url, decurl);
+		}
+
+		[TestMethod]
+		public void TestEncryptDecrypt()
+		{
+			var txt = "Hello World!";
+			var entxt = CryptoUtils.Encrypt(txt);
+			var detxt = CryptoUtils.Decrypt(entxt);
+			Assert.AreEqual<string>(txt, detxt);
 		}
 	}
 }

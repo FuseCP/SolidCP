@@ -53,30 +53,33 @@ namespace SolidCP.Providers
 
         public ServiceProviderSettings(string[] settings)
         {
-            // parse settings array
-            foreach (string setting in settings)
+            if (settings != null)
             {
-                int idx = setting.IndexOf('=');
-                string key = setting.Substring(0, idx);
-                string val = setting.Substring(idx + 1);
+                // parse settings array
+                foreach (string setting in settings)
+                {
+                    int idx = setting.IndexOf('=');
+                    string key = setting.Substring(0, idx);
+                    string val = setting.Substring(idx + 1);
 
-                if (key.StartsWith("Server:") ||
-                    key.StartsWith("AD:"))
-                    continue;
+                    if (key.StartsWith("Server:") ||
+                        key.StartsWith("AD:"))
+                        continue;
 
-                if (key == "Provider:ProviderGroupID")
-                    ProviderGroupID = Int32.Parse(val);
-                else if (key == "Provider:ProviderCode")
-                    ProviderCode = val;
-                else if (key == "Provider:ProviderName")
-                    ProviderName = val;
-                else if (key == "Provider:ProviderType")
-                    ProviderType = val;
-                else
-                    hash[key] = val;
+                    if (key == "Provider:ProviderGroupID")
+                        ProviderGroupID = Int32.Parse(val);
+                    else if (key == "Provider:ProviderCode")
+                        ProviderCode = val;
+                    else if (key == "Provider:ProviderName")
+                        ProviderName = val;
+                    else if (key == "Provider:ProviderType")
+                        ProviderType = val;
+                    else
+                        hash[key] = val;
+                }
             }
         }
-
+        
         public string this[string settingName]
         {
             get

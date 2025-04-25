@@ -10,7 +10,7 @@ using System.Xml;
 namespace SolidCP.Tests
 {
 	[TestClass]
-	public class IgnoreDataMemberTests
+	public class IgnoreDataMember
 	{
 
 		public TestContext TestContext { get; set; }

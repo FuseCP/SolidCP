@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 #if NetCore
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
@@ -15,19 +17,38 @@ namespace SolidCP.EnterpriseServer.Data;
 
 public static class MigrationBuilderExtension
 {
+	const bool UseSafeSql = true;
+
 	struct Segment
 	{
 		public int Start, Length;
 		public bool HasSpecialCommand;
 	}
 
+	public class CountObject
+	{
+		public int Count = 0;
+	}
+
 #if NetCore
+	static ConditionalWeakTable<MigrationBuilder, CountObject> SafeSqlCount = new ConditionalWeakTable<MigrationBuilder, CountObject>();
 	public static OperationBuilder<SqlOperation> SafeSql(this MigrationBuilder builder,
 		string query, bool suppressTransaction = false)
-		=> builder.Sql(SafeSql(query), suppressTransaction);
-#endif
-	public static string SafeSql(string query)
 	{
+		int count;
+		lock (SafeSqlCount)
+		{
+			count = SafeSqlCount.GetOrCreateValue(builder)?.Count ?? 0;
+			var res = builder.Sql(SafeSql(query, ref count), suppressTransaction);
+			SafeSqlCount.AddOrUpdate(builder, new CountObject() { Count = count });
+			return res;
+		}
+	}
+#endif
+	public static string SafeSql(string query, ref int count)
+	{
+		if (!UseSafeSql) return query;
+
 		List<Segment> segments = new();
 		char stringDelimiter = ' ';
 		bool isString = false, isDashComment = false, isCComment = false;
@@ -49,11 +70,12 @@ public static class MigrationBuilderExtension
 					int end;
 					if (i >= query.Length) end = query.Length - 1;
 					else end = query.LastIndexOf('\n', i - 3);
-					
+
 					if (end == -1) end = 0;
 					length = end - start + 1;
 
-					segments.Add(new Segment() {
+					segments.Add(new Segment()
+					{
 						Start = start,
 						Length = length,
 						HasSpecialCommand = hasSpecialCommand
@@ -141,6 +163,10 @@ public static class MigrationBuilderExtension
 		{
 			var cmd = str.ToString(segment.Start, segment.Length)
 				.Trim();
+			string firstLine = null;
+			var firstLineMatch = Regex.Match(cmd, "^.*?(?=\r?\n)", RegexOptions.Singleline);
+			if (firstLineMatch.Success) firstLine = firstLineMatch.Value.Replace("\'", "\'\'");
+			else firstLine = $"Command {count++}";
 			if (segment.HasSpecialCommand)
 			{
 				str.Remove(segment.Start, segment.Length);
@@ -148,6 +174,8 @@ public static class MigrationBuilderExtension
 				str.Insert(segment.Start, "'");
 				str.Insert(segment.Start, cmd.Replace("'", "''"));
 				str.Insert(segment.Start, "EXECUTE sp_executesql N'");
+				str.Insert(segment.Start, Environment.NewLine);
+				str.Insert(segment.Start, $"PRINT '{firstLine}'");
 				str.Insert(segment.Start, Environment.NewLine);
 			}
 			else
@@ -173,4 +201,5 @@ public static class MigrationBuilderExtension
 		return migration.SafeSql(DatabaseUtils.InstallScript(scriptName), suppressTransaction);
 	}
 #endif
+
 }

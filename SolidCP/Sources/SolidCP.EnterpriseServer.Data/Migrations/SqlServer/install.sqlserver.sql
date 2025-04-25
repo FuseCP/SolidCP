@@ -4911,9 +4911,14 @@ IF NOT EXISTS (
 )
 BEGIN
     IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE object_id = OBJECT_ID(N'[dbo].[UpdateQuotaHidden]') AND type in (N'P', N'PC'))
-    DROP PROCEDURE [dbo].[UpdateQuotaHidden
-    ]GO
+    DROP PROCEDURE [dbo].[UpdateQuotaHidden]
+END;
 
+IF NOT EXISTS (
+    SELECT * FROM [__EFMigrationsHistory]
+    WHERE [MigrationId] = N'20250419122736_InitialCreate'
+)
+BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePrivateNetworVLAN]') AND type in (N'P', N'PC'))
     DROP PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
 END;

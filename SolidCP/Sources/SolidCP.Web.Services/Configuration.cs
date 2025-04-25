@@ -31,7 +31,7 @@ namespace SolidCP.Web.Services
 		public static StoreLocation StoreLocation = StoreLocation.LocalMachine;
 		public static StoreName StoreName = StoreName.My;
 		public static X509FindType FindType = X509FindType.FindBySubjectName;
-		public static string Name = null;
+		public static string CertificateName = null;
 		public static string CertificateFile = null;
 		public static string CertificatePassword = null;
 		public static string Password;

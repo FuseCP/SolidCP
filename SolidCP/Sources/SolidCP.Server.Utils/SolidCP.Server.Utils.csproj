@@ -6,7 +6,6 @@
         <ServerPath>..\SolidCP.Server\bin\netstandard</ServerPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <LangVersion>11</LangVersion>
         <Nullable>disable</Nullable>
     </PropertyGroup>

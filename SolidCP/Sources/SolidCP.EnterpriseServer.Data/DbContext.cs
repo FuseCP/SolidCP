@@ -22,7 +22,6 @@ namespace SolidCP.EnterpriseServer.Data
 {
     public partial class DbContext : IDisposable
     {
-
         public DateTime DateTimeMin = new DateTime(1735, 1, 1);
 
         public const bool UseStoredProcedures = true;
@@ -113,7 +112,7 @@ namespace SolidCP.EnterpriseServer.Data
                 {
 
 #if NETFRAMEWORK
-                    DbConfiguration.InitDatabaseProvider(DbType);
+                    DbConfiguration.InitDatabaseProviders(DbType);
 #endif
 
                     switch (DbType)
@@ -241,18 +240,6 @@ namespace SolidCP.EnterpriseServer.Data
 				return contextType;
             }
         }
-
-        static bool dbConfigurationSet = false;
-        static void SetDbConfiguration()
-        {
-            if (!dbConfigurationSet)
-            {
-                dbConfigurationSet = true;
-#if NETFRAMEWORK
-                System.Data.Entity.DbConfiguration.SetConfiguration(new DbConfiguration());
-#endif
-			}
-		}
 
          public TimeSpan Timeout
         {

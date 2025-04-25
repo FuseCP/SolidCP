@@ -653,7 +653,9 @@ namespace SolidCP.Web.Clients
 				FactoryPool[url] = factory;
 				factory = null;
 			}
-			if (client != null && client is IClientChannel channel) channel.Close();
+			if (client != null && client is IClientChannel channel &&
+				(channel.State == CommunicationState.Opening || channel.State == CommunicationState.Opened))
+				channel.Close();
 		}
 
 		public ClientBase(): base() { }

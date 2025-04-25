@@ -697,6 +697,22 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+		public static void CreateDatabaseLocalDb(string connectionString, string database, string file)
+		{
+			Data.DbType dbType;
+			string ConnStr;
+			var guid = Guid.NewGuid();
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			ExecuteNonQuerySqlServer(ConnStr, @$"CREATE DATABASE [{database}]
+ON PRIMARY(
+	NAME = '{guid}',
+	FILENAME = '{file}'
+)
+LOG ON(
+	NAME = '{guid}_log',
+	FILENAME = '{Path.ChangeExtension(file, ".ldf")}'
+)");
+		}
 		public static void CreateDatabaseSqlite(string dbFile)
 		{
 			var path = Path.GetDirectoryName(dbFile);
@@ -924,6 +940,7 @@ namespace SolidCP.EnterpriseServer.Data
 			Data.DbType dbType;
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			var csb = new ConnectionStringBuilder(connectionString);
 			switch (dbType)
 			{
 				case Data.DbType.SqlServer:
@@ -939,7 +956,20 @@ namespace SolidCP.EnterpriseServer.Data
 
 					// drop database
 					ExecuteNonQuery(connectionString,
-						String.Format("DROP DATABASE {0}", databaseName));
+						@$"ALTER DATABASE [{databaseName}] SET OFFLINE;DROP DATABASE [{databaseName}]");
+
+					var server = csb.ContainsKey("server") ? csb["server"] as string :
+						csb.ContainsKey("data source") ? csb["data source"] as string : null;
+					var localDb = server.ToLower().Contains("localdb");
+
+					if (localDb)
+					{
+						var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+						var dbfile = Path.Combine(profile, $"{databaseName}.mdf");
+						var logfile = Path.Combine(profile, $"{databaseName}_log.ldf");
+						if (File.Exists(dbfile)) File.Delete(dbfile);
+						if (File.Exists(logfile)) File.Delete(logfile);
+					}
 					break;
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb:
@@ -954,7 +984,6 @@ namespace SolidCP.EnterpriseServer.Data
 #else
 					Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
 #endif
-					var csb = new ConnectionStringBuilder(connectionString);
 					var dbFile = (string)(csb["data source"] ?? "");
 					if (!Path.IsPathRooted(dbFile))
 					{
@@ -1561,15 +1590,25 @@ SELECT DatabaseVersion FROM Version");
 		{
 			DbType dbType;
 			string nativeConnectionString;
+			var csb = new ConnectionStringBuilder(masterConnectionString);
+			var server = csb.ContainsKey("server") ? csb["server"] as string :
+				csb.ContainsKey("data source") ? csb["data source"] as string : null;
+			var localDb = server.ToLower().Contains("localdb");
+			var dbfile = csb.ContainsKey("AttachDbFilename") ? csb["AttachDbFilename"] as string : null;
+			csb.Remove("AttachDbFilename");
+			csb.Remove("Database");
+			csb.Remove("Initial Catalog");
+			masterConnectionString = csb.ToString(); 
+
 			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
 
 			var assembly = Assembly.GetExecutingAssembly();
 			var resourceNames = assembly.GetManifestResourceNames();
-			var dbFileName = $"install.{dbType.ToString().ToLowerInvariant()}.sql";
-			var dbFileNameEndsWith = $".{dbFileName}";
+			var InstallSqlFile = $"install.{dbType.ToString().ToLowerInvariant()}.sql";
+			var InstallSqlFileEndsWith = $".{InstallSqlFile}";
 
 			var installSqlStream = resourceNames
-				.Where(name => name.EndsWith(dbFileNameEndsWith))
+				.Where(name => name.EndsWith(InstallSqlFileEndsWith))
 				.Select(name => assembly.GetManifestResourceStream(name))
 				.FirstOrDefault();
 			if (installSqlStream != null)
@@ -1582,23 +1621,21 @@ SELECT DatabaseVersion FROM Version");
 						return;
 					}
 
-					bool newDatabase = false;
 					if (!DatabaseExists(masterConnectionString, databaseName))
 					{
 						CreateDatabase(masterConnectionString, databaseName);
-						newDatabase = true;
 					}
 					else throw new InvalidOperationException($"Database {databaseName} already exists.");
 
 					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX &&
-						!string.IsNullOrEmpty(user))
+						!localDb && !string.IsNullOrEmpty(user))
 					{
 						if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
 						else throw new NotSupportedException($"Database user {user} already exists.");
 					}
 
 					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
-						ProcessInstallVariables, dbFileName, databaseName);
+						ProcessInstallVariables, InstallSqlFile, databaseName);
 				}
 			}
 		}

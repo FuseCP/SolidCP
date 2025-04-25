@@ -94,8 +94,8 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[Updat
 DROP PROCEDURE [dbo].[UpdateRDSCollection]
 GO
 IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE object_id = OBJECT_ID(N'[dbo].[UpdateQuotaHidden]') AND type in (N'P', N'PC'))
-DROP PROCEDURE [dbo].[UpdateQuotaHidden
-]GO
+DROP PROCEDURE [dbo].[UpdateQuotaHidden]
+GO
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePrivateNetworVLAN]') AND type in (N'P', N'PC'))
 DROP PROCEDURE [dbo].[UpdatePrivateNetworVLAN]
 GO

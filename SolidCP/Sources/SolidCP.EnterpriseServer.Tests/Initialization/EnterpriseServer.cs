@@ -15,33 +15,56 @@ using SolidCP.Providers.Utils;
 
 namespace SolidCP.Tests;
 
-public class TestWebSite : IDisposable
+public class EnterpriseServer : IDisposable
 {
-	const string EnterpriseServerPath = @"..\..\..\..\SolidCP.EnterpriseServer";
+	// Create a temporal clone of the EnterpriseServer website
+	const bool CreateClone = false;
+	const string DatabaseName = "SolidCPTest";
 	const DbType dbType = DbType.SqlServer;
 	public const string SysadminPassword = "123456";
 
 	static object Lock = new object();
 
 	static string path = null;
+
+	public static string EnterpriseServerPath
+	{
+		get
+		{
+			var exepath = IO.Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+			var esserver = IO.Path.GetFullPath(IO.Path.Combine(exepath, "..", "..", "..", "..", "SolidCP.EnterpriseServer"));
+			return esserver;
+		}
+	}
 	public static string Path {
 		get {
 			string tmpPath = null;
 			bool mustClone = false;
-			lock (Lock) {
-				if (path != null) return path;
-				path = IO.Path.Combine(IO.Path.GetTempPath(), "SolidCP", "SolidCP.EnterpriseServer.Tests", Guid.NewGuid().ToString());
-				mustClone = true;
-				tmpPath = path;
-			}
+			if (CreateClone)
+			{
+				lock (Lock)
+				{
+					if (path != null) return path;
+					path = IO.Path.Combine(IO.Path.GetTempPath(), "SolidCP", "SolidCP.EnterpriseServer.Tests", Guid.NewGuid().ToString());
+					mustClone = true;
+					tmpPath = path;
+				}
+			} else path = EnterpriseServerPath;
+
 			if (mustClone) CloneTo(tmpPath);
 			return path;
 		}
 	}
 
-	public static void Clone() => Console.WriteLine($"Cloning EnterpriseServer to {Path}");
+	public static void Clone()
+	{
+		if (CreateClone) Console.WriteLine($"Cloning EnterpriseServer to {Path}");
+	}
+
 	public static void CloneTo(string path)
 	{
+		DeleteDirectory(IO.Path.GetDirectoryName(path));
+
 		var exepath = IO.Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 		var esserver = IO.Path.GetFullPath(IO.Path.Combine(exepath, "..", "..", "..", "..", "SolidCP.EnterpriseServer"));
 
@@ -53,38 +76,42 @@ public class TestWebSite : IDisposable
 
 	public static void Delete()
 	{
-		string tmpPath = null;
-		bool mustDelete = false;
-		if (path != null)
+		if (CreateClone)
 		{
-			path = null;
-			mustDelete = true;
-			tmpPath = path;
+			string tmpPath = null;
+			bool mustDelete = false;
+			if (path != null)
+			{
+				tmpPath = path;
+				path = null;
+				mustDelete = true;
+			}
+			if (mustDelete) DeleteDirectory(tmpPath);
 		}
-		if (mustDelete) DeleteDirectory(tmpPath);
 	}
 
-	static void DeleteDirectory(string dir) => Directory.Delete(dir, true);
+	static void DeleteDirectory(string dir) => Directory.Delete($@"\\?\{dir}", true);
 	
 	public static string SetupDatabase(DbType dbType = DbType.SqlServer)
 	{
 		string connectionString;
-		if (dbType == DbType.SqlServer) connectionString = SetupLocalDB();
-		else if (dbType == DbType.Sqlite) connectionString = SetupSqliteDB();
+		if (dbType == DbType.SqlServer) connectionString = SetupLocalDb();
+		else if (dbType == DbType.Sqlite) connectionString = SetupSqliteDb();
 		else throw new NotSupportedException($"Database type {dbType} is not supported");
 
 		ConfigureDatabase(connectionString);
 
 		return connectionString;
 	}
-	public static string SetupLocalDB()
+	public static string SetupLocalDb()
 	{
-		const string DatabaseName = "SolidCPTest";
-		var connectionString = $"DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog={DatabaseName};Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
+		var connectionString = $"DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Database={DatabaseName};Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
 		var masterConnectionString = "DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
 
 		Console.Write("Waiting for SQL Server LocalDB to start");
-		while (!DatabaseUtils.CheckSqlConnection(masterConnectionString))
+		int n = 0;
+		const int max = 20;
+		while (!DatabaseUtils.CheckSqlConnection(masterConnectionString) && n++ < max)
 		{
 			Console.Write(".");
 			System.Threading.Thread.Sleep(1000);
@@ -97,13 +124,12 @@ public class TestWebSite : IDisposable
 
 		DatabaseUtils.InstallFreshDatabase(masterConnectionString, DatabaseName, null, null);
 
-		DatabaseUtils.SetServerAdminPassword(connectionString, DatabaseName, SysadminPassword);
+		DatabaseUtils.SetServerAdminPassword(masterConnectionString, DatabaseName, SysadminPassword);
 
-		return connectionString;
+		return sqlServerConnectionString = connectionString;
 	}
 
-	public static string SetupSqliteDB() {
-		const string DatabaseName = "SolidCPTest";
+	public static string SetupSqliteDb() {
 		var connectionString = DatabaseUtils.BuildSqliteConnectionString(DatabaseName, Path);
 	
 		if (DatabaseUtils.DatabaseExists(connectionString, DatabaseName))
@@ -115,12 +141,12 @@ public class TestWebSite : IDisposable
 
 		DatabaseUtils.SetServerAdminPassword(connectionString, DatabaseName, SysadminPassword);
 
-		return connectionString;
+		return sqliteConnectionString = connectionString;
 	}
 
 	public static void ConfigureDatabase(string connectionString) 
 	{
-		var espath = Path;
+		/*var espath = Path;
 		var webConfigPath = IO.Path.Combine(espath, "Web.config");
 		var appsettingsPath = IO.Path.Combine(espath, "appsettings.json");
 
@@ -136,6 +162,30 @@ public class TestWebSite : IDisposable
 				.FirstOrDefault(e => e.Attribute("name").Value == "EnterpriseServer");
 		connectionStringElement.SetAttributeValue("connectionString", connectionString);
 		File.WriteAllText(webConfigPath, webConfig.ToString());
+		*/
+		Environment.SetEnvironmentVariable("SOLIDCP_CONNECTIONSTRING", connectionString);
 	}
 
+	public static string sqlServerConnectionString = null;
+	public static string sqliteConnectionString = null;
+
+	public static string SqlServerConnectionString => sqlServerConnectionString ??= SetupDatabase(DbType.SqlServer);
+	public static string SqliteConnectionString => sqliteConnectionString ??= SetupDatabase(DbType.Sqlite);
+
+	public static string ConnectionString(DbType dbType = DbType.SqlServer) =>
+		dbType == DbType.SqlServer ? SqlServerConnectionString :
+		dbType == DbType.Sqlite ? SqliteConnectionString :
+		throw new NotSupportedException($"Database type {dbType} is not supported");
+
+	public static void DeleteDatabases()
+	{
+		if (sqlServerConnectionString != null &&
+			DatabaseUtils.DatabaseExists(sqlServerConnectionString, DatabaseName))
+			DatabaseUtils.DeleteDatabase(sqlServerConnectionString, DatabaseName);
+		try {
+			if (sqliteConnectionString != null &&
+				DatabaseUtils.DatabaseExists(sqliteConnectionString, DatabaseName))
+				DatabaseUtils.DeleteDatabase(sqliteConnectionString, DatabaseName);
+		} catch { }
+	}
 }

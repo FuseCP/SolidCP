@@ -7,7 +7,7 @@ using SolidCP.Providers.OS;
 namespace SolidCP.Tests
 {
 	[TestClass]
-	public class UnitTests
+	public class Misc
 	{
 
 		public TestContext TestContext { get; set; }

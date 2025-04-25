@@ -9,7 +9,6 @@
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     </PropertyGroup>
     <ItemGroup>

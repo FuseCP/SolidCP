@@ -88,11 +88,18 @@ jobs:
       working-directory: SolidCP\Sources
       continue-on-error: true
       run: |
-        dotnet test SolidCP.Tests.sln -v n --logger "trx" --configuration Release --results-directory ..\..\test-results
+        dotnet test SolidCP.Tests.sln -v n --logger trx --configuration Release --results-directory ..\..\test-results
+ 
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: Test-Results
+        path: test-results
+        retention-days: 7
 
     - name: Publish Unit Tests
       id: process-trx
-      uses: im-open/process-dotnet-test-results@v3
+      uses: im-open/process-dotnet-test-results@v3.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         base-directory: './test-results'
@@ -104,7 +111,7 @@ jobs:
         comment-identifier: 'bff-tests'
 
     - name: Upload Outcome as Artifact if Character Limit Reached
-      if: steps.process-trx.outputs.test-results-truncated == 'true'
+      # if: steps.process-trx.outputs.test-results-truncated == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: Cypress-Results

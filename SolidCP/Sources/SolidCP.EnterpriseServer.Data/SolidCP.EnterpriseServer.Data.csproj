@@ -5,9 +5,10 @@
         <LangVersion>13</LangVersion>
         <ImplicitUsings>disable</ImplicitUsings>
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
-        <SupportOracle Condition="$(TargetFramework) != 'net48'">True</SupportOracle>
+        <SupportOracle Condition="$(TargetFramework) != 'net48'">true</SupportOracle>
         <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
-        <DefineConstants Condition="$(SupportOracle) == 'True'">$(DefineConstants);Oracle</DefineConstants>
+        <DefineConstants Condition="$(SupportOracle) == 'true'">$(DefineConstants);Oracle</DefineConstants>
+        <DefineConstants Condition="$(MultipleEF6Providers) == 'true'">$(DefineConstants);MultipleEF6Providers</DefineConstants>
         <OutputType>Exe</OutputType>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>bin\$(Configuration)</OutputPath>

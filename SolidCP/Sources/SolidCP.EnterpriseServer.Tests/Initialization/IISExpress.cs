@@ -15,7 +15,11 @@ namespace SolidCP.Tests
 
 		public const string HttpUrl = "http://localhost:9053";
 		public const string HttpsUrl = "https://localhost:44332";
-
+		public const string NetTcpUrl = "net.tcp://localhost:9068";
+		public static IISExpress Current { get; private set; } = null;
+		public int HttpPort => new Uri(HttpUrl).Port;
+		public int HttpsPort => new Uri(HttpsUrl).Port;
+		public int NetTcpPort => new Uri(NetTcpUrl).Port;
 		public IISExpress()
         {
 			// Always trust certificates
@@ -24,11 +28,11 @@ namespace SolidCP.Tests
             var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
             var appcmd = Path.Combine(iisExprPath, "AppCmd.exe");
             var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
-            var server = TestWebSite.Path;
+            var server = EnterpriseServer.Path;
             
             // setup iis express
             Process.Start(appcmd, "delete site enterprise.tests").WaitForExit();
-            Process.Start(appcmd, $"add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:9053:localhost,https/*:44332:localhost").WaitForExit();
+            Process.Start(appcmd, $"add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost").WaitForExit();
             
             // start iis express
             var startInfo = new ProcessStartInfo(iisexpress)
@@ -65,26 +69,21 @@ namespace SolidCP.Tests
 
 			// wait for the server to be ready
 			bool done = false;
+			int n = 0;
+			const int max = 20;
             do
             {
                 try
                 {
-					var handler = new HttpClientHandler();
-					handler.ClientCertificateOptions = ClientCertificateOption.Manual;
-					handler.ServerCertificateCustomValidationCallback =
-						(httpRequestMessage, cert, cetChain, policyErrors) =>
-						{
-							return true;
-						};
-					var client = new HttpClient(handler);
-					var response = client.GetAsync("https://localhost:44332").Result;
+					var client = new HttpClient();
+					var response = client.GetAsync(HttpsUrl).Result;
                     done = true;
                 }
                 catch (Exception ex) { }
 
                 if (!done) Thread.Sleep(2000);
                 if (process.HasExited) done = true; // throw new Exception("Server has terminated.");
-
+				if (n++ >= max) done = true;
             } while (!done);
         }
 
@@ -94,8 +93,20 @@ namespace SolidCP.Tests
             process = null;
         }
 
-        public static void Start() { }
+		public static void Start() {
+			if (Current == null)
+			{
+				Current = new IISExpress();
+			}
+		}
 
-        public static readonly IISExpress Current = new IISExpress();
-    }
+		public static void Stop()
+		{
+			if (Current != null)
+			{
+				Current.Dispose();
+				Current = null;
+			}
+		}
+	}
 }

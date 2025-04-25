@@ -7,43 +7,17 @@ namespace SolidCP.Server.Tests
     using System.ServiceModel;
 
     [TestClass]
-    public class TestSolidCPServer
+    public class WCF
     {
-        public const string DevServerPassword = TestSolidCPServerCoreWCF.DevServerPassword;
-
-        static readonly object Lock = new object();
-        static Kestrel? KestrelServer = null;
-        static IISExpress? IISExpressServer = null;
+        public const string DevServerPassword = CoreWCF.DevServerPassword;
         public TestContext? TestContext { get; set; }
-
-        [ClassInitialize]
-        public static void InitTest(TestContext context)
-        {
-            lock (Lock)
-            {
-                if (KestrelServer == null) KestrelServer = new Kestrel();
-                if (IISExpressServer == null) IISExpressServer = new IISExpress();
-            }
-        }
-
-        [ClassCleanup]
-        public static void Dispose()
-        {
-            lock (Lock)
-            {
-                //KestrelServer?.Dispose();
-                KestrelServer = null;
-                //IISExpressServer?.Dispose();
-                IISExpressServer = null;
-            }
-        }
 
         [TestMethod]
         [DataRow(Protocols.BasicHttps)]
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
 
-        public void AnonymousNet6(Protocols protocol)
+        public void AnonymousNet8(Protocols protocol)
         {
             using (var client = new Test() { Url = Kestrel.HttpsUrl })
             {
@@ -70,7 +44,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
 
-        public void AnonymousWithSoapHeaderNet6(Protocols protocol)
+        public void AnonymousWithSoapHeaderNet8(Protocols protocol)
         {
             using (var client = new Test() { Url = Kestrel.HttpsUrl })
             {
@@ -97,10 +71,13 @@ namespace SolidCP.Server.Tests
             }
         }
 
-        [TestMethod]
-        public void AnonymousNetTcp()
+        // Do not test, since net.tcp does not work yet
+        //[TestMethod]
+        [DataRow("tcp")]
+        [DataRow("tcp/ssl")]
+        public void AnonymousNetTcp(string api)
         {
-            using (var client = new Test() { Url = "net.tcp://localhost:9022" })
+            using (var client = new Test() { Url = $"{IISExpress.NetTcpUrl}/{api}" })
             {
                 try
                 {
@@ -120,7 +97,7 @@ namespace SolidCP.Server.Tests
         }
 
         [TestMethod]
-        public async Task AnonymousNet6Async()
+        public async Task AnonymousNet8Async()
         {
             using (var client = new Test() { Url = Kestrel.HttpsUrl })
             {
@@ -141,7 +118,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.BasicHttps)]
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
-        public void AuthenticatedNet6(Protocols protocol)
+        public void AuthenticatedNet8(Protocols protocol)
         {
             using (var client = new TestWithAuthentication() { Url = Kestrel.HttpsUrl })
             {
@@ -304,7 +281,7 @@ namespace SolidCP.Server.Tests
         [DataRow(Protocols.BasicHttps)]
         [DataRow(Protocols.WSHttps)]
         [DataRow(Protocols.NetHttps)]
-        public void WrongPasswordNet6(Protocols protocol)
+        public void WrongPasswordNet8(Protocols protocol)
         {
             using (var client = new TestWithAuthentication() { Url = Kestrel.HttpsUrl })
             {
