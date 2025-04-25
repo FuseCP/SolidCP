@@ -163,7 +163,7 @@ public class EnterpriseServer : IDisposable
 		connectionStringElement.SetAttributeValue("connectionString", connectionString);
 		File.WriteAllText(webConfigPath, webConfig.ToString());
 		*/
-		Environment.SetEnvironmentVariable("SOLIDCP_CONNECTIONSTRING", connectionString);
+		Environment.SetEnvironmentVariable("SOLIDCP_CONNECTIONSTRING", connectionString, EnvironmentVariableTarget.User);
 	}
 
 	public static string sqlServerConnectionString = null;

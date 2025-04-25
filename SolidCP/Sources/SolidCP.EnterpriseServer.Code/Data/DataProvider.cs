@@ -40,6 +40,11 @@ using System.Linq.Dynamic.Core;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net;
+using System.Runtime.InteropServices.ComTypes;
+using System.Runtime.ConstrainedExecution;
 
 #if !EF64
 using Microsoft.Data.SqlClient;
@@ -53,11 +58,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Data.Entity;
 #endif
 using System.Text.RegularExpressions;
-using SolidCP.EnterpriseServer.Base.HostedSolution;
-using SolidCP.Providers.HostedSolution;
 using Microsoft.ApplicationBlocks.Data;
-using System.Collections;
-using System.Collections.Generic;
 using Microsoft.Win32;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.RemoteDesktopServices;
@@ -66,10 +67,9 @@ using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.StorageSpaces;
 using SolidCP.EnterpriseServer.Data;
 using SolidCP.EnterpriseServer.Code;
-using System.Net;
+using SolidCP.EnterpriseServer.Base.HostedSolution;
+using SolidCP.Providers.HostedSolution;
 //using Humanizer.Localisation;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.ConstrainedExecution;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -3191,12 +3191,8 @@ namespace SolidCP.EnterpriseServer
 		#endregion
 
 		#region Servers
-		public bool CheckIsUserAdmin(int userId)
-		{
-			
-
-			return userId == -1 || Users.Any(u => u.UserId == userId && u.RoleId == 1);
-		}
+		public bool CheckIsUserAdmin(int userId) =>
+			userId == -1 || Users.Any(u => u.UserId == userId && u.RoleId == 1);
 		public DataSet GetAllServers(int actorId)
 		{
 			if (UseEntityFramework)

@@ -20,7 +20,7 @@ namespace SolidCP.Tests
 		public const string NetTcpUrl = "net.tcp://localhost:9067";
 		public static Kestrel Current { get; private set; } = null;
 		public Kestrel()
-        {
+		{
 			var apppath = EnterpriseServer.Path;
 			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
@@ -29,41 +29,32 @@ namespace SolidCP.Tests
 			var exe = Shell.Standard.Find("dotnet");
 			var pfx = Certificate.CertFilePath;
 
-			var startInfo = new ProcessStartInfo(exe)
-            {
-                CreateNoWindow = false,
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = workingDir,
-				Arguments = $"\"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"",
-				EnvironmentVariables = {
-					{ "ASPNETCORE_ENVIRONMENT", "Development" },
-					//{ "ASPNETCORE_URLS", $"{HttpUrl};{HttpsUrl}" },
-					//{ "ASPNETCORE_Kestrel__Certificates__Default__Path", pfx },
-					//{ "ASPNETCORE_Kestrel__Certificates__Default__Password", Certificate.Password },
-					//{ "ServerCertificate__File", pfx },
-					//{ "ServerCertificate__Password", Certificate.Password },
-				}
-			};
-			// redirect output to console
-			startInfo.RedirectStandardOutput = true;
-			startInfo.RedirectStandardError = true;
-			process = Process.Start(startInfo);
-			process.ErrorDataReceived += (sender, arg) =>
+			var shell = Shell.Standard.Clone;
+			shell.Log += msg =>
 			{
+				if (Debugger.IsAttached) Debug.WriteLine($"Kestrel>{msg}");
+				Console.WriteLine($"Kestrel>{msg}");
+			};
+			shell.LogError += msg =>
+			{
+				if (Debugger.IsAttached) Debug.WriteLine($"Kestrel>{msg}");
 				var mainColor = Console.ForegroundColor;
 				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine($"Kestrel>{arg.Data}");
-				Debug.WriteLine($"Kestrel>{arg.Data}");
+				Console.WriteLine($"Kestrel>{msg}");
 				Console.ForegroundColor = mainColor;
 			};
-			process.OutputDataReceived += (sender, arg) =>
+			shell.CreateNoWindow = true;
+			shell.WindowStyle = ProcessWindowStyle.Minimized;
+			shell.ExecAsync($"\"{exe}\" \"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"", null, new System.Collections.Specialized.StringDictionary()
 			{
-				Debug.WriteLine($"Kestrel>{arg.Data}");
-				Console.WriteLine($"Kestrel>{arg.Data}");
-			};
-			process.BeginOutputReadLine();
-			process.BeginErrorReadLine();
+				{ "ASPNETCORE_ENVIRONMENT", "Development" },
+				//{ "ASPNETCORE_URLS", $"{HttpUrl};{HttpsUrl}" },
+				//{ "ASPNETCORE_Kestrel__Certificates__Default__Path", pfx },
+				//{ "ASPNETCORE_Kestrel__Certificates__Default__Password", Certificate.Password },
+				//{ "ServerCertificate__File", pfx },
+				//{ "ServerCertificate__Password", Certificate.Password },);
+			});
+			process = shell.Process;
 
 			if (process.HasExited) throw new Exception($"Kestrel exited with code {process.ExitCode}");
 

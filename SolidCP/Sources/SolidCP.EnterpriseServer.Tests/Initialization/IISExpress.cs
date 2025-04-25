@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Diagnostics;
 using System.Net;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Tests
 {
@@ -26,45 +27,23 @@ namespace SolidCP.Tests
 			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 			
             var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
-            var appcmd = Path.Combine(iisExprPath, "AppCmd.exe");
-            var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
+			var appcmd = Path.Combine(iisExprPath, "AppCmd.exe");
+			var admincmd = Path.Combine(iisExprPath, "IisExpressAdminCmd.exe");
+			var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
             var server = EnterpriseServer.Path;
-            
-            // setup iis express
-            Process.Start(appcmd, "delete site enterprise.tests").WaitForExit();
-            Process.Start(appcmd, $"add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost").WaitForExit();
+
+			// setup iis express
+			var shell = Shell.Standard.Clone;
+			shell.Redirect = true;
+			shell.Log += msg => Debug.WriteLine(msg);
+			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned").Wait();
+			shell.Exec($"\"{appcmd}\" delete site enterprise.tests").Wait();
+            shell.Exec($"\"{appcmd}\" add site /name:enterprise.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost").Wait();
             
             // start iis express
-            var startInfo = new ProcessStartInfo(iisexpress)
-            {
-                CreateNoWindow = false,
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = Path.GetDirectoryName(server),
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				Arguments = "/site:enterprise.tests"
-            };
-			// redirect output to console
-			startInfo.RedirectStandardOutput = true;
-			startInfo.RedirectStandardError = true;
-			process = Process.Start(startInfo);
-			process.ErrorDataReceived += (sender, arg) =>
-			{
-				var mainColor = Console.ForegroundColor;
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine($"IIS Express>{arg.Data}");
-				Debug.WriteLine($"IIS Express>{arg.Data}");
-				Console.ForegroundColor = mainColor;
-			};
-			process.OutputDataReceived += (sender, arg) =>
-			{
-				Debug.WriteLine($"IIS Express>{arg.Data}");
-				Console.WriteLine($"IIS Express>{arg.Data}");
-			};
-			process.BeginOutputReadLine();
-			process.BeginErrorReadLine();
-
+			shell.ExecAsync($"\"{iisexpress}\" /site:enterprise.tests");
+			process = shell.Process;
+			
 			//if (process.HasExited) throw new Exception($"IIS Express exited with code {process.ExitCode}");
 
 			// wait for the server to be ready

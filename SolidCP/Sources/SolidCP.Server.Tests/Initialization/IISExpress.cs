@@ -29,6 +29,7 @@ namespace SolidCP.Server.Tests
 
 			var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
 			var appcmdex = Path.Combine(iisExprPath, "AppCmd.exe");
+			var admincmd = Path.Combine(iisExprPath, "IisExpressAdminCmd.exe");
 			var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
 			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
@@ -36,41 +37,28 @@ namespace SolidCP.Server.Tests
 			var server = Path.GetFullPath(Path.Combine(testprojpath, "..", "SolidCP.Server"));
 			// setup iis express
 			var shell = Shell.Standard.Clone;
-			shell.Redirect = true;
-			shell.Log += msg => Debug.WriteLine(msg);
+			shell.Log += msg =>
+			{
+				if (Debugger.IsAttached) Debug.WriteLine($"IIS Express>{msg}");
+				Console.WriteLine($"IIS Express>{msg}");
+			};
+			shell.LogError += msg =>
+			{
+				if (Debugger.IsAttached) Debug.WriteLine($"IIS Express>{msg}");
+				var mainColor = Console.ForegroundColor;
+				Console.ForegroundColor = ConsoleColor.Red;
+				Console.WriteLine($"IIS Express>{msg}");
+				Console.ForegroundColor = mainColor;
+			};
+			shell.CreateNoWindow = true;
+			shell.WindowStyle = ProcessWindowStyle.Minimized;
+			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned").Wait();
 			shell.Exec($"\"{appcmdex}\" delete site solidcp.server.tests").Wait();
 			shell.Exec($"\"{appcmdex}\" add site /name:solidcp.server.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost").Wait();
             
 			// start iis express
-			var startInfo = new ProcessStartInfo(iisexpress)
-            {
-                CreateNoWindow = false,
-                UseShellExecute = false,
-                WindowStyle = ProcessWindowStyle.Normal,
-                WorkingDirectory = workingDir,
-				RedirectStandardOutput = true,
-				RedirectStandardError = true,
-				Arguments = "/site:solidcp.server.tests"
-            };
-			// redirect output to console
-			startInfo.RedirectStandardOutput = true;
-			startInfo.RedirectStandardError = true;
-			process = Process.Start(startInfo);
-			process.ErrorDataReceived += (sender, arg) =>
-			{
-				var mainColor = Console.ForegroundColor;
-				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine($"IIS Express>{arg.Data}");
-				Debug.WriteLine($"IIS Express>{arg.Data}");
-				Console.ForegroundColor = mainColor;
-			};
-			process.OutputDataReceived += (sender, arg) =>
-			{
-				Debug.WriteLine($"IIS Express>{arg.Data}");
-				Console.WriteLine($"IIS Express>{arg.Data}");
-			};
-			process.BeginOutputReadLine();
-			process.BeginErrorReadLine();
+			shell.ExecAsync($"\"{iisexpress}\" /site:solidcp.server.tests");
+			process = shell.Process;
 
 			//if (process.HasExited) done = true; // throw new Exception($"IIS Express exited with code {process.ExitCode}");
 
