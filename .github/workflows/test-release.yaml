@@ -76,6 +76,10 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
 
+    - name: Install Development Certificates
+      continue-on-error: true
+      run: dotnet dev-certs https
+
     - name: Build Server & EnterpriseServer
       working-directory: SolidCP\Sources
       run: |
