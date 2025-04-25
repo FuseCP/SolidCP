@@ -58,8 +58,6 @@ jobs:
 
     permissions:
       checks: write
-      actions: write
-      content: write
 
     timeout-minutes: 60
 
