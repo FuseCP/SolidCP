@@ -89,6 +89,7 @@ jobs:
         dotnet build SolidCP.EnterpriseServer.sln
 
     - name: Run Unit Tests
+      id: test
       working-directory: SolidCP\Sources
       continue-on-error: true
       run: |
@@ -114,3 +115,8 @@ jobs:
         timezone: 'europe/zurich'
         comment-identifier: 'bff-tests'
         
+    - name: Fail if Tests Failed
+      if: steps.test.outcome == 'failure'
+      run: |
+        echo "Tests failed, failing the job"
+        exit 1
