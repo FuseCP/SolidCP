@@ -122,8 +122,8 @@ public class EnterpriseServer : IDisposable
 	}
 	public static string SetupLocalDb()
 	{
-		var connectionString = $"DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Database={DatabaseName};Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
-		var masterConnectionString = "DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
+		var connectionString = $"DbType=SqlServer;Data Source=(localdb)\\.;Database={DatabaseName};Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True";
+		var masterConnectionString = "DbType=SqlServer;Data Source=(localdb)\\.;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=True";
 
 		StartLocalDB();
 
