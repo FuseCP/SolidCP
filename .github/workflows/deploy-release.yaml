@@ -98,7 +98,7 @@ jobs:
     - name: Show WSL distro info
       run: |
         wsl --list --verbose
-        wsl --distribution Ununtu-24.04 echo '"rpmbuild: $(which rpmbuild)"'
+        wsl --distribution Ubuntu-24.04 echo '"rpmbuild: $(which rpmbuild)"'
 
     - name: Checkout
       uses: actions/checkout@v4
