@@ -22,6 +22,7 @@ namespace SolidCP.Tests
 
 			// install the certificate
 			Certificate.Install();
+			Certificate.TrustAll();
 			
 			// Setup EnterpriseServer website & database
 			EnterpriseServer.Clone();

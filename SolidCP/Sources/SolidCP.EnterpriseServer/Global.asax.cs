@@ -57,7 +57,7 @@ public class Global : System.Web.HttpApplication
 	{
 		//if (!Debugger.IsAttached) Debugger.Launch();
 		UsernamePasswordValidator.Init();
-		Web.Clients.CertificateValidator.Init();
+		//Web.Clients.CertificateValidator.Init();
 		Web.Services.StartupNetFX.Start();
 		Web.Clients.AssemblyLoader.Init(null, null, false);
 	}

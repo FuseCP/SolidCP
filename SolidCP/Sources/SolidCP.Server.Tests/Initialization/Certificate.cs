@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Reflection;
+using System.Net;
 
 namespace SolidCP.Server.Tests
 {
@@ -46,7 +47,12 @@ namespace SolidCP.Server.Tests
 		}
 
 		public static void Install() => Install(CertFilePath, Password);
-
 		public static void Remove() => Remove(CertFilePath, Password);
+		public static void TrustAll()
+		{
+			// Always trust certificates
+			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+			Web.Clients.ClientBase.TrustAllCertificates = true;
+		}
 	}
 }

@@ -26,9 +26,6 @@ namespace SolidCP.Server.Tests
 
 		public IISExpress()
 		{
-			// Always trust certificates
-			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-
 			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
 			var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");

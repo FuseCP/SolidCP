@@ -9,7 +9,7 @@ namespace SolidCP.EnterpriseServer
 		{
             //if (!Debugger.IsAttached) Debugger.Launch();
             UsernamePasswordValidator.Init();
-            Web.Clients.CertificateValidator.Init();
+            //Web.Clients.CertificateValidator.Init();
 			//Web.Clients.AssemblyLoader.Init(null, null, false);
 			Web.Services.Server.ConfigureBuilder = builder => builder.Services.AddHostedService<Code.ScheduleWorker>();
 			Web.Services.StartupCore.Init(args);

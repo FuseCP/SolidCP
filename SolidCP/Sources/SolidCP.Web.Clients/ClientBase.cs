@@ -39,11 +39,12 @@ namespace SolidCP.Web.Clients
 
 	public class ClientBase : IDisposable
 	{
-
 		public const long MaximumMessageSize = 10 * 1024 * 1024; // 10 MB
 		public const bool UseMessageSecurityOverHttp = true;
 		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
 		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
+
+		public static bool TrustAllCertificates = false;
 
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
@@ -589,6 +590,14 @@ namespace SolidCP.Web.Clients
 						if (!FactoryPool.TryGetValue(serviceurl, out factory))
 						{
 							factory = new ChannelFactory<T>(binding, endpoint);
+							if (TrustAllCertificates)
+							{
+								factory.Credentials.ServiceCertificate.SslCertificateAuthentication =
+									new System.ServiceModel.Security.X509ServiceCertificateAuthentication()
+									{
+										CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
+									};
+							}
 						}
 						else
 						{

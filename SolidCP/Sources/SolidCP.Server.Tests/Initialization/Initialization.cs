@@ -17,6 +17,8 @@ namespace SolidCP.Server.Tests
 			
 			// install the certificate
 			Certificate.Install();
+			Certificate.TrustAll();
+
 			// start the servers
 			IISExpress.Start();
 			Kestrel.Start();

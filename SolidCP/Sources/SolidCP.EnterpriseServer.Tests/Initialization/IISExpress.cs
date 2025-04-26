@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Diagnostics;
-using System.Net;
 using SolidCP.Providers.OS;
 using System.Reflection;
 
@@ -25,9 +24,6 @@ namespace SolidCP.Tests
 		public int NetTcpPort => new Uri(NetTcpUrl).Port;
 		public IISExpress()
         {
-			// Always trust certificates
-			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
-
 			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
 			var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
