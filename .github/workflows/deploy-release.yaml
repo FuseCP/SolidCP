@@ -92,8 +92,8 @@ jobs:
       uses: Vampire/setup-wsl@v3
       with: 
         distribution: Ubuntu-24.04
-        additional-packages: rpmdev
-        use-cache: 'true'
+        additional-packages: rpm
+        use-cache: 'false'
 
     - name: Show WSL distro info
       run: |
