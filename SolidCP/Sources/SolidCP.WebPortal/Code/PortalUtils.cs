@@ -46,13 +46,17 @@ using System.Web.UI;
 using System.Web.Security;
 using System.Web.UI.WebControls;
 using System.Net;
-using System.Net.Mail;
+using MimeKit;
+using MailKit;
+using MailKit.Security;
+using MailKit.Net.Smtp;
 using System.Security.Cryptography;
 
 using Microsoft.Web.Services3;
 using SolidCP.EnterpriseServer;
 using SolidCP.WebPortal;
 using System.Collections;
+using System.Security.Authentication;
 
 namespace SolidCP.Portal
 {
@@ -176,6 +180,25 @@ namespace SolidCP.Portal
             return System.Threading.Thread.CurrentThread.CurrentCulture;
         }
 
+        public static bool ParseBool(string val, bool defaultValue)
+        {
+            bool result = defaultValue;
+            // Perf: allow only non-empty strings to go through
+            if (!String.IsNullOrEmpty(val))
+            {
+                try
+                {
+                    result = Boolean.Parse(val);
+                }
+                catch
+                {
+                    /* do nothing */
+                }
+            }
+
+            return result;
+        }
+
         public static string AdminEmail
         {
             get { return PortalConfiguration.SiteSettings["AdminEmail"]; }
@@ -188,38 +211,63 @@ namespace SolidCP.Portal
 
         public static void SendMail(string from, string to, string bcc, string subject, string body)
         {
-            // Command line argument must the the SMTP host.
-            SmtpClient client = new SmtpClient();
-
-            // set SMTP client settings
-            client.Host = PortalConfiguration.SiteSettings["SmtpHost"];
-            client.Port = Int32.Parse(PortalConfiguration.SiteSettings["SmtpPort"]);
-            string smtpUsername = PortalConfiguration.SiteSettings["SmtpUsername"];
-            string smtpPassword = PortalConfiguration.SiteSettings["SmtpPassword"];
-            if (String.IsNullOrEmpty(smtpUsername))
+            using (var client = new SmtpClient())
             {
-                client.Credentials = new NetworkCredential(smtpUsername, smtpPassword);
-            }
+                // set SMTP client settings
+                string smtpServer = PortalConfiguration.SiteSettings["SmtpHost"];
+                int smtpPort = Int32.Parse(PortalConfiguration.SiteSettings["SmtpPort"]);
+                string smtpUsername = PortalConfiguration.SiteSettings["SmtpUsername"];
+                string smtpPassword = PortalConfiguration.SiteSettings["SmtpPassword"];
+                bool enableSsl = ParseBool(PortalConfiguration.SiteSettings["SmtpEnableSsl"], false);
+                bool enableLegacySSL = ParseBool(PortalConfiguration.SiteSettings["SmtpEnableLegacySSL"], false);
 
-            // create message
-            MailMessage message = new MailMessage(from, to);
-            message.Body = body;
-            message.BodyEncoding = System.Text.Encoding.UTF8;
-            message.IsBodyHtml = false;
-            message.Subject = subject;
-            message.SubjectEncoding = System.Text.Encoding.UTF8;
-            if (!String.IsNullOrEmpty(bcc))
-                message.Bcc.Add(bcc);
+                // Determine SecureSocketOptions based on EnableSsl and Port
+                // Common logic: Port 465 usually implies SslOnConnect, others often use StartTls. Adjust as needed.
+                SecureSocketOptions secureSocketOptions = SecureSocketOptions.Auto;
+                if (enableSsl)
+                {
+                    secureSocketOptions = smtpPort == 465 ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls;
+                }
 
-            // send message
-            try
-            {
-                client.Send(message);
-            }
-            finally
-            {
-                // Clean up.
-                message.Dispose();
+                if (enableLegacySSL)
+                {
+                    client.SslProtocols = SslProtocols.Tls11 | SslProtocols.Tls | SslProtocols.Tls12 | SslProtocols.Tls13;
+                }
+                else
+                {
+                    client.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                }
+
+                client.Connect(smtpServer, smtpPort, secureSocketOptions);
+
+                if (String.IsNullOrEmpty(smtpUsername))
+                {
+                    client.Authenticate(smtpUsername, smtpPassword);
+                }
+
+                // create message
+                var message = new MimeMessage();
+                message.From.Add(MailboxAddress.Parse(from));
+                message.To.Add(MailboxAddress.Parse(to));
+                if (!String.IsNullOrEmpty(bcc))
+                    message.Bcc.Add(MailboxAddress.Parse(bcc));
+                message.Subject = subject;
+                message.Priority = MessagePriority.Urgent;
+
+                // Create body
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.TextBody = body;
+                message.Body = bodyBuilder.ToMessageBody();
+
+                // send message
+                try
+                {
+                    client.Send(message);
+                }
+                finally
+                {
+                    client.Disconnect(true);
+                }
             }
         }
 

@@ -105,6 +105,24 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.WebControls.CheckBox chkEnableSsl;
 
         /// <summary>
+        /// SettinglblEnableLegacySSL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize SettinglblEnableLegacySSL;
+
+        /// <summary>
+        /// chkEnableLegacySSL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkEnableLegacySSL;
+
+        /// <summary>
         /// configuremailtemplates control.
         /// </summary>
         /// <remarks>

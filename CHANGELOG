@@ -1,3 +1,6 @@
+Version 1.5.2
+- Moving from System.Net.Mail to MailKit to send SMTP traffic due to issues with newer SMTP Servers with TLS1.2 and TLS1.3 enabled on default. Added option to allow unsecure SSL Versions (TLS 1.0 & TLS 1.1)
+
 Version 1.5.1
 - [SmarterMail100] Fix for GetGroup showing the wrong emails when more than one group is returned.
 - [SmarterMail100] Fix for large numbers when going from MB to kb for domain settings

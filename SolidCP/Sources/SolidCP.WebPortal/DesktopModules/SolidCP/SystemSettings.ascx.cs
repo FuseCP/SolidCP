@@ -53,6 +53,7 @@ namespace SolidCP.Portal
         public const string SMTP_USERNAME = "SmtpUsername";
         public const string SMTP_PASSWORD = "SmtpPassword";
         public const string SMTP_ENABLE_SSL = "SmtpEnableSsl";
+        public const string SMTP_ENABLE_LEGACYSSL = "SmtpEnableLegacySSL";
         public const string BACKUPS_PATH = "BackupsPath";
         public const string FILE_MANAGER_EDITABLE_EXTENSIONS = "EditableExtensions";
         public const string RDS_MAIN_CONTROLLER = "RdsMainController";
@@ -94,6 +95,7 @@ namespace SolidCP.Portal
                 txtSmtpUser.Text = settings[SMTP_USERNAME];
                 txtSmtpPassword.Text = settings[SMTP_PASSWORD];
                 chkEnableSsl.Checked = Utils.ParseBool(settings[SMTP_ENABLE_SSL], false);
+                chkEnableLegacySSL.Checked = Utils.ParseBool(settings[SMTP_ENABLE_LEGACYSSL], false);
             }
 
             // BACKUP
@@ -217,6 +219,7 @@ namespace SolidCP.Portal
                 settings[SMTP_USERNAME] = txtSmtpUser.Text.Trim();
                 settings[SMTP_PASSWORD] = txtSmtpPassword.Text;
                 settings[SMTP_ENABLE_SSL] = chkEnableSsl.Checked.ToString();
+                settings[SMTP_ENABLE_LEGACYSSL] = chkEnableLegacySSL.Checked.ToString();
 
                 // SMTP
                 int result = ES.Services.System.SetSystemSettings(SCP.SystemSettings.SMTP_SETTINGS, settings);
