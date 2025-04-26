@@ -89,8 +89,9 @@ jobs:
     #    wsl --version
 
     - name: Install WSL Ubuntu with rpm tools
-      uses: Vampire/setup-wsl@v3
+      uses: Vampire/setup-wsl@v5
       with: 
+        wsl-version: 2
         distribution: Ubuntu-24.04
         additional-packages: rpm
         use-cache: 'false'
