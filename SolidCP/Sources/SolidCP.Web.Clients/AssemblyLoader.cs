@@ -166,9 +166,10 @@ namespace SolidCP.Web.Clients
             if (Interlocked.Exchange(ref Initialized, 1) == 1) return;
 
 #if NETFRAMEWORK
-			ProbingPaths = ConfigurationManager.AppSettings["ExternalProbingPaths"];
+            var configProbingPath = ConfigurationManager.AppSettings["ExternalProbingPaths"];
+			ProbingPaths = !string.IsNullOrEmpty(configProbingPath) ? configProbingPath : probingPaths;
 
-            AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
+			AppDomain.CurrentDomain.AssemblyLoad += (sender, args) => LoadNativeDlls(args.LoadedAssembly);
 #else
 			ProbingPaths = probingPaths;
 #endif
@@ -289,16 +290,20 @@ namespace SolidCP.Web.Clients
                 if (exepath != null) return exepath;
 
                 var path = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-                if (path.EndsWith($"{Path.DirectorySeparatorChar}bin") || path.EndsWith($"{Path.DirectorySeparatorChar}bin_dotnet"))
-                {
-                    path = Path.GetDirectoryName(path);
-                }
-                return exepath = path;
+  
+                var dir = Path.GetFileName(path);
+                while (Regex.IsMatch(dir, @"^((net[0-9][.0-9]*)|Debug|Release|bin|bin_dotnet)$"))
+    			{
+	    			path = Path.GetDirectoryName(path);
+                    dir = Path.GetFileName(path);
+				}
+
+				return exepath = path;
             }
         }
 
         static string[] paths = null;
-        static string ProbingPaths = null;
+        public static string ProbingPaths = null;
         public static string[] Paths => paths != null ? paths : paths =
             (string.IsNullOrEmpty(ProbingPaths) ? new string[0] :
                 ProbingPaths.Replace('\\', Path.DirectorySeparatorChar)

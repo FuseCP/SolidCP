@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 
 namespace SolidCP.Providers.OS
 {
@@ -405,8 +404,8 @@ namespace SolidCP.Providers.OS
 			public WSLGlobalConfiguration(WSLShell shell, string user) { User = user; Shell = shell; Open(); }
 			public virtual string User { get; set; } = null;
 			public override string File => User == null ?
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".wslconfig") :
-				Path.Combine(Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), User, ".wslconfig");
+				Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".wslconfig") :
+				Path.Combine(Path.GetDirectoryName(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)), User, ".wslconfig");
 			protected override bool IsWslFile => false;
 			public Wsl2Section Wsl2 => (Wsl2Section)this[nameof(Wsl2)];
 			public ExperimentalSection Experimental => (ExperimentalSection)this[nameof(Experimental)];
@@ -439,7 +438,7 @@ namespace SolidCP.Providers.OS
 			(CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}") :
 			"bash";
 
-		public WSLShell() : base() => BaseShell = Shell.Default.Clone;
+		public WSLShell() : base() => BaseShell = Shell.Standard.Clone;
 		public WSLShell(WSLDistro distro) : this() => Use(distro);
 
 		Shell baseShell = null;
@@ -522,31 +521,31 @@ namespace SolidCP.Providers.OS
 		public bool IsInstalled(WSLDistro distro) => !IsWindows || Regex.IsMatch(WSLList, $@"^\*?\s+{Regex.Escape(distro)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 		public bool IsInstalledAny() => !IsWindows || IsWslInstalled && InstalledDistros.Length > 0;
 		public bool IsInstalled() => !IsWindows || IsInstalled(CurrentDistroName);
-		public void UpdateWsl() => BaseShell.Exec("wsl --update");
+		public void UpdateWsl() => BaseShell.Exec("wsl --update", Encoding.Unicode);
 		public void ShutdownAll()
 		{
-			if (IsWindows) base.Exec("wsl --shutdown");
+			if (IsWindows) base.Exec("wsl --shutdown", Encoding.Unicode);
 		}
 		public void Terminate(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --terminate {distro}");
+			if (IsWindows) base.Exec($"wsl --terminate {distro}", Encoding.Unicode);
 		}
 		public void Install(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --install {distro}");
+			if (IsWindows) base.Exec($"wsl --install {distro}", Encoding.Unicode);
 		}
 		public void Uninstall(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --unregister {distro}");
+			if (IsWindows) base.Exec($"wsl --unregister {distro}", Encoding.Unicode);
 		}
 
 		public void Import(WSLDistro distro, string file)
 		{
-			if (IsWindows) base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
+			if (IsWindows) base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
 		}
 		public void Export(WSLDistro distro, string file)
 		{
-			if (IsWindows) base.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
+			if (IsWindows) base.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
 		}
 		public string ReadTextFile(string path)
 		{
@@ -590,33 +589,33 @@ namespace SolidCP.Providers.OS
 
 		protected override string ToTempFile(string script)
 		{
-			script = script.Replace(Environment.NewLine, "\n");
+			script = script.Replace(System.Environment.NewLine, "\n");
 			var localTmp = base.ToTempFile(script);
 			return WSLPath(localTmp);
 		}
 
-		public override Shell ExecAsync(string command, Encoding encoding = null, StringDictionary environmentVariables = null)
+		public override Shell ExecAsync(string command, Encoding encoding = null, Dictionary<string, string> environment = null)
 		{
 			LogCommand?.Invoke(command);
 
 			if (IsWindows)
 			{
-				return BaseShell.ExecAsync($"{ShellExe} {command}", encoding, environmentVariables);
+				return BaseShell.ExecAsync($"{ShellExe} {command}", encoding, environment);
 			}
 			else // System is already unix, do not use WSL
 			{
-				return BaseShell.ExecAsync(command, encoding, environmentVariables);
+				return BaseShell.ExecAsync(command, encoding, environment);
 			}
 		}
-		public override Shell ExecScriptAsync(string script, string args = null, Encoding encoding = null, StringDictionary environmentVariables = null)
+		public override Shell ExecScriptAsync(string script, string args = null, Encoding encoding = null, Dictionary<string, string> environment = null)
 		{
 			LogCommand?.Invoke($"bash {script}");
 
 			script = script.Trim();
 			// adjust new lines to OS type
-			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
+			script = Regex.Replace(script, @"\r?\n", System.Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding, environmentVariables);
+			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding, environment);
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>

@@ -25,8 +25,21 @@ namespace SolidCP.Tests
 			esClient.Credentials.UserName = "serveradmin";
 			esClient.Credentials.Password = CryptoUtils.SHA256("123456");
 			var settings = esClient.GetSystemSettings(SystemSettings.DEBUG_SETTINGS);
-			Assert.IsTrue(true);
 		}
 
+		[TestMethod]
+		public async Task TestESAssemblyAccess()
+		{
+			var testClient = new esTest();
+			testClient.Url = EnterpriseServer.AssemblyUrl;
+			Assert.AreEqual("Hello", testClient.Echo("Hello"));
+			Assert.AreEqual("Hello", await testClient.EchoAsync("Hello"));
+
+			var esClient = new esSystem();
+			esClient.Url = EnterpriseServer.AssemblyUrl;
+			esClient.Credentials.UserName = "serveradmin";
+			esClient.Credentials.Password = CryptoUtils.SHA256("123456");
+			var settings = esClient.GetSystemSettings(SystemSettings.DEBUG_SETTINGS);
+		}
 	}
 }

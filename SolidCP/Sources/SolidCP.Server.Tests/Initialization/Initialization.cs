@@ -13,6 +13,8 @@ namespace SolidCP.Server.Tests
 		[AssemblyInitialize]
 		public static void Init(TestContext context)
 		{
+			Server.Init();
+			
 			// install the certificate
 			Certificate.Install();
 			// start the servers

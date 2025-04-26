@@ -658,8 +658,7 @@ public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 	public OSProcess[] GetOSProcesses()
 	{
 		// Use POSIX ps command
-		var env = new StringDictionary();
-		env["COLUMNS"] = "1024";
+		var env = new Dictionary<string, string>() { { "COLUMNS", "1024" } };
 		var output = Shell.Default.Exec("ps -A -o pid=,user=,rss=,vsz=,pcpu=,args=", null, env).Output().Result;
 		if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
 		if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase))

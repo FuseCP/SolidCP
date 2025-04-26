@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 
 using SolidCP.EnterpriseServer.Data;
 using SolidCP.Providers.Utils;
+using SolidCP.EnterpriseServer;
 
 namespace SolidCP.Tests;
 
@@ -22,6 +23,11 @@ public class EnterpriseServer : IDisposable
 	const string DatabaseName = "SolidCPTest";
 	const DbType dbType = DbType.SqlServer;
 	public const string SysadminPassword = "123456";
+	public const string AssemblyUrl = "assembly://SolidCP.EnterpriseServer";
+	public static void InitAssemblyLoader()
+	{
+		Web.Clients.AssemblyLoader.Init(@"..\SolidCP.EnterpriseServer\bin;..\SolidCP.EnterpriseServer\bin\Code;..\SolidCP.EnterpriseServer\bin\netstandard", "none", true);
+	}
 
 	static object Lock = new object();
 
@@ -69,7 +75,7 @@ public class EnterpriseServer : IDisposable
 		var esserver = IO.Path.GetFullPath(IO.Path.Combine(exepath, "..", "..", "..", "..", "SolidCP.EnterpriseServer"));
 
 		Console.WriteLine($"Cloning {IO.Path.GetFileName(EnterpriseServerPath)} ...");
-		FileUtils.CopyDirectory(esserver, path);
+		SolidCP.Providers.Utils.FileUtils.CopyDirectory(esserver, path);
 	}
 
 	public void Dispose() => Delete();
@@ -124,7 +130,8 @@ public class EnterpriseServer : IDisposable
 
 		DatabaseUtils.InstallFreshDatabase(masterConnectionString, DatabaseName, null, null);
 
-		DatabaseUtils.SetServerAdminPassword(masterConnectionString, DatabaseName, SysadminPassword);
+		DatabaseUtils.SetServerAdminPassword(masterConnectionString, DatabaseName,
+			CryptoUtils.Encrypt(SysadminPassword));
 
 		return sqlServerConnectionString = connectionString;
 	}
@@ -139,7 +146,8 @@ public class EnterpriseServer : IDisposable
 
 		DatabaseUtils.InstallFreshDatabase(connectionString, DatabaseName, null, null);
 
-		DatabaseUtils.SetServerAdminPassword(connectionString, DatabaseName, SysadminPassword);
+		DatabaseUtils.SetServerAdminPassword(connectionString, DatabaseName,
+			CryptoUtils.Encrypt(SysadminPassword));
 
 		return sqliteConnectionString = connectionString;
 	}
@@ -163,11 +171,13 @@ public class EnterpriseServer : IDisposable
 		connectionStringElement.SetAttributeValue("connectionString", connectionString);
 		File.WriteAllText(webConfigPath, webConfig.ToString());
 		*/
-		Environment.SetEnvironmentVariable("SOLIDCP_CONNECTIONSTRING", connectionString, EnvironmentVariableTarget.User);
+		CurrentConnectionString = connectionString;
+		Environment.SetEnvironmentVariable("SOLIDCP_CONNECTIONSTRING", connectionString);
 	}
 
 	public static string sqlServerConnectionString = null;
 	public static string sqliteConnectionString = null;
+	public static string CurrentConnectionString { get; set; }
 
 	public static string SqlServerConnectionString => sqlServerConnectionString ??= SetupDatabase(DbType.SqlServer);
 	public static string SqliteConnectionString => sqliteConnectionString ??= SetupDatabase(DbType.Sqlite);
@@ -187,5 +197,10 @@ public class EnterpriseServer : IDisposable
 				DatabaseUtils.DatabaseExists(sqliteConnectionString, DatabaseName))
 				DatabaseUtils.DeleteDatabase(sqliteConnectionString, DatabaseName);
 		} catch { }
+	}
+
+	public static void SetupEmbeddedEnterpriseServer()
+	{
+		SolidCP.Web.Clients.AssemblyLoader.ProbingPaths = @"..\SolidCP.EnterpriseServer\bin;..\SolidCP.EnterpriseServer\bin\Code;..\SolidCP.EnterpriseServer\bin\netstandard";
 	}
 }

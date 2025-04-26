@@ -14,6 +14,9 @@ namespace SolidCP.Tests
 		[AssemblyInitialize]
 		public static void Init(TestContext context)
 		{
+			// Init the assembly loader
+			EnterpriseServer.InitAssemblyLoader();
+
 			// Init all db flavors DbConfiguration
 			DbConfiguration.InitAllDatabaseProviders();
 

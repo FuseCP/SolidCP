@@ -125,26 +125,28 @@ namespace SolidCP.Web.Clients
 			throw new NotSupportedException();
 		}
 
+		TaskScheduler Scheduler => SynchronizationContext.Current == null ? TaskScheduler.Default : TaskScheduler.FromCurrentSynchronizationContext();
 		protected Task<T> InvokeAsync<T>(string typeName, string methodName, params object[] parameters)
 		{
 			return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
 				CancellationToken.None,
 				TaskCreationOptions.None,
-				TaskScheduler.FromCurrentSynchronizationContext());
+				Scheduler);
 		}
 		protected Task<T> InvokeAsync<T, TItem>(string typeName, string methodName, params object[] parameters)
 		{
+			var scheduler = SynchronizationContext.Current == null ? TaskScheduler.Default : TaskScheduler.FromCurrentSynchronizationContext();
 			return Task.Factory.StartNew<T>(() => Invoke<T, TItem>(typeName, methodName, parameters),
 				CancellationToken.None,
 				TaskCreationOptions.None,
-				TaskScheduler.FromCurrentSynchronizationContext());
+				Scheduler);
 		}
 		protected Task InvokeAsync(string typeName, string methodName, params object[] parameters)
 		{
 			return Task.Factory.StartNew(() => Invoke<object>(typeName, methodName, parameters),
 				CancellationToken.None,
 				TaskCreationOptions.None,
-				TaskScheduler.FromCurrentSynchronizationContext());
+				Scheduler);
 		}
 	}
 }

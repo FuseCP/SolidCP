@@ -7,14 +7,16 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Net;
 using SolidCP.Providers.OS;
+using System.IO.Compression;
 
 namespace SolidCP.Server.Tests
 {
     public class IISExpress: IDisposable
     {
         Process? process = null;
+		string pidfile = null;
 
-        public const string HttpUrl = "http://localhost:9052";
+		public const string HttpUrl = "http://localhost:9052";
         public const string HttpsUrl = "https://localhost:44301";
 		public const string NetTcpUrl = "net.tcp://localhost:9066";
 		public static IISExpress Current { get; private set; } = null;
@@ -27,37 +29,60 @@ namespace SolidCP.Server.Tests
 			// Always trust certificates
 			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
+			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
+			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
 			var iisExprPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "IIS Express");
 			var appcmdex = Path.Combine(iisExprPath, "AppCmd.exe");
 			var admincmd = Path.Combine(iisExprPath, "IisExpressAdminCmd.exe");
 			var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
-			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
 			var workingDir = Path.GetFullPath(Path.Combine(testprojpath, "..", "SolidCP.Server", "bin_dotnet"));
 			var server = Path.GetFullPath(Path.Combine(testprojpath, "..", "SolidCP.Server"));
+
+			// kill old processes
+			pidfile = Path.Combine(testprojpath, "Data", "iisexpresspids.txt");
+			if (!Directory.Exists(Path.GetDirectoryName(pidfile)))
+				Directory.CreateDirectory(Path.GetDirectoryName(pidfile));
+			var pids = File.Exists(pidfile) ? File.ReadAllLines(pidfile)
+				.Select(line => int.Parse(line)) :
+				Enumerable.Empty<int>();
+			foreach (var pid in pids)
+			{
+				try
+				{
+					var proc = Process.GetProcessById(pid);
+					if (proc != null && !proc.HasExited)
+					{
+						proc.Kill();
+						proc.WaitForExit(5000);
+					}
+				}
+				catch (Exception ex) { }
+			}
+
 			// setup iis express
 			var shell = Shell.Standard.Clone;
 			shell.Log += msg =>
 			{
-				if (Debugger.IsAttached) Debug.WriteLine($"IIS Express>{msg}");
-				Console.WriteLine($"IIS Express>{msg}");
+				if (Debugger.IsAttached) Debug.Write($"IIS Express>{msg}");
+				Console.Write($"IIS Express>{msg}");
 			};
 			shell.LogError += msg =>
 			{
-				if (Debugger.IsAttached) Debug.WriteLine($"IIS Express>{msg}");
+				if (Debugger.IsAttached) Debug.Write($"IIS Express>{msg}");
 				var mainColor = Console.ForegroundColor;
 				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine($"IIS Express>{msg}");
+				Console.Write($"IIS Express>{msg}");
 				Console.ForegroundColor = mainColor;
 			};
-			shell.CreateNoWindow = true;
-			shell.WindowStyle = ProcessWindowStyle.Minimized;
 			shell.Exec($"\"{admincmd}\" setupSslUrl -url:https://localhost:{HttpsPort} -UseSelfSigned");
 			shell.Exec($"\"{appcmdex}\" delete site solidcp.server.tests");
 			shell.Exec($"\"{appcmdex}\" add site /name:solidcp.server.tests /physicalPath:\"{server}\" /bindings:http/*:{HttpPort}:localhost,https/*:{HttpsPort}:localhost");
-            
+
 			// start iis express
+			shell.WorkingDirectory = server;
 			process = shell.ExecAsync($"\"{iisexpress}\" /site:solidcp.server.tests").Process;
+			File.AppendAllLines(pidfile, new[] { process.Id.ToString() });
+
 
 			//if (process.HasExited) done = true; // throw new Exception($"IIS Express exited with code {process.ExitCode}");
 
@@ -83,7 +108,16 @@ namespace SolidCP.Server.Tests
 
         public void Dispose()
         {
-            if (process != null && !process.HasExited) process.Kill();
+            if (process != null && !process.HasExited)
+			{
+				var pid = process.Id;
+				process.Kill();
+				var pids = File.ReadAllLines(pidfile)
+					.Where(line => line != pid.ToString())
+					.ToArray();
+				if (pids.Any()) File.WriteAllLines(pidfile, pids);
+				else File.Delete(pidfile);
+			}
 			process = null;
         }
 		public static void Start()

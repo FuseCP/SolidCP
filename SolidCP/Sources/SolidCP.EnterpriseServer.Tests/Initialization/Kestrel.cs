@@ -14,6 +14,7 @@ namespace SolidCP.Tests
     public class Kestrel: IDisposable
     {
         Process? process = null;
+		string pidfile = null;
 
 		public const string HttpUrl = "http://localhost:9047";
         public const string HttpsUrl = "https://localhost:9048";
@@ -29,31 +30,53 @@ namespace SolidCP.Tests
 			var exe = Shell.Standard.Find("dotnet");
 			var pfx = Certificate.CertFilePath;
 
+			// kill old processes
+			pidfile = Path.Combine(testprojpath, "Data", "kestrelpids.txt");
+			if (!Directory.Exists(Path.GetDirectoryName(pidfile)))
+				Directory.CreateDirectory(Path.GetDirectoryName(pidfile));
+			var pids = File.Exists(pidfile) ? File.ReadAllLines(pidfile)
+				.Select(line => int.Parse(line)) :
+				Enumerable.Empty<int>();
+			foreach (var pid in pids)
+			{
+				try
+				{
+					var proc = Process.GetProcessById(pid);
+					if (proc != null && !proc.HasExited)
+					{
+						proc.Kill();
+						proc.WaitForExit(5000);
+					}
+				}
+				catch (Exception ex) { }
+			}
+
 			var shell = Shell.Standard.Clone;
 			shell.Log += msg =>
 			{
-				if (Debugger.IsAttached) Debug.WriteLine($"Kestrel>{msg}");
-				Console.WriteLine($"Kestrel>{msg}");
+				if (Debugger.IsAttached) Debug.Write($"Kestrel>{msg}");
+				Console.Write($"Kestrel>{msg}");
 			};
 			shell.LogError += msg =>
 			{
-				if (Debugger.IsAttached) Debug.WriteLine($"Kestrel>{msg}");
+				if (Debugger.IsAttached) Debug.Write($"Kestrel>{msg}");
 				var mainColor = Console.ForegroundColor;
 				Console.ForegroundColor = ConsoleColor.Red;
-				Console.WriteLine($"Kestrel>{msg}");
+				Console.Write($"Kestrel>{msg}");
 				Console.ForegroundColor = mainColor;
 			};
-			shell.CreateNoWindow = true;
-			shell.WindowStyle = ProcessWindowStyle.Minimized;
-			process = shell.ExecAsync($"\"{exe}\" \"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"", null, new System.Collections.Specialized.StringDictionary()
+			shell.Environment = new Dictionary<string, string>()
 			{
 				{ "ASPNETCORE_ENVIRONMENT", "Development" },
 				//{ "ASPNETCORE_URLS", $"{HttpUrl};{HttpsUrl}" },
 				//{ "ASPNETCORE_Kestrel__Certificates__Default__Path", pfx },
 				//{ "ASPNETCORE_Kestrel__Certificates__Default__Password", Certificate.Password },
 				//{ "ServerCertificate__File", pfx },
-				//{ "ServerCertificate__Password", Certificate.Password },);
-			}).Process;
+				//{ "ServerCertificate__Password", Certificate.Password },
+			};
+			shell.WorkingDirectory = workingDir;
+			process = shell.ExecAsync($"\"{exe}\" \"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"").Process;
+			File.AppendAllLines(pidfile, new[] { process.Id.ToString() });
 
 			if (process.HasExited) throw new Exception($"Kestrel exited with code {process.ExitCode}");
 
@@ -78,9 +101,19 @@ namespace SolidCP.Tests
             } while (!done) ;
         }
 
-        public void Dispose()
-        {
-            if (process != null && !process.HasExited) process.Kill();
+		public void Dispose()
+		{
+			if (process != null && !process.HasExited)
+			{
+				var pid = process.Id;
+				process.Kill();
+				var pids = File.ReadAllLines(pidfile)
+					.Where(line => line != pid.ToString())
+					.ToArray();
+				if (pids.Any()) File.WriteAllLines(pidfile, pids);
+				else File.Delete(pidfile);
+			}
+
             process = null;
         }
 		

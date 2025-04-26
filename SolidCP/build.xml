@@ -210,7 +210,7 @@
 
 	<Target Name="CreateServerBuild" DependsOnTargets="PrepareBuilds">
 		<ItemGroup>
-			<ServerBuildExclude Include="$(ServerSrc)\**\.svn\**" />
+			<ServerBuildExclude Include="$(ServerSrc)\**\ref\**" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\*.xml" />
 			<ServerBuildExclude Include="$(ServerSrc)\bin\*.config" />
 			<ServerBuildExclude Include="$(ServerSrc)\obj\**" />
@@ -251,6 +251,7 @@
 	</Target>
 	<Target Name="CreateEnterpriseServerBuild" DependsOnTargets="CreateServerBuild">
 		<ItemGroup>
+			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\ref\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\.svn\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\**\obj\**" />
 			<EnterpriseServerBuildExclude Include="$(EnterpriseServerSrc)\bin\*.xml" />
@@ -280,6 +281,7 @@
 
 	<Target Name="CreatePortalBuild" DependsOnTargets="CreateEnterpriseServerBuild">
 		<ItemGroup>
+			<PortalBuildExclude Include="$(PortalSrc)\**\ref\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\.svn\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\**\obj\**" />
 			<PortalBuildExclude Include="$(PortalSrc)\bin\*.xml" />
@@ -327,6 +329,7 @@
 
 	<Target Name="CreateWebDavPortalBuild" DependsOnTargets="CreateSchedulerBuild">
 		<ItemGroup>
+      <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\ref\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\.svn\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\**\obj\**" />
       <WebDavPortalBuildExclude Include="$(WebDavPortalSrc)\bin\*.config" />
@@ -351,6 +354,7 @@
 
 	<Target Name="CreateImportCsvBuild" DependsOnTargets="CreateWebDavPortalBuild">
 		<ItemGroup>
+			<ImportCsvExclude Include="$(ImportCsvSrc)\**\ref\**" />
 			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<ImportCsvExclude Include="$(ImportCsvSrc)\**\*.vshost.*" />
 			<ImportCsvBuildFiles Include="$(ImportCsvSrc)\**\*.*" Exclude="@(ImportCsvExclude)" />
@@ -360,6 +364,7 @@
 
   <Target Name="CreateHyperVUtilsBuild" DependsOnTargets="CreateImportCsvBuild">
 		<ItemGroup>
+			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\ref\**" />
 			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<HyperVUtilsExclude Include="$(HyperVUtilsSrc)\**\*.vshost.*" />
 			<HyperVUtilsBuildFiles Include="$(HyperVUtilsSrc)\**\*.*" Exclude="@(HyperVUtilsExclude)" />
@@ -369,6 +374,7 @@
 
   <Target Name="CreateVMConfigBuild" DependsOnTargets="CreateHyperVUtilsBuild">
 		<ItemGroup>
+			<VMConfigExclude Include="$(VMConfigSrc)\**\ref\**" />
 			<VMConfigExclude Include="$(VMConfigSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<VMConfigExclude Include="$(VMConfigSrc)\**\*.vshost.*" />
 			<VMConfigBuildFiles Include="$(VMConfigSrc)\**\*.*" Exclude="@(VMConfigExclude)" />
@@ -378,6 +384,7 @@
 
 	<Target Name="CreateImportEnterpriseBuild" DependsOnTargets="CreateVMConfigBuild">
 		<ItemGroup>
+			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\ref\**" />
 			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
 			<ImportEnterpriseExclude Include="$(ImportEnterpriseSrc)\**\*.vshost.*" />
 			<ImportEnterpriseBuildFiles Include="$(ImportEnterpriseSrc)\**\*.*" Exclude="@(ImportEnterpriseExclude)" />
@@ -387,6 +394,7 @@
 
 	<Target Name="CreateAWStatsViewerBuild" DependsOnTargets="CreateImportEnterpriseBuild">
 		<ItemGroup>
+			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\ref\**" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\.svn\**" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\obj\**" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\bin\*.xml" />
@@ -406,6 +414,7 @@
 
 	<Target Name="CreateSCPTransportAgentBuild" DependsOnTargets="CreateAWStatsViewerBuild">
 		<ItemGroup>
+				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\ref\**" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\.svn\**" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\**\obj\**" />
 				<SCPTransportAgentBuildExclude Include="$(SCPTransportAgentSrc)\bin\*.xml" />
@@ -464,8 +473,7 @@
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
-			<!--<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" />-->
-			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="**\Setup2.dll" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="$(InstallerProjectBin)\**\Setup2.dll;$(InstallerProjectBin)\**\ref\**" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.runtimeconfig.json" />
 			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
@@ -533,6 +541,7 @@
 
   <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
     <ItemGroup>
+      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\ref\**" />
       <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
       <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.vshost.*" />
       <FixDefaultPublicFolderMailboxBuildFiles Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.*" Exclude="@(FixDefaultPublicFolderMailboxExclude)" />
@@ -605,8 +614,6 @@
 
 	<Target Name="CreateServerInstall" DependsOnTargets="PrepareInstalls">
 		<ItemGroup>
-			<ServerDeployExclude Include="$(ServerBuild)\bin\SDNSAPI.dll" />
-			<ServerDeployExclude Include="$(ServerBuild)\bin\MySql.Data.dll"/>
 			<ServerDeployFiles Include="$(ServerBuild)\**\*.*" Exclude="@(ServerDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(ServerInstall)"/>
@@ -617,23 +624,22 @@
 
 	<Target Name="CreateEnterpriseServerInstall" DependsOnTargets="CreateServerInstall">
 		<ItemGroup>
-			<EnterpriseServerDeployExclude Include="$(EnterpriseServerBuild)\bin\OrderBoxDomainsLib.DLL" />
-			<EnterpriseServerDeployExclude Include="$(EnterpriseServerBuild)\bin\OrderBoxCoreLib.DLL" />
 			<EnterpriseServerDeployFiles Include="$(EnterpriseServerBuild)\**\*.*" Exclude="@(EnterpriseServerDeployExclude)" />
+			<!-- Scheduler is already in EnterpriseServer bin folder 
 			<SchedulerServiceDeployExclude Include="$(SchedulerServiceBuild)\bin\SolidCP.SchedulerService.exe.config" />
-			<SchedulerServiceDeployFiles Include="$(SchedulerServiceBuild)\**\*.*" Exclude="@(SchedulerServiceDeployExclude)" />
+			<SchedulerServiceDeployFiles Include="$(SchedulerServiceBuild)\**\*.*" Exclude="@(SchedulerServiceDeployExclude)" />-->
 		</ItemGroup>
 		<RemoveDir Directories="$(EnterpriseServerInstall)"/>
 		<MakeDir Directories="$(EnterpriseServerInstall)"/>
 		<Copy SourceFiles="@(EnterpriseServerDeployFiles)" DestinationFolder="$(EnterpriseServerInstall)\%(RecursiveDir)" />
-		<Copy SourceFiles="@(SchedulerServiceDeployFiles)" DestinationFolder="$(EnterpriseServerInstall)\%(RecursiveDir)\bin" />
+		<!--<Copy SourceFiles="@(SchedulerServiceDeployFiles)" DestinationFolder="$(EnterpriseServerInstall)\%(RecursiveDir)\bin" />-->
 		<XmlUpdate XmlFileName="$(EnterpriseServerInstall)\web.config" Xpath="//configuration/connectionStrings/add/@connectionString" Value="${installer.connectionstring}"  />
 		<XmlUpdate XmlFileName="$(EnterpriseServerInstall)\web.config" Xpath="//configuration/appSettings/add[@key=%22SolidCP.CryptoKey%22]/@value" Value="${installer.cryptokey}"  />
 	</Target>
 
 	<Target Name="CreatePortalInstall" DependsOnTargets="CreateEnterpriseServerInstall">
 		<ItemGroup>
-			<PortalDeployFiles Include="$(PortalBuild)\**\*.*" />
+			<PortalDeployFiles Include="$(PortalBuild)\**\*.*" Exclude="@(PortalDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(PortalInstall)"/>
 		<MakeDir Directories="$(PortalInstall)"/>
@@ -643,7 +649,7 @@
 
 	<Target Name="CreateWebDavPortalInstall" DependsOnTargets="CreatePortalInstall">
 		<ItemGroup>
-      <WebDavPortalDeployFiles Include="$(WebDavPortalBuild)\**\*.*" />
+			<WebDavPortalDeployFiles Include="$(WebDavPortalBuild)\**\*.*" Exclude="@(WebDavPortalDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(WebDavPortalInstall)"/>
 		<MakeDir Directories="$(WebDavPortalInstall)"/>
@@ -652,7 +658,7 @@
 
 	<Target Name="CreateImportCsvInstall" DependsOnTargets="CreateWebDavPortalInstall">
 		<ItemGroup>
-			<ImportCsvDeployFiles Include="$(ImportCsvBuild)\**\*.*" />
+			<ImportCsvDeployFiles Include="$(ImportCsvBuild)\**\*.*" Exclude="@(ImportCsvDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(ImportCsvInstall)"/>
 		<MakeDir Directories="$(ImportCsvInstall)"/>
@@ -662,7 +668,7 @@
 
   <Target Name="CreateHyperVUtilsCsvInstall" DependsOnTargets="CreateImportCsvInstall">
 		<ItemGroup>
-			<HyperVUtilsDeployFiles Include="$(HyperVUtilsBuild)\**\*.*" />
+			<HyperVUtilsDeployFiles Include="$(HyperVUtilsBuild)\**\*.*" Exclude="@(HyperVUtilsDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(HyperVUtilsInstall)"/>
 		<MakeDir Directories="$(HyperVUtilsInstall)"/>
@@ -672,7 +678,7 @@
 
   <Target Name="CreateVMConfigInstall" DependsOnTargets="CreateHyperVUtilsCsvInstall">
 		<ItemGroup>
-			<VMConfigDeployFiles Include="$(VMConfigBuild)\**\*.*" />
+			<VMConfigDeployFiles Include="$(VMConfigBuild)\**\*.*" Exclude="@(VMConfigDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(VMConfigInstall)"/>
 		<MakeDir Directories="$(VMConfigInstall)"/>
@@ -682,7 +688,7 @@
 
 	<Target Name="CreateImportEnterpriseInstall" DependsOnTargets="CreateVMConfigInstall">
 		<ItemGroup>
-			<ImportEnterpriseDeployFiles Include="$(ImportEnterpriseBuild)\**\*.*" />
+			<ImportEnterpriseDeployFiles Include="$(ImportEnterpriseBuild)\**\*.*" Exclude="@(ImportEnterpriseDeployExclude)" />
 		</ItemGroup>
 		<RemoveDir Directories="$(ImportEnterpriseInstall)"/>
 		<MakeDir Directories="$(ImportEnterpriseInstall)"/>
