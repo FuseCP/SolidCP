@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using SolidCP.EnterpriseServer.Data;
 using SolidCP.Providers.Utils;
 using SolidCP.EnterpriseServer;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Tests;
 
@@ -109,19 +110,22 @@ public class EnterpriseServer : IDisposable
 
 		return connectionString;
 	}
+	static int localDbStarted = 0;
+	public static void StartLocalDB()
+	{
+		if (Interlocked.Exchange(ref localDbStarted, 1) == 0)
+		{
+			var shell = Shell.Standard.Clone;
+			shell.Redirect = true;
+			shell.Exec("SqlLocalDB start");
+		}
+	}
 	public static string SetupLocalDb()
 	{
 		var connectionString = $"DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Database={DatabaseName};Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
 		var masterConnectionString = "DbType=SqlServer;Data Source=(localdb)\\MSSQLLocalDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=True";
 
-		Console.Write("Waiting for SQL Server LocalDB to start");
-		int n = 0;
-		const int max = 20;
-		while (!DatabaseUtils.CheckSqlConnection(masterConnectionString) && n++ < max)
-		{
-			Console.Write(".");
-			System.Threading.Thread.Sleep(1000);
-		}
+		StartLocalDB();
 
 		if (DatabaseUtils.DatabaseExists(masterConnectionString, DatabaseName))
 		{

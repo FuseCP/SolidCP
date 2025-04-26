@@ -91,8 +91,7 @@ jobs:
     - name: Run Unit Tests
       working-directory: SolidCP\Sources
       continue-on-error: true
-      run: 
-        SqlLocalDB start
+      run: |
         dotnet test SolidCP.Tests.sln -v n --logger trx --configuration ${{ matrix.configuration }} --results-directory ..\..\test-results
  
     - name: Upload Test Results
