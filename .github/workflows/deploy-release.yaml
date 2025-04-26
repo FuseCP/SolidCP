@@ -56,10 +56,10 @@ jobs:
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
-    permissions:
-      checks: write
-      contents: write
-      packages: write
+    #permissions:
+    #  checks: write
+    #  contents: write
+    #  packages: write
 
     timeout-minutes: 60
 
@@ -88,13 +88,12 @@ jobs:
     #    wsl --update
     #    wsl --version
 
-    - name: Install WSL Alpine with rpm tools
+    - name: Install WSL Ubuntu with rpm tools
       uses: Vampire/setup-wsl@v3
       with: 
-        distribution: Alpine
-        additional-packages: rpm-dev
-        use-cache: 'false'
-        #use-cache: 'true'
+        distribution: Ubuntu
+        additional-packages: rpmdev
+        use-cache: 'true'
 
     - name: Show WSL distro info
       run: |
