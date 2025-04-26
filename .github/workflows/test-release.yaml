@@ -58,6 +58,8 @@ jobs:
 
     permissions:
       checks: write
+      contents: write
+      packages: write
 
     timeout-minutes: 60
 
@@ -89,7 +91,8 @@ jobs:
     - name: Run Unit Tests
       working-directory: SolidCP\Sources
       continue-on-error: true
-      run: |
+      run: 
+        SqlLocalDB start
         dotnet test SolidCP.Tests.sln -v n --logger trx --configuration Release --results-directory ..\..\test-results
  
     - name: Upload Test Results

@@ -27,6 +27,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.EnterpriseServer.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Server.Tests", "SolidCP.Server.Tests\SolidCP.Server.Tests.csproj", "{DF7E10C4-F873-4017-BB22-5DCCCA4E0454}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Github Actions", "Github Actions", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\.github\workflows\deploy-release.yaml = ..\..\.github\workflows\deploy-release.yaml
+		..\..\.github\workflows\test-release.yaml = ..\..\.github\workflows\test-release.yaml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
