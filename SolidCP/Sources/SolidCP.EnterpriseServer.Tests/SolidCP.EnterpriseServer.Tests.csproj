@@ -1,11 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net48</TargetFramework>
+        <TargetFrameworks>net48;net8.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>13</LangVersion>
         <IsPackable>false</IsPackable>
+        <TestTfmsInParallel>false</TestTfmsInParallel>
     </PropertyGroup>
 
     <ItemGroup>
@@ -17,6 +18,11 @@
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
+        <Content Include="appsettings.json">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+          <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+          <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
@@ -25,7 +31,7 @@
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.2" />
         <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.2" Condition="'$(TargetFramework)' == 'net48'" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.4.5" Condition="'$(TargetFramework)' != 'net48'" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.6.0.2" Condition="'$(TargetFramework)' != 'net48'" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
         <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
         <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
@@ -41,6 +47,7 @@
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
         <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+        <ProjectReference Include="..\SolidCP.Tests\SolidCP.Tests.csproj" />
     </ItemGroup>
 
     <ItemGroup>

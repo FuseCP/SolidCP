@@ -18,8 +18,12 @@ namespace SolidCP.Tests
 			EnterpriseServer.InitAssemblyLoader();
 
 			// Init all db flavors DbConfiguration
+#if NETFRAMEWORK
 			DbConfiguration.InitAllDatabaseProviders();
-
+#else
+			SolidCP.Web.Services.Configuration.CryptoKey = "1234567890";
+			SolidCP.Web.Services.Configuration.EncryptionEnabled = true;
+#endif
 			// install the certificate
 			Certificate.Install();
 			Certificate.TrustAll();
@@ -29,9 +33,7 @@ namespace SolidCP.Tests
 			var connStr = EnterpriseServer.SetupLocalDb();
 			EnterpriseServer.ConfigureDatabase(connStr);
 
-			// start the servers
-			IISExpress.Start();
-			Kestrel.Start();
+			Servers.Init(Component.EnterpriseServer);
 		}
 
 		[AssemblyCleanup]
@@ -39,9 +41,9 @@ namespace SolidCP.Tests
 		{
 			// remove the certificate
 			Certificate.Remove();
-			// stop the servers
-			IISExpress.Stop();
-			Kestrel.Stop();
+
+			Servers.StopAll();
+
 			EnterpriseServer.DeleteDatabases();
 			EnterpriseServer.Delete();
 		}

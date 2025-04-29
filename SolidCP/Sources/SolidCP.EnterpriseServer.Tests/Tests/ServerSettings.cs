@@ -14,13 +14,13 @@ namespace SolidCP.Tests
 		public async Task TestESAccess()
 		{
 			var testClient = new esTest();
-			testClient.Url = IISExpress.HttpsUrl;
+			testClient.Url = Servers.Url(Component.EnterpriseServer, Framework.NetFramework, Os.Windows, Web.Clients.Protocols.NetHttps); // IISExpress.HttpsUrl;
 			testClient.Protocol = Web.Clients.Protocols.BasicHttps;
 			Assert.AreEqual("Hello", testClient.Echo("Hello"));
 			Assert.AreEqual("Hello", await testClient.EchoAsync("Hello"));
 
 			var esClient = new esSystem();
-			esClient.Url = IISExpress.HttpsUrl;
+			esClient.Url = Servers.Url(Component.EnterpriseServer, Framework.NetFramework, Os.Windows, Web.Clients.Protocols.NetHttps); // IISExpress.HttpsUrl;
 			esClient.Protocol = Web.Clients.Protocols.BasicHttps;
 			esClient.Credentials.UserName = "serveradmin";
 			esClient.Credentials.Password = CryptoUtils.SHA256("123456");

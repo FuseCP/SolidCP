@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SolidCP.Server.Tests
+namespace SolidCP.Tests
 {
 	[TestClass]
 	public class Initialization
@@ -13,25 +13,18 @@ namespace SolidCP.Server.Tests
 		[AssemblyInitialize]
 		public static void Init(TestContext context)
 		{
-			Server.Init();
-			
-			// install the certificate
-			Certificate.Install();
 			Certificate.TrustAll();
-
-			// start the servers
-			IISExpress.Start();
-			Kestrel.Start();
+			Server.Init();			
 		}
 
 		[AssemblyCleanup]
 		public static void Cleanup()
 		{
 			// remove the certificate
-			Certificate.Remove();
+			//Certificate.Remove();
+
 			// stop the servers
-			IISExpress.Stop();
-			Kestrel.Stop();
+			Servers.StopAll();
 		}
 	}
 }

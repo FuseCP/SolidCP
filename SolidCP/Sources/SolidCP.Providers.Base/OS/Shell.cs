@@ -63,7 +63,7 @@ namespace SolidCP.Providers.OS
 		public Shell Parent { get; set; } = null;
 		public virtual char PathSeparator => Path.PathSeparator;
 		public bool CreateNoWindow = true;
-		public string WorkingDirectory = null;
+		public virtual string WorkingDirectory { get; set; } = null;
 		public Encoding Encoding = null;
 		public Dictionary<string, string> Environment = new Dictionary<string, string>();
 

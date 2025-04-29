@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.EnterpriseServer.Te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Server.Tests", "SolidCP.Server.Tests\SolidCP.Server.Tests.csproj", "{DF7E10C4-F873-4017-BB22-5DCCCA4E0454}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Tests", "SolidCP.Tests\SolidCP.Tests.csproj", "{B377B463-89EE-80E2-6174-A94548FADE04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,10 @@ Global
 		{DF7E10C4-F873-4017-BB22-5DCCCA4E0454}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF7E10C4-F873-4017-BB22-5DCCCA4E0454}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF7E10C4-F873-4017-BB22-5DCCCA4E0454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B377B463-89EE-80E2-6174-A94548FADE04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B377B463-89EE-80E2-6174-A94548FADE04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B377B463-89EE-80E2-6174-A94548FADE04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B377B463-89EE-80E2-6174-A94548FADE04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

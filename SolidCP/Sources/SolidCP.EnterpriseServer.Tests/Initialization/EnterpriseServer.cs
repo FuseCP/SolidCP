@@ -27,7 +27,22 @@ public class EnterpriseServer : IDisposable
 	public const string AssemblyUrl = "assembly://SolidCP.EnterpriseServer";
 	public static void InitAssemblyLoader()
 	{
+#if NETFRAMEWORK
 		Web.Clients.AssemblyLoader.Init(@"..\SolidCP.EnterpriseServer\bin;..\SolidCP.EnterpriseServer\bin\Code;..\SolidCP.EnterpriseServer\bin\netstandard", "none", true);
+#else
+		//Web.Clients.AssemblyLoader.Init(@"..\SolidCP.EnterpriseServer\bin_dotnet;..\SolidCP.EnterpriseServer\bin\netstandard", "none", true);
+		Web.Services.Configuration.ProbingPaths = @"..\..\..\..\SolidCP.EnterpriseServer\bin_dotnet;..\..\..\..\SolidCP.EnterpriseServer\bin\netstandard";
+		Web.Services.AssemblyLoaderNetCore.Init();
+
+        var eserver = Assembly.Load("SolidCP.EnterpriseServer");
+        if (eserver != null)
+        {
+            // init password validator
+            var validatorType = eserver.GetType("SolidCP.EnterpriseServer.UsernamePasswordValidator");
+            var init = validatorType.GetMethod("Init", BindingFlags.Public | BindingFlags.Static);
+            init.Invoke(null, new object[0]);
+        }
+#endif
 	}
 
 	static object Lock = new object();

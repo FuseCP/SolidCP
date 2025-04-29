@@ -433,7 +433,7 @@ namespace SolidCP.Providers.OS
 		}
 		public bool Debug { get; set; } = false;
 
-		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Native, Other };
+		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Alpine, AlmaLinux, Native, Other };
 		public override string ShellExe => IsWindows ?
 			(CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}") :
 			"bash";
@@ -494,6 +494,8 @@ namespace SolidCP.Providers.OS
 				case Distro.SUSE15_5: return "SUSE-Linux-Enterprise-15-SP5";
 				case Distro.openSUSEThumbleweed: return "openSUSE-Tumbleweed";
 				case Distro.FedoraRemix: return "fedoraremix";
+				case Distro.Alpine: return "Alpine";
+				case Distro.AlmaLinux: return "AlmaLinux";
 				case Distro.Native: return "unix";
 				case Distro.Other: return distro.OtherDistroName;
 			}
@@ -532,7 +534,17 @@ namespace SolidCP.Providers.OS
 		}
 		public void Install(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --install {distro}", Encoding.Unicode);
+			if (IsWindows)
+			{
+				if (distro.Distro == Distro.FedoraRemix) base.Exec(@"winget install ""Fedora Remix for WSL"" --accept-source-agreements --accept-package-agreements");
+				else if (distro.Distro == Distro.Alpine) base.Exec(@"winget install ""Alpine WSL"" --accept-source-agreements --accept-package-agreements");
+				else if (distro.Distro == Distro.AlmaLinux) base.Exec(@"winget install ""AlmaLinux OS 9"" --accept-source-agreements --accept-package-agreements");
+				else base.Exec($"wsl --install {distro}", Encoding.Unicode);
+			}
+		}
+		public void SetDefaultVersion(int n)
+		{
+			if (IsWindows) base.Exec($"wsl --set-default-version {n}", Encoding.Unicode); 
 		}
 		public void Uninstall(WSLDistro distro)
 		{
@@ -587,6 +599,11 @@ namespace SolidCP.Providers.OS
 			.Replace(Path.DirectorySeparatorChar, '/') :
 			path;
 
+		public override string WorkingDirectory
+		{
+			get { return base.WorkingDirectory; }
+			set { BaseShell.WorkingDirectory = base.WorkingDirectory = value; }
+		}
 		protected override string ToTempFile(string script)
 		{
 			script = script.Replace(System.Environment.NewLine, "\n");

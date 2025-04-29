@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Reflection;
 using System.Net;
+using System.IO;
 
-namespace SolidCP.Server.Tests
+namespace SolidCP.Tests
 {
 	public class Certificate
 	{
@@ -16,9 +17,17 @@ namespace SolidCP.Server.Tests
 
 		public static string CertFilePath {
 			get {
-				var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
-				var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
-				var certfile = Path.Combine(testprojpath, "Initialization", CertFile);
+				var certfile = Path.Combine(Paths.Test, "Initialization", CertFile);
+				var asm = Assembly.GetExecutingAssembly();
+				var resxs = asm.GetManifestResourceNames();
+				var localhostPfx = resxs.FirstOrDefault(r => r.EndsWith(CertFile));
+				var stream = asm.GetManifestResourceStream(localhostPfx);
+				if (stream == null)
+					throw new FileNotFoundException($"Resource {localhostPfx} not found in assembly {asm.FullName}");
+				using (var file = File.Create(certfile))
+				using (stream)
+					stream.CopyTo(file);
+				
 				return certfile;
 			}
 		}
@@ -47,7 +56,9 @@ namespace SolidCP.Server.Tests
 		}
 
 		public static void Install() => Install(CertFilePath, Password);
+
 		public static void Remove() => Remove(CertFilePath, Password);
+
 		public static void TrustAll()
 		{
 			// Always trust certificates

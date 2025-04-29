@@ -46,7 +46,11 @@ namespace SolidCP.Tests
 			{
 				var columnName = "ProviderName";
 				var columnValue = "%S";
+#if NETFRAMEWORK
 				var providersStatic = db.Providers.Where(p => DbFunctions.Like(p.ProviderName, columnValue));
+#else
+				var providersStatic = db.Providers.Where(p => EF.Functions.Like(p.ProviderName, columnValue));
+#endif
 				var config = new ParsingConfig { ResolveTypesBySimpleName = true };
 				var providersDynamic = db.Providers.Where(DynamicFunctions.ColumnLike(db.Providers, columnName, columnValue));
 				var nstatic = providersStatic.Count();
