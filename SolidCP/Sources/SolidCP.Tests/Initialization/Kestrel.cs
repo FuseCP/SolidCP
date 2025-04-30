@@ -84,6 +84,7 @@ namespace SolidCP.Tests
 				//{ "ServerCertificate__Password", Certificate.Password },
 			};
 			shell.WorkingDirectory = workingDir;
+
 			shell.Exec("dotnet dev-certs https");
 			var cert = shell.ExecAsync("dotnet dev-certs https --trust");
 			cert.Input.WriteLine("yes");

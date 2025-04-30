@@ -434,10 +434,18 @@ namespace SolidCP.Providers.OS
 		public bool Debug { get; set; } = false;
 
 		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Alpine, AlmaLinux, Native, Other };
-		public override string ShellExe => IsWindows ?
-			(CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}") :
-			"bash";
-
+		public override string ShellExe
+		{
+			get
+			{
+				string user = "";
+				if (!string.IsNullOrEmpty(User)) user = $" --user {User}";
+				return IsWindows ?
+					(CurrentDistro == Distro.Default ? $"wsl{user}" : $"wsl --distribution {CurrentDistroName}{user}") :
+					"bash";
+			}
+		}
+		public string User { get; set; } = null;
 		public WSLShell() : base() => BaseShell = Shell.Standard.Clone;
 		public WSLShell(WSLDistro distro) : this() => Use(distro);
 
