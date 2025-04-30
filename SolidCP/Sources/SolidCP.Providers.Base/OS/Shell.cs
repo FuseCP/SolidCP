@@ -436,13 +436,24 @@ namespace SolidCP.Providers.OS
 		}
 		public bool Redirect = false;
 		public string LogFile = null;
+		public void AppendAllText(string filename, string text)
+		{
+			try
+			{
+				using (var file = new FileStream(filename, FileMode.Append, FileAccess.Write))
+				using (var writer = new StreamWriter(file, Encoding.UTF8))
+				{
+					writer.Write(text);
+				}
+			} catch { }
+		}
 		protected virtual void OnLog(string text)
 		{
 			OutputAndErrorLock.Wait();
 			try
 			{
 				outputAndError.Append(text);
-				if (LogFile != null) lock (LogFile) File.AppendAllText(LogFile, text, Encoding.UTF8);
+				if (LogFile != null) AppendAllText(LogFile, text);
 			}
 			finally
 			{
@@ -452,14 +463,29 @@ namespace SolidCP.Providers.OS
 
 		protected virtual void OnLogCommand(string text)
 		{
-			text = $"> {text}";
-			if (Redirect) Console.WriteLine(text);
-			if (LogFile != null) lock (LogFile) File.AppendAllText(LogFile, text, Encoding.UTF8);
+			OutputAndErrorLock.Wait();
+			try
+			{
+				text = $"> {text}";
+				if (Redirect) Console.WriteLine(text);
+				if (LogFile != null) AppendAllText(LogFile, text);
+			}
+			finally
+			{
+				OutputAndErrorLock.Release();
+			}
 		}
 		protected virtual void OnLogCommandEnd()
 		{
-			if (Redirect) Console.WriteLine();
-			if (LogFile != null) lock (LogFile) File.AppendAllText(LogFile, System.Environment.NewLine, Encoding.UTF8);
+			OutputAndErrorLock.Wait();
+			try
+			{
+				if (Redirect) Console.WriteLine();
+				if (LogFile != null) AppendAllText(LogFile, System.Environment.NewLine);
+			} finally
+			{
+				OutputAndErrorLock.Release();
+			}
 		}
 		protected virtual void OnLogOutput(string text)
 		{
@@ -480,13 +506,12 @@ namespace SolidCP.Providers.OS
 			try
 			{
 				error.Append(text);
+				if (Redirect) Console.Error.Write(text);
 			}
 			finally
 			{
 				ErrorLock.Release();
 			}
-
-			if (Redirect) Console.Error.Write(text);
 		}
 
 		static Shell standard = null;

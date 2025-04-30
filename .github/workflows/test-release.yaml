@@ -37,7 +37,7 @@
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
 name: Test
-run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}, Running Tests
+run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}, Tests
 
 on:
   push:
