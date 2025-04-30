@@ -36,8 +36,10 @@ namespace SolidCP.Providers.OS
 			LogOutput += OnLogOutput;
 		}
 
-		SemaphoreSlim Lock = new SemaphoreSlim(1, 1), OutputLock = new SemaphoreSlim(1, 1),
-			ErrorLock = new SemaphoreSlim(1, 1), OutputAndErrorLock = new SemaphoreSlim(1, 1);
+		protected SemaphoreSlim Lock = new SemaphoreSlim(1, 1);
+		protected SemaphoreSlim OutputLock = new SemaphoreSlim(1, 1);
+		protected SemaphoreSlim ErrorLock = new SemaphoreSlim(1, 1);
+		protected SemaphoreSlim OutputAndErrorLock = new SemaphoreSlim(1, 1);
 
 		//methods to support await on Shell type
 		public Shell GetAwaiter() => this;
@@ -436,7 +438,7 @@ namespace SolidCP.Providers.OS
 		}
 		public bool Redirect = false;
 		public string LogFile = null;
-		public void AppendAllText(string filename, string text)
+		protected void AppendAllText(string filename, string text)
 		{
 			try
 			{

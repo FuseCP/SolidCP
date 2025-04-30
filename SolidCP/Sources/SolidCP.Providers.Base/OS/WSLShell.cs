@@ -695,9 +695,17 @@ namespace SolidCP.Providers.OS
 
 		protected override void OnLogCommand(string text)
 		{
-			text = $"{CurrentDistroName}> {text}";
-			if (Redirect) Console.WriteLine(text);
-			if (LogFile != null) File.AppendAllText(LogFile, text, Encoding.UTF8);
+			OutputAndErrorLock.Wait();
+			try
+			{
+				text = $"{CurrentDistroName}> {text}";
+				if (Redirect) Console.WriteLine(text);
+				if (LogFile != null) AppendAllText(LogFile, text);
+			}
+			finally
+			{
+				OutputAndErrorLock.Release();
+			}
 		}
 		protected void OnBaseLog(string msg) => Log?.Invoke(msg);
 		protected void OnBaseLogCommandEnd() => LogCommandEnd?.Invoke();
