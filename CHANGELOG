@@ -1,3 +1,21 @@
+Version 1.5.2
+- Moving from System.Net.Mail to MailKit to send SMTP traffic due to issues with newer SMTP Servers with TLS1.2 and TLS1.3 enabled on default. Added option to allow unsecure SSL Versions (TLS 1.0 & TLS 1.1)
+
+- [HyperV2012R2+] Fix for cpuCores on HyperV2012R2
+- [Installer] Add partial offline installer option, using network only for version retrieval
+- [Installer] Fix issue where installer updater throws a fatal error due to SQL update.
+- [Installer] Disable overwriting of the SolidCP.Installer.exe.config file during re-installation/repairing
+- [HyperV2012R2+] Rewritten PowerShell function Convert-VHD to a native WMI variant.
+- [HyperV2012R2+] Add methods for handling WMI jobs
+- Fix VirtualHardDiskFormat as mentioned in the MS documentation
+- [EnterpriseServer] Add a WMI JobCompleted support
+- [HyperV2012R2+] Rewritten PowerShell function New-VHD to a native WMI variant.
+- Fix VirtualizationServer2012Proxy url
+- Create mailbox - user selector - use only AccountId argument
+- [SmarterMail100] Added Access Controls to limit logins in Smartermail100. - Work sponsored by Enterprise Guardian Inc.
+- [SmarterMail100] Fixes for access controls and using the current set values for the api call.
+
+
 Version 1.5.1
 - [SmarterMail100] Fix for GetGroup showing the wrong emails when more than one group is returned.
 - [SmarterMail100] Fix for large numbers when going from MB to kb for domain settings

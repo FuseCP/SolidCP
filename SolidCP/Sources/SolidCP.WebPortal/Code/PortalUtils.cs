@@ -47,25 +47,391 @@ using System.Web.Security;
 using System.Web.UI.WebControls;
 using System.Web.Hosting;
 using System.Net;
-using System.Net.Mail;
+using MimeKit;
+using MailKit;
+using MailKit.Security;
+using MailKit.Net.Smtp;
 using System.Security.Cryptography;
 
 using SolidCP.EnterpriseServer;
 using SolidCP.EnterpriseServer.Client;
 using SolidCP.WebPortal;
 using System.Collections;
+using System.Security.Authentication;
 
 namespace SolidCP.Portal
 {
-	public class PortalUtils
-	{
-		public const string SharedResourcesFile = "SharedResources.ascx.resx";
-		public const string CONFIG_FOLDER = "~/App_Data/";
-		public const string SUPPORTED_LOCALES_FILE = "SupportedLocales.config";
-		public const string EXCHANGE_SERVER_HIERARCHY_FILE = "ESModule_ControlsHierarchy.config";
-		public const string USER_ID_PARAM = "UserID";
-		public const string SPACE_ID_PARAM = "SpaceID";
-		public const string SEARCH_QUERY_PARAM = "Query";
+    public class PortalUtils
+    {
+        public const string SharedResourcesFile = "SharedResources.ascx.resx";
+        public const string CONFIG_FOLDER = "~/App_Data/";
+        public const string SUPPORTED_LOCALES_FILE = "SupportedLocales.config";
+        public const string EXCHANGE_SERVER_HIERARCHY_FILE = "ESModule_ControlsHierarchy.config";
+        public const string USER_ID_PARAM = "UserID";
+        public const string SPACE_ID_PARAM = "SpaceID";
+        public const string SEARCH_QUERY_PARAM = "Query";
+
+
+        public static string CultureCookieName
+        {
+            get { return PortalConfiguration.SiteSettings["CultureCookieName"]; }
+        }
+
+        public static string ThemeCookieName
+        {
+            get { return PortalConfiguration.SiteSettings["ThemeCookieName"]; }
+        }
+
+        public static System.Globalization.CultureInfo CurrentCulture
+        {
+            get { return GetCurrentCulture(); }
+        }
+
+        public static System.Globalization.CultureInfo CurrentUICulture
+        {
+            get { return GetCurrentCulture(); }
+        }
+
+        public static string CurrentTheme
+        {
+            get { return GetCurrentTheme(); }
+        }
+
+        public static string CurrentThemeStyle
+        {
+            get { return GetCurrentThemeStyle(); }
+        }
+
+        internal static string GetCurrentTheme()
+        {
+            string theme = (string) HttpContext.Current.Items[ThemeCookieName];
+
+            if (theme == null)
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies[ThemeCookieName];
+                if (cookie != null)
+                {
+                    theme = cookie.Value;
+
+                    if (!String.IsNullOrEmpty(theme))
+                    {
+                        HttpContext.Current.Items[ThemeCookieName] = theme;
+                        return theme;
+                    }
+                }
+            }
+            return theme;
+        }
+
+        public static void SetCurrentTheme(string theme)
+        {
+            // theme
+            if (!String.IsNullOrEmpty(theme))
+            {
+                
+                HttpCookie cookieTheme = new HttpCookie(ThemeCookieName, theme);
+                cookieTheme.Expires = DateTime.Now.AddMonths(2);
+                HttpContext.Current.Response.Cookies.Add(cookieTheme);
+            }
+        }
+
+        internal static string GetCurrentThemeStyle()
+        {
+            string themeStyle = (string)HttpContext.Current.Items["UserThemeStyle"];
+
+            if (themeStyle == null)
+            {
+                HttpCookie cookie = HttpContext.Current.Request.Cookies["UserThemeStyle"];
+                if (cookie != null)
+                {
+                    themeStyle = cookie.Value;
+
+                    if (!String.IsNullOrEmpty(themeStyle))
+                    {
+                        HttpContext.Current.Items["UserThemeStyle"] = themeStyle;
+                        return themeStyle;
+                    }
+                }
+            }
+            return themeStyle;
+        }
+
+        internal static System.Globalization.CultureInfo GetCurrentCulture()
+        {
+            System.Globalization.CultureInfo ci = (System.Globalization.CultureInfo)
+                    HttpContext.Current.Items[CultureCookieName];
+
+            if (ci == null)
+            {
+                HttpCookie localeCrumb = HttpContext.Current.Request.Cookies[CultureCookieName];
+                if (localeCrumb != null)
+                {
+                    ci = System.Globalization.CultureInfo.CreateSpecificCulture(localeCrumb.Value);
+
+                    if (ci != null)
+                    {
+                        HttpContext.Current.Items[CultureCookieName] = ci;
+                        return ci;
+                    }
+                }
+            }
+            else
+                return ci;
+
+            return System.Threading.Thread.CurrentThread.CurrentCulture;
+        }
+
+        public static bool ParseBool(string val, bool defaultValue)
+        {
+            bool result = defaultValue;
+            // Perf: allow only non-empty strings to go through
+            if (!String.IsNullOrEmpty(val))
+            {
+                try
+                {
+                    result = Boolean.Parse(val);
+                }
+                catch
+                {
+                    /* do nothing */
+                }
+            }
+
+            return result;
+        }
+
+        public static string AdminEmail
+        {
+            get { return PortalConfiguration.SiteSettings["AdminEmail"]; }
+        }
+
+        public static string FromEmail
+        {
+            get { return PortalConfiguration.SiteSettings["FromEmail"]; }
+        }
+
+        public static void SendMail(string from, string to, string bcc, string subject, string body)
+        {
+            using (var client = new SmtpClient())
+            {
+                // set SMTP client settings
+                string smtpServer = PortalConfiguration.SiteSettings["SmtpHost"];
+                int smtpPort = Int32.Parse(PortalConfiguration.SiteSettings["SmtpPort"]);
+                string smtpUsername = PortalConfiguration.SiteSettings["SmtpUsername"];
+                string smtpPassword = PortalConfiguration.SiteSettings["SmtpPassword"];
+                bool enableSsl = ParseBool(PortalConfiguration.SiteSettings["SmtpEnableSsl"], false);
+                bool enableLegacySSL = ParseBool(PortalConfiguration.SiteSettings["SmtpEnableLegacySSL"], false);
+
+                // Determine SecureSocketOptions based on EnableSsl and Port
+                // Common logic: Port 465 usually implies SslOnConnect, others often use StartTls. Adjust as needed.
+                SecureSocketOptions secureSocketOptions = SecureSocketOptions.Auto;
+                if (enableSsl)
+                {
+                    secureSocketOptions = smtpPort == 465 ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls;
+                }
+
+                if (enableLegacySSL)
+                {
+                    client.SslProtocols = SslProtocols.Tls11 | SslProtocols.Tls | SslProtocols.Tls12 | SslProtocols.Tls13;
+                }
+                else
+                {
+                    client.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                }
+
+                client.Connect(smtpServer, smtpPort, secureSocketOptions);
+
+                if (String.IsNullOrEmpty(smtpUsername))
+                {
+                    client.Authenticate(smtpUsername, smtpPassword);
+                }
+
+                // create message
+                var message = new MimeMessage();
+                message.From.Add(MailboxAddress.Parse(from));
+                message.To.Add(MailboxAddress.Parse(to));
+                if (!String.IsNullOrEmpty(bcc))
+                    message.Bcc.Add(MailboxAddress.Parse(bcc));
+                message.Subject = subject;
+                message.Priority = MessagePriority.Urgent;
+
+                // Create body
+                var bodyBuilder = new BodyBuilder();
+                bodyBuilder.TextBody = body;
+                message.Body = bodyBuilder.ToMessageBody();
+
+                // send message
+                try
+                {
+                    client.Send(message);
+                }
+                finally
+                {
+                    client.Disconnect(true);
+                }
+            }
+        }
+
+        public static void UserSignOut()
+        {
+            FormsAuthentication.SignOut();
+
+            if (HttpContext.Current.Session != null)
+            {
+                HttpContext.Current.Session.Clear();
+                HttpContext.Current.Session.Abandon();
+            }
+
+            // Clear authentication cookie 
+            HttpCookie rFormsCookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
+            rFormsCookie.Expires = DateTime.Now.AddYears(-1);
+            HttpContext.Current.Response.Cookies.Add(rFormsCookie);
+
+            // Clear session cookie  
+            HttpCookie rSessionCookie = new HttpCookie("ASP.NET_SessionId", "");
+            rSessionCookie.Expires = DateTime.Now.AddYears(-1);
+            HttpContext.Current.Response.Cookies.Add(rSessionCookie); 
+
+            HttpContext.Current.Response.Redirect(LoginRedirectUrl);
+        }
+        public static void UserSignOutOnly()
+        {
+            FormsAuthentication.SignOut();
+
+            if (HttpContext.Current.Session != null)
+            {
+                HttpContext.Current.Session.Clear();
+                HttpContext.Current.Session.Abandon();
+            }
+
+            // Clear authentication cookie 
+            HttpCookie rFormsCookie = new HttpCookie(FormsAuthentication.FormsCookieName, "");
+            rFormsCookie.Expires = DateTime.Now.AddYears(-1);
+            HttpContext.Current.Response.Cookies.Add(rFormsCookie);
+
+            // Clear session cookie  
+            HttpCookie rSessionCookie = new HttpCookie("ASP.NET_SessionId", "");
+            rSessionCookie.Expires = DateTime.Now.AddYears(-1);
+            HttpContext.Current.Response.Cookies.Add(rSessionCookie);
+        }
+
+        public static MenuItem GetSpaceMenuItem(string menuItemKey)
+        {
+            MenuItem item = new MenuItem();
+            item.Value = menuItemKey;
+
+            menuItemKey = String.Concat("Space", menuItemKey);
+
+            PortalPage page = PortalConfiguration.Site.Pages[menuItemKey];
+
+            if (page != null)
+                item.NavigateUrl = DefaultPage.GetPageUrl(menuItemKey);
+
+            return item;
+        }
+
+        private static FormsAuthenticationTicket AuthTicket
+        {
+            get
+            {
+                FormsAuthenticationTicket authTicket = (FormsAuthenticationTicket)HttpContext.Current.Items[FormsAuthentication.FormsCookieName];
+
+                if (authTicket == null)
+                {
+                    // original code
+                    HttpCookie authCookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                    // workaround for cases when AuthTicket is required before round-trip
+                    if (authCookie == null || String.IsNullOrEmpty(authCookie.Value))
+                        authCookie = HttpContext.Current.Response.Cookies[FormsAuthentication.FormsCookieName];
+                    //
+                    if (authCookie != null)
+                    {
+                        authTicket = FormsAuthentication.Decrypt(authCookie.Value);
+                        HttpContext.Current.Items[FormsAuthentication.FormsCookieName] = authTicket;
+                    }
+                }
+
+                return authTicket;
+            }
+        }
+
+        private static void SetAuthTicket(FormsAuthenticationTicket ticket, bool persistent)
+        {
+            // issue authentication cookie
+            HttpCookie authCookie = new HttpCookie(FormsAuthentication.FormsCookieName);
+            authCookie.Domain = FormsAuthentication.CookieDomain;
+            authCookie.Secure = FormsAuthentication.RequireSSL;
+            authCookie.Path = FormsAuthentication.FormsCookiePath;
+            authCookie.Value = FormsAuthentication.Encrypt(ticket);
+            authCookie.HttpOnly = true;
+
+            if (persistent)
+                authCookie.Expires = ticket.Expiration;
+
+            HttpContext.Current.Response.Cookies.Add(authCookie);
+        }
+
+        public static string ApplicationPath
+        {
+            get
+            {
+                if (HttpContext.Current.Request.ApplicationPath == "/")
+                    return "";
+                else
+                    return HttpContext.Current.Request.ApplicationPath;
+            }
+        }
+
+        public static string GetSharedLocalizedString(string moduleName, string resourceKey)
+        {
+            string className = SharedResourcesFile.Replace(".resx", "");
+
+            if (!String.IsNullOrEmpty(moduleName))
+                className = String.Concat(moduleName, "_", className);
+            
+            return (string)HttpContext.GetGlobalResourceObject(className, resourceKey);
+        }
+
+        public static string GetLocalizedString(string virtualPath, string resourceKey)
+        {
+            return (string)HttpContext.GetLocalResourceObject(virtualPath, resourceKey);
+        }
+
+        public static string GetCurrentPageId()
+        {
+            return HttpContext.Current.Request["pid"];
+        }
+
+        public static bool PageExists(string pageId)
+        {
+            return PortalConfiguration.Site.Pages[pageId] != null;
+        }
+
+        public static string GetLocalizedPageName(string pageId)
+        {
+            return DefaultPage.GetLocalizedPageName(pageId);
+        }
+
+        public static string SHA1(string plainText)
+        {
+            // Convert plain text into a byte array.
+            byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+            HashAlgorithm hash = new SHA1Managed(); ;
+
+            // Compute hash value of our plain text with appended salt.
+            byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+
+            // Return the result.
+            return Convert.ToBase64String(hashBytes);
+        }
+
+        public static bool ValidatePin(string username, string pin)
+        {
+            esAuthentication authService = new esAuthentication();
+            ConfigureEnterpriseServerProxy(authService, false);
+            return authService.ValidatePin(username, pin);
+        }
 
 		public static string CultureCookieName
 		{
