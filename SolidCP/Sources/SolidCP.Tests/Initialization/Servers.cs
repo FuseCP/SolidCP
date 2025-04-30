@@ -7,13 +7,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Text.RegularExpressions;
-using SolidCP.Providers.OS;
-using SolidCP.Web.Clients;
-using SolidCP.Web.Services;
 using System.Reflection;
 using System.Net.Http;
 using System.Net.Security;
+using System.Threading;
 using System.Security.Cryptography.X509Certificates;
+using SolidCP.Providers.OS;
+using SolidCP.Web.Clients;
+using SolidCP.Web.Services;
 
 namespace SolidCP.Tests;
 
@@ -125,7 +126,9 @@ public class Servers
 	}
 	public static WSLShell.WSLDistro WslDistro(Os os)
 	{
-		var installed = WSLShell.Default.InstalledDistros
+		var shell = WSLShell.Default.Clone as WSLShell;
+		shell.LogFile = System.IO.Path.Combine(Paths.Test, "TestResults", $"WSL.log");
+		var installed = shell.InstalledDistros
 			.OrderByDescending(d => d.Distro);
 		var distro = os switch
 		{
@@ -148,15 +151,17 @@ public class Servers
 		};
 		if (distro == null)
 		{
-			distro = os switch
+			throw new NotSupportedException($"WSL {distro} is not installed.");
+			/*distro = os switch
 			{
 				Os.Ubuntu => WSLShell.Distro.Ubuntu24,
 				Os.Fedora => WSLShell.Distro.FedoraRemix,
 				Os.Alpine => WSLShell.Distro.Alpine,
 				Os.AlmaLinux => WSLShell.Distro.AlmaLinux
 			};
-			WSLShell.Default.SetDefaultVersion(2);
-			WSLShell.Default.Install(distro);
+			shell.SetDefaultVersion(2);
+			shell.Install(distro);
+			Thread.Sleep(20000);*/
 		}
 
 		return distro;

@@ -156,7 +156,7 @@ public class EnterpriseServer : IDisposable
 	}
 
 	public static string SetupSqliteDb() {
-		var connectionString = DatabaseUtils.BuildSqliteConnectionString(DatabaseName, Path);
+		var connectionString = DatabaseUtils.BuildSqliteConnectionString(IO.Path.Combine(Path, "App_Data", $"{DatabaseName}.sqlite"));
 	
 		if (DatabaseUtils.DatabaseExists(connectionString, DatabaseName))
 		{

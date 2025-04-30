@@ -13,18 +13,27 @@ namespace SolidCP.Tests
 		[TestMethod]
 		public async Task TestESAccess()
 		{
-			var testClient = new esTest();
-			testClient.Url = Servers.Url(Component.EnterpriseServer, Framework.NetFramework, Os.Windows, Web.Clients.Protocols.NetHttps); // IISExpress.HttpsUrl;
-			testClient.Protocol = Web.Clients.Protocols.BasicHttps;
-			Assert.AreEqual("Hello", testClient.Echo("Hello"));
-			Assert.AreEqual("Hello", await testClient.EchoAsync("Hello"));
+			try
+			{
+				var url = Servers.Url(Component.EnterpriseServer, Framework.NetFramework, Os.Windows, Web.Clients.Protocols.BasicHttps); // IISExpress.HttpsUrl;
+				var testClient = new esTest();
+				testClient.Url = url;
+				testClient.Protocol = Web.Clients.Protocols.BasicHttps;
+				Assert.AreEqual("Hello", testClient.Echo("Hello"));
+				Assert.AreEqual("Hello", await testClient.EchoAsync("Hello"));
 
-			var esClient = new esSystem();
-			esClient.Url = Servers.Url(Component.EnterpriseServer, Framework.NetFramework, Os.Windows, Web.Clients.Protocols.NetHttps); // IISExpress.HttpsUrl;
-			esClient.Protocol = Web.Clients.Protocols.BasicHttps;
-			esClient.Credentials.UserName = "serveradmin";
-			esClient.Credentials.Password = CryptoUtils.SHA256("123456");
-			var settings = esClient.GetSystemSettings(SystemSettings.DEBUG_SETTINGS);
+				var esClient = new esSystem();
+				esClient.Url = url;
+				esClient.Protocol = Web.Clients.Protocols.BasicHttps;
+				esClient.Credentials.UserName = "serveradmin";
+				esClient.Credentials.Password = CryptoUtils.SHA256("123456");
+				var settings = esClient.GetSystemSettings(SystemSettings.DEBUG_SETTINGS);
+			} catch (Exception ex)
+			{
+				TestContext.WriteLine($"Exception: {ex}");
+				if (ex.InnerException != null) TestContext.WriteLine($"InnerException: {ex.InnerException}");
+				throw;
+			}
 		}
 
 		[TestMethod]

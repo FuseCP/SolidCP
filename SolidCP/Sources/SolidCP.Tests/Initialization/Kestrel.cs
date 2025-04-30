@@ -35,6 +35,8 @@ namespace SolidCP.Tests
 			var testdllpath = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			var testprojpath = Path.GetFullPath(Path.Combine(testdllpath, "..", "..", ".."));
 			var workingDir = Path.Combine(apppath, "bin_dotnet");
+			var log = Path.GetFullPath(Path.Combine(Paths.Test, "TestResults", $"Kestrel.log"));
+			if (!Directory.Exists(Path.GetDirectoryName(log))) Directory.CreateDirectory(Path.GetDirectoryName(log));
 			var dll = Path.Combine(workingDir, $"{Paths.App}.{component}.dll");
 			var pfx = Certificate.CertFilePath;
 
@@ -53,6 +55,7 @@ namespace SolidCP.Tests
 			var distro = (wslDistro?.ToString() ?? "Windows");
 
 			var exe = shell.Find("dotnet");
+			shell.LogFile = log;
 			shell.LogCommand += msg =>
 			{
 				if (Debugger.IsAttached) Debug.Write($"{distro}>{msg}");

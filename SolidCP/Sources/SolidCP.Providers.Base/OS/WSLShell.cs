@@ -526,38 +526,38 @@ namespace SolidCP.Providers.OS
 		public void UpdateWsl() => BaseShell.Exec("wsl --update", Encoding.Unicode);
 		public void ShutdownAll()
 		{
-			if (IsWindows) base.Exec("wsl --shutdown", Encoding.Unicode);
+			if (IsWindows) BaseShell.Exec("wsl --shutdown", Encoding.Unicode);
 		}
 		public void Terminate(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --terminate {distro}", Encoding.Unicode);
+			if (IsWindows) BaseShell.Exec($"wsl --terminate {distro}", Encoding.Unicode);
 		}
 		public void Install(WSLDistro distro)
 		{
 			if (IsWindows)
 			{
-				if (distro.Distro == Distro.FedoraRemix) base.Exec(@"winget install ""Fedora Remix for WSL"" --accept-source-agreements --accept-package-agreements");
-				else if (distro.Distro == Distro.Alpine) base.Exec(@"winget install ""Alpine WSL"" --accept-source-agreements --accept-package-agreements");
-				else if (distro.Distro == Distro.AlmaLinux) base.Exec(@"winget install ""AlmaLinux OS 9"" --accept-source-agreements --accept-package-agreements");
-				else base.Exec($"wsl --install {distro}", Encoding.Unicode);
+				if (distro.Distro == Distro.FedoraRemix) BaseShell.Exec(@"winget install ""Fedora Remix for WSL"" --accept-source-agreements --accept-package-agreements");
+				else if (distro.Distro == Distro.Alpine) BaseShell.Exec(@"winget install ""Alpine WSL"" --accept-source-agreements --accept-package-agreements");
+				else if (distro.Distro == Distro.AlmaLinux) BaseShell.Exec(@"winget install ""AlmaLinux OS 9"" --accept-source-agreements --accept-package-agreements");
+				else BaseShell.Exec($"wsl --install -d {distro}", Encoding.Unicode);
 			}
 		}
 		public void SetDefaultVersion(int n)
 		{
-			if (IsWindows) base.Exec($"wsl --set-default-version {n}", Encoding.Unicode); 
+			if (IsWindows) BaseShell.Exec($"wsl --set-default-version {n}", Encoding.Unicode); 
 		}
 		public void Uninstall(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --unregister {distro}", Encoding.Unicode);
+			if (IsWindows) BaseShell.Exec($"wsl --unregister {distro}", Encoding.Unicode);
 		}
 
 		public void Import(WSLDistro distro, string file)
 		{
-			if (IsWindows) base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
+			if (IsWindows) BaseShell.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
 		}
 		public void Export(WSLDistro distro, string file)
 		{
-			if (IsWindows) base.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
+			if (IsWindows) BaseShell.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
 		}
 		public string ReadTextFile(string path)
 		{
@@ -689,7 +689,7 @@ namespace SolidCP.Providers.OS
 		{
 			text = $"{CurrentDistroName}> {text}";
 			if (Redirect) Console.WriteLine(text);
-			if (LogFile != null) File.AppendAllText(LogFile, text);
+			if (LogFile != null) File.AppendAllText(LogFile, text, Encoding.UTF8);
 		}
 		protected void OnBaseLog(string msg) => Log?.Invoke(msg);
 		protected void OnBaseLogCommandEnd() => LogCommandEnd?.Invoke();

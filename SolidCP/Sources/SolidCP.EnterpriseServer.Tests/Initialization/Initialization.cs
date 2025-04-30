@@ -30,6 +30,7 @@ namespace SolidCP.Tests
 			
 			// Setup EnterpriseServer website & database
 			EnterpriseServer.Clone();
+			EnterpriseServer.SetupSqliteDb();
 			var connStr = EnterpriseServer.SetupLocalDb();
 			EnterpriseServer.ConfigureDatabase(connStr);
 

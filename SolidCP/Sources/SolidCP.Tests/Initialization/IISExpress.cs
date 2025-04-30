@@ -33,9 +33,12 @@ namespace SolidCP.Tests
 			var admincmd = Path.Combine(iisExprPath, "IisExpressAdminCmd.exe");
 			var iisexpress = Path.Combine(iisExprPath, "iisexpress.exe");
 			var serverPath = Paths.Path(component);
+			var log = Path.GetFullPath(Path.Combine(Paths.Test, "TestResults", $"IISExpress.log"));
+			if (!Directory.Exists(Path.GetDirectoryName(log))) Directory.CreateDirectory(Path.GetDirectoryName(log));
 
 			// setup iis express
 			var shell = Shell.Standard.Clone;
+			shell.LogFile = log;
 			shell.Log += msg =>
 			{
 				if (Debugger.IsAttached) Debug.Write($"IIS Express>{msg}");

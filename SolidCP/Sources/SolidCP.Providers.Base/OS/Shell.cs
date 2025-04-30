@@ -442,7 +442,7 @@ namespace SolidCP.Providers.OS
 			try
 			{
 				outputAndError.Append(text);
-				if (LogFile != null) File.AppendAllText(LogFile, text);
+				if (LogFile != null) lock (LogFile) File.AppendAllText(LogFile, text, Encoding.UTF8);
 			}
 			finally
 			{
@@ -454,12 +454,12 @@ namespace SolidCP.Providers.OS
 		{
 			text = $"> {text}";
 			if (Redirect) Console.WriteLine(text);
-			if (LogFile != null) File.AppendAllText(LogFile, text);
+			if (LogFile != null) lock (LogFile) File.AppendAllText(LogFile, text, Encoding.UTF8);
 		}
 		protected virtual void OnLogCommandEnd()
 		{
 			if (Redirect) Console.WriteLine();
-			if (LogFile != null) File.AppendAllText(LogFile, System.Environment.NewLine);
+			if (LogFile != null) lock (LogFile) File.AppendAllText(LogFile, System.Environment.NewLine, Encoding.UTF8);
 		}
 		protected virtual void OnLogOutput(string text)
 		{
