@@ -513,6 +513,7 @@ namespace SolidCP.Providers.OS
 				ErrorLock.Release();
 			}
 		}
+		public StreamWriter Input => Process?.StandardInput;
 
 		static Shell standard = null;
 		public static Shell Standard => standard ??= new StandardShell();

@@ -69,7 +69,7 @@ jobs:
 
     steps:
 
-    - name: Install WSL Ubuntu with rpm tools
+    - name: Install WSL Ubuntu
       uses: Vampire/setup-wsl@v5
       with: 
         wsl-version: 2

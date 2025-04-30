@@ -85,7 +85,10 @@ namespace SolidCP.Tests
 			};
 			shell.WorkingDirectory = workingDir;
 			shell.Exec("dotnet dev-certs https");
-			shell.Exec("dotnet dev-certs https --trust");
+			var cert = shell.ExecAsync("dotnet dev-certs https --trust");
+			cert.Input.WriteLine("yes");
+			cert.Wait();
+
 			process = shell.ExecAsync($"\"{exe}\" \"{dll}\" --urls \"{HttpUrl};{HttpsUrl}\"").Process;
 
 			if (WslDistro == null && process.HasExited) throw new Exception($"Kestrel exited with code {process.ExitCode}");
