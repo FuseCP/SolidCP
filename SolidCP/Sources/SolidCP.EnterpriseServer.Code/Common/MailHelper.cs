@@ -52,8 +52,10 @@ namespace SolidCP.EnterpriseServer
             {
                 try
                 {
-                    using (var systemController = new SystemController()) {
-                        SystemSettings settings = systemController.GetSystemSettingsInternal(
+                    SystemSettings settings;
+
+					using (var systemController = new SystemController()) {
+                        settings = systemController.GetSystemSettingsInternal(
                            SystemSettings.SMTP_SETTINGS,
                            true
                        );
