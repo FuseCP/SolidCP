@@ -155,7 +155,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-		    return $this->execute('esPackages.asmx', 'CreateUserWizard', $params)->CreateUserWizardResult;
+		    return $this->execute('esPackages', 'CreateUserWizard', $params)->CreateUserWizardResult;
 		}
 		catch (Exception $e)
 		{
@@ -176,7 +176,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-		    return $this->execute('esUsers.asmx', 'UpdateUser', array('user' => $params))->UpdateUserResult;
+		    return $this->execute('esUsers', 'UpdateUser', array('user' => $params))->UpdateUserResult;
 		}
 		catch (Exception $e)
 		{
@@ -196,7 +196,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-		    return $this->execute('esUsers.asmx', 'DeleteUser', array('userId' => $userId))->DeleteUserResult;
+		    return $this->execute('esUsers', 'DeleteUser', array('userId' => $userId))->DeleteUserResult;
 		}
 		catch (Exception $e)
 		{
@@ -216,7 +216,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-		    return $this->convertArray($this->execute('esUsers.asmx', 'GetUserByUsername', array('username' => $username))->GetUserByUsernameResult);
+		    return $this->convertArray($this->execute('esUsers', 'GetUserByUsername', array('username' => $username))->GetUserByUsernameResult);
 		}
 		catch (Exception $e)
 		{
@@ -237,7 +237,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-		    return $this->execute('esUsers.asmx', 'ChangeUserStatus', array('userId' => $userId, 'status' => $status))->ChangeUserStatusResult;
+		    return $this->execute('esUsers', 'ChangeUserStatus', array('userId' => $userId, 'status' => $status))->ChangeUserStatusResult;
 		}
 		catch (Exception $e)
 		{
@@ -258,7 +258,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->execute('esUsers.asmx', 'ChangeUserPassword', array('userId' => $userId, 'password' => $password))->ChangeUserPasswordResult;
+			return $this->execute('esUsers', 'ChangeUserPassword', array('userId' => $userId, 'password' => $password))->ChangeUserPasswordResult;
 		}
 		catch (Exception $e)
 		{
@@ -278,7 +278,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->convertArray($this->execute('esPackages.asmx', 'GetMyPackages', array('userId' => $userId))->GetMyPackagesResult->PackageInfo);
+			return $this->convertArray($this->execute('esPackages', 'GetMyPackages', array('userId' => $userId))->GetMyPackagesResult->PackageInfo);
 		}
 		catch (Exception $e)
 		{
@@ -298,7 +298,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->convertArray($this->execute('esPackages.asmx', 'GetPackageAddons', array('packageId' => $packageId))->GetPackageAddonsResult);
+			return $this->convertArray($this->execute('esPackages', 'GetPackageAddons', array('packageId' => $packageId))->GetPackageAddonsResult);
 		}
 		catch (Exception $e)
 		{
@@ -318,7 +318,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->convertArray($this->execute('esPackages.asmx', 'DeletePackageAddon', array('packageAddonId' => $packageAddonId))->DeletePackageAddonResult);
+			return $this->convertArray($this->execute('esPackages', 'DeletePackageAddon', array('packageAddonId' => $packageAddonId))->DeletePackageAddonResult);
 		}
 		catch (Exception $e)
 		{
@@ -345,7 +345,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			$result = (array)$this->execute('esUsers.asmx', 'GetUsersPagedRecursive', array('userId' => $userId, 'filterColumn' => $filterColumn, 'filterValue' => $filterValue, 'statusId' => $statusId, 'roleId' => $roleId, 'sortColumn' => $sortColumn, 'startRow' => $startRow, 'maximumRows' => $maximumRows))->GetUsersPagedRecursiveResult;
+			$result = (array)$this->execute('esUsers', 'GetUsersPagedRecursive', array('userId' => $userId, 'filterColumn' => $filterColumn, 'filterValue' => $filterValue, 'statusId' => $statusId, 'roleId' => $roleId, 'sortColumn' => $sortColumn, 'startRow' => $startRow, 'maximumRows' => $maximumRows))->GetUsersPagedRecursiveResult;
 			return $this->convertArray($result['any'], TRUE);
 		}
 		catch (Exception $e)
@@ -371,7 +371,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->convertArray($this->execute('esPackages.asmx', 'UpdatePackageLiteral', array('packageId' => $packageId, 'statusId' => $statusId, 'planId' => $planId, 'purchaseDate' => $purchaseDate, 'packageName' => $packageName, 'packageComments' => $packageComments))->UpdatePackageLiteralResult);
+			return $this->convertArray($this->execute('esPackages', 'UpdatePackageLiteral', array('packageId' => $packageId, 'statusId' => $statusId, 'planId' => $planId, 'purchaseDate' => $purchaseDate, 'packageName' => $packageName, 'packageComments' => $packageComments))->UpdatePackageLiteralResult);
 		}
 		catch (Exception $e)
 		{
@@ -393,7 +393,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->convertArray($this->execute('esPackages.asmx', 'AddPackageAddonById', array('packageId' => $packageId, 'addonPlanId' => $addonPlanId, 'quantity' => $quantity))->AddPackageAddonByIdResult);
+			return $this->convertArray($this->execute('esPackages', 'AddPackageAddonById', array('packageId' => $packageId, 'addonPlanId' => $addonPlanId, 'quantity' => $quantity))->AddPackageAddonByIdResult);
 		}
 		catch (Exception $e)
 		{
@@ -415,7 +415,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			$result = (array)$this->execute('esPackages.asmx', 'GetPackageBandwidth', array('packageId' => $packageId, 'startDate' => $startDate, 'endDate' => $endDate))->GetPackageBandwidthResult;
+			$result = (array)$this->execute('esPackages', 'GetPackageBandwidth', array('packageId' => $packageId, 'startDate' => $startDate, 'endDate' => $endDate))->GetPackageBandwidthResult;
 			return $this->convertArray($result['any'], TRUE);
 		}
 		catch (Exception $e)
@@ -436,7 +436,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			$result = (array)$this->execute('esPackages.asmx', 'GetPackageDiskspace', array('packageId' => $packageId))->GetPackageDiskspaceResult;
+			$result = (array)$this->execute('esPackages', 'GetPackageDiskspace', array('packageId' => $packageId))->GetPackageDiskspaceResult;
 			return $this->convertArray($result['any'], TRUE);
 		}
 		catch (Exception $e)
@@ -461,7 +461,7 @@ final class SolidCP_EnterpriseServer
 	{
 		try
 		{
-			return $this->convertArray($this->execute('esServers.asmx', 'AllocatePackageIPAddresses', array('packageId' => $packageId, 'groupName' => $groupName, 'pool' => $pool, 'addressesNumber' => $addressesNumber, 'allocateRandom' => $allocateRandom))->AllocatePackageIPAddressesResult);
+			return $this->convertArray($this->execute('esServers', 'AllocatePackageIPAddresses', array('packageId' => $packageId, 'groupName' => $groupName, 'pool' => $pool, 'addressesNumber' => $addressesNumber, 'allocateRandom' => $allocateRandom))->AllocatePackageIPAddressesResult);
 		}
 		catch (Exception $e)
 		{
@@ -501,6 +501,13 @@ final class SolidCP_EnterpriseServer
 		}
 	}
 	
+	public function testEcho($text) {
+        return $this->execute('esTest', 'Echo', array('msg' => $text));
+    }	
+
+	public function osPlatform() {
+		return $this->execute('esTest', 'OSPlatform', null);
+	}
 	/**
 	 * Executes the request on the Enterprise Server and returns the results
 	 * 
@@ -509,15 +516,34 @@ final class SolidCP_EnterpriseServer
 	 * @param unknown $params
 	 * @throws Exception
 	 */
-	private function execute($service, $method, $params)
+	public function execute($service, $method, $params)
 	{
 		// Set the Enterprise Server full URL
 		$host = (($this->_secured) ? 'https' : 'http') . "://{$this->_host}:{$this->_port}/{$service}?WSDL";
 		try
 		{
 			// Create the SoapClient
+			$client = new SoapClient($host, array('compression' => (($this->_compression) ? (SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP) : ''), 'keep_alive' => false, 'cache_wsdl' => ($this->_caching) ? 1 : 0));
+
+			$hasUser = !empty($this->_password);
+			if ($hasUser) {
+				$pwd = $this->_password;
+				$pwd = str_replace("&", "&amp;", $pwd);
+				$pwd = str_replace("<", "&lt;", $pwd);
+				$pwd = str_replace(">", "&gt;", $pwd);
+				$auth = "<Credentials xmlns=\"http://hostpanelpro/headers/Credentials\"><Password xmlns=\"http://hostpanelpro/credentials\">$pwd</Password><Username xmlns=\"http://hostpanelpro/credentials\">$this->_username</Username></Credentials>";
+				$auth_block = new SoapVar( $auth, XSD_ANYXML, NULL, NULL, NULL, NULL );
+				$soapHeader = new SoapHeader('http://hostpanelpro/headers/Credentials', 'Credentials', $auth_block);
+				$client -> __setSoapHeaders($soapHeader);
+			}
+		} catch (SoapFault $ex) {
+			// Old version of SolidCP
+			$host = (($this->_secured) ? 'https' : 'http') . "://{$this->_host}:{$this->_port}/{$service}.asmx?WSDL";
+			// Create the SoapClient
 			$client = new SoapClient($host, array('login' => $this->_username, 'password' => $this->_password, 'compression' => (($this->_compression) ? (SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP) : ''), 'keep_alive' => false, 'cache_wsdl' => ($this->_caching) ? 1 : 0));
-			
+		}
+		
+		try {
 			// Execute the request and process the results
 			return call_user_func(array($client, $method), $params);
 		}

@@ -4,11 +4,30 @@ using System.Collections.Generic;
 
 namespace SolidCP.Providers.OS
 {
+	public enum WindowsServiceStartMode { Demand, Boot, System, Auto, Disabled, DelayedAuto }
+	public enum WindowsServiceType { Own, Share, Interact, Kernel, Filesys, Rec, Userown, Usershare }
+	public enum WindowsServiceErrorHandling { Normal, Severe, Critical, Ignore }
 
 	public class ServiceDescription
 	{
 		public string Executable { get; set; }
 		public string ServiceId { get; set; }
+		public List<string> DependsOn { get; set; } = new List<string>();
+	}
+
+	public class WindowsServiceDescription: ServiceDescription {
+		public WindowsServiceStartMode Start { get; set; }
+		public WindowsServiceType Type { get; set; }
+		public WindowsServiceErrorHandling Error { get; set; }
+		public bool? Tag { get; set; }
+		public string Group { get; set; }
+		public string Object { get; set; }
+		public string Password { get; set; }
+		public string DisplayName { get; set; }
+	}
+	public class SystemdServiceDescription: ServiceDescription {
+		public string Group { get; set; }
+		public string SyslogIdentifier { get; set; }
 		public string Description { get; set; }
 		public string Directory { get; set; }
 		public string User { get; set; }
@@ -17,14 +36,6 @@ namespace SolidCP.Providers.OS
 		public string Restart { get; set; }
 		public string RestartSec { get; set; }
 		public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
-		public List<string> DependsOn { get; set; } = new List<string>();
-	}
-
-	public class WindowsServiceDescription: ServiceDescription { }
-	public class UnixServiceDescription: ServiceDescription {
-		public string Group { get; set; }
-		public string SyslogIdentifier { get; set; }
-
 	}
 	public class ServiceManager
 	{
@@ -48,7 +59,6 @@ namespace SolidCP.Providers.OS
 	}
 	public abstract class ServiceController
 	{
-
 		public virtual void Start(string serviceId)
 		{
 			ChangeStatus(serviceId, OSServiceStatus.Running);

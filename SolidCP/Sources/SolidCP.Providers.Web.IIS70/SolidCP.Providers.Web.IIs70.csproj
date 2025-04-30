@@ -8,16 +8,12 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <LangVersion>11</LangVersion>
     <Nullable>disable</Nullable>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>full</DebugType>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="DotNetZip" Version="1.16.0" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching">
       <HintPath>..\..\Lib\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>

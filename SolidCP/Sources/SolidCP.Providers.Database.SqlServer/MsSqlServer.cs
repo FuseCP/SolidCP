@@ -44,7 +44,7 @@ using Microsoft.Win32;
 
 namespace SolidCP.Providers.Database
 {
-	public class MsSqlServer : HostingServiceProviderBase, IDatabaseServer
+	public class MsSqlServerMicrosoftData : HostingServiceProviderBase, IDatabaseServer
 	{
 		#region Properties
 		protected string ServerName
@@ -483,8 +483,8 @@ namespace SolidCP.Providers.Database
 		public virtual void TruncateDatabase(string databaseName)
 		{
 			SqlDatabase database = GetDatabase(databaseName);
-			ExecuteNonQuery(String.Format(@"USE [{0}];BACKUP LOG [{1}] WITH TRUNCATE_ONLY;DBCC SHRINKFILE ('{2}', 1, TRUNCATEONLY);",
-				 databaseName, databaseName, database.LogName));
+			ExecuteNonQuery(String.Format(@"USE [{0}];DBCC SHRINKFILE ('{1}', 1);",
+				databaseName, database.LogName));
 		}
 		#endregion
 

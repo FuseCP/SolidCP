@@ -1,25 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <PublishUrl>publish\</PublishUrl>
-    <WarningsAsErrors>618</WarningsAsErrors>
-    <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <WarningsAsErrors>618</WarningsAsErrors>
+        <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-    <LangVersion>11</LangVersion>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj" />
-    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-  </ItemGroup>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <LangVersion>11</LangVersion>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj" />
+        <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    </ItemGroup>
 </Project>

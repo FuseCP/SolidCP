@@ -1028,6 +1028,11 @@ namespace SolidCP.Providers.DNS
 				if (OSInfo.IsWindows) shell = OSInfo.Windows.PowerShell.ExecScript(ps1, rndcArguments);
 				else if (OSInfo.IsUnix) shell = OSInfo.Unix.PowerShell.ExecScript(ps1, rndcArguments);
 			}
+			else if (cmd.EndsWith(".sh"))
+			{
+				var bat = File.ReadAllText(cmd);
+				shell = OSInfo.Unix.DefaultShell.ExecScript(bat, rndcArguments);
+			}
 			else shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
 
             var output = shell.Output().Result;

@@ -33,6 +33,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.IO.Compression;
 using System.Threading;
 using System.Text.RegularExpressions;
 using System.Runtime.InteropServices;
@@ -42,7 +43,6 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Management;
 using System.Linq;
-using Ionic.Zip;
 using SolidCP.Providers.OS;
 using Mono.Unix;
 
@@ -660,7 +660,7 @@ namespace SolidCP.Providers.Utils
             }
 
             // reset NTFS permissions on destination file/folder
-            SecurityUtils.ResetNtfsPermissions(destinationPath);
+            if (OSInfo.IsWindows) SecurityUtils.ResetNtfsPermissions(destinationPath);
         }
 
         public static void CopyFile(string sourcePath, string destinationPath)
@@ -679,13 +679,16 @@ namespace SolidCP.Providers.Utils
             }
 
             // reset NTFS permissions on destination file/folder
-            SecurityUtils.ResetNtfsPermissions(destinationPath);
+            if (OSInfo.IsWindows) SecurityUtils.ResetNtfsPermissions(destinationPath);
         }
 
-        private static void CopyDirectory(string sourceDir, string destinationDir)
+        public static void CopyDirectory(string sourceDir, string destinationDir)
         {
-            // create directory
-            DirectoryInfo srcDir = new DirectoryInfo(sourceDir);
+            if (!destinationDir.StartsWith(@"\\?\")) destinationDir = @"\\?\" + destinationDir;
+			if (!sourceDir.StartsWith(@"\\?\")) sourceDir = @"\\?\" + sourceDir;
+
+			// create directory
+			DirectoryInfo srcDir = new DirectoryInfo(sourceDir);
             if(!Directory.Exists(destinationDir))
                 Directory.CreateDirectory(destinationDir);
 
@@ -718,30 +721,24 @@ namespace SolidCP.Providers.Utils
 
 		public static void ZipFiles(string zipFile, string rootPath, string[] files)
 		{
-			using (ZipFile zip = new ZipFile())
-			{
-				//use unicode if necessary
-				//zip.UseUnicodeAsNecessary = true;
-                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-
-				//skip locked files
-				zip.ZipErrorAction = ZipErrorAction.Skip;
-				foreach (string file in files)
-				{
-					string fullPath = Path.Combine(rootPath, file);
-					if (Directory.Exists(fullPath))
-					{
-						//add directory with the same directory name
-						zip.AddDirectory(fullPath, file);
-					}
-					else if (File.Exists(fullPath))
-					{
-						//add file to the root folder
-						zip.AddFile(fullPath, "");
-					}
-				}
-				zip.Save(zipFile);
-			}
+            using (var stream = new FileStream(zipFile, FileMode.Create, FileAccess.Write))
+            using (var zip = new ZipArchive(stream, ZipArchiveMode.Create, false, Encoding.UTF8))
+            {
+                foreach (string file in files)
+                {
+                    string fullPath = Path.Combine(rootPath, file);
+                    if (Directory.Exists(fullPath))
+                    {
+                        //add directory with the same directory name
+                        zip.CreateEntry(file.Replace('\\', '/') + "/", CompressionLevel.Optimal);
+                    }
+                    else if (File.Exists(fullPath))
+                    {
+                        //add file to the root folder
+                        zip.CreateEntryFromFile(fullPath, file.Replace('\\', '/'), CompressionLevel.Optimal);
+                    }
+                }
+            }
 		}
 
         /*** CreateBackupZip
@@ -753,14 +750,9 @@ namespace SolidCP.Providers.Utils
  * */
         public static void CreateBackupZip(string zipFile, string rootpath)
         {
-            using (ZipFile zip = new ZipFile())
+            using (var stream = new FileStream(zipFile, FileMode.Truncate, FileAccess.Write))
+            using (ZipArchive zip = new ZipArchive(stream, ZipArchiveMode.Create, false, Encoding.UTF8))
             {
-                //use unicode if necessary
-                //zip.UseUnicodeAsNecessary = true;
-                zip.UseZip64WhenSaving = Zip64Option.AsNecessary;
-
-                //skip locked files
-                zip.ZipErrorAction = ZipErrorAction.Skip;
                 string[] zipfiles = BackupFileNames(rootpath, "").ToArray();
                 foreach (string file in zipfiles)
                 {
@@ -768,25 +760,16 @@ namespace SolidCP.Providers.Utils
                     if (Directory.Exists(fullPath))
                     {
                         //add empty Directory
-                        zip.AddDirectoryByName(file);
+                        zip.CreateEntry(file.Replace('\\', '/') + "/", CompressionLevel.Optimal);
                     }
                     else if (File.Exists(fullPath))
                     {
-                        string path = "";
-                        try
-                        {
-                            int idx = file.LastIndexOf("\\");
-                            path = file.Substring(0, idx);
-                        }
-                        catch { }
                         //add file to relative folder
-                        zip.AddFile(fullPath, path);
+                        zip.CreateEntryFromFile(fullPath, file.Replace('\\', '/'), CompressionLevel.Optimal);
                     }
                 }
-                zip.Save(zipFile);
             }
         }
-
 
         /*** BackupFileNames
          * params:
@@ -829,17 +812,7 @@ namespace SolidCP.Providers.Utils
 
         public static string[] UnzipFiles(string zipFile, string destFolder)
         {
-			using (ZipFile zip = ZipFile.Read(zipFile))
-			{
-				foreach (ZipEntry e in zip)
-				{
-					// Remove Read-Only attribute from a zip entry
-					if ((e.Attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-						e.Attributes ^= FileAttributes.ReadOnly;
-					//
-					e.Extract(destFolder, ExtractExistingFileAction.OverwriteSilently);
-				}
-			}
+            ZipFile.ExtractToDirectory(zipFile, destFolder);
 			
 			List<string> files = new List<string>();
 			foreach(SystemFile systemFile in GetFiles(destFolder))

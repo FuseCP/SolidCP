@@ -35,22 +35,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceProcess;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using SolidCP.EnterpriseServer.Code;
+using System.IO;
+
+
+#if NETCOREAPP
+using SolidCP.Providers.OS;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.WindowsServices;
+using Microsoft.Extensions.Hosting.Systemd;
+#endif
 
 namespace SolidCP.SchedulerService
 {
     static class Program
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        static void Main()
+		/// <summary>
+		/// The main entry point for the application.
+		/// </summary>
+		static void Main(string[] args)
         {
+#if NETFRAMEWORK
             ServiceBase[] ServicesToRun;
             ServicesToRun = new ServiceBase[] 
 			{ 
 				new SchedulerService() 
 			};
             ServiceBase.Run(ServicesToRun);
-        }
-    }
+#else
+            var builder = Host.CreateDefaultBuilder(args);
+			if (OSInfo.IsWindows) builder.UseWindowsService();
+			else if (OSInfo.IsSystemd) builder.UseSystemd();
+
+			ScheduleWorker.RunAsService = true;
+			
+            builder.ConfigureServices(services => services.AddHostedService<ScheduleWorker>());
+
+			var host = builder.Build();
+			host.Run();
+#endif
+		}
+	}
 }

@@ -19,7 +19,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblFirsttimeUserNote;
+        //protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblFirsttimeUserNote;
         
         /// <summary>
         /// lblInternalAddress control.

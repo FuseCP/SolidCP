@@ -35,6 +35,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Utils;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -45,6 +46,7 @@ namespace SolidCP.UniversalInstaller
 		public const string DefaultInstallPathRoot = @"C:\SolidCP";
 		public const string LoopbackIPv4 = "127.0.0.1";
 		public const string InstallerProductCode = "cfg core";
+		public const string DefaultProductName = "SolidCP";
 
 		public abstract class Parameters
 		{
@@ -74,10 +76,13 @@ namespace SolidCP.UniversalInstaller
 			public const string CryptoKey = "CryptoKey";
 			public const string ServerAdminPassword = "ServerAdminPassword";
 			public const string SetupXml = "SetupXml";
+			public const string SettingsJson = "SettingsJson";
 			public const string ParentForm = "ParentForm";
 			public const string Component = "Component";
 			public const string FullFilePath = "FullFilePath";
 			public const string DatabaseServer = "DatabaseServer";
+			public const string DatabasePort = "DatabasePort";
+			public const string DatabaseType = "DatabaseType";
 			public const string DbServerAdmin = "DbServerAdmin";
 			public const string DbServerAdminPassword = "DbServerAdminPassword";
 			public const string DatabaseName = "DatabaseName";
@@ -85,6 +90,10 @@ namespace SolidCP.UniversalInstaller
 			public const string InstallConnectionString = "InstallConnectionString";
 			public const string Release = "Release";
 			public const string UIType = "UIType";
+			public const string SchedulerServiceFileName = "SolidCP.SchedulerService.exe";
+			public const string SchedulerServiceName = "SolidCP Scheduler";
+			public const string DatabaseUser = "DatabaseUser";
+			public const string DatabaseUserPassword = "DatabaseUserPassword";
 		}
 
 		public abstract class Messages
@@ -92,6 +101,7 @@ namespace SolidCP.UniversalInstaller
 			public const string NotEnoughPermissionsError = "You do not have the appropriate permissions to perform this operation. Make sure you are running the application from the local disk and you have local system administrator privileges.";
 			public const string InstallerVersionIsObsolete = "SolidCP Installer {0} or higher required.";
 			public const string ComponentIsAlreadyInstalled = "Component or its part is already installed.";
+			public const string ComponentIsNotInstalled = "Component or its part is not installed.";
 			public const string AnotherInstanceIsRunning = "Another instance of the installation process is already running.";
 			public const string NoInputParametersSpecified = "No input parameters specified";
 			public const int InstallationError = -1000;
@@ -117,9 +127,21 @@ namespace SolidCP.UniversalInstaller
 			public const string DefaultPort = "9003";
 			public const string DefaultIP = "127.0.0.1";
 			public const string SetupController = "Server";
+			public static string[] ServiceUserMembership
+			{
+				get
+				{
+					if (IISVersion.Major >= 7)
+					{
+						return new string[] { "AD:Domain Admins", "SID:" + SystemSID.ADMINISTRATORS, "IIS_IUSRS" };
+					}
+					//
+					return new string[] { "AD:Domain Admins", "SID:" + SystemSID.ADMINISTRATORS, "IIS_WPG" };
+				}
+			}
 		}
 
-        public abstract class WebDavPortal
+		public abstract class WebDavPortal
         {
             public const string ComponentName = "WebDavPortal";
             public const string ComponentDescription = "SolidCP WebDav Portal is a client frontend for viewing and editing their WebDav Enterprise storage files.";
@@ -128,8 +150,11 @@ namespace SolidCP.UniversalInstaller
             public const string DefaultIP = "";
             public const string ComponentCode = "WebDavPortal";
             public const string SetupController = "WebDavPortal";
+			public const string DefaultDbServer = @"localhost\sqlexpress";
+			public const string DefaultDatabase = "SolidCP";
+			public const string AspNetConnectionStringFormat = "server={0};database={1};uid={2};pwd={3};";
 
-            public static string[] ServiceUserMembership
+			public static string[] ServiceUserMembership
             {
                 get
                 {

@@ -58,19 +58,74 @@ namespace SolidCP.EnterpriseServer.Data
 		/// <summary>
 		/// Initializes a new instance of the class.
 		/// </summary>
-		private DatabaseUtils()
-		{
-		}
+		private DatabaseUtils() { }
 
-		public static string InstallScript(string scriptName)
+		public static Stream InstallScriptStream(string scriptName)
 		{
+			scriptName = Regex.Replace(scriptName, @"(?<=^!.*\\\.)([0-9]+)(?=\\\.)", "_$1");
 			var assembly = Assembly.GetExecutingAssembly();
 			var resNames = assembly.GetManifestResourceNames();
-			using (var scriptResource = resNames
-				.Where(name => name.EndsWith(scriptName))
+			var names = resNames
+				.OrderBy(name =>
+				{
+					var tokens = name.Split('.');
+					var type = tokens.Length >= 2 ? tokens[tokens.Length - 2] : "";
+					char[] typeid = new char[4];
+					for (int i = 0; i < 4; i++)
+					{
+						if (i < type.Length) typeid[i] = type[i];
+						else typeid[i] = '0';
+					}
+					var typecode = new string(typeid);
+					var orderText = tokens.Length >= 3 ? tokens[tokens.Length - 3] : "";
+					orderText = orderText.Trim('_');
+					int order;
+					if (!int.TryParse(orderText, out order)) order = short.MaxValue;
+
+					// Put Views first, then UserDefinedFunctions and then StoredProcedures and then the rest
+					string sortExpression;
+					switch (type)
+					{
+						case "View": sortExpression = $"00000{order:x8}{name}"; break;
+						case "StoredProcedure": sortExpression = $"30000{order:x8}{name}"; break;
+						case "UserDefinedFunction": sortExpression = $"10000{order:x8}{name}"; break;
+						default: sortExpression = $"2{typecode}.{order:x8}{string.Join(".", tokens.Take(tokens.Length - 2))}"; break;
+					}
+
+					return sortExpression;
+				})
+				.Where(name => {
+					if (scriptName.StartsWith("!")) return Regex.IsMatch(name, scriptName.Substring(1));
+					else return name.EndsWith(scriptName);
+				})
+				.ToList();
+
+			//foreach (var name in names) Console.WriteLine($"Adding SQL script {name}");
+
+			var streams = names
 				.Select(name => assembly.GetManifestResourceStream(name))
-				.FirstOrDefault())
-			using (var reader = new StreamReader(scriptResource)) return reader.ReadToEnd();
+				.ToList();
+
+			if (streams.Count == 0) throw new FileNotFoundException("No SQL scripts found");
+			else if (streams.Count == 1) return streams.FirstOrDefault();
+
+			var length = streams
+				.Sum(stream => stream.Length);
+			var mem = new MemoryStream((int)length + 512);
+			var writer = new StreamWriter(mem, Encoding.UTF8);
+			foreach (var stream in streams)
+			{
+				var text = new StreamReader(stream).ReadToEnd();
+				writer.WriteLine(text);
+			}
+			writer.Flush();
+			mem.Position = 0;
+			return mem;
+		}
+		public static string InstallScript(string scriptName)
+		{
+			using (var scriptStream = InstallScriptStream(scriptName))
+			using (var reader = new StreamReader(scriptStream)) return reader.ReadToEnd();
 		}
 
 		public static string InstallScriptSqlServer() => InstallScript("install.sqlserver.sql");
@@ -78,6 +133,11 @@ namespace SolidCP.EnterpriseServer.Data
 		public static string InstallScriptSqlite() => InstallScript("install.sqlite.sql");
 		public static string InstallScriptPostgreSql() => InstallScript("install.postgresql.sql");
 		public static string InstallScriptUpdateDb() => InstallScript("update_db.sql");
+		public static Stream InstallScriptUpdateDbStream() => InstallScriptStream("update_db.sql");
+		public static Stream InstallScriptStream(DbType type) => InstallScriptStream($"install.{type.ToString().ToLower()}.sql");
+		public static string InstallScript(DbType type) => InstallScript($"install.{type.ToString().ToLower()}.sql");
+
+
 
 		public static string BuildSqlServerMasterConnectionString(string dbServer, string dbLogin, string dbPassw)
 		{
@@ -453,6 +513,7 @@ namespace SolidCP.EnterpriseServer.Data
 			try
 			{
 				conn = new SqlConnection(connectionString);
+				conn.Open();
 				SqlDataAdapter adapter = new SqlDataAdapter(commandText, conn);
 				DataSet ds = new DataSet();
 				adapter.Fill(ds);
@@ -474,6 +535,7 @@ namespace SolidCP.EnterpriseServer.Data
 				conn = new MySqlConnection(connectionString);
 				MySqlDataAdapter adapter = new MySqlDataAdapter(commandText, conn);
 				DataSet ds = new DataSet();
+				conn.Open();
 				adapter.Fill(ds);
 				return ds;
 			}
@@ -495,6 +557,7 @@ namespace SolidCP.EnterpriseServer.Data
 				var cmd = SqliteCommand();
 				cmd.CommandText = commandText;
 				cmd.Connection = conn;
+				conn.Open();
 
 				using (var dr = cmd.ExecuteReader())
 				{
@@ -634,6 +697,22 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 		}
 
+		public static void CreateDatabaseLocalDb(string connectionString, string database, string file)
+		{
+			Data.DbType dbType;
+			string ConnStr;
+			var guid = Guid.NewGuid();
+			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			ExecuteNonQuerySqlServer(ConnStr, @$"CREATE DATABASE [{database}]
+ON PRIMARY(
+	NAME = '{guid}',
+	FILENAME = '{file}'
+)
+LOG ON(
+	NAME = '{guid}_log',
+	FILENAME = '{Path.ChangeExtension(file, ".ldf")}'
+)");
+		}
 		public static void CreateDatabaseSqlite(string dbFile)
 		{
 			var path = Path.GetDirectoryName(dbFile);
@@ -641,7 +720,7 @@ namespace SolidCP.EnterpriseServer.Data
 #if NETFRAMEWORK
 			SQLiteConnection.CreateFile(dbFile);
 #else
-			File.Create(dbFile);
+			//File.Create(dbFile);
 #endif
 
 		}
@@ -861,6 +940,7 @@ namespace SolidCP.EnterpriseServer.Data
 			Data.DbType dbType;
 			string ConnStr;
 			ParseConnectionString(connectionString, out dbType, out ConnStr);
+			var csb = new ConnectionStringBuilder(connectionString);
 			switch (dbType)
 			{
 				case Data.DbType.SqlServer:
@@ -876,7 +956,20 @@ namespace SolidCP.EnterpriseServer.Data
 
 					// drop database
 					ExecuteNonQuery(connectionString,
-						String.Format("DROP DATABASE {0}", databaseName));
+						@$"ALTER DATABASE [{databaseName}] SET OFFLINE;DROP DATABASE [{databaseName}]");
+
+					var server = csb.ContainsKey("server") ? csb["server"] as string :
+						csb.ContainsKey("data source") ? csb["data source"] as string : null;
+					var localDb = server.ToLower().Contains("localdb");
+
+					if (localDb)
+					{
+						var profile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+						var dbfile = Path.Combine(profile, $"{databaseName}.mdf");
+						var logfile = Path.Combine(profile, $"{databaseName}_log.ldf");
+						if (File.Exists(dbfile)) File.Delete(dbfile);
+						if (File.Exists(logfile)) File.Delete(logfile);
+					}
 					break;
 				case Data.DbType.MySql:
 				case Data.DbType.MariaDb:
@@ -891,7 +984,6 @@ namespace SolidCP.EnterpriseServer.Data
 #else
 					Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
 #endif
-					var csb = new ConnectionStringBuilder(connectionString);
 					var dbFile = (string)(csb["data source"] ?? "");
 					if (!Path.IsPathRooted(dbFile))
 					{
@@ -1284,6 +1376,18 @@ namespace SolidCP.EnterpriseServer.Data
 
 				return sb.ToString();
 			}
+
+			public int StatementCount
+			{
+				get
+				{
+					int count = 0;
+					Reset();
+					while (ReadNextStatement() != null) count++;
+					Reset();
+					return count;
+				}
+			}
 		}
 		public static System.Data.Common.DbConnection SqlServerConnection(string connectionString)
 		{
@@ -1381,6 +1485,30 @@ namespace SolidCP.EnterpriseServer.Data
 			}
 			DatabaseUtils.ExecuteQuery(connectionString, cmd);
 		}
+
+		public Version GetDatabaseVersion(string connectionString, string database)
+		{
+			try
+			{
+				var set = ExecuteQuery(connectionString,
+	@$"USE {database}
+SELECT DatabaseVersion FROM Version");
+
+				return set.Tables[0].Rows.OfType<DataRow>()
+					.Select(row =>
+					{
+						var str = row["DatabaseVersion"] as string;
+						Version version = default;
+						Version.TryParse(str, out version);
+						return version;
+					})
+					.Max() ?? default;
+			}
+			catch (Exception ex)
+			{
+				return default;
+			}
+		}
 		public static void RunSqlScript(string connectionString, Script script, int commandCount = 0,
 					Action<float> OnProgressChange = null, Func<string, string> ProcessInstallVariables = null,
 					string database = null)
@@ -1418,15 +1546,18 @@ namespace SolidCP.EnterpriseServer.Data
 				{
 					while (null != (sql = script.ReadNextStatement()))
 					{
-						sql = ProcessInstallVariables?.Invoke(sql) ?? sql;
-						command.CommandText = sql;
-						try
+						if (!string.IsNullOrWhiteSpace(sql))
 						{
-							command.ExecuteNonQuery();
-						}
-						catch (Exception ex)
-						{
-							throw new Exception("Error executing SQL command: " + sql, ex);
+							sql = ProcessInstallVariables?.Invoke(sql) ?? sql;
+							command.CommandText = sql;
+							try
+							{
+								command.ExecuteNonQuery();
+							}
+							catch (Exception ex)
+							{
+								throw new Exception("Error executing SQL command: " + sql, ex);
+							}
 						}
 
 						i++;
@@ -1434,6 +1565,7 @@ namespace SolidCP.EnterpriseServer.Data
 						{
 							OnProgressChange?.Invoke((float)i / n);
 						}
+
 					}
 				}
 				else
@@ -1453,37 +1585,93 @@ namespace SolidCP.EnterpriseServer.Data
 
 		public static void InstallFreshDatabase(string masterConnectionString, string databaseName,
 			string user, string password, Action<float> OnProgressChange = null,
-			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null, string scriptFile = "",
-			string database = null)
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null,
+			string scriptFile = "", bool countOnly = false)
 		{
 			DbType dbType;
 			string nativeConnectionString;
+			var csb = new ConnectionStringBuilder(masterConnectionString);
+			var server = csb.ContainsKey("server") ? csb["server"] as string :
+				csb.ContainsKey("data source") ? csb["data source"] as string : null;
+			var localDb = server.ToLower().Contains("localdb");
+			var dbfile = csb.ContainsKey("AttachDbFilename") ? csb["AttachDbFilename"] as string : null;
+			csb.Remove("AttachDbFilename");
+			csb.Remove("Database");
+			csb.Remove("Initial Catalog");
+			masterConnectionString = csb.ToString(); 
+
 			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
 
 			var assembly = Assembly.GetExecutingAssembly();
 			var resourceNames = assembly.GetManifestResourceNames();
-			var dbFileName = $"install.{dbType.ToString().ToLowerInvariant()}.sql";
-			var dbFileNameEndsWith = $".{dbFileName}";
+			var InstallSqlFile = $"install.{dbType.ToString().ToLowerInvariant()}.sql";
+			var InstallSqlFileEndsWith = $".{InstallSqlFile}";
 
 			var installSqlStream = resourceNames
-				.Where(name => name.EndsWith(dbFileNameEndsWith))
+				.Where(name => name.EndsWith(InstallSqlFileEndsWith))
 				.Select(name => assembly.GetManifestResourceStream(name))
 				.FirstOrDefault();
 			if (installSqlStream != null)
 			{
-				if (!DatabaseExists(masterConnectionString, databaseName)) CreateDatabase(masterConnectionString, databaseName);
-				else throw new InvalidOperationException($"Database {databaseName} already exists.");
-
-				if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX)
+				using (var installSqlScript = new Script(installSqlStream, masterConnectionString))
 				{
-					if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
-					else throw new InvalidOperationException($"Database user {user} already exists.");
-				}
+					if (countOnly)
+					{
+						ReportCommandCount(installSqlScript.StatementCount);
+						return;
+					}
 
-				using (installSqlStream)
-				{
+					if (!DatabaseExists(masterConnectionString, databaseName))
+					{
+						CreateDatabase(masterConnectionString, databaseName);
+					}
+					else throw new InvalidOperationException($"Database {databaseName} already exists.");
+
+					if (dbType != DbType.Sqlite && dbType != DbType.SqliteFX &&
+						!localDb && !string.IsNullOrEmpty(user))
+					{
+						if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
+						else throw new NotSupportedException($"Database user {user} already exists.");
+					}
+
 					RunSqlScript(masterConnectionString, installSqlStream, OnProgressChange, ReportCommandCount,
-						ProcessInstallVariables, dbFileName, databaseName);
+						ProcessInstallVariables, InstallSqlFile, databaseName);
+				}
+			}
+		}
+
+		public static void UpdateDatabase(string masterConnectionString, string databaseName,
+			string user, string password, Action<float> OnProgressChange = null,
+			Action<int> ReportCommandCount = null, Func<string, string> ProcessInstallVariables = null,
+			string scriptFile = "", bool countOnly = false)
+		{
+			DbType dbType;
+			string nativeConnectionString;
+			ParseConnectionString(masterConnectionString, out dbType, out nativeConnectionString);
+			//
+			if (!countOnly)
+			{
+				if (!DatabaseExists(masterConnectionString, databaseName))
+					throw new InvalidOperationException($"Database {databaseName} does not exist.");
+
+				if (!UserExists(masterConnectionString, user)) CreateUser(masterConnectionString, user, password, databaseName);
+				else AddUserToDatabase(masterConnectionString, databaseName, user);
+			}
+			var updateSql = InstallScriptUpdateDbStream();
+			var installSql = InstallScriptStream(dbType);
+			using (var updateSqlScript = new Script(updateSql, masterConnectionString))
+			using (var installSqlScript = new Script(installSql, masterConnectionString))
+			{
+				var updateCount = updateSqlScript.StatementCount;
+				var installCount = installSqlScript.StatementCount;
+				ReportCommandCount?.Invoke(updateCount + installCount);
+				if (!countOnly)
+				{
+					RunSqlScript(masterConnectionString, updateSqlScript, updateCount, OnProgressChange,
+						ProcessInstallVariables, databaseName);
+
+					RunSqlScript(masterConnectionString, installSqlScript, installCount, OnProgressChange,
+						ProcessInstallVariables, databaseName);
 				}
 			}
 		}

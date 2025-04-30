@@ -38,6 +38,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SolidCP.UniversalInstaller.Controls
@@ -49,7 +50,8 @@ namespace SolidCP.UniversalInstaller.Controls
     /// </summary>
     internal partial class Loader : Form
     {
-        private Core.Loader appLoader;
+        private Core.SetupLoader appLoader;
+        bool NoUnzip = false;
 
         public Loader()
         {
@@ -57,20 +59,26 @@ namespace SolidCP.UniversalInstaller.Controls
             DialogResult = DialogResult.Cancel;
         }
 
-        public Loader(string remoteFile, Action<Exception> callback)
+        private RemoteFile RemoteFile;
+        private Action<Exception> Callback;
+        private bool SetupOnly = false;
+		public Loader(RemoteFile remoteFile, Action<Exception> callback, bool setupOnly)
             : this()
         {
-            Start(remoteFile, callback);
+            //Start(remoteFile, callback, setupOnly);
+            RemoteFile = remoteFile;
+            Callback = callback;
+            SetupOnly = setupOnly;
         }
 
-        public Loader(string localFile, string componentCode, string version, Action<Exception> callback)
+		/*public Loader(string localFile, string componentCode, string version, Action<Exception> callback)
             : this()
         {
             Start(componentCode, version, callback);
-        }
+        }*/
 
 
-
+		/*
         /// <summary>
         /// Resolves URL of the component's distributive and initiates download process.
         /// </summary>
@@ -81,15 +89,23 @@ namespace SolidCP.UniversalInstaller.Controls
             string remoteFile = Utils.GetDistributiveLocationInfo(componentCode, version);
 
             Start(remoteFile, callback);
-        }
+        }*/
 
-        /// <summary>
-        /// Initializes and starts the app distributive download process.
-        /// </summary>
-        /// <param name="remoteFile">URL of the file to be downloaded</param>
-        private void Start(string remoteFile, Action<Exception> callback)
+		protected override void OnShown(EventArgs e)
+		{
+			base.OnShown(e);
+
+            Start(RemoteFile, Callback, SetupOnly);
+		}
+
+		/// <summary>
+		/// Initializes and starts the app distributive download process.
+		/// </summary>
+		/// <param name="remoteFile">URL of the file to be downloaded</param>
+		public void Start(RemoteFile remoteFile, Action<Exception> callback, bool setupOnly)
         {
-            appLoader = Core.LoaderFactory.CreateFileLoader(remoteFile);
+            appLoader = Core.SetupLoaderFactory.CreateFileLoader(remoteFile);
+            appLoader.SetupOnly = setupOnly;
 
             appLoader.OperationFailed += new EventHandler<Core.LoaderEventArgs<Exception>>(appLoader_OperationFailed);
             appLoader.OperationFailed += (object sender, Core.LoaderEventArgs<Exception> e) => {
@@ -108,8 +124,9 @@ namespace SolidCP.UniversalInstaller.Controls
             appLoader.ProgressChanged += new EventHandler<Core.LoaderEventArgs<Int32>>(appLoader_ProgressChanged);
             appLoader.StatusChanged += new EventHandler<Core.LoaderEventArgs<String>>(appLoader_StatusChanged);
             appLoader.OperationCompleted += new EventHandler<EventArgs>(appLoader_OperationCompleted);
+            appLoader.NoUnzipStatus += (sender, args) => NoUnzip = true;
 
-            appLoader.LoadAppDistributive();
+            Task.Run(appLoader.LoadAppDistributive);
         }
 
         void appLoader_OperationCompleted(object sender, EventArgs e)
@@ -164,7 +181,11 @@ namespace SolidCP.UniversalInstaller.Controls
         private void btnCancel_Click(object sender, EventArgs e)
         {
             DetachEventHandlers();
+
+            Installer.Current.Cancel.Cancel();
+
             Log.WriteInfo("Execution was canceled by user");
+            DialogResult = DialogResult.Cancel;
             Close();
         }
 

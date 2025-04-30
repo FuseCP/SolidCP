@@ -24,6 +24,7 @@ using System.Security.Cryptography.X509Certificates;
 using SolidCP.Web.Services;
 using System.Diagnostics.Eventing.Reader;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting.Systemd;
 using System.Runtime.Intrinsics.X86;
 using System.IO;
 using SolidCP.Providers;
@@ -33,8 +34,6 @@ namespace SolidCP.Web.Services
 {
 	public static class StartupCore
 	{
-		public static bool IsUnixSystemd => Directory.Exists("/run/systemd/system");
-
 		public const int KB = Configuration.KB;
 		public const int MB = Configuration.MB;
 		public const int MaxReceivedMessageSize = Configuration.MaxReceivedMessageSize;
@@ -73,7 +72,7 @@ namespace SolidCP.Web.Services
 		static StoreLocation StoreLocation = StoreLocation.LocalMachine;
 		static StoreName StoreName = StoreName.My;
 		static X509FindType FindType = X509FindType.FindBySubjectName;
-		static string Name = null;
+		static string CertificateName = null;
 		static string CertificateFile = null;
 		static string CertificatePassword = null;
 		static string Password;
@@ -98,11 +97,15 @@ namespace SolidCP.Web.Services
 
 		public static void Init(string[] args)
 		{
-
 			var builder = WebApplication.CreateBuilder(args);
 			Configuration.ProbingPaths = builder.Configuration["probingPaths"];
 			AssemblyLoaderNetCore.Init();
-			var urls = builder.Configuration["applicationUrls"];
+			string urls = null;
+			var urlsParPos = Array.IndexOf(args, "--urls");
+			if (urlsParPos >= 0 && urlsParPos < args.Length - 1) urls = args[urlsParPos + 1];
+			urls = urls ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ??
+				Environment.GetEnvironmentVariable("DOTNET_URLS") ??
+				builder.Configuration["applicationUrls"];
 			foreach (var url in urls.Split(';'))
 			{
 				var uri = new Uri(url);
@@ -125,11 +128,11 @@ namespace SolidCP.Web.Services
 			Configuration.StoreLocation = StoreLocation = builder.Configuration.GetValue<StoreLocation?>("ServerCertificate:StoreLocation") ?? StoreLocation.LocalMachine;
 			Configuration.StoreName = StoreName = builder.Configuration.GetValue<StoreName?>("ServerCertificate:StoreName") ?? StoreName.My;
 			Configuration.FindType = FindType = builder.Configuration.GetValue<X509FindType?>("ServerCertificate:FindType") ?? X509FindType.FindBySubjectName;
-			Configuration.Name = Name = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
+			Configuration.CertificateName = CertificateName = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
 			Configuration.CertificateFile = CertificateFile = builder.Configuration.GetValue<string>("ServerCertificate:File");
 			Configuration.CertificatePassword = CertificatePassword = builder.Configuration.GetValue<string>("ServerCertificate:Password");
 			Configuration.Password = Password = builder.Configuration.GetValue<string>("Server:Password") ?? String.Empty;
-			Configuration.AllowedHosts = AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "0.0.0.0";
+			Configuration.AllowedHosts = AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "*";
 			Configuration.TraceLevel = TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
 			Configuration.KeyFile = KeyFile = builder.Configuration.GetValue<string>("ServerCertificate:KeyFile");
 			Configuration.ExposeWebServices = ExposeWebServices = builder.Configuration.GetValue<string>("exposeWebServices") ?? "";
@@ -148,10 +151,20 @@ namespace SolidCP.Web.Services
 				Log($"Trace level set to {TraceLevel}");
 			}
 			Configuration.IsLocalService = Configuration.AllowedHosts.Split(';')
-				.All(host => DnsService.IsHostLAN(host)); // local network ip
+				.All(host => host != "*" && host != "0.0.0.0" && DnsService.IsHostLAN(host)); // local network ip
+
+			Server.ConfigurationComplete?.Invoke();
 
 			builder.Services.AddRazorPages();
 			builder.Services.AddHttpContextAccessor();
+			if (OSInfo.IsSystemd)
+			{
+				builder.Host.UseSystemd();
+			} else if (OSInfo.IsWindows)
+			{
+				builder.Host.UseWindowsService();
+			}
+			Server.ConfigureBuilder?.Invoke(builder);
 			ConfigureServices(builder.Services);
 
 			if (NetTcpPort.HasValue)
@@ -173,8 +186,10 @@ namespace SolidCP.Web.Services
 				builder.WebHost.UseKestrel(options =>
 				{
 					options.AllowSynchronousIO = true;
-
-					if (OSInfo.IsUnix && IsUnixSystemd) options.UseSystemd();
+					if (OSInfo.IsSystemd)
+					{
+						options.UseSystemd();
+					}
 
 					if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
 						{
@@ -186,13 +201,13 @@ namespace SolidCP.Web.Services
 								{
 									if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
 									{
-										if (!string.IsNullOrEmpty(Name))
+										if (!string.IsNullOrEmpty(CertificateName))
 										{
 											X509Store store = new X509Store(StoreName, StoreLocation);
 											store.Open(OpenFlags.ReadOnly);
-											Certificate = store.Certificates.Find(FindType, Name, false).FirstOrDefault();
+											Certificate = store.Certificates.Find(FindType, CertificateName, false).FirstOrDefault();
 											if (Certificate != null) Log($"Use certificate {Certificate.GetNameInfo(X509NameType.SimpleName, false)} {Certificate.FriendlyName} found in {StoreName} at {StoreLocation}");
-											else Error($"Certificate for {Name} not found in {StoreName} at {StoreLocation}");
+											else Error($"Certificate for {CertificateName} not found in {StoreName} at {StoreLocation}");
 										}
 									}
 									else
@@ -217,7 +232,6 @@ namespace SolidCP.Web.Services
 									// if (Certificate == null) return;
 
 									listenOptions.ServerCertificate = Certificate;
-
 								});
 
 							if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
@@ -246,7 +260,7 @@ namespace SolidCP.Web.Services
 			var tunnelHandler = new TunnelHandlerCore();
 			tunnelHandler.Init(app);
 
-			Server.UseWebForms?.Invoke(app);
+			Server.ConfigureApp?.Invoke(app);
 
 			app.Run();
 		}
@@ -338,7 +352,7 @@ namespace SolidCP.Web.Services
 
 		public static void ConfigureWCF(IApplicationBuilder app)
 		{
-			app.UseMiddleware<SwaggerMiddleware>();
+			app.UseSwagger();
 			app.UseSwaggerUI();
 
 			app.UseServiceModel(builder =>

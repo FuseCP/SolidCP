@@ -15,6 +15,8 @@ namespace SolidCP.UniversalInstaller
 
 			OSInstaller.Install("aspnetcore-runtime-8.0;dotnet-runtime-8.0");
 
+			Net8RuntimeInstalled = true;
+
 			ResetHasDotnet();
 		}
 

@@ -13,7 +13,7 @@ namespace SolidCP.UniversalInstaller
         {
             if (CheckNet8RuntimeInstalled()) return;
 
-            throw new NotSupportedException();
+            throw new NotSupportedException("NET 8 Runtime must be installed.");
         }
 
 		public override void RemoveNet8AspRuntime()

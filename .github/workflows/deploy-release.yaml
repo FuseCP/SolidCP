@@ -36,7 +36,7 @@
 # For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
 # refer to https://github.com/microsoft/github-actions-for-desktop-apps
 
-name: Deploy Release
+name: Build
 run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}
 
 on:
@@ -56,40 +56,45 @@ jobs:
     runs-on: windows-latest  # For a list of available runner types, refer to
                              # https://help.github.com/en/actions/reference/workflow-syntax-for-github-actions#jobsjob_idruns-on
 
+    #permissions:
+    #  checks: write
+    #  contents: write
+    #  packages: write
+
     timeout-minutes: 60
 
     env:
       Configuration: ${{ matrix.configuration }}
       IncludeReleasePdbs: "true"
-      UseAspNetPrecompile: "true"
+      UseAspNetPrecompile: "false"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
-      MsBuildSwitches: "/v:i /m"
+      MsBuildSwitches: "/v:m /m"
       GitHubAction: true
 
     steps:
       
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
+    #- name: Add msbuild to PATH
+    #  uses: microsoft/setup-msbuild@v2
     
     # Install the .NET Core workload
-    - name: Install .NET 8
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 8.0.x
+    #- name: Install .NET 8
+    #  uses: actions/setup-dotnet@v4
+    #  with:
+    #    dotnet-version: 8.0.x
 
-    - name: Update WSL
-      run: |
-        wsl --update
-        wsl --version
+    #- name: Update WSL
+    #  run: |
+    #    wsl --update
+    #    wsl --version
 
-    - name: Install WSL Ubuntu 24.04 with rpm tools
-      uses: Vampire/setup-wsl@v3
+    - name: Install WSL Ubuntu with rpm tools
+      uses: Vampire/setup-wsl@v5
       with: 
+        wsl-version: 2
         distribution: Ubuntu-24.04
-        additional-packages: rpm rpmlint
-        use-cache: 'true'
-        #use-cache: 'false'
+        additional-packages: rpm
+        use-cache: 'false'
 
     - name: Show WSL distro info
       run: |
@@ -100,9 +105,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
-
-    - name: Checkout submodules
-      run: git submodule update --init --recursive
+        submodules: recursive
 
     - name: Run deploy-release.bat
       working-directory: SolidCP
@@ -120,46 +123,10 @@ jobs:
           SolidCP\Deploy\Release\Database
           !SolidCP\Deploy\Release\Install
           !SolidCP\Deploy\Release\Update
-        compression-level: 0
+        compression-level: 9
 
-    - name: Run unit tests
-      working-directory: SolidCP\Sources
-      run: echo "does not work yet."
-      #  dotnet test SolidCP.EnterpriseServer.Tests
-
-    # Execute all unit tests in the solution
-    # - name: Execute unit tests
-    #   run: dotnet test
-
-    # Restore the application to populate the obj folder with RuntimeIdentifiers
-    #- name: Restore the application
-    #  run: msbuild $env:Solution_Name /t:Restore /p:Configuration=$env:Configuration
-    #  env:
-    #    Configuration: ${{ matrix.configuration }}
-
-    # Decode the base 64 encoded pfx and save the Signing_Certificate
-    #- name: Decode the pfx
+    #- name: Run unit tests
+    #  working-directory: SolidCP\Sources
+    #  continue-on-error: true
     #  run: |
-    #    $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
-    #    $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
-    #    [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
-
-    # Create the app package by building and packaging the Windows Application Packaging project
-    #- name: Create the app package
-    #  run: msbuild $env:Wap_Project_Path /p:Configuration=$env:Configuration /p:UapAppxPackageBuildMode=$env:Appx_Package_Build_Mode /p:AppxBundle=$env:Appx_Bundle /p:PackageCertificateKeyFile=GitHubActionsWorkflow.pfx /p:PackageCertificatePassword=${{ secrets.Pfx_Key }}
-    #  env:
-    #    Appx_Bundle: Always
-    #    Appx_Bundle_Platforms: x86|x64
-    #    Appx_Package_Build_Mode: StoreUpload
-    #    Configuration: ${{ matrix.configuration }}
-
-    # Remove the pfx
-    #- name: Remove the pfx
-    #  run: Remove-Item -path $env:Wap_Project_Directory\GitHubActionsWorkflow.pfx
-
-    # Upload the MSIX package: https://github.com/marketplace/actions/upload-a-build-artifact
-    #- name: Upload build artifacts
-    #  uses: actions/upload-artifact@v3
-    #  with:
-    #    name: MSIX Package
-    #    path: ${{ env.Wap_Project_Directory }}\AppPackages
+    #    dotnet test SolidCP.Tests.sln -v n --logger trx --configuration Release

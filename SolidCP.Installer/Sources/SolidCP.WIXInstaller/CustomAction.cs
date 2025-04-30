@@ -55,6 +55,7 @@ using SolidCP.Setup.Internal;
 using SolidCP.WIXInstaller.Common;
 using SolidCP.WIXInstaller.Common.Util;
 using SolidCP.UniversalInstaller.Core;
+using SolidCP.EnterpriseServer.Data;
 
 namespace SolidCP.WIXInstaller
 {
@@ -358,7 +359,7 @@ namespace SolidCP.WIXInstaller
                             try
                             {
                                 var SqlQuery = string.Format("USE [{0}]; SELECT [dbo].[Users].[Password] FROM [dbo].[Users] WHERE [dbo].[Users].[UserID] = 1;", ConnStr.InitialCatalog);
-                                using (var Reader = SqlUtils.ExecuteSql(CtxVars.DbInstallConnectionString, SqlQuery).CreateDataReader())
+                                using (var Reader = DatabaseUtils.ExecuteSql(CtxVars.DbInstallConnectionString, SqlQuery).CreateDataReader())
                                 {
                                     if (Reader.Read())
                                     {
@@ -939,7 +940,7 @@ namespace SolidCP.WIXInstaller
         #endregion
         private static string GetConnectionString(string serverName, string databaseName, string login = null, string password = null)
         {
-            return SqlUtils.BuildMsSqlServerConnectionString(serverName, databaseName, login, password);
+            return DatabaseUtils.BuildSqlServerConnectionString(serverName, databaseName, login, password);
         }
         private static void AddCheck(ListViewCtrl view, Session session, string PropertyID)
         {

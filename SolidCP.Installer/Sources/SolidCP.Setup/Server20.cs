@@ -32,68 +32,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
 {
-    /// <summary>
-    /// Release 2.1.0
-    /// </summary>
-    public class Server210 : Server
-    {
-        public static new object Install(object obj)
-        {
-            //
-            return Server.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
-
-        public static new object Uninstall(object obj)
-        {
-            return Server.Uninstall(obj);
-        }
-
-        public static new object Setup(object obj)
-        {
-            return Server.Setup(obj);
-        }
-
-        public static new object Update(object obj)
-        {
-            return Server.UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "2.0.0,2.1.0",
-                updateSql: false);
-        }
-    }
-
     /// <summary>
     /// Release 2.0.0
     /// </summary>
     public class Server200 : Server
     {
-        public static new object Install(object obj)
-        {
-            //
-            return Server.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
+		public override Version MinimalInstallerVersion => new Version("2.0.0");
+		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public override CommonSettings CommonSettings => Settings.Server;
+		public Result Install(object args) => base.InstallOrSetup(args, "Install Server",
+			Installer.Current.InstallServer, false);
 
-        public static new object Uninstall(object obj)
-        {
-            return Server.Uninstall(obj);
-        }
+		public Result Update(object args) => base.Update(args, "Update Server",
+			Installer.Current.UpdateServer);
 
-        public static new object Setup(object obj)
-        {
-            return Server.Setup(obj);
-        }
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Server",
+			() => Installer.Current.ConfigureServer(), true);
 
-        public static new object Update(object obj)
-        {
-            return Server.UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "1.2.1,2.0.0",
-                updateSql: false);
-        }
-    }
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Server",
+			Installer.Current.RemoveServer);
+	}
 }

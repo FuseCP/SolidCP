@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class HardDriveHelper
+    internal static class HardDriveHelper
     {
         public static VirtualHardDiskInfo[] Get(PowerShellManager powerShell, string vmname)
         {
@@ -89,7 +89,7 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public static void Update(PowerShellManager powerShell, PowerShellManager powerShellwithJobs, VirtualMachine realVm, VirtualMachine vmSettings, string serverNameSettings)
+        public static void Update(PowerShellManager powerShell, Wmi wmi, VirtualMachine realVm, VirtualMachine vmSettings, string serverNameSettings)
         {
             if (realVm.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
                 realVm.Disks = Get(powerShell, realVm.Name);
@@ -140,7 +140,7 @@ namespace SolidCP.Providers.Virtualization
                             bool addPath = true;
                             foreach (string path in vmSettings.VirtualHardDrivePath)
                             {
-                                if (path != null && path.ToLower().Contains((msHddHyperVFolderName + index.ToString() + Path.GetExtension(vmSettings.OperatingSystemTemplatePath)).ToLower()))
+                                if (path != null && path.ToLower().Contains((vmSettings.Name + index.ToString() + Path.GetExtension(vmSettings.OperatingSystemTemplatePath)).ToLower()))
                                 {
                                     addPath = false;
                                     index++;
@@ -169,7 +169,7 @@ namespace SolidCP.Providers.Virtualization
                     if (add)
                     {
                         VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[0], powerShell);
-                        CreateVirtualHardDisk(powerShellwithJobs, vmSettings.VirtualHardDrivePath[i], disk.DiskType, disk.BlockSizeBytes, (ulong)vmSettings.HddSize[i], serverNameSettings);
+                        CreateVirtualHardDisk(wmi, vmSettings.VirtualHardDrivePath[i], disk.DiskType, disk.BlockSizeBytes, (ulong)vmSettings.HddSize[i], serverNameSettings);
                         Command cmd = new Command("Add-VMHardDiskDrive");
                         cmd.Parameters.Add("VMName", realVm.Name);
                         cmd.Parameters.Add("Path", vmSettings.VirtualHardDrivePath[i]);
@@ -228,20 +228,39 @@ namespace SolidCP.Providers.Virtualization
             return resDisk;
         }
 
-        public static Collection<PSObject> CreateVirtualHardDisk(PowerShellManager powerShellwithJobs, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, string serverNameSettings)
+        public static ManagementBaseObject CreateVirtualHardDisk(Wmi wmi, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, string serverNameSettings)
         {
             string destFolder = Path.GetDirectoryName(destinationPath);
             if (!DirectoryExists(destFolder, serverNameSettings)) CreateFolder(destFolder, serverNameSettings);
 
             destinationPath = FileUtils.EvaluateSystemVariables(destinationPath);
 
-            Command cmd = new Command("New-VHD");
+            string fileExtension = Path.GetExtension(destinationPath);
+            VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
 
-            cmd.Parameters.Add("SizeBytes", sizeGB * Constants.Size1G);
-            cmd.Parameters.Add("Path", destinationPath);
-            cmd.Parameters.Add(diskType.ToString());
-            if (blockSizeBytes > 0) cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
-            return powerShellwithJobs.TryExecuteAsJob(cmd, true);
+            ManagementObject imageService = wmi.GetWmiObject("msvm_ImageManagementService");
+            ManagementClass settingsClass = wmi.GetWmiClass("Msvm_VirtualHardDiskSettingData");
+
+            ManagementObject settingsInstance = settingsClass.CreateInstance();
+            settingsInstance["MaxInternalSize"] = sizeGB * Constants.Size1G;
+            settingsInstance["Path"] = destinationPath;
+            settingsInstance["Type"] = diskType;
+            settingsInstance["Format"] = format;
+            settingsInstance["BlockSize"] = (blockSizeBytes > 0) ? blockSizeBytes : 0;
+
+            ManagementBaseObject inParams = imageService.GetMethodParameters("CreateVirtualHardDisk");
+            inParams["VirtualDiskSettingData"] = settingsInstance.GetText(TextFormat.WmiDtd20);
+
+            return imageService.InvokeMethod("CreateVirtualHardDisk", inParams, null);
+
+
+            //Command cmd = new Command("New-VHD");
+
+            //cmd.Parameters.Add("SizeBytes", sizeGB * Constants.Size1G);
+            //cmd.Parameters.Add("Path", destinationPath);
+            //cmd.Parameters.Add(diskType.ToString());
+            //if (blockSizeBytes > 0) cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
+            //return powerShellwithJobs.TryExecuteAsJob(cmd, true);
         }
 
         private static void CreateFolder(string path, string serverNameSettings)

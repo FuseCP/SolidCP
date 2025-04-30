@@ -3,12 +3,11 @@
 		<RootNamespace>SolidCP.Providers.Database</RootNamespace>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PublishUrl>publish\</PublishUrl>
-				<WarningsAsErrors>618</WarningsAsErrors>
 		<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<ProduceReferenceAssembly>true</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
 	    <CopyLocalLockFileAssemblies>false</CopyLocalLockFileAssemblies>
@@ -28,7 +27,8 @@
 		<PackageReference Include="System.Memory" Version="4.5.5" GeneratePathProperty="true" />
 		<PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" GeneratePathProperty="true" />
 		<PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" GeneratePathProperty="true" />-->
-		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" GeneratePathProperty="true" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" GeneratePathProperty="true" />
+        <PackageReference Include="System.Data.SqlClient" Version="4.9.0" GeneratePathProperty="true" />
         <!--<PackageReference Include="Microsoft.Data.SqlClient.SNI.runtime" Version="5.2.0" GeneratePathProperty="true" />
         <PackageReference Include="Azure.Identity" Version="1.12.1" GeneratePathProperty="true" />
         <PackageReference Include="Microsoft.Identity.Client" Version="4.65.0" GeneratePathProperty="true" />

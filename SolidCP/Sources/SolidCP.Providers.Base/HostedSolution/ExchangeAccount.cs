@@ -48,7 +48,7 @@ namespace SolidCP.Providers.HostedSolution
         string primaryEmailAddress;
         bool mailEnabledPublicFolder;
         MailboxManagerActions mailboxManagerActions;
-        string accountPassword;
+        //string accountPassword;
         string samAccountName;
         int mailboxPlanId;
         string mailboxPlan;

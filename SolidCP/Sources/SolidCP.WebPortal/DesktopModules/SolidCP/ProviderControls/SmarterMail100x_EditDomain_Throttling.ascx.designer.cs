@@ -7,11 +7,13 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace SolidCP.Portal.ProviderControls {
-    
-    
-    public partial class SmarterMail100x_EditDomain_Throttling {
-        
+namespace SolidCP.Portal.ProviderControls
+{
+
+
+    public partial class SmarterMail100x_EditDomain_Throttling
+    {
+
         /// <summary>
         /// lbMessagesPerHour control.
         /// </summary>
@@ -20,7 +22,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lbMessagesPerHour;
-        
+
         /// <summary>
         /// txtMessagesPerHour control.
         /// </summary>
@@ -29,7 +31,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtMessagesPerHour;
-        
+
         /// <summary>
         /// valMessagesPerHour control.
         /// </summary>
@@ -38,7 +40,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RangeValidator valMessagesPerHour;
-        
+
         /// <summary>
         /// reqValMessagesPerHour control.
         /// </summary>
@@ -47,25 +49,25 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator reqValMessagesPerHour;
-        
+
         /// <summary>
-        /// cbMessagesPerHour control.
+        /// lblmessagesAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox cbMessagesPerHour;
-        
+        protected global::System.Web.UI.WebControls.Label lblmessagesAction;
+
         /// <summary>
-        /// lbMessagesPerHourEnabled control.
+        /// ddlMessagesAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbMessagesPerHourEnabled;
-        
+        protected global::System.Web.UI.WebControls.DropDownList ddlMessagesAction;
+
         /// <summary>
         /// lbBandwidthPerHour control.
         /// </summary>
@@ -74,7 +76,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lbBandwidthPerHour;
-        
+
         /// <summary>
         /// txtBandwidthPerHour control.
         /// </summary>
@@ -83,7 +85,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtBandwidthPerHour;
-        
+
         /// <summary>
         /// valBandwidthPerHour control.
         /// </summary>
@@ -92,7 +94,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RangeValidator valBandwidthPerHour;
-        
+
         /// <summary>
         /// reqValBandwidth control.
         /// </summary>
@@ -101,25 +103,25 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator reqValBandwidth;
-        
+
         /// <summary>
-        /// cbBandwidthPerHour control.
+        /// lblBandwidthAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox cbBandwidthPerHour;
-        
+        protected global::System.Web.UI.WebControls.Label lblBandwidthAction;
+
         /// <summary>
-        /// lbBandwidthPerHourEnabled control.
+        /// ddlBandwidthAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbBandwidthPerHourEnabled;
-        
+        protected global::System.Web.UI.WebControls.DropDownList ddlBandwidthAction;
+
         /// <summary>
         /// lbBouncesPerHour control.
         /// </summary>
@@ -128,7 +130,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label lbBouncesPerHour;
-        
+
         /// <summary>
         /// txtBouncesPerHour control.
         /// </summary>
@@ -137,7 +139,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox txtBouncesPerHour;
-        
+
         /// <summary>
         /// valBouncesPerHour control.
         /// </summary>
@@ -146,7 +148,7 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RangeValidator valBouncesPerHour;
-        
+
         /// <summary>
         /// reqValBouncesPerHour control.
         /// </summary>
@@ -155,23 +157,23 @@ namespace SolidCP.Portal.ProviderControls {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator reqValBouncesPerHour;
-        
+
         /// <summary>
-        /// cbBouncesPerHour control.
+        /// lblBouncesPerHourAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox cbBouncesPerHour;
-        
+        protected global::System.Web.UI.WebControls.Label lblBouncesPerHourAction;
+
         /// <summary>
-        /// lbBouncesPerHourEnabled control.
+        /// ddlBouncesPerHourAction control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lbBouncesPerHourEnabled;
+        protected global::System.Web.UI.WebControls.DropDownList ddlBouncesPerHourAction;
     }
 }

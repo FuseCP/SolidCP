@@ -39,6 +39,8 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Data;
 using System.Text;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Windows.Forms;
 
 namespace SolidCP.UniversalInstaller.Controls
@@ -202,45 +204,21 @@ namespace SolidCP.UniversalInstaller.Controls
 				Log.WriteStart("Updating component");
 
 				ComponentInfo element = AppContext.ScopeNode.Tag as ComponentInfo;
-				string componentId = element.ComponentCode;
-				string componentName = element.ComponentName;
 
 				try
 				{
-					Log.WriteInfo(string.Format("Updating {0}", componentName));
+					Log.WriteInfo(string.Format("Updating {0}", element.ComponentName));
 					//download installer
-					Loader form = new Loader(fileName, (e) => AppContext.AppForm.ShowError(e));
-					DialogResult result = form.ShowDialog(this);
-					if (result == DialogResult.OK)
+					var result = Installer.Current.Update(element);
+					Log.WriteInfo(string.Format("Installer returned {0}", result));
+					Log.WriteEnd("Installer finished");
+					Update();
+					if (result)
 					{
-						//run installer
-						string tmpFolder = FileUtils.GetTempDirectory();
-						string installerPath = Path.Combine(tmpFolder, path);
-						Update();
-						string method = "Update";
-						Log.WriteStart(string.Format("Running installer {0}.{1} from {2}", type, method, path));
-						Hashtable args = new Hashtable();
-						args["ComponentId"] = componentId;
-						args["ShellVersion"] = AppContext.AppForm.Version;
-						args["BaseDirectory"] = FileUtils.GetCurrentDirectory();
-						args["UpdateVersion"] = version;
-						args["Installer"] = Path.GetFileName(fileName);
-						args["InstallerType"] = type;
-						args["InstallerPath"] = path;
-						args["InstallerFolder"] = tmpFolder;
-						args["IISVersion"] = Global.IISVersion;
-						args["ParentForm"] = FindForm();
-
-						result = (DialogResult)AssemblyLoader.Execute(installerPath, type, method, new object[] { args });
-						Log.WriteInfo(string.Format("Installer returned {0}", result));
-						Log.WriteEnd("Installer finished");
-						Update();
-						if (result == DialogResult.OK)
-						{
-							ReloadApplication();
-						}
-						FileUtils.DeleteTempDirectory();
+						ReloadApplication();
 					}
+					FileUtils.DeleteTempDirectory();
+					
 					Log.WriteEnd("Update completed");
 				}
 				catch (Exception ex)
@@ -257,51 +235,17 @@ namespace SolidCP.UniversalInstaller.Controls
 		private void UninstallComponent()
 		{
 			Log.WriteStart("Uninstalling component");
-			
-			ComponentInfo element = AppContext.ScopeNode.Tag as ComponentInfo;
-			string installer = element.FullFilePath; //.GetStringSetting(Global.Parameters.Installer);
-			string path = element.InstallerPath;
-			string type = element.InstallerType;
-			string componentId = element.ComponentCode;
-			string componentCode = element.ComponentCode;
-			string componentName = element.ComponentName;
-			string release = element.Version.ToString();
-
+		
 			try
 			{
-				Log.WriteInfo(string.Format("Uninstalling {0}", componentName));
-				//download installer
-				Loader form = new Loader(installer, componentCode, release, (e) => AppContext.AppForm.ShowError(e));
-				DialogResult result = form.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					//run installer
-					string tmpFolder = FileUtils.GetTempDirectory();
-					path = Path.Combine(tmpFolder, path);
-					Update();
-					string method = "Uninstall";
-					//
-					Log.WriteStart(string.Format("Running installer {0}.{1} from {2}", type, method, path));
-					//
-					var args = new Hashtable
-					{
-						{ Global.Parameters.ComponentId, componentId },
-						{ Global.Parameters.ComponentCode, componentCode },
-						{ Global.Parameters.ShellVersion, AppContext.AppForm.Version },
-						{ Global.Parameters.BaseDirectory, FileUtils.GetCurrentDirectory() },
-						{ Global.Parameters.IISVersion, Global.IISVersion },
-						{ Global.Parameters.ParentForm,  FindForm() },
-					};
-					//
-					result = (DialogResult)AssemblyLoader.Execute(path, type, method, new object[] { args });
-					//
-					Log.WriteInfo(string.Format("Installer returned {0}", result));
-					Log.WriteEnd("Installer finished");
-					Update();
-					ReloadApplication();
-					FileUtils.DeleteTempDirectory();
-					
-				}
+				ComponentInfo element = AppContext.ScopeNode.Tag as ComponentInfo;
+
+				var result = Installer.Current.Uninstall(element);
+			
+				Log.WriteInfo(string.Format("Installer returned {0}", result));
+				Log.WriteEnd("Installer finished");
+				Update();
+				ReloadApplication();					
 				Log.WriteEnd("Uninstall completed");
 			}
 			catch (Exception ex)
@@ -320,46 +264,21 @@ namespace SolidCP.UniversalInstaller.Controls
 
 			var element = AppContext.ScopeNode.Tag as ComponentInfo;
 
-			string installer = element.FullFilePath; //.GetStringSetting("Installer");
-			string path = element.InstallerPath;
-			string type = element.InstallerType;
-			string componentId = element.ComponentCode; //.ID;
-			string ccode = element.ComponentCode;
-			string componentName = element.ComponentName;
-			string cversion = element.Version.ToString();
-
 			try
 			{
-				Log.WriteInfo(string.Format("Setup {0} {1}", componentName, cversion));
-                //download installer
-				Loader form = new Loader(installer, ccode, cversion, (e) => AppContext.AppForm.ShowError(e));
-				DialogResult result = form.ShowDialog(this);
-				if (result == DialogResult.OK)
-				{
-					string tmpFolder = Path.Combine(AppContext.CurrentPath, "Tmp");
-					path = Path.Combine(tmpFolder, path);
-					Update();
-					string method = "Setup";
-					Log.WriteStart(string.Format("Running installer {0}.{1} from {2}", type, method, path));
-					Hashtable args = new Hashtable();
-					args["ComponentId"] = componentId;
-					args["ShellVersion"] = AppContext.AppForm.Version;
-					args["BaseDirectory"] = FileUtils.GetCurrentDirectory();
-                    args["IISVersion"] = Global.IISVersion;
-					args["ParentForm"] = FindForm();
-					args[Global.Parameters.ShellMode] = Global.VisualInstallerShell;
-					//
-					result = (DialogResult)AssemblyLoader.Execute(path, type, method, new object[] { args });
-					//
-					Log.WriteInfo(string.Format("Installer returned {0}", result));
-					Log.WriteEnd("Installer finished");
+				Log.WriteInfo(string.Format("Setup {0} {1}", element.ComponentName, element.Version));
+				//download installer
+				var result = Installer.Current.Setup(element);
+				//
+				Log.WriteInfo(string.Format("Installer returned {0}", result));
+				Log.WriteEnd("Installer finished");
 
-					if (result == DialogResult.OK)
-					{
-						ReloadApplication();
-					}
-					FileUtils.DeleteTempDirectory();
+				if (result)
+				{
+					ReloadApplication();
 				}
+				FileUtils.DeleteTempDirectory();
+
 				Log.WriteEnd("Component setup completed");
 			}
 			catch (Exception ex)

@@ -37,6 +37,8 @@ namespace SolidCP.Providers.OS
 		public static bool IsUnix => IsLinux || IsMac || IsFreeBSD || IsNetBSD;
 		public static bool IsFreeBSD => RuntimeInformation.IsOSPlatform(FreeBSD);
 		public static bool IsNetBSD => RuntimeInformation.IsOSPlatform(NetBSD);
+		public static bool IsSystemd => IsLinux && Directory.Exists("/run/systemd/system");
+
 
 		static OSFlavor flavor = OSFlavor.Unknown;
 		static Version version = new Version("0.0.0.0");
@@ -193,6 +195,9 @@ namespace SolidCP.Providers.OS
 						var version = WindowsOSInfo.GetVersion();
 						switch (version)
 						{
+							case WindowsVersion.WindowsServer2025:
+								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025")) as Providers.OS.IOperatingSystem;
+								break;
 							case WindowsVersion.WindowsServer2022:
 							case WindowsVersion.Windows11:
 								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2022, SolidCP.Providers.OS.Windows2022")) as Providers.OS.IOperatingSystem;
@@ -214,13 +219,13 @@ namespace SolidCP.Providers.OS
 							case WindowsVersion.WindowsServer2008R2:
 							case WindowsVersion.Vista:
 							case WindowsVersion.Windows7:
-								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2008m SolidCP.Providers.OS.Windows2008")) as Providers.OS.IOperatingSystem;
+								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2008, SolidCP.Providers.OS.Windows2008")) as Providers.OS.IOperatingSystem;
 								break;
 
 							case WindowsVersion.WindowsServer2003:
 							case WindowsVersion.WindowsXP:
 							case WindowsVersion.WindowsNT4:
-								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2003")) as Providers.OS.IOperatingSystem;
+								os = Activator.CreateInstance(Type.GetType("SolidCP.Providers.OS.Windows2003, SolidCP.Providers.OS.Windows2003")) as Providers.OS.IOperatingSystem;
 								break;
 						}
 					}

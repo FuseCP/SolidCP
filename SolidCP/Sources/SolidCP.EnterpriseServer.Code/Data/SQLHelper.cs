@@ -232,7 +232,7 @@ namespace Microsoft.ApplicationBlocks.Data
             // Set the command type
             command.CommandType = commandType;
 
-            command.CommandTimeout = connection.ConnectionTimeout;
+            command.CommandTimeout = connection.CommandTimeout;
 
             // Attach the command parameters if they are provided
             if (commandParameters != null)

@@ -1317,6 +1317,7 @@ namespace SolidCP.EnterpriseServer
 
             foreach (DomainInfo domain in myDomains)
             {
+                // se bugfix domain.DomainName can differ to siteItem.Name
                 if (domain.WebSiteId == siteItemId &&
                     String.Compare(domain.DomainName, siteItem.Name, true) != 0)
                     pointers.Add(domain);

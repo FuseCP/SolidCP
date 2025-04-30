@@ -97,9 +97,9 @@ namespace SolidCP.Server
 
 		public Shell PowerShell => WinProvider.PowerShell;
 
-		public Shell DefaultShell => WinProvider.DefaultShell;
+		public Shell DefaultShell => OSProvider.DefaultShell;
 
-		public Installer DefaultInstaller => WinProvider.DefaultInstaller;
+		public Installer DefaultInstaller => OSProvider.DefaultInstaller;
 
 		public Shell Sh => UnixProvider.Sh;
 
@@ -859,7 +859,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion ODBC DSNs
 
+		#region Unix Permissions
 		[WebMethod, SoapHeader("settings")]
 		public Providers.OS.UnixFileMode GetUnixPermissions(string path)
 		{
@@ -908,7 +910,25 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		[WebMethod, SoapHeader("settings")]
+		public UnixFileOwner GetUnixFileOwner(string path)
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetUnixFileOwner", ProviderSettings.ProviderName);
+				var result = UnixProvider.GetUnixFileOwner(path);
+				Log.WriteEnd("'{0}' GetUnixFileOwner", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetUnixFileOwner", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+		#endregion Unix Permissions
 
+		#region Terminal Services
 		[WebMethod, SoapHeader("settings")]
 		public TerminalSession[] GetTerminalServicesSessions()
 		{
@@ -941,7 +961,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion Terminal Services
 
+		#region Event Log
 		[WebMethod, SoapHeader("settings")]
 		public List<string> GetLogNames()
 		{
@@ -1009,7 +1031,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion Event Log
 
+		#region OS Processes & Services
 		[WebMethod, SoapHeader("settings")]
 		public OSProcess[] GetOSProcesses()
 		{
@@ -1091,7 +1115,9 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion
 
+		#region OS Info
 		[WebMethod, SoapHeader("settings")]
 		public Memory GetMemory()
 		{
@@ -1108,6 +1134,7 @@ namespace SolidCP.Server
 				throw;
 			}
 		}
+		#endregion
 
 		[WebMethod, SoapHeader("settings")]
 		public string ExecuteSystemCommand(string user, string password, string path, string args)
@@ -1126,6 +1153,7 @@ namespace SolidCP.Server
 			}
 		}
 
+		#region Web Platform Installer
 		[WebMethod, SoapHeader("settings")]
 		public WPIProduct[] GetWPIProducts(string tabId, string keywordId)
 		{
@@ -1328,10 +1356,14 @@ namespace SolidCP.Server
 		}
 		#endregion
 
-		public Providers.Web.IWebServer WebServer => WinProvider.WebServer;
-		public ServiceController ServiceController => WinProvider.ServiceController;
+		[WebMethod, SoapHeader("settings")]
+		public List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause)
+			=> OSProvider.GetDomainDnsRecords(domain, dnsServer, recordType, pause);
+
+		public Providers.Web.IWebServer WebServer => OSProvider.WebServer;
+		public ServiceController ServiceController => OSProvider.ServiceController;
 		public WSLShell WSL => WinProvider.WSL;
-		public bool IsSystemd => UnixProvider.IsSystemd;
+		public bool IsSystemd => Provider is IUnixOperatingSystem && UnixProvider.IsSystemd;
 		public TraceListener DefaultTraceListener => OSProvider.DefaultTraceListener;
 
 	}

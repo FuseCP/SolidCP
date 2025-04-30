@@ -1,26 +1,933 @@
-﻿using System;
+// Copyright (c) 2016, SolidCP
+// SolidCP is distributed under the Creative Commons Share-alike license
+// 
+// SolidCP is a fork of WebsitePanel:
+// Copyright (c) 2015, Outercurve Foundation.
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted provided that the following conditions are met:
+//
+// - Redistributions of source code must  retain  the  above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+// - Redistributions in binary form  must  reproduce the  above  copyright  notice,
+//   this list of conditions  and  the  following  disclaimer in  the documentation
+//   and/or other materials provided with the distribution.
+//
+// - Neither  the  name  of  the  Outercurve Foundation  nor   the   names  of  its
+//   contributors may be used to endorse or  promote  products  derived  from  this
+//   software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,  BUT  NOT  LIMITED TO, THE IMPLIED
+// WARRANTIES  OF  MERCHANTABILITY   AND  FITNESS  FOR  A  PARTICULAR  PURPOSE  ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+// ANY DIRECT, INDIRECT, INCIDENTAL,  SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO,  PROCUREMENT  OF  SUBSTITUTE  GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER  CAUSED AND ON
+// ANY  THEORY  OF  LIABILITY,  WHETHER  IN  CONTRACT,  STRICT  LIABILITY,  OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
+using System.IO;
+using System.Configuration;
+using System.Collections;
 using System.Collections.Generic;
-using System.Data;
 using System.Text;
+using System.Diagnostics;
+using System.DirectoryServices;
+using System.DirectoryServices.ActiveDirectory;
+using System.Reflection;
+
+using System.Security.Principal;
+using System.Security;
+using System.Security.Permissions;
+using System.Runtime.InteropServices;
+using System.Threading;
+using System.Linq;
+using Microsoft.Win32;
+using SolidCP.Providers.OS;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using SolidCP.UniversalInstaller.Web;
 
 namespace SolidCP.UniversalInstaller
 {
-	public class Utils
+	/// <summary>
+	/// Utils class.
+	/// </summary>
+	public sealed class Utils
 	{
+		public const string AspNet40RegistrationToolx64 = @"Microsoft.NET\Framework64\v4.0.30319\aspnet_regiis.exe";
+		public const string AspNet40RegistrationToolx86 = @"Microsoft.NET\Framework\v4.0.30319\aspnet_regiis.exe";
+
+		/// <summary>
+		/// Initializes a new instance of the class.
+		/// </summary>
+		private Utils()
+		{
+		}
+
+		#region Resources
+
+		/// <summary>
+		/// Get resource stream from assembly by specified resource name.
+		/// </summary>
+		/// <param name="resourceName">Name of the resource.</param>
+		/// <returns>Resource stream.</returns>
+		public static Stream GetResourceStream(string resourceName)
+		{
+			Assembly asm = typeof(Utils).Assembly;
+			Stream ret = asm.GetManifestResourceStream(resourceName);
+			return ret;
+		}
+		#endregion
+
+		#region Crypting
+
+
+		static string ComputeHash(string plainText, HashAlgorithm hash)
+		{
+			// Convert plain text into a byte array.
+			byte[] plainTextBytes = Encoding.UTF8.GetBytes(plainText);
+
+			// Compute hash value of our plain text with appended salt.
+			byte[] hashBytes = hash.ComputeHash(plainTextBytes);
+			// Return the result.
+			return Convert.ToBase64String(hashBytes);
+		}
+
+		/// <summary>
+		/// Computes the SHA1 hash value
+		/// </summary>
+		/// <param name="plainText"></param>
+		/// <returns></returns>
+		public static string ComputeSHA1(string plainText) => ComputeHash(plainText, new SHA1Managed());
+		public static string ComputeSHA256(string plainText) => $"SHA256:{ComputeHash(plainText, new SHA256Managed())}";
+		public static string ComputeSHAServerPassword(string password) => ComputeSHA256(password);
+		public static bool IsSHA256(string hash) => hash.StartsWith("SHA256:");
+		public static bool SHAEquals(string plainText, string hash)
+		{
+			if (IsSHA256(hash)) return ComputeSHA256(plainText) == hash;
+			else return ComputeSHA1(plainText) == hash;
+		}
+
+		public static string CreateCryptoKey(int len)
+		{
+			byte[] bytes = new byte[len];
+			new RNGCryptoServiceProvider().GetBytes(bytes);
+
+			StringBuilder sb = new StringBuilder();
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				sb.Append(string.Format("{0:X2}", bytes[i]));
+			}
+
+			return sb.ToString();
+		}
+
+		public static string Encrypt(string key, string str)
+		{
+			if (str == null)
+				return str;
+
+			// We are now going to create an instance of the 
+			// Rihndael class.
+			RijndaelManaged RijndaelCipher = new RijndaelManaged();
+			byte[] plainText = System.Text.Encoding.Unicode.GetBytes(str);
+			byte[] salt = Encoding.ASCII.GetBytes(key.Length.ToString());
+			PasswordDeriveBytes secretKey = new PasswordDeriveBytes(key, salt);
+			ICryptoTransform encryptor = RijndaelCipher.CreateEncryptor(secretKey.GetBytes(32), secretKey.GetBytes(16));
+
+			// encode
+			MemoryStream memoryStream = new MemoryStream();
+			CryptoStream cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
+			cryptoStream.Write(plainText, 0, plainText.Length);
+			cryptoStream.FlushFinalBlock();
+			byte[] cipherBytes = memoryStream.ToArray();
+
+			// Close both streams
+			memoryStream.Close();
+			cryptoStream.Close();
+
+			// Return encrypted string
+			return Convert.ToBase64String(cipherBytes);
+		}
+
+		public static string Decrypt(string key, string Base64String)
+		{
+			var RijndaelCipher = new RijndaelManaged();
+			byte[] secretText = Convert.FromBase64String(Base64String);
+			byte[] salt = Encoding.ASCII.GetBytes(key.Length.ToString());
+			var secretKey = new PasswordDeriveBytes(key, salt);
+			var decryptor = RijndaelCipher.CreateDecryptor(secretKey.GetBytes(32), secretKey.GetBytes(16));
+			var MemStream = new MemoryStream();
+			var DecryptoStream = new CryptoStream(MemStream, decryptor, CryptoStreamMode.Write);
+			DecryptoStream.Write(secretText, 0, secretText.Length);
+			DecryptoStream.FlushFinalBlock();
+			var Result = MemStream.ToArray();
+			MemStream.Close();
+			DecryptoStream.Close();
+			return Encoding.Unicode.GetString(Result);
+		}
+
+		public static string GetRandomString(int length)
+		{
+			string ptrn = "abcdefghjklmnpqrstwxyz0123456789";
+			StringBuilder sb = new StringBuilder();
+
+			byte[] randomBytes = new byte[4];
+			RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+			rng.GetBytes(randomBytes);
+
+			// Convert 4 bytes into a 32-bit integer value.
+			int seed = (randomBytes[0] & 0x7f) << 24 |
+						randomBytes[1] << 16 |
+						randomBytes[2] << 8 |
+						randomBytes[3];
+
+
+			Random rnd = new Random(seed);
+
+			for (int i = 0; i < length; i++)
+				sb.Append(ptrn[rnd.Next(ptrn.Length - 1)]);
+
+			return sb.ToString();
+		}
+
+		#endregion
+
+		#region Setup
+
+		public static Hashtable GetSetupParameters(object obj)
+		{
+			if (obj == null)
+				throw new ArgumentNullException("obj");
+
+			Hashtable args = obj as Hashtable;
+			if (args == null)
+				throw new ArgumentNullException("obj");
+
+			return args;
+		}
+
+		public static object GetSetupParameter(Hashtable args, string paramName)
+		{
+			if (args == null)
+				throw new ArgumentNullException("args");
+			//
+			if (args.ContainsKey(paramName) == false)
+			{
+				return String.Empty;
+			}
+			//
+			return args[paramName];
+		}
+
+		public static string GetStringSetupParameter(Hashtable args, string paramName)
+		{
+			object obj = GetSetupParameter(args, paramName);
+			if (obj == null)
+				return null;
+			if (!(obj is string))
+				throw new Exception(string.Format("Invalid type of '{0}' parameter", paramName));
+			return obj as string;
+		}
+
+		public static int GetInt32SetupParameter(Hashtable args, string paramName)
+		{
+			object obj = GetSetupParameter(args, paramName);
+			if (!(obj is int))
+				throw new Exception(string.Format("Invalid type of '{0}' parameter", paramName));
+			return (int)obj;
+		}
+
+		public static Version GetVersionSetupParameter(Hashtable args, string paramName)
+		{
+			object obj = GetSetupParameter(args, paramName);
+			if (!(obj is Version))
+				throw new Exception(string.Format("Invalid type of '{0}' parameter", paramName));
+			return obj as Version;
+		}
+
+
+		public static string ReplaceScriptVariable(string str, string variable, string value)
+		{
+			Regex re = new Regex("\\$\\{" + variable + "\\}+", RegexOptions.IgnoreCase);
+			return re.Replace(str, value);
+		}
+
+		#endregion
+
+		#region Type convertions
+
+		/// <summary>
+		/// Converts string to int
+		/// </summary>
+		/// <param name="value">String containing a number to convert</param>
+		/// <param name="defaultValue">Default value</param>
+		/// <returns>
+		///The Int32 number equivalent to the number contained in value.
+		/// </returns>
+		public static int ParseInt(string value, int defaultValue)
+		{
+			if (value != null && value.Length > 0)
+			{
+				try
+				{
+					return Int32.Parse(value);
+				}
+				catch (FormatException)
+				{
+				}
+				catch (OverflowException)
+				{
+				}
+			}
+			return defaultValue;
+		}
+
+		/// <summary>
+		/// ParseBool
+		/// </summary>
+		/// <param name="value">EventData</param>
+		/// <param name="defaultValue">Dafault value</param>
+		/// <returns>bool</returns>
+		public static bool ParseBool(string value, bool defaultValue)
+		{
+			if (value != null)
+			{
+				try
+				{
+					return bool.Parse(value);
+				}
+				catch (FormatException)
+				{
+				}
+				catch (OverflowException)
+				{
+				}
+			}
+			return defaultValue;
+		}
+
+		/// <summary>
+		/// Converts string to decimal
+		/// </summary>
+		/// <param name="value">String containing a number to convert</param>
+		/// <param name="defaultValue">Default value</param>
+		/// <returns>The Decimal number equivalent to the number contained in value.</returns>
+		public static decimal ParseDecimal(string value, decimal defaultValue)
+		{
+			if (value != null && !string.IsNullOrEmpty(value))
+			{
+				try
+				{
+					return Decimal.Parse(value);
+				}
+				catch (FormatException)
+				{
+				}
+				catch (OverflowException)
+				{
+				}
+			}
+			return defaultValue;
+		}
+
+		/// <summary>
+		/// Converts string to double 
+		/// </summary>
+		/// <param name="value">String containing a number to convert</param>
+		/// <param name="defaultValue">Default value</param>
+		/// <returns>The double number equivalent to the number contained in value.</returns>
+		public static double ParseDouble(string value, double defaultValue)
+		{
+			if (value != null)
+			{
+				try
+				{
+					return double.Parse(value);
+				}
+				catch (FormatException)
+				{
+				}
+				catch (OverflowException)
+				{
+				}
+			}
+			return defaultValue;
+		}
+
+		#endregion
+
+		#region DB
+
+		/// <summary>
+		/// Converts db value to string
+		/// </summary>
+		/// <param name="val">EventData</param>
+		/// <returns>string</returns>
+		public static string GetDbString(object val)
+		{
+			string ret = string.Empty;
+			if ((val != null) && (val != DBNull.Value))
+				ret = (string)val;
+			return ret;
+		}
+
+		/// <summary>
+		/// Converts db value to short
+		/// </summary>
+		/// <param name="val">EventData</param>
+		/// <returns>short</returns>
+		public static short GetDbShort(object val)
+		{
+			short ret = 0;
+			if ((val != null) && (val != DBNull.Value))
+				ret = (short)val;
+			return ret;
+		}
+
+		/// <summary>
+		/// Converts db value to int
+		/// </summary>
+		/// <param name="val">EventData</param>
+		/// <returns>int</returns>
+		public static int GetDbInt32(object val)
+		{
+			int ret = 0;
+			if ((val != null) && (val != DBNull.Value))
+				ret = (int)val;
+			return ret;
+		}
+
+		/// <summary>
+		/// Converts db value to bool
+		/// </summary>
+		/// <param name="val">EventData</param>
+		/// <returns>bool</returns>
+		public static bool GetDbBool(object val)
+		{
+			bool ret = false;
+			if ((val != null) && (val != DBNull.Value))
+				ret = Convert.ToBoolean(val);
+			return ret;
+		}
+
+		/// <summary>
+		/// Converts db value to decimal
+		/// </summary>
+		/// <param name="val">EventData</param>
+		/// <returns>decimal</returns>
+		public static decimal GetDbDecimal(object val)
+		{
+			decimal ret = 0;
+			if ((val != null) && (val != DBNull.Value))
+				ret = (decimal)val;
+			return ret;
+		}
+
+
+		/// <summary>
+		/// Converts db value to datetime
+		/// </summary>
+		/// <param name="val">EventData</param>
+		/// <returns>DateTime</returns>
+		public static DateTime GetDbDateTime(object val)
+		{
+			DateTime ret = DateTime.MinValue;
+			if ((val != null) && (val != DBNull.Value))
+				ret = (DateTime)val;
+			return ret;
+		}
+
+		#endregion
+
+		#region Exceptions
+		public static bool IsThreadAbortException(Exception ex)
+		{
+			Exception innerException = ex;
+			while (innerException != null)
+			{
+				if (innerException is System.Threading.ThreadAbortException)
+					return true;
+				innerException = innerException.InnerException;
+			}
+
+			string str = ex.ToString();
+			return str.Contains("System.Threading.ThreadAbortException");
+		}
+		#endregion
+
+		#region Windows Firewall
+		public static bool IsWindowsFirewallEnabled()
+		{
+			int ret = RegistryUtils.GetRegistryKeyInt32Value(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile", "EnableFirewall");
+			return (ret == 1);
+		}
+		public static bool IsWindowsFirewallExceptionsAllowed()
+		{
+			int ret = RegistryUtils.GetRegistryKeyInt32Value(@"SYSTEM\CurrentControlSet\Services\SharedAccess\Parameters\FirewallPolicy\StandardProfile", "DoNotAllowExceptions");
+			return (ret != 1);
+		}
+		public static void OpenWindowsFirewallPort(string name, string port)
+		{
+			string path = Path.Combine(Environment.SystemDirectory, "netsh.exe");
+			string arguments = string.Format("firewall set portopening tcp {0} \"{1}\" enable", port, name);
+			Shell.Standard.Exec($"\"{path}\" {arguments}");
+		}
+		public static void OpenWindowsFirewallPortAdv(string RuleName, string Port)
+		{
+			string tool = Path.Combine(Environment.SystemDirectory, "netsh.exe");
+			string args = string.Format("advfirewall firewall add rule name=\"{0}\" dir=in action=allow protocol=tcp localport={1}", RuleName, Port);
+			Shell.Standard.Exec($"\"{tool}\" {args}");
+		}
+		#endregion
+
+
+		#region I/O
+		public static string GetSystemDrive()
+		{
+			return Path.GetPathRoot(Environment.SystemDirectory);
+		}
+		#endregion
+
+		/// <summary>
+		/// Returns Windows directory
+		/// </summary>
+		/// <returns></returns>
+		public static string GetWindowsDirectory()
+		{
+			//return Environment.GetEnvironmentVariable("windir");
+			return Environment.GetFolderPath(Environment.SpecialFolder.Windows);
+		}
+
+		/// <summary>
+		/// Returns Windows directory
+		/// </summary>
+		/// <returns></returns>
+		public static string GetSystemTmpDirectory()
+		{
+			return Environment.GetEnvironmentVariable("TMP", EnvironmentVariableTarget.Machine);
+		}
+
+		public static bool IsWebDeployInstalled()
+		{
+			// TO-DO: Implement Web Deploy detection (x64/x86)
+			var isInstalled = false;
+			//
+			try
+			{
+				var msdeployRegKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\IIS Extensions\MSDeploy\2");
+				//
+				var keyValue = msdeployRegKey.GetValue("Install");
+				// We have found the required key in the registry hive
+				if (keyValue != null && keyValue.Equals(1))
+				{
+					isInstalled = true;
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("Could not retrieve Web Deploy key from the registry", ex);
+			}
+			//
+			return isInstalled;
+		}
+
+		public static bool IsWin64()
+		{
+			return (IntPtr.Size == 8);
+		}
+
+		public static void ShowConsoleErrorMessage(string format, params object[] args)
+		{
+			Console.WriteLine(String.Format(format, args));
+		}
+
+		public static string ResolveAspNet40RegistrationToolPath_Iis6()
+		{
+			// By default we fallback to the corresponding tool version based on the platform bitness
+			var util = Environment.Is64BitOperatingSystem ? AspNet40RegistrationToolx64 : AspNet40RegistrationToolx86;
+			// Choose appropriate tool version for IIS 6
+			if (OSInfo.IsWindows && OSInfo.Windows.WebServer.Version.Major == 6)
+			{
+				// Change to x86 tool version on x64 w/ "Enable32bitAppOnWin64" flag enabled
+				if (Environment.Is64BitOperatingSystem == true && IIS32Enabled())
+				{
+					util = AspNet40RegistrationToolx86;
+				}
+			}
+			// Build path to the tool
+			return Path.Combine(Environment.GetEnvironmentVariable("WINDIR"), util);
+		}
+
+		/// <summary>
+		/// Beware: Web site component-dependent logic
+		/// </summary>
+		/// <param name="setupVariables"></param>
+		/// <returns></returns>
+		public static string ResolveAspNet40RegistrationToolPath_Iis7(bool update, string webApplicationPoolName)
+		{
+			// By default we fallback to the corresponding tool version based on the platform bitness
+			var util = Environment.Is64BitOperatingSystem ? AspNet40RegistrationToolx64 : AspNet40RegistrationToolx86;
+			// Choose appropriate tool version for IIS 7
+			if (OSInfo.IsWindows && OSInfo.Windows.WebServer.Version.Major >= 7 && update)
+			{
+				// Evaluate app pool settings on x64 platform only when update is running
+				if (Environment.Is64BitOperatingSystem == true)
+				{
+					// Change to x86 tool version if the component's app pool is in WOW64 mode
+					using (var srvman = new Microsoft.Web.Administration.ServerManager())
+					{
+						// Retrieve the component's app pool
+						var appPoolObj = srvman.ApplicationPools[webApplicationPoolName];
+						// We are 
+						if (appPoolObj == null)
+						{
+							throw new ArgumentException(String.Format("Could not find '{0}' web application pool", webApplicationPoolName), "appPoolObj");
+						}
+						// Check app pool mode
+						else if (appPoolObj.Enable32BitAppOnWin64 == true)
+						{
+							util = AspNet40RegistrationToolx86;
+						}
+					}
+				}
+			}
+			// Build path to the tool
+			return Path.Combine(Environment.GetEnvironmentVariable("WINDIR"), util);
+		}
+
+		public static bool CheckAspNet40Registered()
+		{
+			var regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\ASP.NET\\4.0.30319.0");
+			return (regkey != null);
+		}
+
+		public static bool CheckNet48Installed()
+		{
+			var regkey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\NET Framework Setup\\NDP\\v4\\Full");
+			var release = (int)regkey.GetValue("Release");
+			return release >= 528040;
+		}
+
+		public static string ExecAspNetRegistrationToolCommand(string arguments)
+		{
+			if (OSInfo.IsWindows)
+			{
+				//
+				var util = (OSInfo.Current.WebServer.Version.Major == 6) ? ResolveAspNet40RegistrationToolPath_Iis6() : ResolveAspNet40RegistrationToolPath_Iis7(false, "");
+				//
+				Log.WriteInfo(String.Format("Starting aspnet_regiis.exe {0}", arguments));
+				//
+				string psOutput = "";
+				try
+				{
+					psOutput = Shell.Standard.Exec($"\"{util}\" {arguments}").Output().Result;
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError("Could not execute ASP.NET Registration Tool command", ex);
+				}
+				// Trace output data for troubleshooting purposes
+				Log.WriteInfo(psOutput);
+				//
+				Log.WriteInfo(String.Format("Finished aspnet_regiis.exe {0}", arguments));
+				//
+				return psOutput;
+			}
+			else return "";
+		}
+
+		public static void RegisterAspNet40()
+		{
+			if (OSInfo.IsWindows && OSInfo.WindowsVersion < WindowsVersion.WindowsServer2016)
+			{
+				// Run ASP.NET Registration Tool command
+				ExecAspNetRegistrationToolCommand(arguments: (OSInfo.Windows.WebServer.Version.Major == 6) ? "-ir -enable" : "-ir");
+			}
+		}
+
+		public static WebExtensionStatus GetAspNetWebExtensionStatus_Iis6()
+		{
+			WebExtensionStatus status = WebExtensionStatus.Allowed;
+			if (OSInfo.Windows.WebServer.Version.Major == 6)
+			{
+				status = WebExtensionStatus.NotInstalled;
+				string path;
+				if (Utils.IsWin64() && !IIS32Enabled())
+				{
+					//64-bit
+					path = Path.Combine(GetWindowsDirectory(), @"Microsoft.NET\Framework64\v4.0.30319\aspnet_isapi.dll");
+				}
+				else
+				{
+					//32-bit
+					path = Path.Combine(GetWindowsDirectory(), @"Microsoft.NET\Framework\v4.0.30319\aspnet_isapi.dll");
+				}
+				path = path.ToLower();
+				using (DirectoryEntry iis = new DirectoryEntry("IIS://LocalHost/W3SVC"))
+				{
+					PropertyValueCollection values = iis.Properties["WebSvcExtRestrictionList"];
+					for (int i = 0; i < values.Count; i++)
+					{
+						string val = values[i] as string;
+						if (!string.IsNullOrEmpty(val))
+						{
+							string strVal = val.ToString().ToLower();
+
+							if (strVal.Contains(path))
+							{
+								if (strVal[0] == '1')
+								{
+									status = WebExtensionStatus.Allowed;
+								}
+								else
+								{
+									status = WebExtensionStatus.Prohibited;
+								}
+								break;
+							}
+						}
+					}
+				}
+			}
+			return status;
+		}
+
+		public static void EnableAspNetWebExtension_Iis6()
+		{
+			Log.WriteStart("Enabling ASP.NET Web Service Extension");
+			//
+			var webExtensionName = (Utils.IsWin64() && IIS32Enabled()) ? "ASP.NET v4.0.30319 (32-bit)" : "ASP.NET v4.0.30319";
+			//
+			using (DirectoryEntry iisService = new DirectoryEntry("IIS://LocalHost/W3SVC"))
+			{
+				iisService.Invoke("EnableWebServiceExtension", webExtensionName);
+				iisService.CommitChanges();
+			}
+			//
+			Log.WriteEnd("Enabled ASP.NET Web Service Extension");
+		}
+
+		public static bool IIS32Enabled()
+		{
+			bool enabled = false;
+			using (DirectoryEntry obj = new DirectoryEntry("IIS://LocalHost/W3SVC/AppPools"))
+			{
+				object objProperty = GetObjectProperty(obj, "Enable32bitAppOnWin64");
+				if (objProperty != null)
+				{
+					enabled = (bool)objProperty;
+				}
+			}
+			return enabled;
+		}
+
+		public static void SetObjectProperty(DirectoryEntry oDE, string name, object value)
+		{
+			if (value != null)
+			{
+				if (oDE.Properties.Contains(name))
+				{
+					oDE.Properties[name][0] = value;
+				}
+				else
+				{
+					oDE.Properties[name].Add(value);
+				}
+			}
+		}
+
+		public static object GetObjectProperty(DirectoryEntry entry, string name)
+		{
+			if (entry.Properties.Contains(name))
+				return entry.Properties[name][0];
+			else
+				return null;
+		}
+
+		public static void OpenFirewallPort(string name, string port, Version iisVersion)
+		{
+			bool iis7 = (iisVersion.Major >= 7);
+			if (iis7)
+			{
+				if (Utils.IsWindowsFirewallEnabled() && Utils.IsWindowsFirewallExceptionsAllowed())
+				{
+					Log.WriteStart(String.Format("Opening port {0} in windows firewall", port));
+					Utils.OpenWindowsFirewallPortAdv(name, port);
+					Log.WriteEnd("Opened port in windows firewall");
+					Installer.Current.InstallLog(String.Format("- Opened port {0} in Windows Firewall", port));
+				}
+			}
+			else
+			{
+				if (Utils.IsWindowsFirewallEnabled() &&
+					Utils.IsWindowsFirewallExceptionsAllowed())
+				{
+					//SetProgressText("Opening port in windows firewall...");
+
+					Log.WriteStart(String.Format("Opening port {0} in windows firewall", port));
+
+					Utils.OpenWindowsFirewallPort(name, port);
+
+					//update log
+					Log.WriteEnd("Opened port in windows firewall");
+					Installer.Current.InstallLog(String.Format("- Opened port {0} in Windows Firewall", port));
+				}
+			}
+		}
+
+		public static void SaveResource(string resName, string fileName)
+		{
+			var assembly = Assembly.GetExecutingAssembly();
+			var resources = assembly.GetManifestResourceNames();
+			var resourceName = resources.FirstOrDefault(name => name.EndsWith(resName));
+			if (resourceName != null)
+			{
+				using (var resStream = assembly.GetManifestResourceStream(resourceName))
+				using (var file = new FileStream(fileName, FileMode.Create, FileAccess.Write))
+				{
+					resStream.CopyTo(file);
+				}
+			}
+		}
+
+		static Dictionary<string, System.Net.IPAddress[]> ResolvedHosts = new Dictionary<string, System.Net.IPAddress[]>();
+
+		public static bool IsLocalAddress(string adr)
+		{
+			var isHostIP = Regex.IsMatch(adr, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(adr, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
+			return isHostIP && Regex.IsMatch(adr, @"(^127\.)|(^192\.168\.)|(^10\.)|(^172\.1[6-9]\.)|(^172\.2[0-9]\.)|(^172\.3[0-1]\.)|(^::1$)|(^[fF][cCdD])", RegexOptions.Singleline);
+		}
+
+		public static bool IsHostLocal(string host)
+		{
+			var isHostIP = Regex.IsMatch(host, @"^[0.9]{1,3}(?:\.[0-9]{1,3}){3}$", RegexOptions.Singleline) || Regex.IsMatch(host, @"^[0-9a-fA-F:]+$", RegexOptions.Singleline);
+			if (host == "localhost" || host == "127.0.0.1" || host == "::1" ||
+				isHostIP && IsLocalAddress(host)) return true;
+
+			if (!isHostIP)
+			{
+				IPAddress[] ips;
+				lock (ResolvedHosts)
+				{
+					if (!ResolvedHosts.TryGetValue(host, out ips))
+					{
+						try
+						{
+							ips = Dns.GetHostEntry(host).AddressList;
+							ResolvedHosts.Add(host, ips);
+						}
+						catch
+						{
+							return false;
+						}
+					}
+				}
+				return ips
+					.Where(ip => ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork || ip.AddressFamily == System.Net.Sockets.AddressFamily.InterNetworkV6)
+					.All(ip => IsLocalAddress(ip.ToString()));
+			}
+			return false;
+		}
+
+		public static bool IsGlobalDomain(string domain) => domain != "localhost" && !string.IsNullOrEmpty(domain) && domain.Contains('.');
+		public static bool IsHttps(string urls)
+		{
+			IPAddress ip;
+			return urls != null && urls.Split(',', ';')
+				.Select(url => new Uri(url))
+				.Any(uri => uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
+					IPAddress.TryParse(uri.Host, out ip) ? IsHttps(uri.Host, "") : IsHttps("0.0.0.0", uri.Host));
+		}
+		public static bool IsHttps(string ip, string domain) => !IsLocalAddress(ip) && IsGlobalDomain(domain) && !IsHostLocal(domain);
+		public static bool IsHttpsAndNotWindows(string ip, string domain) => !OSInfo.IsWindows && IsHttps(ip, domain);
+
+		public static string[] GetApplicationUrls(string ip, string domain, string port, string virtualDir)
+		{
+			List<string> urls = new List<string>();
+
+			// IP address, [port] and [virtualDir]
+			string url = ip;
+			if (String.IsNullOrEmpty(domain))
+			{
+				if (!String.IsNullOrEmpty(port) && port != "80")
+					url += ":" + port;
+				if (!String.IsNullOrEmpty(virtualDir))
+					url += "/" + virtualDir;
+				urls.Add(url);
+			}
+
+			// domain, [port] and [virtualDir]
+			if (!String.IsNullOrEmpty(domain))
+			{
+				url = domain;
+				if (!String.IsNullOrEmpty(port) && port != "80")
+					url += ":" + port;
+				if (!String.IsNullOrEmpty(virtualDir))
+					url += "/" + virtualDir;
+				urls.Add(url);
+			}
+
+			return urls.ToArray();
+		}
+
+		public static void ShowRunningInstance()
+		{
+			Process currentProcess = Process.GetCurrentProcess();
+			foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
+			{
+				if (process.Id != currentProcess.Id)
+				{
+					//set focus
+					User32.SetForegroundWindow(process.MainWindowHandle);
+					break;
+				}
+			}
+		}
 		public static string GetDistributiveLocationInfo(string ccode, string cversion)
 		{
 			var service = Installer.Current.InstallerWebService;
-			
+
 			var info = service.GetReleaseFileInfo(ccode, cversion);
-			
+
 			if (info == null)
 			{
 				Log.WriteInfo("Component code: {0}; Component version: {1};", ccode, cversion);
-				
+
 				throw new ServiceComponentNotFoundException("Seems that the Service has no idea about the component requested.");
 			}
-			
+
 			return info.FullFilePath;
+		}
+	}
+
+	public class ResourceUtils
+	{
+		public static void CreateDefaultAppConfig()
+		{
+			var path = AppDomain.CurrentDomain.BaseDirectory;
+			var assembly = Assembly.GetEntryAssembly();
+			var file = Path.Combine(Path.GetDirectoryName(assembly.Location), "installer.settings.json");
+			if (!File.Exists(file))
+			{
+				var resources = assembly.GetManifestResourceNames();
+				var resource = resources.FirstOrDefault(r => r.EndsWith("installer.settings.json") || r.EndsWith("installer.settings.release.json"));
+				if (resource != null)
+				{
+					using (var src = assembly.GetManifestResourceStream(resource))
+					using (var reader = new StreamReader(src))
+					{
+						File.WriteAllText(file, reader.ReadToEnd());
+					}
+				}
+			}
 		}
 	}
 }

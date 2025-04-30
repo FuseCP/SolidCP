@@ -16,10 +16,10 @@ namespace SolidCP.EnterpriseServer.Data.Configuration;
 public partial class BackgroundTaskStackConfiguration: EntityTypeConfiguration<BackgroundTaskStack>
 {
     public override void Configure() {
-        HasKey(e => e.TaskStackId).HasName("PK__Backgrou__5E44466F25638F95");
+        HasKey(e => e.TaskStackId).HasName("PK__Backgrou__5E44466FBE7A1B97");
 
         HasOne(d => d.Task).WithMany(p => p.BackgroundTaskStacks)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Backgroun__TaskI__35A8BAC8");
+                .HasConstraintName("FK__Backgroun__TaskI__3079F157");
     }
 }

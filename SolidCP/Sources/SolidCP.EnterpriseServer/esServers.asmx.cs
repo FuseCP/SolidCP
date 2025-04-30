@@ -373,6 +373,18 @@ namespace SolidCP.EnterpriseServer
         public string GetServerFilePath(int serverId) {
             return ServerController.GetServerFilePath(serverId);
         }
+
+        [WebMethod]
+        public bool GetQuotaHidden(string quotaName, int groupID)
+        {
+            return ServerController.GetQuotaHidden(quotaName, groupID);
+        }
+
+        [WebMethod]
+        public int UpdateQuotaHidden(string quotaName, int groupID, bool hideQuota)
+        {
+            return ServerController.UpdateQuotaHidden(quotaName, groupID, hideQuota);
+        }
         #endregion
 
         #region Private / DMZ Network VLANs

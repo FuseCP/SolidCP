@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
@@ -79,7 +80,7 @@ namespace SolidCP.Web.Services
 						headerText = headerText.Trim();
 						if (!headerText.StartsWith("<"))
 						{
-							var header = JsonConvert.DeserializeObject(headerText, p.PropertyType);
+							var header = JsonConvert.DeserializeObject(headerText, p.PropertyType, new VersionConverter(), new StringEnumConverter());
 							p.SetValue(instance, header);
 						} else
 						{
@@ -108,7 +109,7 @@ namespace SolidCP.Web.Services
 							headerText = headerText.Trim();
 							if (!headerText.StartsWith("<"))
 							{
-								var header = JsonConvert.DeserializeObject(headerText, f.FieldType);
+								var header = JsonConvert.DeserializeObject(headerText, f.FieldType, new VersionConverter(), new StringEnumConverter());
 								f.SetValue(instance, header);
 							}
 							else

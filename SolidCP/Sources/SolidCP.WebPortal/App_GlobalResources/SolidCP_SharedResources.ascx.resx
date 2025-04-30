@@ -1362,7 +1362,7 @@
   <data name="Success.SERVER_UPDATE_SERVER_PSW" xml:space="preserve">
     <value>Server password has been updated</value>
   </data>
-    <data name="Error.STATS_UPDATE_STAT" xml:space="preserve">
+  <data name="Error.STATS_UPDATE_STAT" xml:space="preserve">
     <value>Error updating advanced statistics site</value>
   </data>
   <data name="Error.SERVER_DISCOVER_SERVICES" xml:space="preserve">
@@ -7158,5 +7158,8 @@
   </data>
   <data name="Quota.PROXMOX.StartShutdownAllowed" xml:space="preserve">
     <value>Allow user to Start, Turn off and Shutdown VPS</value>
+  </data>
+  <data name="ResourceGroup.MsSQL2025" xml:space="preserve">
+    <value>SQL Server 2025</value>
   </data>
 </root>

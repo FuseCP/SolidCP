@@ -38,7 +38,8 @@ namespace SolidCP.Providers.Virtualization
 {
     public enum VirtualHardDiskFormat
     {
-        VHD = 0,
-        VHDX = 1
+        Unknown = 0,
+        VHD = 2,
+        VHDX = 3
     }
 }

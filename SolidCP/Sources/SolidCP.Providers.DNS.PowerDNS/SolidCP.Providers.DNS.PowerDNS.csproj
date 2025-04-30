@@ -1,28 +1,38 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<RootNamespace>SolidCP.Providers.DNS</RootNamespace>
-		<TargetFramework>netstandard2.0</TargetFramework>
-		<PublishUrl>publish\</PublishUrl>
-		<WarningsAsErrors>618</WarningsAsErrors>
-				<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
-		<LangVersion>11</LangVersion>
-		<Nullable>disable</Nullable>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>portable</DebugType>
-	</PropertyGroup>
-	<ItemGroup>
-		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.1.0" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-	</ItemGroup>
+    <PropertyGroup>
+        <RootNamespace>SolidCP.Providers.DNS</RootNamespace>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PublishUrl>publish\</PublishUrl>
+        <WarningsAsErrors>618</WarningsAsErrors>
+        <OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+        <LangVersion>11</LangVersion>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>portable</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="MySql.Data" Version="9.3.0" />
+        <!-- System.Security.Permissions does no show up in output folder, so copy it manually -->
+        <PackageReference Include="System.Security.Permissions" Version="9.0.4" GeneratePathProperty="true" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    </ItemGroup>
+
+    <!-- System.Security.Permissions does no show up in output folder, so copy it manually -->
+    <Target Name="CopySystemSecurityPermissions" AfterTargets="Build">
+        <ItemGroup>
+            <SystemSecurityPermissionsDll Include="$(PkgSystem_Security_Permissions)\lib\netstandard2.0\**\*.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SystemSecurityPermissionsDll)" DestinationFolder="$(OutputPath)" />
+    </Target>
 </Project>

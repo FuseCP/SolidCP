@@ -9,10 +9,16 @@
                 <asp:RequiredFieldValidator ID="reqValMessagesPerHour" runat="server" ControlToValidate="txtMessagesPerHour"
                     Display="Dynamic" />
          </td>
-         <td align="left" width = "10">
-            <asp:CheckBox runat="server" ID="cbMessagesPerHour"  />
+    </tr>
+    <tr>
+        <td align="right" width = "200"><asp:Label ID="lblmessagesAction" meta:resourcekey="lblmessagesAction" Text="Message Throttling Action:" runat="server" /></td>
+        <td>
+            <asp:DropDownList ID="ddlMessagesAction" runat="server">
+                <asp:ListItem Value="0" meta:resourcekey="ddlMessagesAction0">Reject</asp:ListItem>
+                <asp:ListItem Value="1" meta:resourcekey="ddlMessagesAction1">Delay</asp:ListItem>
+                <asp:ListItem Value="2" meta:resourcekey="ddlMessagesAction2">None</asp:ListItem>
+            </asp:DropDownList>
         </td>
-        <td width = "50" align="left"><asp:Label ID="lbMessagesPerHourEnabled" runat="server" meta:resourcekey="lbEnabled" /></td>
     </tr>
     <tr>
         <td align="right" width = "200"><asp:Label ID="lbBandwidthPerHour" runat="server" meta:resourcekey="lbBandwidthPerHour" /></td>
@@ -23,10 +29,16 @@
                 <asp:RequiredFieldValidator ID="reqValBandwidth" runat="server" ControlToValidate="txtBandwidthPerHour"
                     Display="Dynamic" />
          </td>
-         <td align="left" width = "10">
-            <asp:CheckBox runat="server" ID="cbBandwidthPerHour"/>
+    </tr>
+    <tr>
+        <td align="right" width = "200"><asp:Label ID="lblBandwidthAction" meta:resourcekey="lblBandwidthAction" Text="Bandwidth Throttling Action:" runat="server" /></td>
+        <td>
+            <asp:DropDownList ID="ddlBandwidthAction" runat="server">
+                <asp:ListItem Value="0" meta:resourcekey="ddlBandwidthAction0">Reject</asp:ListItem>
+                <asp:ListItem Value="1" meta:resourcekey="ddlBandwidthAction1">Delay</asp:ListItem>
+                <asp:ListItem Value="2" meta:resourcekey="ddlBandwidthAction2">None</asp:ListItem>
+            </asp:DropDownList>
         </td>
-        <td width = "50" align="left"><asp:Label ID="lbBandwidthPerHourEnabled" runat="server" meta:resourcekey="lbEnabled" /></td>
     </tr>
     <tr>
         <td align="right" width = "200"><asp:Label ID="lbBouncesPerHour" runat="server" meta:resourcekey="lbBouncesPerHour" /></td>
@@ -37,9 +49,15 @@
                 <asp:RequiredFieldValidator ID="reqValBouncesPerHour" runat="server" ControlToValidate="txtBouncesPerHour"
                     Display="None" />
          </td>
-         <td align="left" width = "10">
-            <asp:CheckBox runat="server" ID="cbBouncesPerHour" />
+    </tr>
+    <tr>
+        <td align="right" width = "200"><asp:Label ID="lblBouncesPerHourAction" meta:resourcekey="lblBouncesPerHourAction" Text="Bounces Throttling Action:" runat="server" /></td>
+        <td>
+            <asp:DropDownList ID="ddlBouncesPerHourAction" runat="server">
+                <asp:ListItem Value="0" meta:resourcekey="ddlBouncesPerHourAction0">Reject</asp:ListItem>
+                <asp:ListItem Value="1" meta:resourcekey="ddlBouncesPerHourAction1">Delay</asp:ListItem>
+                <asp:ListItem Value="2" meta:resourcekey="ddlBouncesPerHourAction2">None</asp:ListItem>
+            </asp:DropDownList>
         </td>
-        <td width = "50" align="left"><asp:Label ID="lbBouncesPerHourEnabled"  runat="server" meta:resourcekey="lbEnabled" /></td>
     </tr>
 </table>

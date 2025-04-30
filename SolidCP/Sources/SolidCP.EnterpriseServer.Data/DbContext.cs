@@ -22,7 +22,6 @@ namespace SolidCP.EnterpriseServer.Data
 {
     public partial class DbContext : IDisposable
     {
-
         public DateTime DateTimeMin = new DateTime(1735, 1, 1);
 
         public const bool UseStoredProcedures = true;
@@ -113,7 +112,7 @@ namespace SolidCP.EnterpriseServer.Data
                 {
 
 #if NETFRAMEWORK
-                    DbConfiguration.InitDatabaseProvider(DbType);
+                    DbConfiguration.InitDatabaseProviders(DbType);
 #endif
 
                     switch (DbType)
@@ -139,8 +138,9 @@ namespace SolidCP.EnterpriseServer.Data
                             throw new NotSupportedException("Oracle is not supported.");
 #endif
                             break;
-                    }
-                }
+						default: throw new NotSupportedException($"DbType {DbType} is not supported.");
+					}
+				}
                 return dbConnection;
 			}
 		}
@@ -241,14 +241,25 @@ namespace SolidCP.EnterpriseServer.Data
             }
         }
 
-        static bool dbConfigurationSet = false;
-        static void SetDbConfiguration()
+         public TimeSpan Timeout
         {
-            if (!dbConfigurationSet)
+            get
             {
-                dbConfigurationSet = true;
 #if NETFRAMEWORK
-                System.Data.Entity.DbConfiguration.SetConfiguration(new DbConfiguration());
+                return TimeSpan.FromSeconds((double)Database.CommandTimeout);
+#elif NETCOREAPP
+                return TimeSpan.FromSeconds((double)Database.GetCommandTimeout());
+#else
+                throw new NotSupportedException("Timeout not supported for NET Standard");
+#endif
+			}
+			set {
+#if NETFRAMEWORK
+                Database.CommandTimeout = (int)(value.TotalMilliseconds / 1000 + 0.5);
+#elif NETCOREAPP
+				Database.SetCommandTimeout((int)(value.TotalMilliseconds / 1000 + 0.5));
+#else
+                throw new NotSupportedException("Timeout not supported for NET Standard");
 #endif
 			}
 		}
@@ -265,11 +276,8 @@ namespace SolidCP.EnterpriseServer.Data
 			var context = new Context.DbContextBase(this);
 			BaseContext = context;
 #endif
-#if NETFRAMEWORK
-            Database.CommandTimeout = 60;
-#elif NETCOREAPP
-            Database.SetCommandTimeout(60);
-#endif
+
+            Timeout = TimeSpan.FromMinutes(2);
 
             BaseContext.Log += WriteToLog;
 		}
@@ -290,11 +298,9 @@ namespace SolidCP.EnterpriseServer.Data
 #else
             BaseContext = new Context.DbContextBase(this);
 #endif
-#if NETFRAMEWORK
-            Database.CommandTimeout = 120;
-#elif NETCOREAPP
-            Database.SetCommandTimeout(120);
-#endif
+
+            Timeout = TimeSpan.FromMinutes(2);
+
             BaseContext.Log += WriteToLog;
         }
 

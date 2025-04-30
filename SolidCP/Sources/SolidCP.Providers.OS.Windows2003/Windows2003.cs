@@ -1,4 +1,4 @@
-// Copyright (c) 2016, SolidCP
+﻿// Copyright (c) 2016, SolidCP
 // SolidCP is distributed under the Creative Commons Share-alike license
 // 
 // SolidCP is a fork of WebsitePanel:
@@ -34,20 +34,11 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
-using Microsoft.Win32;
-
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers.DomainLookup;
-using SolidCP.Providers.DNS;
-using SolidCP.Server.Code;
-using SolidCP.Server.WPIService;
 using System.Text.RegularExpressions;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Runtime.Remoting.Channels.Tcp;
 using System.Runtime.Remoting;
-using SolidCP.Server;
 using System.Diagnostics;
 using System.Collections;
 using System.Security;
@@ -55,7 +46,16 @@ using System.Web;
 using System.Management;
 using System.ServiceProcess;
 using System.Runtime.InteropServices;
+using Microsoft.Win32;
 using Microsoft.Web.PlatformInstaller;
+
+using SolidCP.Server.Utils;
+using SolidCP.Providers.Utils;
+using SolidCP.Providers.DomainLookup;
+using SolidCP.Providers.DNS;
+using SolidCP.Server.Code;
+using SolidCP.Server.WPIService;
+using System.Threading;
 
 namespace SolidCP.Providers.OS
 {
@@ -900,10 +900,35 @@ namespace SolidCP.Providers.OS
 			return OSInfo.WindowsVersion == WindowsVersion.WindowsServer2003;
 		}
 
+		/// <summary>
+		/// Checks Whether the FSRM role services are installed
+		/// </summary>
+		/// <returns></returns>
 		public virtual bool CheckFileServicesInstallation()
 		{
-			return WindowsOSInfo.CheckFileServicesInstallation();
 
+			ManagementClass objMC = new ManagementClass("Win32_ServerFeature");
+			ManagementObjectCollection objMOC = objMC.GetInstances();
+
+			// 01.09.2015 roland.breitschaft@x-company.de
+			// Problem: Method not work on German Systems, because the searched Feature-Name does not exist
+			// Fix: Add German String for FSRM-Feature            
+
+			//foreach (ManagementObject objMO in objMOC)
+			//    if (objMO.Properties["Name"].Value.ToString().ToLower().Contains("file server resource manager"))
+			//        return true;
+			foreach (ManagementObject objMO in objMOC)
+			{
+				var id = objMO.Properties["ID"].Value.ToString().ToLower();
+				var name = objMO.Properties["Name"].Value.ToString().ToLower();
+				if (id.Contains("72") || id.Contains("104"))
+					return true;
+				else if (name.Contains("file server resource manager")
+					 || name.Contains("ressourcen-manager f�r dateiserver"))
+					return true;
+			}
+
+			return false;
 		}
 
 		public virtual bool InstallFsrmService()
@@ -927,6 +952,82 @@ namespace SolidCP.Providers.OS
 			{
 				throw;
 			}
+		}
+
+		public List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause)
+		{
+			const string DnsTimeOutMessage = @"dns request timed out";
+			const int DnsTimeOutRetryCount = 3;
+
+			Thread.Sleep(pause);
+
+			//nslookup -type=mx google.com 195.46.39.39
+			var command = $"nslookup -type={recordType} {domain} {dnsServer}";
+
+			// execute system command
+			string raw = string.Empty;
+			int triesCount = 0;
+
+			do
+			{
+				raw = Shell.Standard.Exec(command).Output().Result;
+			}
+			while (raw.ToLowerInvariant().Contains(DnsTimeOutMessage) && ++triesCount < DnsTimeOutRetryCount);
+
+			//timeout check 
+			if (raw.ToLowerInvariant().Contains(DnsTimeOutMessage))
+			{
+				return null;
+			}
+
+			var records = ParseNsLookupResult(raw, dnsServer, recordType);
+
+			return records.ToList();
+		}
+
+		private IEnumerable<DnsRecordInfo> ParseNsLookupResult(string raw, string dnsServer, DnsRecordType recordType)
+		{
+			const string MxRecordPattern = @"mail exchanger = (.+)";
+			const string NsRecordPattern = @"nameserver = (.+)";
+
+			var records = new List<DnsRecordInfo>();
+
+			var recordTypePattern = string.Empty;
+
+			switch (recordType)
+			{
+				case DnsRecordType.NS:
+					{
+						recordTypePattern = NsRecordPattern;
+						break;
+					}
+				case DnsRecordType.MX:
+					{
+						recordTypePattern = MxRecordPattern;
+						break;
+					}
+			}
+
+			var regex = new Regex(recordTypePattern, RegexOptions.IgnoreCase);
+
+			foreach (Match match in regex.Matches(raw))
+			{
+				if (match.Groups.Count != 2)
+				{
+					continue;
+				}
+
+				var dnsRecord = new DnsRecordInfo
+				{
+					Value = match.Groups[1].Value != null ? match.Groups[1].Value.Replace("\r\n", "").Replace("\r", "").Replace("\n", "").ToLowerInvariant().Trim() : null,
+					RecordType = recordType,
+					DnsServer = dnsServer
+				};
+
+				records.Add(dnsRecord);
+			}
+
+			return records;
 		}
 
 		#region Web Platform Installer
@@ -1909,11 +2010,25 @@ namespace SolidCP.Providers.OS
 			IsCore = OSInfo.IsCore
 		};
 
+		protected virtual Type WebServerType => Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60");
 		protected Web.IWebServer webServer = null;
-		public virtual Web.IWebServer WebServer =>
-			webServer ??
-			(webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs60, SolidCP.Providers.Web.IIs60")));
-		public virtual ServiceController ServiceController => throw new NotImplementedException();
+		public virtual Web.IWebServer WebServer
+			=> webServer ??= ApplySettings((IHostingServiceProvider)Activator.CreateInstance(WebServerType));
+
+		protected virtual Web.IWebServer ApplySettings<T>(T provider) where T: IHostingServiceProvider
+		{
+			var settings = provider.GetProviderDefaultSettings();
+			var hosting = provider as HostingServiceProviderBase;
+			hosting.ProviderSettings = new ServiceProviderSettings();
+			foreach (var setting in settings)
+			{
+				hosting.ProviderSettings.Settings.Add(setting.Name, setting.Value);
+			}
+			return provider as Web.IWebServer;
+		}
+
+		ServiceController serviceController = null;
+		public virtual ServiceController ServiceController => serviceController ??= new WindowsServiceController();
 
 		public virtual WSLShell WSL => WSLShell.Default;
 

@@ -164,6 +164,7 @@ namespace SolidCP.EnterpriseServer
                     ns.RecordType = DnsRecordType.NS;
                     ns.RecordName = "";
                     ns.RecordData = nameServer;
+                    ns.RecordTTL = Convert.ToInt32(primSettings["recorddefaultttl"]);
 
                     zoneRecords.Add(ns);
                 }

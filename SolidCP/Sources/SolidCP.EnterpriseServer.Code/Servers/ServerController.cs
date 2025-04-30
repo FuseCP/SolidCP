@@ -298,7 +298,7 @@ namespace SolidCP.EnterpriseServer
             }
         }
 
-        public void GetServerPlatform(string serverUrl, string password, bool passwordIsSHA256, out OSPlatform platform, out bool? isCore)
+        public void GetServerPlatform(string serverUrl, out OSPlatform platform, out bool? isCore)
 		{
 			platform = OSPlatform.Unknown;
 			isCore = null;
@@ -312,9 +312,9 @@ namespace SolidCP.EnterpriseServer
 
 			try
 			{
-                var os = new Server.Client.OperatingSystem();
-				ServiceProviderProxy.ServerInit(os, serverUrl, password, passwordIsSHA256);
-				var p = os.GetOSPlatform();
+				var discovery = new Server.Client.AutoDiscovery();
+                discovery.Url = serverUrl;
+				var p = discovery.GetOSPlatform();
 				platform = p.OSPlatform;
 				isCore = p.IsCore;
 			}
@@ -473,11 +473,11 @@ namespace SolidCP.EnterpriseServer
 
 				OSPlatform osPlatform;
 				bool? isCore;
-				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
-
-				GetServerPlatform(server.ServerUrl, server.Password, passwordIsSHA256, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
+
+				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
 				server.PasswordIsSHA256 = passwordIsSHA256;
 			}
 
@@ -533,13 +533,13 @@ namespace SolidCP.EnterpriseServer
 				if (availResult < 0)
 					return availResult;
 
-				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
-
 				OSPlatform osPlatform = OSPlatform.Unknown;
 				bool? isCore = null;
-				GetServerPlatform(server.ServerUrl, server.Password, passwordIsSHA256, out osPlatform, out isCore);
+				GetServerPlatform(server.ServerUrl, out osPlatform, out isCore);
 				server.OSPlatform = osPlatform;
 				server.IsCore = isCore;
+
+				bool passwordIsSHA256 = GetServerPasswordIsSHA256(server.ServerUrl) ?? true;
 				server.PasswordIsSHA256 = passwordIsSHA256;
 			}
 
@@ -1289,7 +1289,23 @@ namespace SolidCP.EnterpriseServer
 			return ad.GetServerFilePath(); // ad.GetServer
 		}
 
-		#endregion
+        public bool GetQuotaHidden(string quotaName, int groupID)
+        {
+            return Database.GetQuotaHidden(quotaName, groupID);
+        }
+
+        public int UpdateQuotaHidden(string quotaName, int groupID, bool hideQuota)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsAdmin
+                | DemandAccount.IsActive);
+            if (accountCheck < 0) return accountCheck;
+
+            // update server
+            return Database.UpdateQuotaHidden(quotaName, groupID, hideQuota);
+        }
+
+        #endregion
 
         #region Private / DMZ Network VLANs
         public VLANsPaged GetPrivateNetworkVLANsPaged(int serverId, string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
@@ -2561,12 +2577,15 @@ namespace SolidCP.EnterpriseServer
 			DomainInfo domain = GetDomainItem(domainId);
 
 			//get default TTL
-			StringDictionary settings = GetServiceSettings(domain.ZoneServiceID);
-			domain.RecordDefaultTTL = Convert.ToInt32(settings["RecordDefaultTTL"]);
-			if (domain.RecordDefaultTTL == 0) domain.RecordDefaultTTL = 86400;
-			domain.RecordMinimumTTL = Convert.ToInt32(settings["RecordMinimumTTL"]);
-			if (domain.RecordMinimumTTL == 0) domain.RecordMinimumTTL = 3600;
-			domain.MinimumTTL = Convert.ToInt32(settings["MinimumTTL"]);
+			if (domainId > 0)
+			{
+				StringDictionary settings = GetServiceSettings(domain.ZoneServiceID);
+				domain.RecordDefaultTTL = Convert.ToInt32(settings["RecordDefaultTTL"]);
+				if (domain.RecordDefaultTTL == 0) domain.RecordDefaultTTL = 86400;
+				domain.RecordMinimumTTL = Convert.ToInt32(settings["RecordMinimumTTL"]);
+				if (domain.RecordMinimumTTL == 0) domain.RecordMinimumTTL = 3600;
+				domain.MinimumTTL = Convert.ToInt32(settings["MinimumTTL"]);
+			}
 
 			// return
 			return GetDomain(domain, withLog);
@@ -3380,8 +3399,8 @@ namespace SolidCP.EnterpriseServer
 											 (pointer.DomainName.ToLower() == domain.DomainName.ToLower()))
 										{
 											WebServerController.AddWebSitePointer(w.Id,
-																								 (pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
-																								 domain.DomainId, false, true, true);
+												(pointer.DomainName.ToLower() == domain.DomainName.ToLower()) ? "" : pointer.DomainName.ToLower().Replace("." + domain.DomainName.ToLower(), ""),
+												domain.DomainId, false, true, true);
 										}
 									}
 								}

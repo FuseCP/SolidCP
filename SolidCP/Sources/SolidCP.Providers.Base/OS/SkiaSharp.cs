@@ -32,7 +32,7 @@ namespace SolidCP.Providers.OS
                     if (loadedNativeDlls.TryGetValue(libraryName, out dll)) return dll;
 
                     var runtimeInformation = typeof(RuntimeInformation);
-                    var runtimeIdentifier = (string?)runtimeInformation.GetProperty("RuntimeIdentifier")?.GetValue(null);
+                    var runtimeIdentifier = (string)runtimeInformation.GetProperty("RuntimeIdentifier")?.GetValue(null);
                     if (runtimeIdentifier == "linux-x64" && IsLinuxMusl) runtimeIdentifier = "linux-musl-x64";
                     runtimeIdentifier = runtimeIdentifier.Replace("linux-", "");
                     var currentDllPath = Path.GetDirectoryName(new Uri(Assembly.Load("SkiaSharp").CodeBase).LocalPath);

@@ -4,7 +4,6 @@
     <AssemblyName>wcfcert</AssemblyName>
     <TargetFramework>net48</TargetFramework>
     <OutputPath>..\SolidCP.Server\bin\LetsEncrypt\</OutputPath>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <Nullable>disable</Nullable>

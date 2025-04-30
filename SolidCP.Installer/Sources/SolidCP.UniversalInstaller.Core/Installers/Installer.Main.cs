@@ -27,21 +27,22 @@ namespace SolidCP.UniversalInstaller
 			GC.KeepAlive(Mutex);
 		}
 
+		public virtual bool CheckSecurityNetFX()
+		{
+			try
+			{
+				PermissionSet set = new PermissionSet(PermissionState.Unrestricted);
+				set.Demand();
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
 		public virtual bool CheckSecurity()
 		{
-			if (OSInfo.IsNetFX)
-			{
-				try
-				{
-					PermissionSet set = new PermissionSet(PermissionState.Unrestricted);
-					set.Demand();
-				}
-				catch
-				{
-					return false;
-				}
-			}
-			return true;
+			return !OSInfo.IsNetFX || CheckSecurityNetFX();
 		}
 		public virtual void CheckWebServer()
 		{
@@ -63,9 +64,21 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void ShowLogFile() => UI.ShowLogFile();
 
+		public virtual void SetAppDomainUnhandledException()
+		{
+			AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+			{
+				Log.WriteError($"Unhandled Exception:", args.ExceptionObject as Exception);
+				UI.Current.ShowError(args.ExceptionObject as Exception);
+			};
+		}
+
 		public virtual void StartMain()
 		{
+			SetAppDomainUnhandledException();
+
 			LoadSettings();
+			UI.Current.CheckForInstallerUpdate(true);
 			//
 			//Utils.FixConfigurationSectionDefinition();
 

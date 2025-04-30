@@ -109,8 +109,9 @@ namespace SolidCP.Providers.Virtualization
 
         // Jobs
         ConcreteJob GetJob(string jobId);
+        ConcreteJob GetPsJob(string jobId);
         List<ConcreteJob> GetAllJobs();
-        void ClearOldJobs();
+        void ClearOldPsJobs();
         ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState);
 
         // Configuration

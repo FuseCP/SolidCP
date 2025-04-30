@@ -28,10 +28,9 @@
 
 using System;
 using System.IO;
+using System.IO.Compression;
 using System.Collections;
 using System.Text;
-
-using Ionic.Zip;
 
 namespace SolidCP.LocalizationToolkit
 {
@@ -39,37 +38,12 @@ namespace SolidCP.LocalizationToolkit
 	{
 		public static void Zip(string path, string zipFile)
 		{
-			using (ZipFile zip = new ZipFile())
-			{
-				//use unicode if necessary
-				zip.UseUnicodeAsNecessary = true;
-				//skip locked files
-				zip.ZipErrorAction = ZipErrorAction.Skip;
-
-				if (Directory.Exists(path))
-				{
-					//add directory content
-					zip.AddDirectory(path);
-				}
-				else if (File.Exists(path))
-				{
-					//add file to the root folder
-					zip.AddFile(path, "");
-				}
-
-				zip.Save(zipFile);
-			}
+			ZipFile.CreateFromDirectory(path, zipFile);
 		}
 
 		public static void Unzip(string destFolder, string zipFile)
 		{
-			using (ZipFile zip = ZipFile.Read(zipFile))
-			{
-				foreach (ZipEntry e in zip)
-				{
-					e.Extract(destFolder, ExtractExistingFileAction.OverwriteSilently);
-				}
-			}
+			ZipFile.ExtractToDirectory(zipFile, destFolder);
 		}
 	}
 }

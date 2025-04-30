@@ -54,6 +54,7 @@ namespace SolidCP.Providers.Database
 	{
 
 		#region Properties
+		public const bool UseMySqlConnector = false;
 		protected string BackupTempFolder
 		{
 			get { return Path.GetTempPath(); }
@@ -135,9 +136,10 @@ namespace SolidCP.Providers.Database
 
 		static MariaDB101()
 		{
-			AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
+			if (UseMySqlConnector) AppDomain.CurrentDomain.AssemblyResolve += new ResolveEventHandler(CurrentDomain_AssemblyResolve);
 		}
 
+		static bool isLoading = false;
 		static System.Reflection.Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
 		{
 			// We are able to use the MySQL .NET connector for MariaDB
@@ -162,11 +164,12 @@ namespace SolidCP.Providers.Database
 
 			string assemblyFullName = string.Format("MySql.Data, Version={0}.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d", connectorVersion);
 
-			if (assemblyFullName == args.Name)
+			if (assemblyFullName == args.Name || isLoading)
 			{
 				return null; //avoid of stack overflow
 			}
 
+			isLoading = true;
 
 			return Assembly.Load(assemblyFullName);
 

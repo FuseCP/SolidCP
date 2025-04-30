@@ -39,11 +39,12 @@ namespace SolidCP.Web.Clients
 
 	public class ClientBase : IDisposable
 	{
-
 		public const long MaximumMessageSize = 10 * 1024 * 1024; // 10 MB
 		public const bool UseMessageSecurityOverHttp = true;
 		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
 		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
+
+		public static bool TrustAllCertificates = false;
 
 		Protocols protocol = Protocols.NetHttp;
 		public Protocols Protocol
@@ -149,14 +150,15 @@ namespace SolidCP.Web.Clients
 
 				if (url.StartsWith("http://"))
 				{
-					if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
-
 					if (url.HasApi("basic")) protocol = Protocols.BasicHttp;
 					else if (url.HasApi("net")) protocol = Protocols.NetHttp;
 					else if (url.HasApi("ws")) protocol = Protocols.WSHttp;
 					else if (url.HasApi("grpc")) protocol = Protocols.gRPC;
 					else if (url.HasApi("grpc/web")) protocol = Protocols.gRPCWeb;
 					else protocol = Protocols.BasicHttp;
+				
+					/* if (IsEncrypted && !IsLocal &&
+						!(protocol == Protocols.WSHttp && UseMessageSecurityOverHttp)) throw new NotSupportedException("This protocol is not secure over this connection."); */
 				}
 				else if (url.StartsWith("https://"))
 				{
@@ -241,7 +243,8 @@ namespace SolidCP.Web.Clients
 			Protocol == Protocols.gRPCSsl || Protocol == Protocols.gRPCWebSsl;
 
 		public bool IsSsh => Protocol == Protocols.Ssh || url.StartsWith("ssh://");
-		public bool IsSecureProtocol => IsSsl || IsSsh;
+		public bool IsSecureProtocol => IsSsl || IsSsh ||
+			UseMessageSecurityOverHttp && Protocol == Protocols.WSHttp && OSInfo.IsNetFX && IsEncrypted;
 
 		public bool IsHttp => Protocol <= Protocols.WSHttp;
 		public bool IsHttps => Protocol >= Protocols.BasicHttps && Protocol <= Protocols.WSHttps;
@@ -533,6 +536,8 @@ namespace SolidCP.Web.Clients
 							{
 								var ws = new WSHttpBinding(SecurityMode.Message);
 								ws.MaxReceivedMessageSize = MaximumMessageSize;
+								ws.Security.Message.EstablishSecurityContext = true;
+								ws.Security.Message.NegotiateServiceCredential = true;
 								binding = ws;
 							}
 							else if (!isEncrypted || IsLocal)
@@ -585,6 +590,14 @@ namespace SolidCP.Web.Clients
 						if (!FactoryPool.TryGetValue(serviceurl, out factory))
 						{
 							factory = new ChannelFactory<T>(binding, endpoint);
+							if (TrustAllCertificates)
+							{
+								factory.Credentials.ServiceCertificate.SslCertificateAuthentication =
+									new System.ServiceModel.Security.X509ServiceCertificateAuthentication()
+									{
+										CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
+									};
+							}
 						}
 						else
 						{
@@ -649,7 +662,9 @@ namespace SolidCP.Web.Clients
 				FactoryPool[url] = factory;
 				factory = null;
 			}
-			if (client != null && client is IClientChannel channel) channel.Close();
+			if (client != null && client is IClientChannel channel &&
+				(channel.State == CommunicationState.Opening || channel.State == CommunicationState.Opened))
+				channel.Close();
 		}
 
 		public ClientBase(): base() { }

@@ -1,8 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <RootNamespace>SolidCP.WebPortal</RootNamespace>
         <AssemblyName>SolidCP.WebPortal</AssemblyName>
         <TargetFrameworks>net8.0;net48</TargetFrameworks>
+        <LangVersion>13</LangVersion>
+        <Nullable>disable</Nullable>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <EnableDefaultContentItems>false</EnableDefaultContentItems>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
@@ -36,9 +38,19 @@
     <Target Name="Precompile" DependsOnTargets="DeleteConfigObjFiles">
         <Exec Command="$(AspNetCompiler) -p . -v /" />
     </Target>
-    <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles">
+    <Target Name="DeployWithPrecompile" DependsOnTargets="DeleteConfigObjFiles" Condition="$(OS) == 'Windows_NT'">
         <Message Text="Precompile WebPortal" Importance="high" />
-        <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" />
+        <PropertyGroup>
+            <WindowsDir>$(WINDIR)</WindowsDir>
+            <WindowsDir Condition="!Exists('$(WindowsDir)')">C:\Windows</WindowsDir>
+            <AspNetCompiler>$(WindowsDir)\Microsoft.NET\Framework\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+            <AspNetCompiler Condition="!Exists('$(AspNetCompiler)')">$(WindowsDir)\Microsoft.NET\Framework64\v4.0.30319\aspnet_compiler.exe</AspNetCompiler>
+        </PropertyGroup>
+        <Message Text="$(AspNetCompiler)" Importance="high" />
+
+        <AspNetCompiler PhysicalPath="." VirtualPath="/" TargetPath="$(DeployDir)" Force="true" Condition="$(MSBuildRuntimeType) == 'Full'" />
+        <Exec Command="$(AspNetCompiler) -v / -p . -f $(DeployDir)" Condition="$(MSBuildRuntimeType) == 'Core'" />        
+        
         <ItemGroup>
             <AppDlls Include="$(DeployDir)\bin\App_*.dll" Exclude="$(DeployDir)\bin\App_global.asax.dll;$(DeployDir)\bin\App_Browsers.dll;$(DeployDir)\bin\App_GlobalResources.dll;$(DeployDir)\bin\App_Theme_Default.dll" />
         </ItemGroup>
@@ -54,12 +66,16 @@
         <PackageReference Include="BundleTransformer.Core" Version="1.14.1" />
         <PackageReference Include="BundleTransformer.Less" Version="1.14.0" />
         <PackageReference Include="JavaScriptEngineSwitcher.Core" Version="3.24.1" />
-        <PackageReference Include="JavaScriptEngineSwitcher.Msie" Version="3.19.0" />
-        <PackageReference Include="MsieJavaScriptEngine" Version="3.0.9" />
+        <PackageReference Include="JavaScriptEngineSwitcher.Msie" Version="3.24.1" />
+        <PackageReference Include="MsieJavaScriptEngine" Version="3.2.5" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="AntiXSS" Version="4.3.0" />
+        <PackageReference Include="System.Buffers" Version="4.6.1" />
+        <PackageReference Include="System.Memory" Version="4.6.3" />
+        <PackageReference Include="MailKit" Version="4.11.0" />
+        <PackageReference Include="MimeKit" Version="4.11.0" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
         <PackageReference Include="Microsoft.AspNet.Web.Optimization" Version="1.1.3" />
         <PackageReference Include="Microsoft.Web.Infrastructure" Version="2.0.0" />
         <PackageReference Include="WebGrease" Version="1.6.0" />
@@ -79,28 +95,29 @@
         <Reference Include="System.Web.Optimization" />
         <Reference Include="System.Xml" />
     </ItemGroup>
-    <ItemGroup Condition="$(TargetFramework) != 'net48'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.2.4" ExcludeAssets="runtime" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.2.4" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.2.4" />
-
-        <!-- .NET 9 for SolidCP.EnterpriseServer.Data -->
-        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
-        <PackageReference Include="System.Text.Json" Version="9.0.0" />
-        <PackageReference Include="System.Formats.Asn1" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.0" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.0" />
+    <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.1" ExcludeAssets="runtime" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+        
+        <!-- .NET 8 for SolidCP.EnterpriseServer.Data -->
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.4" />
+        <PackageReference Include="System.Text.Json" Version="9.0.4" />
+        <PackageReference Include="System.Formats.Asn1" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.4" />
+        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.4" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="tinymce\**\*.*" />
@@ -115,6 +132,7 @@
         <Content Include="**\*.ashx" Exclude="DesktopModules\**\*.ashx" />
         <None Remove="DesktopModules\**\*.*" />
         <EmbeddedResource Remove="DesktopModules\**\*.resx" />
+        <EmbeddedResource Remove="Properties\PublishProfiles\**" />
         <Compile Include="Code\**\*.cs" />
     </ItemGroup>
 
@@ -134,6 +152,7 @@
         <Compile Include="*.cs" />
         <Compile Include="..\VersionInfo.cs" Link="Code\VersionInfo.cs" />
         <Compile Include="DesktopModules\SolidCP\Code\Framework\ES.cs" Link="Code\ES.cs" />
+        <Compile Include="Properties\AssemblyInfo.cs" />
         <Compile Update="Default.aspx.cs">
             <SubType>ASPXCodeBehind</SubType>
             <DependentUpon>Default.aspx</DependentUpon>
@@ -180,6 +199,7 @@
     <ItemGroup>
         <None Remove="obj\**\*.*" />
         <None Remove="bin_dotnet\**\*.*" />
+        <None Remove="Properties\PublishProfiles\**" />
         <None Remove="appsettings.json" />
         <None Update="SolidCP.WebPortal.deps.json.old">
             <CopyToOutputDirectory>Never</CopyToOutputDirectory>
@@ -187,6 +207,9 @@
         <AspNetControls Remove="DesktopModules\**\*.ascx" />
         <AspNetControls Remove="DesktopModules\**\*.aspx" />
         <AspNetControls Remove="DesktopModules\**\*.master" />
+        <AspNetControls Remove="Properties\PublishProfiles\**" />
+        <Compile Remove="Properties\PublishProfiles\**" />
+        <Content Remove="Properties\PublishProfiles\**" />
     </ItemGroup>
 
     <Target Name="ChangeAliasesOfNugetRefs" Condition="$(TargetFramework) != 'net48'" BeforeTargets="FindReferenceAssembliesForReferences;ResolveReferences">
@@ -200,8 +223,47 @@
 
     <Target Name="CopyCoreWebConfig" AfterTargets="Build">
         <Copy SourceFiles="Core.Web.config" DestinationFiles="bin_dotnet\Web.config" />
+        <Message Text="Copied Core.Web.config" Importance="high" />
     </Target>
-    
+
+    <Target Name="DeleteUnusedDlls" AfterTargets="Build">
+
+        <!-- move lazy loaded assemblies to bin\Code and delete unused assemblies in bin -->
+        <Message Text="Delete unused dll files" Importance="high" />
+        <ItemGroup>
+            <FilesToMove Include="bin\Microsoft.Bcl.*" />
+            <FilesToMove Include="bin\Microsoft.Win32.Registry.*" />
+            <FilesToMove Include="bin\Newtonsoft.Json.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.*" />
+            <FilesToMove Include="bin\Microsoft.Web.Administration.*" />
+            <FilesToMove Include="bin\Microsoft.ReportViewer.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
+            <FilesToMove Include="bin\Microsoft.Web.*" />
+            <FilesToMove Include="bin\SolidCP.Server.Client.*" />
+            <FilesToMove Include="bin\MsieJavaScriptEngine.*" />
+            <FilesToMove Include="bin\Renci.SshNet.*" />
+            <FilesToMove Include="bin\SolidCP.EnterpriseServer.Client.*" />
+            <FilesToMove Include="bin\SolidCP.Providers.*" Exclude="bin\SolidCP.Providers.Virtualization.NoVNC.*" />
+            <FilesToMove Include="bin\WebGrease.*" />
+            <FilesToMove Include="bin\JavaScriptEngineSwitcher.*" />
+            <FilesToMove Include="bin\System.*" />
+            <FilesToMove Include="bin\SwaggerWcf.*" />
+            <FilesToMove Include="bin\SkiaSharp.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToMove Include="bin\Antlr3.*" />
+            <FilesToMove Include="bin\AdvancedStringBuilder.*" />
+            <FilesToMove Include="bin\AntiXssLibrary.*" />
+            <FilesToMove Include="bin\HtmlSanitizationLibrary.*" />
+            <FilesToDelete Include="bin\WebServices\**\*.*" />
+            <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
+            <!--<FilesToDelete Include="bin\refs\**\*.*" />-->
+        </ItemGroup>
+
+        <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
+        <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Lazy" ContinueOnError="true" />
+        <RemoveDir Directories="bin\WebServices;bin\refs;bin_dotnet\WebServices" ContinueOnError="true" />
+    </Target>
+
     <!--<Target Name="CopyDepsJson" Condition="$(TargetFramework) != 'net48'" AfterTargets="Build">
         
         <ItemGroup>

@@ -48,6 +48,7 @@ namespace SolidCP.UniversalInstaller.Controls
 	public class ProgressIcon : System.Windows.Forms.UserControl
 	{
 		private Thread thread = null;
+		private bool threadAbort = false;
 		private int currentFrame = 0;
 		private int delayInterval = 50;
 		private int pause = 0;
@@ -76,17 +77,20 @@ namespace SolidCP.UniversalInstaller.Controls
 		/// <param name="disposing"><see langword="true"/> to release both managed 
 		/// and unmanaged resources; <see langword="false"/> to release 
 		/// only unmanaged resources.</param>
-		protected override void Dispose( bool disposing )
+		protected override void Dispose(bool disposing)
 		{
-			if( disposing )
+			if (disposing)
 			{
-				if( components != null )
+				if (components != null)
 					components.Dispose();
 
-				if( thread != null )
-					thread.Abort();
+				if (thread != null)
+				{
+					//thread.Abort();
+					threadAbort = true;
+				}
 			}
-			base.Dispose( disposing );
+			base.Dispose(disposing);
 		}
 		#endregion
 
@@ -133,9 +137,9 @@ namespace SolidCP.UniversalInstaller.Controls
 		public void StartAnimation()
 		{
 			StopAnimation();
-			CheckRange();			// Check the first and the last frames
+			CheckRange();           // Check the first and the last frames
 
-			thread = new Thread( new ThreadStart( threadFunc ) );
+			thread = new Thread(new ThreadStart(threadFunc));
 			thread.IsBackground = true;
 			thread.Start();
 		}
@@ -144,9 +148,10 @@ namespace SolidCP.UniversalInstaller.Controls
 		/// </summary>
 		public void StopAnimation()
 		{
-			if( thread != null )
+			if (thread != null)
 			{
-				thread.Abort();
+				//thread.Abort();
+				threadAbort = true;
 				thread = null;
 			}
 			currentLoop = 0;
@@ -158,7 +163,7 @@ namespace SolidCP.UniversalInstaller.Controls
 		{
 			StopAnimation();
 
-			if( frame >= 0 && frame < images.Images.Count )
+			if (frame >= 0 && frame < images.Images.Count)
 				currentFrame = frame;
 			else
 				currentFrame = 0;
@@ -175,24 +180,24 @@ namespace SolidCP.UniversalInstaller.Controls
 		{
 			// Draw a crossed rectangle if there is no frame to display
 
-			if( images == null ||
-				currentFrame < 0 || 
-				currentFrame >= images.Images.Count )
+			if (images == null ||
+				currentFrame < 0 ||
+				currentFrame >= images.Images.Count)
 			{
-				if( this.Size.Width == 0 || this.Size.Height == 0 )
+				if (this.Size.Width == 0 || this.Size.Height == 0)
 					return;
 
-				Pen pen = new Pen( SystemColors.ControlText );
-				e.Graphics.DrawRectangle( pen, 0, 0, this.Size.Width-1, this.Size.Height-1 );
-				e.Graphics.DrawLine( pen, 0, 0, this.Size.Width, this.Size.Height );
-				e.Graphics.DrawLine( pen, 0, this.Size.Height-1, this.Size.Width-1, 0 );
+				Pen pen = new Pen(SystemColors.ControlText);
+				e.Graphics.DrawRectangle(pen, 0, 0, this.Size.Width - 1, this.Size.Height - 1);
+				e.Graphics.DrawLine(pen, 0, 0, this.Size.Width, this.Size.Height);
+				e.Graphics.DrawLine(pen, 0, this.Size.Height - 1, this.Size.Width - 1, 0);
 				pen.Dispose();
 			}
 			else
 			{
 				// Draw the current frame
 
-				e.Graphics.DrawImage( images.Images[currentFrame], 0, 0, this.Size.Width, this.Size.Height );
+				e.Graphics.DrawImage(images.Images[currentFrame], 0, 0, this.Size.Width, this.Size.Height);
 			}
 		}
 
@@ -203,37 +208,37 @@ namespace SolidCP.UniversalInstaller.Controls
 			bool wasPause = false;
 			currentFrame = firstFrame;
 
-			while( thread != null && thread.IsAlive )
+			while (thread != null && thread.IsAlive && !threadAbort)
 			{
-				Refresh();						// Redraw the current frame
+				Refresh();                      // Redraw the current frame
 				wasPause = false;
 
-				if( images != null )
+				if (images != null)
 				{
 					currentFrame++;
-					if( currentFrame > lastFrame ||
-						currentFrame >= images.Images.Count )
+					if (currentFrame > lastFrame ||
+						currentFrame >= images.Images.Count)
 					{
-						if( pause > 0 )			// Sleep after every loop
+						if (pause > 0)          // Sleep after every loop
 						{
-							Thread.Sleep( pause );
+							Thread.Sleep(pause);
 							wasPause = true;
 						}
 
 						currentFrame = firstFrame;
-						if( loopCount != 0 )	// 0 is infinitive loop
+						if (loopCount != 0) // 0 is infinitive loop
 						{
 							currentLoop++;
 						}
 					}
 
-					if( loopCount != 0 && currentLoop >= loopCount )
+					if (loopCount != 0 && currentLoop >= loopCount)
 					{
-						StopAnimation();		// The loop is completed
+						StopAnimation();        // The loop is completed
 					}
 				}
-				if( !wasPause )					// That prevents summation (pause + delayInterval)
-					Thread.Sleep( delayInterval );
+				if (!wasPause)                  // That prevents summation (pause + delayInterval)
+					Thread.Sleep(delayInterval);
 			}
 		}
 
@@ -241,7 +246,7 @@ namespace SolidCP.UniversalInstaller.Controls
 		/// Otherwise, swap them.</summary>
 		private void CheckRange()
 		{
-			if( lastFrame < firstFrame )
+			if (lastFrame < firstFrame)
 			{
 				int tmp = firstFrame;
 				firstFrame = lastFrame;

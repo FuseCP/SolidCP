@@ -33,68 +33,29 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Forms;
-using SolidCP.Setup.Actions;
+using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
+
 {
-    /// <summary>
-    /// Release 2.1.0
-    /// </summary>
-    public class EnterpriseServer210 : EnterpriseServer
-    {
-        public static new object Install(object obj)
-        {
-            //
-            return EnterpriseServer.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
-
-        public static new DialogResult Uninstall(object obj)
-        {
-            return EnterpriseServer.Uninstall(obj);
-        }
-
-        public static new DialogResult Setup(object obj)
-        {
-            return EnterpriseServer.Setup(obj);
-        }
-
-        public static new DialogResult Update(object obj)
-        {
-            return UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "2.0.0,2.1.0",
-                updateSql: true);
-        }
-    }
-
     /// <summary>
     /// Release 2.0.0
     /// </summary>
     public class EnterpriseServer200 : EnterpriseServer
     {
-        public static new object Install(object obj)
-        {
-            //
-            return EnterpriseServer.InstallBase(obj, minimalInstallerVersion: "1.0.1");
-        }
+        public override Version MinimalInstallerVersion => new Version("2.0.0");
+        public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public override CommonSettings CommonSettings => Settings.EnterpriseServer;
+		public Result Install(object args) => base.InstallOrSetup(args, "Install EnterpriseServer",
+            Installer.Current.InstallEnterpriseServer, false);
 
-        public static new DialogResult Uninstall(object obj)
-        {
-            return EnterpriseServer.Uninstall(obj);
-        }
+        public Result Update(object args) => base.Update(args, "Update EnterpriseServer",
+            Installer.Current.UpdateEnterpriseServer);
 
-        public static new DialogResult Setup(object obj)
-        {
-            return EnterpriseServer.Setup(obj);
-        }
+        public Result Setup(object args) => base.InstallOrSetup(args, "Setup EnterpriseServer",
+			() => Installer.Current.ConfigureEnterpriseServer(), true);
 
-        public static new DialogResult Update(object obj)
-        {
-            return UpdateBase(obj,
-                minimalInstallerVersion: "1.0.1",
-                versionToUpgrade: "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5",
-                updateSql: true);
-        }
+        public Result Uninstall(object args) => base.Uninstall(args, "Uninstall EnterpriseServer",
+            Installer.Current.RemoveEnterpriseServer);
     }
 }

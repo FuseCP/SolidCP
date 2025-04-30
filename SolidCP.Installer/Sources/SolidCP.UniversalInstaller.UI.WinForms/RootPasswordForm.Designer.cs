@@ -30,8 +30,6 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#if NETFRAMEWORK
-
 namespace SolidCP.UniversalInstaller
 {
 	partial class RootPasswordForm
@@ -124,5 +122,3 @@ namespace SolidCP.UniversalInstaller
 		private System.Windows.Forms.Label label1;
 	}
 }
-
-#endif

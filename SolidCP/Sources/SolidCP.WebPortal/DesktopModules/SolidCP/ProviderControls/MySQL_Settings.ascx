@@ -1,10 +1,10 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MySQL_Settings.ascx.cs" Inherits="SolidCP.Portal.ProviderControls.MySQL_Settings" %>
-<fieldset>
+<%--<fieldset>
     <legend>
         <asp:Label runat="server" CssClass="NormalBold" meta:resourcekey="lblFtuNote" />
     </legend>
-    <div runat="server" id="lblFirsttimeUserNote" />
-</fieldset>
+    <div runat="server" id="lblFirsttimeUserNote" /> 
+</fieldset>--%>
 
 <fieldset>
     <legend>

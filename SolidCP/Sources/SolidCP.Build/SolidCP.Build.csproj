@@ -6,7 +6,7 @@
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
     <CompilerGeneratedFilesOutputPath>Razor</CompilerGeneratedFilesOutputPath>
-    <LangVersion>11.0</LangVersion>
+    <LangVersion>13.0</LangVersion>
     <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
   </PropertyGroup>
 
@@ -15,9 +15,9 @@
       <IncludeAssets>all</IncludeAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.11" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.11" />
-    <PackageReference Include="RazorBlade" Version="0.6.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.13" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.13" />
+    <PackageReference Include="RazorBlade" Version="0.9.0" />
   </ItemGroup>
 
   <ItemGroup>

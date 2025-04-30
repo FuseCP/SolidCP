@@ -8,826 +8,841 @@ using System.Text;
 using Mono.Unix;
 using System.Threading;
 using System.Text.RegularExpressions;
+using System.Diagnostics;
 using System.IO.Compression;
 using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
-using System.Diagnostics;
+using SolidCP.Providers.DomainLookup;
+using SolidCP.Providers.DNS;
 
-namespace SolidCP.Providers.OS
+namespace SolidCP.Providers.OS;
+
+
+public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 {
 
-	public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
+	#region Properties
+	protected virtual string UsersHome
 	{
+		get { return FileUtils.EvaluateSystemVariables(ProviderSettings[nameof(UsersHome)] ?? "%HOME%"); }
+	}
 
-		#region Properties
-		protected virtual string UsersHome
+	protected virtual string LogDir
+	{
+		get { return FileUtils.EvaluateSystemVariables(ProviderSettings[nameof(LogDir)]) ?? "/var/log"; }
+	}
+
+	#endregion
+
+	#region Files
+
+	public string UnixPath(string path) => path.Replace('\\', Path.DirectorySeparatorChar);
+
+	public string PathCombine(params string[] segments) => Path.Combine(segments);
+
+	public virtual string CreatePackageFolder(string initialPath)
+	{
+		return FileUtils.CreatePackageFolder(UnixPath(initialPath));
+	}
+
+	public virtual bool FileExists(string path)
+	{
+		return FileUtils.FileExists(UnixPath(path));
+	}
+
+	public virtual bool DirectoryExists(string path)
+	{
+		return FileUtils.DirectoryExists(UnixPath(path));
+	}
+
+	public virtual SystemFile GetFile(string path)
+	{
+		return FileUtils.GetFile(UnixPath(path));
+	}
+
+	public virtual SystemFile[] GetFiles(string path)
+	{
+		return FileUtils.GetFiles(UnixPath(path));
+	}
+
+	public virtual SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
+	{
+		return FileUtils.GetDirectoriesRecursive(rootFolder, UnixPath(path));
+	}
+
+	public virtual SystemFile[] GetFilesRecursive(string rootFolder, string path)
+	{
+		return FileUtils.GetFilesRecursive(rootFolder, UnixPath(path));
+	}
+
+	public virtual SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
+	{
+		return FileUtils.GetFilesRecursiveByPattern(rootFolder, UnixPath(path), pattern);
+	}
+
+	public virtual byte[] GetFileBinaryContent(string path)
+	{
+		return FileUtils.GetFileBinaryContent(UnixPath(path));
+	}
+
+	public virtual byte[] GetFileBinaryContentUsingEncoding(string path, string encoding)
+	{
+		return FileUtils.GetFileBinaryContent(UnixPath(path), encoding);
+	}
+
+	public virtual byte[] GetFileBinaryChunk(string path, int offset, int length)
+	{
+		return FileUtils.GetFileBinaryChunk(UnixPath(path), offset, length);
+	}
+
+	public virtual string GetFileTextContent(string path)
+	{
+		return FileUtils.GetFileTextContent(UnixPath(path));
+	}
+
+	public virtual void CreateFile(string path)
+	{
+		FileUtils.CreateFile(UnixPath(path));
+	}
+
+	public virtual void CreateDirectory(string path)
+	{
+		FileUtils.CreateDirectory(UnixPath(path));
+	}
+
+	public virtual void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime)
+	{
+		FileUtils.ChangeFileAttributes(UnixPath(path), createdTime, changedTime);
+	}
+
+	public virtual void DeleteFile(string path)
+	{
+		FileUtils.DeleteFile(UnixPath(path));
+	}
+
+	public virtual void DeleteFiles(string[] files)
+	{
+		FileUtils.DeleteFiles(files
+			.Select(file => UnixPath(file))
+			.ToArray());
+	}
+
+	public virtual void DeleteEmptyDirectories(string[] directories)
+	{
+		FileUtils.DeleteEmptyDirectories(directories
+			.Select(dir => UnixPath(dir))
+			.ToArray());
+	}
+
+	public virtual void UpdateFileBinaryContent(string path, byte[] content)
+	{
+		FileUtils.UpdateFileBinaryContent(UnixPath(path), content);
+	}
+
+	public virtual void UpdateFileBinaryContentUsingEncoding(string path, byte[] content, string encoding)
+	{
+		FileUtils.UpdateFileBinaryContent(UnixPath(path), content, encoding);
+	}
+
+	public virtual void AppendFileBinaryContent(string path, byte[] chunk)
+	{
+		FileUtils.AppendFileBinaryContent(UnixPath(path), chunk);
+	}
+
+	public virtual void UpdateFileTextContent(string path, string content)
+	{
+		FileUtils.UpdateFileTextContent(UnixPath(path), content);
+	}
+
+	public virtual void MoveFile(string sourcePath, string destinationPath)
+	{
+		FileUtils.MoveFile(UnixPath(sourcePath), UnixPath(destinationPath));
+	}
+
+	public virtual void CopyFile(string sourcePath, string destinationPath)
+	{
+		FileUtils.CopyFile(UnixPath(sourcePath), UnixPath(destinationPath));
+	}
+
+	public virtual void ZipFiles(string zipFile, string rootPath, string[] files)
+	{
+		FileUtils.ZipFiles(UnixPath(zipFile), UnixPath(rootPath), files
+			.Select(file => UnixPath(file))
+			.ToArray());
+	}
+
+	public virtual string[] UnzipFiles(string zipFile, string destFolder)
+	{
+		return FileUtils.UnzipFiles(UnixPath(zipFile), UnixPath(destFolder));
+	}
+
+	public virtual void CreateBackupZip(string zipFile, string rootPath)
+	{
+		FileUtils.CreateBackupZip(UnixPath(zipFile), UnixPath(rootPath));
+	}
+	#endregion
+
+	#region Synchronizing
+	public FolderGraph GetFolderGraph(string path)
+	{
+		path = UnixPath(path);
+		if (!path.EndsWith("/"))
+			path += "/";
+
+		FolderGraph graph = new FolderGraph();
+		graph.Hash = CalculateFileHash(path, path, graph.CheckSums);
+
+		// copy hash to arrays
+		graph.CheckSumKeys = new uint[graph.CheckSums.Count];
+		graph.CheckSumValues = new FileHash[graph.CheckSums.Count];
+		graph.CheckSums.Keys.CopyTo(graph.CheckSumKeys, 0);
+		graph.CheckSums.Values.CopyTo(graph.CheckSumValues, 0);
+
+		return graph;
+	}
+
+	public void ExecuteSyncActions(FileSyncAction[] actions)
+	{
+		// perform all operations but not delete ones
+		foreach (FileSyncAction action in actions)
 		{
-			get { return FileUtils.EvaluateSystemVariables(ProviderSettings[nameof(UsersHome)] ?? "%HOME%"); }
-		}
-
-		protected virtual string LogDir
-		{
-			get { return FileUtils.EvaluateSystemVariables(ProviderSettings[nameof(LogDir)]) ?? "/var/log"; }
-		}
-
-		#endregion
-
-		#region Files
-
-		public string UnixPath(string path) => path.Replace('\\', Path.DirectorySeparatorChar);
-
-		public string PathCombine(params string[] segments) => Path.Combine(segments);
-
-		public virtual string CreatePackageFolder(string initialPath)
-		{
-			return FileUtils.CreatePackageFolder(UnixPath(initialPath));
-		}
-
-		public virtual bool FileExists(string path)
-		{
-			return FileUtils.FileExists(UnixPath(path));
-		}
-
-		public virtual bool DirectoryExists(string path)
-		{
-			return FileUtils.DirectoryExists(UnixPath(path));
-		}
-
-		public virtual SystemFile GetFile(string path)
-		{
-			return FileUtils.GetFile(UnixPath(path));
-		}
-
-		public virtual SystemFile[] GetFiles(string path)
-		{
-			return FileUtils.GetFiles(UnixPath(path));
-		}
-
-		public virtual SystemFile[] GetDirectoriesRecursive(string rootFolder, string path)
-		{
-			return FileUtils.GetDirectoriesRecursive(rootFolder, UnixPath(path));
-		}
-
-		public virtual SystemFile[] GetFilesRecursive(string rootFolder, string path)
-		{
-			return FileUtils.GetFilesRecursive(rootFolder, UnixPath(path));
-		}
-
-		public virtual SystemFile[] GetFilesRecursiveByPattern(string rootFolder, string path, string pattern)
-		{
-			return FileUtils.GetFilesRecursiveByPattern(rootFolder, UnixPath(path), pattern);
-		}
-
-		public virtual byte[] GetFileBinaryContent(string path)
-		{
-			return FileUtils.GetFileBinaryContent(UnixPath(path));
-		}
-
-		public virtual byte[] GetFileBinaryContentUsingEncoding(string path, string encoding)
-		{
-			return FileUtils.GetFileBinaryContent(UnixPath(path), encoding);
-		}
-
-		public virtual byte[] GetFileBinaryChunk(string path, int offset, int length)
-		{
-			return FileUtils.GetFileBinaryChunk(UnixPath(path), offset, length);
-		}
-
-		public virtual string GetFileTextContent(string path)
-		{
-			return FileUtils.GetFileTextContent(UnixPath(path));
-		}
-
-		public virtual void CreateFile(string path)
-		{
-			FileUtils.CreateFile(UnixPath(path));
-		}
-
-		public virtual void CreateDirectory(string path)
-		{
-			FileUtils.CreateDirectory(UnixPath(path));
-		}
-
-		public virtual void ChangeFileAttributes(string path, DateTime createdTime, DateTime changedTime)
-		{
-			FileUtils.ChangeFileAttributes(UnixPath(path), createdTime, changedTime);
-		}
-
-		public virtual void DeleteFile(string path)
-		{
-			FileUtils.DeleteFile(UnixPath(path));
-		}
-
-		public virtual void DeleteFiles(string[] files)
-		{
-			FileUtils.DeleteFiles(files
-				.Select(file => UnixPath(file))
-				.ToArray());
-		}
-
-		public virtual void DeleteEmptyDirectories(string[] directories)
-		{
-			FileUtils.DeleteEmptyDirectories(directories
-				.Select(dir => UnixPath(dir))
-				.ToArray());
-		}
-
-		public virtual void UpdateFileBinaryContent(string path, byte[] content)
-		{
-			FileUtils.UpdateFileBinaryContent(UnixPath(path), content);
-		}
-
-		public virtual void UpdateFileBinaryContentUsingEncoding(string path, byte[] content, string encoding)
-		{
-			FileUtils.UpdateFileBinaryContent(UnixPath(path), content, encoding);
-		}
-
-		public virtual void AppendFileBinaryContent(string path, byte[] chunk)
-		{
-			FileUtils.AppendFileBinaryContent(UnixPath(path), chunk);
-		}
-
-		public virtual void UpdateFileTextContent(string path, string content)
-		{
-			FileUtils.UpdateFileTextContent(UnixPath(path), content);
-		}
-
-		public virtual void MoveFile(string sourcePath, string destinationPath)
-		{
-			FileUtils.MoveFile(UnixPath(sourcePath), UnixPath(destinationPath));
-		}
-
-		public virtual void CopyFile(string sourcePath, string destinationPath)
-		{
-			FileUtils.CopyFile(UnixPath(sourcePath), UnixPath(destinationPath));
-		}
-
-		public virtual void ZipFiles(string zipFile, string rootPath, string[] files)
-		{
-			FileUtils.ZipFiles(UnixPath(zipFile), UnixPath(rootPath), files
-				.Select(file => UnixPath(file))
-				.ToArray());
-		}
-
-		public virtual string[] UnzipFiles(string zipFile, string destFolder)
-		{
-			return FileUtils.UnzipFiles(UnixPath(zipFile), UnixPath(destFolder));
-		}
-
-		public virtual void CreateBackupZip(string zipFile, string rootPath)
-		{
-			FileUtils.CreateBackupZip(UnixPath(zipFile), UnixPath(rootPath));
-		}
-		#endregion
-
-		#region Synchronizing
-		public FolderGraph GetFolderGraph(string path)
-		{
-			if (!path.EndsWith("\\"))
-				path += "\\";
-
-			FolderGraph graph = new FolderGraph();
-			graph.Hash = CalculateFileHash(path, path, graph.CheckSums);
-
-			// copy hash to arrays
-			graph.CheckSumKeys = new uint[graph.CheckSums.Count];
-			graph.CheckSumValues = new FileHash[graph.CheckSums.Count];
-			graph.CheckSums.Keys.CopyTo(graph.CheckSumKeys, 0);
-			graph.CheckSums.Values.CopyTo(graph.CheckSumValues, 0);
-
-			return graph;
-		}
-
-		public void ExecuteSyncActions(FileSyncAction[] actions)
-		{
-			// perform all operations but not delete ones
-			foreach (FileSyncAction action in actions)
+			if (action.ActionType == SyncActionType.Create)
 			{
-				if (action.ActionType == SyncActionType.Create)
-				{
-					FileUtils.CreateDirectory(action.DestPath);
-					continue;
-				}
-				else if (action.ActionType == SyncActionType.Copy)
-				{
-					FileUtils.CopyFile(action.SrcPath, action.DestPath);
-				}
-				else if (action.ActionType == SyncActionType.Move)
-				{
-					FileUtils.MoveFile(action.SrcPath, action.DestPath);
-				}
+				FileUtils.CreateDirectory(UnixPath(action.DestPath));
+				continue;
 			}
-
-			// unzip file
-			// ...after delete
-
-			// delete files
-			foreach (FileSyncAction action in actions)
+			else if (action.ActionType == SyncActionType.Copy)
 			{
-				if (action.ActionType == SyncActionType.Delete)
-				{
-					FileUtils.DeleteFile(action.DestPath);
-				}
+				FileUtils.CopyFile(UnixPath(action.SrcPath), UnixPath(action.DestPath));
+			}
+			else if (action.ActionType == SyncActionType.Move)
+			{
+				FileUtils.MoveFile(UnixPath(action.SrcPath), UnixPath(action.DestPath));
 			}
 		}
 
-		private FileHash CalculateFileHash(string rootFolder, string path, Dictionary<uint, FileHash> checkSums)
+		// unzip file
+		// ...after delete
+
+		// delete files
+		foreach (FileSyncAction action in actions)
 		{
-			CRC32 crc32 = new CRC32();
-
-			// check if this is a folder
-			if (Directory.Exists(path))
+			if (action.ActionType == SyncActionType.Delete)
 			{
-				FileHash folder = new FileHash();
-				folder.IsFolder = true;
-				folder.Name = Path.GetFileName(path);
-				folder.FullName = path.Substring(rootFolder.Length - 1);
+				FileUtils.DeleteFile(UnixPath(action.DestPath));
+			}
+		}
+	}
 
-				// process child folders and files
-				List<string> childFiles = new List<string>();
-				childFiles.AddRange(Directory.GetDirectories(path));
-				childFiles.AddRange(Directory.GetFiles(path));
+	private FileHash CalculateFileHash(string rootFolder, string path, Dictionary<uint, FileHash> checkSums)
+	{
+		CRC32 crc32 = new CRC32();
 
-				foreach (string childFile in childFiles)
-				{
-					FileHash childHash = CalculateFileHash(rootFolder, childFile, checkSums);
-					folder.Files.Add(childHash);
+		// check if this is a folder
+		if (Directory.Exists(path))
+		{
+			FileHash folder = new FileHash();
+			folder.IsFolder = true;
+			folder.Name = Path.GetFileName(path);
+			folder.FullName = path.Substring(rootFolder.Length - 1);
 
-					// check sum
-					folder.CheckSum += childHash.CheckSum;
-					folder.CheckSum += ConvertCheckSumToInt(crc32.ComputeHash(Encoding.UTF8.GetBytes(childHash.Name)));
+			// process child folders and files
+			List<string> childFiles = new List<string>();
+			childFiles.AddRange(Directory.GetDirectories(path));
+			childFiles.AddRange(Directory.GetFiles(path));
 
-					//Debug.WriteLine(folder.CheckSum + " : " + folder.FullName);
-				}
+			foreach (string childFile in childFiles)
+			{
+				FileHash childHash = CalculateFileHash(rootFolder, childFile, checkSums);
+				folder.Files.Add(childHash);
 
-				// move list to array
-				folder.FilesArray = folder.Files.ToArray();
+				// check sum
+				folder.CheckSum += childHash.CheckSum;
+				folder.CheckSum += ConvertCheckSumToInt(crc32.ComputeHash(Encoding.UTF8.GetBytes(childHash.Name)));
 
-				if (!checkSums.ContainsKey(folder.CheckSum))
-					checkSums.Add(folder.CheckSum, folder);
-
-				return folder;
+				//Debug.WriteLine(folder.CheckSum + " : " + folder.FullName);
 			}
 
-			FileHash file = new FileHash();
-			file.Name = Path.GetFileName(path);
-			file.FullName = path.Substring(rootFolder.Length - 1);
+			// move list to array
+			folder.FilesArray = folder.Files.ToArray();
 
-			// calculate CRC32
-			using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+			if (!checkSums.ContainsKey(folder.CheckSum))
+				checkSums.Add(folder.CheckSum, folder);
+
+			return folder;
+		}
+
+		FileHash file = new FileHash();
+		file.Name = Path.GetFileName(path);
+		file.FullName = path.Substring(rootFolder.Length - 1);
+
+		// calculate CRC32
+		using (FileStream fs = File.Open(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+		{
+			file.CheckSum = ConvertCheckSumToInt(
+				crc32.ComputeHash(fs));
+		}
+
+		if (!checkSums.ContainsKey(file.CheckSum))
+			checkSums.Add(file.CheckSum, file);
+
+		//Debug.WriteLine(file.CheckSum + " : " + file.FullName);
+
+		return file;
+	}
+
+	private uint ConvertCheckSumToInt(byte[] sumBytes)
+	{
+		uint checkSum = (uint)sumBytes[0] << 24;
+		checkSum |= (uint)sumBytes[1] << 16;
+		checkSum |= (uint)sumBytes[2] << 8;
+		checkSum |= (uint)sumBytes[3] << 0;
+		return checkSum;
+	}
+	#endregion
+
+	public UnixFileMode GetUnixPermissions(string path)
+	{
+		path = UnixPath(path);
+		var info = UnixFileInfo.GetFileSystemEntry(path);
+		if (info != null && info.Exists) return (UnixFileMode)info.FileAccessPermissions;
+		throw new FileNotFoundException(path);
+	}
+
+	public void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false)
+	{
+		path = UnixPath(path);
+		if (!resetChildPermissions)
+		{
+			var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(path);
+			if (info != null && info.Exists)
 			{
-				file.CheckSum = ConvertCheckSumToInt(
-					crc32.ComputeHash(fs));
+				info.FileAccessPermissions = (FileAccessPermissions)mode;
+				info.Refresh();
 			}
-
-			if (!checkSums.ContainsKey(file.CheckSum))
-				checkSums.Add(file.CheckSum, file);
-
-			//Debug.WriteLine(file.CheckSum + " : " + file.FullName);
-
-			return file;
+			else throw new FileNotFoundException(path);
 		}
-
-		private uint ConvertCheckSumToInt(byte[] sumBytes)
+		else
 		{
-			uint checkSum = (uint)sumBytes[0] << 24;
-			checkSum |= (uint)sumBytes[1] << 16;
-			checkSum |= (uint)sumBytes[2] << 8;
-			checkSum |= (uint)sumBytes[3] << 0;
-			return checkSum;
-		}
-		#endregion
-
-		public UnixFileMode GetUnixPermissions(string path)
-		{
-			var info = UnixFileInfo.GetFileSystemEntry(UnixPath(path));
-			if (info != null && info.Exists) return (UnixFileMode)info.FileAccessPermissions;
-			throw new FileNotFoundException(path);
-		}
-
-		public void GrantUnixPermissions(string path, UnixFileMode mode, bool resetChildPermissions = false)
-		{
-			if (!resetChildPermissions)
+			foreach (var e in Directory.EnumerateFileSystemEntries(path))
 			{
-				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(path));
+				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
 				if (info != null && info.Exists)
 				{
 					info.FileAccessPermissions = (FileAccessPermissions)mode;
 					info.Refresh();
 				}
-				else throw new FileNotFoundException(path);
-			}
-			else
-			{
-				foreach (var e in Directory.EnumerateFileSystemEntries(UnixPath(path)))
-				{
-					var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
-					if (info != null && info.Exists)
-					{
-						info.FileAccessPermissions = (FileAccessPermissions)mode;
-						info.Refresh();
-					}
-					else throw new FileNotFoundException(e);
-				}
+				else throw new FileNotFoundException(e);
 			}
 		}
+	}
 
-		public void ChangeUnixFileOwner(string path, string owner, string group, bool setChildren = false)
+	public void ChangeUnixFileOwner(string path, string owner, string group, bool setChildren = false)
+	{
+		if (!setChildren)
 		{
-			if (!setChildren)
+			var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(path));
+			if (info != null && info.Exists)
 			{
-				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(path));
+				info.SetOwner(owner, group);
+				info.Refresh();
+			}
+		}
+		else
+		{
+			foreach (var e in Directory.EnumerateFileSystemEntries(UnixPath(path), "*.*", SearchOption.AllDirectories))
+			{
+				var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
 				if (info != null && info.Exists)
 				{
 					info.SetOwner(owner, group);
 					info.Refresh();
 				}
 			}
-			else
+		}
+	}
+	public UnixFileOwner GetUnixFileOwner(string file)
+	{
+		var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(UnixPath(file));
+		return new UnixFileOwner
+		{
+			Owner = info.OwnerUser.UserName,
+			Group = info.OwnerGroup.GroupName
+		};
+	}
+	public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+	{
+		throw new NotImplementedException();
+	}
+
+	public Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
+	{
+		throw new NotImplementedException();
+	}
+
+	public void DeleteDirectoryRecursive(string rootPath)
+	{
+		FileUtils.DeleteDirectoryRecursive(UnixPath(rootPath));
+	}
+
+	public override bool IsInstalled()
+	{
+		return !OSInfo.IsWindows;
+	}
+	#region HostingServiceProvider methods
+	public override string[] Install()
+	{
+		List<string> messages = new List<string>();
+
+		// create folder if it not exists
+		try
+		{
+			if (!FileUtils.DirectoryExists(UsersHome))
 			{
-				foreach (var e in Directory.EnumerateFileSystemEntries(UnixPath(path)))
-				{
-					var info = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(e);
-					if (info != null && info.Exists)
-					{
-						info.SetOwner(owner, group);
-						info.Refresh();
-					}
-				}
+				FileUtils.CreateDirectory(UsersHome);
 			}
 		}
-		public void SetQuotaLimitOnFolder(string folderPath, string shareNameDrive, QuotaType quotaType, string quotaLimit, int mode, string wmiUserName, string wmiPassword)
+		catch (Exception ex)
 		{
-			throw new NotImplementedException();
+			messages.Add(String.Format("Folder '{0}' could not be created: {1}",
+				 UsersHome, ex.Message));
 		}
+		return messages.ToArray();
+	}
 
-		public Quota GetQuotaOnFolder(string folderPath, string wmiUserName, string wmiPassword)
+	public override void DeleteServiceItems(ServiceProviderItem[] items)
+	{
+		foreach (ServiceProviderItem item in items)
 		{
-			throw new NotImplementedException();
-		}
-
-		public void DeleteDirectoryRecursive(string rootPath)
-		{
-			FileUtils.DeleteDirectoryRecursive(UnixPath(rootPath));
-		}
-
-		public override bool IsInstalled()
-		{
-			return !OSInfo.IsWindows;
-		}
-		#region HostingServiceProvider methods
-		public override string[] Install()
-		{
-			List<string> messages = new List<string>();
-
-			// create folder if it not exists
 			try
 			{
-				if (!FileUtils.DirectoryExists(UsersHome))
-				{
-					FileUtils.CreateDirectory(UsersHome);
-				}
+				if (item is HomeFolder)
+					// delete home folder
+					DeleteFile(item.Name);
 			}
 			catch (Exception ex)
 			{
-				messages.Add(String.Format("Folder '{0}' could not be created: {1}",
-					 UsersHome, ex.Message));
+				Log.WriteError(String.Format("Error deleting '{0}' {1}", item.Name, item.GetType().Name), ex);
 			}
-			return messages.ToArray();
 		}
+	}
 
-		public override void DeleteServiceItems(ServiceProviderItem[] items)
+	public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
+	{
+		List<ServiceProviderItemDiskSpace> itemsDiskspace = new List<ServiceProviderItemDiskSpace>();
+		foreach (ServiceProviderItem item in items)
 		{
-			foreach (ServiceProviderItem item in items)
+			if (item is HomeFolder)
 			{
 				try
 				{
-					if (item is HomeFolder)
-						// delete home folder
-						DeleteFile(item.Name);
+					string path = UnixPath(item.Name);
+
+					Log.WriteStart(String.Format("Calculating '{0}' folder size", path));
+
+					// calculate disk space
+					ServiceProviderItemDiskSpace diskspace = new ServiceProviderItemDiskSpace();
+					diskspace.ItemId = item.Id;
+					diskspace.DiskSpace = FileUtils.CalculateFolderSize(path);
+					itemsDiskspace.Add(diskspace);
+
+					Log.WriteEnd(String.Format("Calculating '{0}' folder size", path));
 				}
 				catch (Exception ex)
 				{
-					Log.WriteError(String.Format("Error deleting '{0}' {1}", item.Name, item.GetType().Name), ex);
+					Log.WriteError(ex);
 				}
 			}
 		}
+		return itemsDiskspace.ToArray();
+	}
+	#endregion
 
-		public override ServiceProviderItemDiskSpace[] GetServiceItemsDiskSpace(ServiceProviderItem[] items)
+	protected string LogName(string fullpath)
+	{
+		if (!(fullpath.EndsWith(".log") || fullpath.EndsWith(".log.gz"))) return null;
+
+		var logDir = LogDir;
+		if (logDir.EndsWith($"{Path.DirectorySeparatorChar}")) logDir = logDir.Substring(0, logDir.Length - 1);
+
+		return Regex.Replace(fullpath.Substring(logDir.Length), "(?:\\.?[0-9]+)?(?:\\.log(?:\\.gz)?$)", "");
+	}
+
+	protected IEnumerable<string> EnumerateLogFiles(string path)
+	{
+		string[] files = null;
+		try
 		{
-			List<ServiceProviderItemDiskSpace> itemsDiskspace = new List<ServiceProviderItemDiskSpace>();
-			foreach (ServiceProviderItem item in items)
+			files = Directory.EnumerateFiles(path, "*.*").ToArray();
+		}
+		catch
+		{
+			files = new string[0];
+		}
+
+		foreach (var file in files)
+		{
+			if (file.EndsWith("log") || file.EndsWith(".log.gz"))
 			{
-				if (item is HomeFolder)
+				yield return file;
+			}
+		}
+
+		string[] dirs = null;
+		try
+		{
+			dirs = Directory.EnumerateDirectories(path, "*.*", SearchOption.TopDirectoryOnly).ToArray();
+		}
+		catch
+		{
+			dirs = new string[0];
+		}
+
+		foreach (var dir in dirs)
+		{
+			foreach (var file in EnumerateLogFiles(dir))
+			{
+				yield return file;
+			}
+		}
+	}
+
+	public List<string> GetLogNames()
+	{
+		var logs = EnumerateLogFiles(LogDir);
+
+		return logs
+			.Select(log => LogName(log))
+			.Where(log => log != null && !log.Contains(':'))
+			.Distinct()
+			.ToList();
+	}
+
+	private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerableRaw(string logName)
+	{
+		if (string.IsNullOrEmpty(logName)) yield break;
+
+		var logs = EnumerateLogFiles(LogDir);
+		logs = logs.Where(l => LogName(l) == logName);
+		foreach (var log in logs)
+		{
+			if (log != null)
+			{
+				Stream file = null;
+				try
 				{
-					try
-					{
-						string path = item.Name;
-
-						Log.WriteStart(String.Format("Calculating '{0}' folder size", path));
-
-						// calculate disk space
-						ServiceProviderItemDiskSpace diskspace = new ServiceProviderItemDiskSpace();
-						diskspace.ItemId = item.Id;
-						diskspace.DiskSpace = FileUtils.CalculateFolderSize(path);
-						itemsDiskspace.Add(diskspace);
-
-						Log.WriteEnd(String.Format("Calculating '{0}' folder size", path));
-					}
-					catch (Exception ex)
-					{
-						Log.WriteError(ex);
-					}
+					file = new FileStream(log, FileMode.Open, FileAccess.Read);
 				}
-			}
-			return itemsDiskspace.ToArray();
-		}
-		#endregion
-
-		protected string LogName(string fullpath)
-		{
-			if (!(fullpath.EndsWith(".log") || fullpath.EndsWith(".log.gz"))) return null;
-
-			var logDir = LogDir;
-			if (logDir.EndsWith($"{Path.DirectorySeparatorChar}")) logDir = logDir.Substring(0, logDir.Length - 1);
-
-			return Regex.Replace(fullpath.Substring(logDir.Length), "(?:\\.?[0-9]+)?(?:\\.log(?:\\.gz)?$)", "");
-		}
-
-		protected IEnumerable<string> EnumerateLogFiles(string path)
-		{
-			string[] files = null;
-			try
-			{
-				files = Directory.EnumerateFiles(path, "*.*").ToArray();
-			}
-			catch
-			{
-				files = new string[0];
-			}
-
-			foreach (var file in files)
-			{
-				if (file.EndsWith("log") || file.EndsWith(".log.gz"))
+				catch
 				{
-					yield return file;
+					yield break;
 				}
-			}
+				if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
+				TextReader reader = new StreamReader(file, Encoding.UTF8, true);
 
-			string[] dirs = null;
-			try
-			{
-				dirs = Directory.EnumerateDirectories(path, "*.*", SearchOption.TopDirectoryOnly).ToArray();
-			}
-			catch
-			{
-				dirs = new string[0];
-			}
+				var text = reader.ReadToEnd();
 
-			foreach (var dir in dirs)
-			{
-				foreach (var file in EnumerateLogFiles(dir))
+				var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?)", RegexOptions.Singleline);
+
+				if (matches.Count > 0)
 				{
-					yield return file;
-				}
-			}
-		}
 
-		public List<string> GetLogNames()
-		{
-			var logs = EnumerateLogFiles(LogDir);
-
-			return logs
-				.Select(log => LogName(log))
-				.Where(log => log != null && !log.Contains(':'))
-				.Distinct()
-				.ToList();
-		}
-
-		private IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerableRaw(string logName)
-		{
-			if (string.IsNullOrEmpty(logName)) yield break;
-
-			var logs = EnumerateLogFiles(LogDir);
-			logs = logs.Where(l => LogName(l) == logName);
-			foreach (var log in logs)
-			{
-				if (log != null)
-				{
-					Stream file = null;
-					try
+					foreach (Match match in matches)
 					{
-						file = new FileStream(log, FileMode.Open, FileAccess.Read);
-					}
-					catch
-					{
-						yield break;
-					}
-					if (Path.GetExtension(log) == ".gz") file = new GZipStream(file, CompressionMode.Decompress);
-					TextReader reader = new StreamReader(file, Encoding.UTF8, true);
-
-					var text = reader.ReadToEnd();
-
-					var matches = Regex.Matches(text, @"(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?\s*(?<text>.*?)\s*(?=$|(?<=^|\n)(?<date>(?:[0-9]{4}-[0-9]{2}-[0-9]{2}|[A-Za-z]+\s+[0-9]+))(?:(?:T|\s+)(?<time>[0-9]{2}:[0-9]{2}(?::[0-9]{2}(?:(?:,|\.)[0-9]+|Z|\+[0-9]+|-[0-9]+)?)?))?)", RegexOptions.Singleline);
-
-					if (matches.Count > 0)
-					{
-
-						foreach (Match match in matches)
+						DateTime date, time;
+						var datetxt = match.Groups["date"].Value;
+						if (!DateTime.TryParse(datetxt, out date)) yield break;
+						if (match.Groups["time"].Success)
 						{
-							DateTime date, time;
-							var datetxt = match.Groups["date"].Value;
-							if (!DateTime.TryParse(datetxt, out date)) yield break;
-							if (match.Groups["time"].Success)
+							var timetxt = match.Groups["time"].Value;
+							if (!timetxt.Contains("Z") || !DateTime.TryParse($"{datetxt}T{timetxt}", out time))
 							{
-								var timetxt = match.Groups["time"].Value;
-								if (!timetxt.Contains("Z") || !DateTime.TryParse($"{datetxt}T{timetxt}", out time))
-								{
-									if (DateTime.TryParse(timetxt, out time)) time = date.Add(time.TimeOfDay);
-									else time = date;
-								}
+								if (DateTime.TryParse(timetxt, out time)) time = date.Add(time.TimeOfDay);
+								else time = date;
 							}
-							else time = date;
-
-							var msg = match.Groups["text"].Value ?? "";
-
-							var entry = new SystemLogEntry()
-							{
-								Created = time,
-								Category = logName,
-								EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
-									SystemLogEntryType.Error :
-									(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
-									SystemLogEntryType.Warning : SystemLogEntryType.Information),
-								MachineName = Environment.MachineName,
-								EventID = 0,
-								Message = msg,
-								Source = logName,
-								UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
-							};
-							yield return entry;
 						}
-					}
-					else if (!string.IsNullOrWhiteSpace(text))
-					{
-						var created = File.GetCreationTimeUtc(log);
+						else time = date;
+
+						var msg = match.Groups["text"].Value ?? "";
+
 						var entry = new SystemLogEntry()
 						{
-							Created = created,
+							Created = time,
 							Category = logName,
-							EntryType = text.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
-									SystemLogEntryType.Error :
-									(text.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
-									SystemLogEntryType.Warning : SystemLogEntryType.Information),
+							EntryType = msg.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+								SystemLogEntryType.Error :
+								(msg.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+								SystemLogEntryType.Warning : SystemLogEntryType.Information),
 							MachineName = Environment.MachineName,
 							EventID = 0,
-							Message = text,
+							Message = msg,
 							Source = logName,
 							UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
 						};
 						yield return entry;
 					}
 				}
+				else if (!string.IsNullOrWhiteSpace(text))
+				{
+					var created = File.GetCreationTimeUtc(log);
+					var entry = new SystemLogEntry()
+					{
+						Created = created,
+						Category = logName,
+						EntryType = text.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0 ?
+								SystemLogEntryType.Error :
+								(text.IndexOf("warning", StringComparison.OrdinalIgnoreCase) >= 0 ?
+								SystemLogEntryType.Warning : SystemLogEntryType.Information),
+						MachineName = Environment.MachineName,
+						EventID = 0,
+						Message = text,
+						Source = logName,
+						UserName = "" //Process.GetCurrentProcess().StartInfo.UserName
+					};
+					yield return entry;
+				}
 			}
 		}
-		public IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerable(string logName)
-		{
-			return GetLogEntriesAsEnumerableRaw(logName)
-				.GroupBy(log => log.Created)
-				.Select(log =>
+	}
+	public IEnumerable<SystemLogEntry> GetLogEntriesAsEnumerable(string logName)
+	{
+		return GetLogEntriesAsEnumerableRaw(logName)
+			.GroupBy(log => log.Created)
+			.Select(log =>
+			{
+				if (log.Count() > 1)
 				{
-					if (log.Count() > 1)
+
+					var entry = log.FirstOrDefault();
+					var str = new StringBuilder();
+
+					foreach (var e in log)
 					{
-
-						var entry = log.FirstOrDefault();
-						var str = new StringBuilder();
-
-						foreach (var e in log)
-						{
-							str.AppendLine(e.Message);
-						}
-						entry.Message = str.ToString();
-						return entry;
+						str.AppendLine(e.Message);
 					}
-					return log.FirstOrDefault();
-				});
-		}
-		public List<SystemLogEntry> GetLogEntries(string logName)
-		{
-			return GetLogEntriesAsEnumerable(logName).ToList();
-		}
-
-		public SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
-		{
-			SystemLogEntry[] entries;
-			entries = GetLogEntriesAsEnumerable(logName)
-				.Skip(startRow)
-				.Take(maximumRows)
-				.ToArray();
-			return new SystemLogEntriesPaged()
-			{
-				Entries = entries,
-				Count = entries.Length
-			};
-		}
-
-		public void ClearLog(string logName)
-		{
-			var logs = Directory.EnumerateFiles(LogDir, "*.*", SearchOption.AllDirectories);
-			logs = logs.Where(l => LogName(l) == logName);
-			foreach (var log in logs)
-			{
-				File.WriteAllText(log, "");
-			}
-		}
-
-		public OSProcess[] GetOSProcesses()
-		{
-			// Use POSIX ps command
-			var env = new StringDictionary();
-			env["COLUMNS"] = "1024";
-			var output = Shell.Default.Exec("ps -A -o pid=,user=,rss=,vsz=,pcpu=,args=", null, env).Output().Result;
-			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
-			if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase))
-			{	// error using -o rss (-o rss option is not POSIX), use POSIX ps, use -o vsz instead
-				output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,vsz=,pcpu=,args=", null, env).Output().Result;
-			}
-			if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
-			if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase)) throw new PlatformNotSupportedException("Error: ps on this OS not POSIX compliant.");
-
-			var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+(?<mem>[0-9]+)\s+(?<vmem>[0-9]+)\s+(?<cpu>[0-9\.,]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
-
-			return matches
-				.OfType<Match>()
-				.Select(m =>
-				{
-					var cmd = (m.Groups["cmd"].Success ? m.Groups["cmd"].Value : "").Trim('"');
-					int pid = -1;
-					int.TryParse(m.Groups["pid"].Value, out pid);
-					var name = Path.GetFileName(cmd);
-					long mem = 0;
-					if (!long.TryParse(m.Groups["mem"].Value, out mem))
-					{
-						long.TryParse(m.Groups["vmem"].Value, out mem);
-					};
-					mem = mem * 1024;
-					float cpu = 0;
-					float.TryParse(m.Groups["cpu"].Value, out cpu);
-
-					return new OSProcess()
-					{
-						Pid = pid,
-						Name = name,
-						MemUsage = mem,
-						Command = cmd,
-						CpuUsage = cpu / 100,
-						Arguments = m.Groups["args"].Value,
-						Username = m.Groups["user"].Value
-					};
-				})
-				.OrderBy(p => p.Name)
-				.ToArray();
-		}
-
-		public void TerminateOSProcess(int pid)
-		{
-			try
-			{
-				var process = Process.GetProcessById(pid);
-				if (process != null) process.Kill();
-			}
-			catch (Exception ex)
-			{
-			}
-		}
-
-		public OSService[] GetOSServices()
-		{
-			return ServiceController.All().ToArray();
-		}
-
-		public void ChangeOSServiceStatus(string id, OSServiceStatus status)
-		{
-			ServiceController.ChangeStatus(id, status);
-		}
-
-		public void RebootSystem()
-		{
-			ServiceController.SystemReboot();
-		}
-
-		public Memory GetMemory()
-		{
-			if (Shell.Default.Find("free") != null)
-			{
-				var output = Shell.Default.Exec("free --kilo -w").Output().Result;
-				if (output == null) throw new PlatformNotSupportedException("free command not found on this system.");
-				var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2})(?<freeswap>[0-9]+))");
-				ulong free, total, freeswap, totalswap;
-				if (matches.Count == 4 &&
-					ulong.TryParse(matches[0].Value, out total) &&
-					ulong.TryParse(matches[1].Value, out free) &&
-					ulong.TryParse(matches[2].Value, out totalswap) &&
-					ulong.TryParse(matches[3].Value, out freeswap))
-				{
-					return new Memory()
-					{
-						TotalVisibleMemorySizeKB = total,
-						FreePhysicalMemoryKB = free,
-						TotalVirtualMemorySizeKB = totalswap,
-						FreeVirtualMemoryKB = freeswap
-					};
+					entry.Message = str.ToString();
+					return entry;
 				}
-			}
-			return new Memory();
-		}
-		public string ExecuteSystemCommand(string user, string password, string path, string args)
+				return log.FirstOrDefault();
+			});
+	}
+	public List<SystemLogEntry> GetLogEntries(string logName)
+	{
+		return GetLogEntriesAsEnumerable(logName).ToList();
+	}
+
+	public SystemLogEntriesPaged GetLogEntriesPaged(string logName, int startRow, int maximumRows)
+	{
+		SystemLogEntry[] entries;
+		entries = GetLogEntriesAsEnumerable(logName)
+			.Skip(startRow)
+			.Take(maximumRows)
+			.ToArray();
+		return new SystemLogEntriesPaged()
 		{
-			try
-			{
-				string result = FileUtils.ExecuteSystemCommand(user, password, path, args);
-				return result;
-			}
-			catch (Exception ex)
-			{
-				throw;
-			}
-		}
-
-		public bool IsUnix() => true;
-
-		Shell bash, sh, ps;
-
-		Installer apt, yum, brew, zypper, apk, dnf, pacman;
-
-		public Shell Bash => bash ??= new Bash();
-		public Shell Sh => sh ??= new Sh();
-		public Shell PowerShell => ps ??= new UnixPowerShell();
-		public Installer Apt => apt ??= new Apt();
-		public Installer Yum => yum ??= new Yum();
-		public Installer Brew => brew ??= new Brew();
-		public Installer Zypper => zypper ??= new Zypper();
-		public Installer Dnf => dnf ??= new Dnf();
-		public Installer Pacman => pacman ??= new Pacman();
-		public Installer Apk => apk ??= new Apk();
-
-		public virtual Shell DefaultShell => Bash;
-		public virtual Installer DefaultInstaller
-		{
-			get
-			{
-				switch (OSInfo.OSFlavor)
-				{
-					case OSFlavor.Debian:
-					case OSFlavor.Mint:
-					case OSFlavor.Ubuntu: return Apt;
-					case OSFlavor.Mac: return Brew;
-					case OSFlavor.Fedora:
-						if (OSInfo.OSVersion.Major >= 22 && Dnf.IsInstallerInstalled) return Dnf;
-						else return Yum;
-					case OSFlavor.RedHat:
-						if (OSInfo.OSVersion.Major >= 9 && Dnf.IsInstallerInstalled) return Dnf;
-						else return Yum;
-					case OSFlavor.CentOS:
-						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
-						else return Yum;
-					case OSFlavor.Oracle:
-						if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
-						else return Yum;
-					case OSFlavor.SUSE: return Zypper;
-					case OSFlavor.Arch: return Pacman;
-					case OSFlavor.Alpine: return Apk;
-					default: throw new NotSupportedException("No installer defined for this operating system.");
-				}
-			}
-		}
-		public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
-		{
-			OSPlatform = OSInfo.OSPlatform,
-			IsCore = OSInfo.IsCore
+			Entries = entries,
+			Count = entries.Length
 		};
+	}
 
-		public Web.IWebServer WebServer => throw new NotImplementedException();
-
-		ServiceController serviceController = null;
-		bool isInstalledChecked = false;
-		public ServiceController ServiceController
+	public void ClearLog(string logName)
+	{
+		var logs = Directory.EnumerateFiles(LogDir, "*.*", SearchOption.AllDirectories);
+		logs = logs.Where(l => LogName(l) == logName);
+		foreach (var log in logs)
 		{
-			get
+			File.WriteAllText(log, "");
+		}
+	}
+
+	public OSProcess[] GetOSProcesses()
+	{
+		// Use POSIX ps command
+		var env = new Dictionary<string, string>() { { "COLUMNS", "1024" } };
+		var output = Shell.Default.Exec("ps -A -o pid=,user=,rss=,vsz=,pcpu=,args=", null, env).Output().Result;
+		if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
+		if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase))
+		{	// error using -o rss (-o rss option is not POSIX), use POSIX ps, use -o vsz instead
+			output = Shell.Default.Exec("ps -A -o pid=,user=,vsz=,vsz=,pcpu=,args=", null, env).Output().Result;
+		}
+		if (output == null) throw new PlatformNotSupportedException("ps command not found on this system.");
+		if (Regex.IsMatch(output, @"^[^\n]*?error", RegexOptions.Singleline | RegexOptions.IgnoreCase)) throw new PlatformNotSupportedException("Error: ps on this OS not POSIX compliant.");
+
+		var matches = Regex.Matches(output, @"^\s*(?<pid>[0-9]+)\s+(?<user>[^\s]+)\s+(?<mem>[0-9]+)\s+(?<vmem>[0-9]+)\s+(?<cpu>[0-9\.,]+)\s+(?<cmd>[^""][^\s$]*|""[^""]*"")\s+(?<args>.*?)\s*$", RegexOptions.Multiline);
+
+		return matches
+			.OfType<Match>()
+			.Select(m =>
 			{
-				if (!isInstalledChecked)
+				var cmd = (m.Groups["cmd"].Success ? m.Groups["cmd"].Value : "").Trim('"');
+				int pid = -1;
+				int.TryParse(m.Groups["pid"].Value, out pid);
+				var name = Path.GetFileName(cmd);
+				long mem = 0;
+				if (!long.TryParse(m.Groups["mem"].Value, out mem))
 				{
-					isInstalledChecked = true;
-					serviceController = serviceController ?? (serviceController = new SystemdServiceController());
-					if (!serviceController.IsInstalled) throw new PlatformNotSupportedException("This operating system does not use Systemd.");
-				}
-				return serviceController;
+					long.TryParse(m.Groups["vmem"].Value, out mem);
+				};
+				mem = mem * 1024;
+				float cpu = 0;
+				float.TryParse(m.Groups["cpu"].Value, out cpu);
+
+				return new OSProcess()
+				{
+					Pid = pid,
+					Name = name,
+					MemUsage = mem,
+					Command = cmd,
+					CpuUsage = cpu / 100,
+					Arguments = m.Groups["args"].Value,
+					Username = m.Groups["user"].Value
+				};
+			})
+			.OrderBy(p => p.Name)
+			.ToArray();
+	}
+
+	public void TerminateOSProcess(int pid)
+	{
+		try
+		{
+			var process = Process.GetProcessById(pid);
+			if (process != null) process.Kill();
+		}
+		catch (Exception ex)
+		{
+		}
+	}
+
+	public OSService[] GetOSServices()
+	{
+		return ServiceController.All().ToArray();
+	}
+
+	public void ChangeOSServiceStatus(string id, OSServiceStatus status)
+	{
+		ServiceController.ChangeStatus(id, status);
+	}
+
+	public void RebootSystem()
+	{
+		ServiceController.SystemReboot();
+	}
+
+	public Memory GetMemory()
+	{
+		if (Shell.Default.Find("free") != null)
+		{
+			var output = Shell.Default.Exec("free --kilo -w").Output().Result;
+			if (output == null) throw new PlatformNotSupportedException("free command not found on this system.");
+			var matches = Regex.Matches(output, @"(?:(?<=Mem:\s+)(?<total>[0-9]+))|(?:(?<=Mem:\s+(?:[0-9]+\s+){2})(?<free>[0-9]+))|(?:(?<=Swap:\s+)(?<totalswap>[0-9]+))|(?:(?<=Swap:\s+(?:[0-9]+\s+){2})(?<freeswap>[0-9]+))");
+			ulong free, total, freeswap, totalswap;
+			if (matches.Count == 4 &&
+				ulong.TryParse(matches[0].Value, out total) &&
+				ulong.TryParse(matches[1].Value, out free) &&
+				ulong.TryParse(matches[2].Value, out totalswap) &&
+				ulong.TryParse(matches[3].Value, out freeswap))
+			{
+				return new Memory()
+				{
+					TotalVisibleMemorySizeKB = total,
+					FreePhysicalMemoryKB = free,
+					TotalVirtualMemorySizeKB = totalswap,
+					FreeVirtualMemoryKB = freeswap
+				};
 			}
 		}
+		return new Memory();
+	}
+	public string ExecuteSystemCommand(string user, string password, string path, string args)
+	{
+		try
+		{
+			string result = FileUtils.ExecuteSystemCommand(user, password, path, args);
+			return result;
+		}
+		catch (Exception ex)
+		{
+			throw;
+		}
+	}
 
-		public bool IsSystemd => new SystemdServiceController().IsInstalled;
+	public List<DnsRecordInfo> GetDomainDnsRecords(string domain, string dnsServer, DnsRecordType recordType, int pause)
+		=> throw new NotImplementedException();
 
-		static TraceListener defaultTraceListener = null;
-		public TraceListener DefaultTraceListener => defaultTraceListener ?? (defaultTraceListener = new SyslogTraceListener());
+	public bool IsUnix() => true;
+
+	Shell bash, sh, ps;
+
+	Installer apt, yum, brew, zypper, apk, dnf, pacman;
+
+	public Shell Bash => bash ??= new Bash();
+	public Shell Sh => sh ??= new Sh();
+	public Shell PowerShell => ps ??= new UnixPowerShell();
+	public Installer Apt => apt ??= new Apt();
+	public Installer Yum => yum ??= new Yum();
+	public Installer Brew => brew ??= new Brew();
+	public Installer Zypper => zypper ??= new Zypper();
+	public Installer Dnf => dnf ??= new Dnf();
+	public Installer Pacman => pacman ??= new Pacman();
+	public Installer Apk => apk ??= new Apk();
+
+	public virtual Shell DefaultShell => Bash;
+	public virtual Installer DefaultInstaller
+	{
+		get
+		{
+			switch (OSInfo.OSFlavor)
+			{
+				case OSFlavor.Debian:
+				case OSFlavor.Mint:
+				case OSFlavor.Ubuntu: return Apt;
+				case OSFlavor.Mac: return Brew;
+				case OSFlavor.Fedora:
+					if (OSInfo.OSVersion.Major >= 22 && Dnf.IsInstallerInstalled) return Dnf;
+					else return Yum;
+				case OSFlavor.RedHat:
+					if (OSInfo.OSVersion.Major >= 9 && Dnf.IsInstallerInstalled) return Dnf;
+					else return Yum;
+				case OSFlavor.CentOS:
+					if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
+					else return Yum;
+				case OSFlavor.Oracle:
+					if (OSInfo.OSVersion.Major >= 8 && Dnf.IsInstallerInstalled) return Dnf;
+					else return Yum;
+				case OSFlavor.SUSE: return Zypper;
+				case OSFlavor.Arch: return Pacman;
+				case OSFlavor.Alpine: return Apk;
+				default: throw new NotSupportedException("No installer defined for this operating system.");
+			}
+		}
+	}
+	public OSPlatformInfo GetOSPlatform() => new OSPlatformInfo()
+	{
+		OSPlatform = OSInfo.OSPlatform,
+		IsCore = OSInfo.IsCore
+	};
+
+	public Web.IWebServer WebServer => throw new NotImplementedException();
+
+	ServiceController serviceController = null;
+	bool isInstalledChecked = false;
+	public ServiceController ServiceController
+	{
+		get
+		{
+			if (!isInstalledChecked)
+			{
+				isInstalledChecked = true;
+				serviceController = serviceController ?? (serviceController = new SystemdServiceController());
+				if (!serviceController.IsInstalled) throw new PlatformNotSupportedException("This operating system does not use Systemd.");
+			}
+			return serviceController;
+		}
+	}
+
+	public bool IsSystemd => new SystemdServiceController().IsInstalled;
+
+	static TraceListener defaultTraceListener = null;
+	public TraceListener DefaultTraceListener => defaultTraceListener ?? (defaultTraceListener = new SyslogTraceListener());
     }
-}

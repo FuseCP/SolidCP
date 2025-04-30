@@ -1,2 +1,2 @@
 #!/bin/sh
-exec solidcp-universalinstaller
+exec solidcp-installer

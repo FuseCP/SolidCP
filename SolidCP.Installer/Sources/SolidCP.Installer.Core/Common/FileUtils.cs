@@ -258,6 +258,15 @@ namespace SolidCP.Installer.Common
         }
 
         /// <summary>
+        /// Returns application offline directory.
+        /// </summary>
+        /// <returns>Application offline directory.</returns>
+        public static string GetOfflineDataDirectory()
+        {
+            return Path.Combine(GetCurrentDirectory(), "Offline");
+        }
+
+        /// <summary>
         /// Deletes application's Data folder.
         /// </summary>
         public static void DeleteDataDirectory()

@@ -61,6 +61,16 @@ namespace SolidCP.UniversalInstaller.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap BannerImage {
+            get {
+                object obj = ResourceManager.GetObject("BannerImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon Computer16 {
@@ -97,6 +107,26 @@ namespace SolidCP.UniversalInstaller.Properties {
             get {
                 object obj = ResourceManager.GetObject("Folder32", resourceCulture);
                 return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Icons_MenuFileOpenIcon {
+            get {
+                object obj = ResourceManager.GetObject("Icons_MenuFileOpenIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MarginImage {
+            get {
+                object obj = ResourceManager.GetObject("MarginImage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         

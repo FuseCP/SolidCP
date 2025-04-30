@@ -123,7 +123,7 @@
   <data name="lblEnableNotify.Text" xml:space="preserve">
     <value>Enable Client Notification:</value>
   </data>
-  <data name="lblIncludeNonExistenDomains.Text" xml:space="preserve">
+  <data name="lblIncludeNonExistentDomains.Text" xml:space="preserve">
     <value>Include Non-Existent Domains:</value>
   </data>
   <data name="lblMailTo.Text" xml:space="preserve">

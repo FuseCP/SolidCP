@@ -16,6 +16,8 @@
 </asp:UpdatePanel>
 
 <script type="text/javascript">
+	//# sourceURL=FileManager.js;
+	
 	var gvFilesID = '<asp:Literal id="gvFilesID" runat="server"/>';
 	function checkAll(selectAllCheckbox) {
 	    //get all checkbox and select it
@@ -67,6 +69,20 @@
 		ShowProgressDialog(FM_UNZIP_FILES_MESSAGE);
     }
   
+    function ShowTextBox(scope) {
+        var text;
+        var textbox;
+        text = $("." + scope + "Text");
+        textbox = $("." + scope + "TextBox");
+        if (text.is(":visible")) {
+            textbox.val(text.text());
+        } else {
+            text.text(textbox.val());
+        }
+        text.toggle();
+        textbox.toggle();
+    }
+
     Sys.Application.add_load(modalPopupFocus);
 </script>
 
@@ -441,9 +457,8 @@
     TargetControlID="btnRenameFile" PopupControlID="RenameFilePanel"
     BackgroundCssClass="modalBackground" DropShadow="false" />
     
-    
-    
-<asp:Panel ID="PermissionsFilePanel" runat="server" CssClass="PopupContainer" style="display:none">
+
+<asp:Panel ID="PermissionsWindowsFilePanel" runat="server" CssClass="PopupContainer" style="display:none">
     <div class="widget">
         <div class="widget-header clearfix">
             <h3><i class="fa fa-users"></i> <scp:PopupHeader runat="server" meta:resourcekey="lblPermissions" Text="File/Folder Permissions" /></h3>
@@ -482,9 +497,67 @@
 		</div>
 	</div>
 </asp:Panel>
+
+<asp:Panel ID="PermissionsUnixFilePanel" runat="server" CssClass="PopupContainer" style="display:none">
+	<wsp:PopupHeader runat="server" meta:resourcekey="lblPermissions" Text="File/Folder Permissions" />
+	<div class="Content">
+		<div class="Body">
+			<br />
+            <div style="border-top: solid 1px #e0e0e0;width:380px; height: 175px; overflow: auto; white-space: nowrap;">
+				<table cellpadding="2" cellspacing="0" width="100%">
+					<tr>
+						<td><asp:Literal ID="lblOwner" runat="server" Text="Owner:" meta:resourcekey="lblOwner" /></td>
+						<td>
+							<asp:Label ID="lblOwnerText" runat="server" Text="websitepanel" class="OwnerText" />
+							<asp:TextBox ID="txtOwner" runat="server" Text="websitepanel" Style="display:none;" class="OwnerTextBox" />
+							<asp:ImageButton ID="btnRenameOwner" runat="server" SkinID="RenameButton" AlternateText="Change Owner"
+								meta:resourcekey="btnRenameOwner" OnClientClick="ShowTextBox('Owner'); return false;" />
+						</td>
+					    <td>
+							<asp:CheckBox ID="chkReadOwner" runat="server" Text="Read" meta:resourcekey="chkRead" />
+							<asp:CheckBox ID="chkWriteOwner" runat="server" Text="Write" meta:resourcekey="chkWrite" />
+							<asp:CheckBox ID="chkExecuteOwner" runat="server" Text="Execute" meta:resourcekey="chkExecute" />
+						</td>
+					</tr>
+					<tr>
+						<td><asp:Literal ID="lblGroup" runat="server" Text="Group:" meta:resourcekey="lblGroup" /></td>
+						<td>
+							<asp:Label ID="lblGroupText" runat="server" Text="websitepanel" class="GroupText" />
+							<asp:TextBox ID="txtGroup" runat="server" Text="websitepanel" Style="display:none;" class="GroupTextBox" />
+							<asp:ImageButton ID="btnRenameGroup" runat="server" SkinID="RenameButton" AlternateText="Change Group"
+								meta:resourcekey="btnRenameGroup" OnClientClick="ShowTextBox('Group'); return false;" />					</td>
+						<td>
+							<asp:CheckBox ID="chkReadGroup" runat="server" Text="Read" meta:resourcekey="chkRead" />
+							<asp:CheckBox ID="chkWriteGroup" runat="server" Text="Write" meta:resourcekey="chkWrite" />
+							<asp:CheckBox ID="chkExecuteGroup" runat="server" Text="Execute" meta:resourcekey="chkExecute" />
+					    </td>
+					</tr>
+					<tr>
+						<td><asp:Literal ID="lblOthers" runat="server" Text="Others:" meta:resourcekey="lblOthers" /></td>
+						<td></td>
+					    <td>
+							<asp:CheckBox ID="chkReadOthers" runat="server" Text="Read" meta:resourcekey="chkRead" />
+							<asp:CheckBox ID="chkWriteOthers" runat="server" Text="Write" meta:resourcekey="chkWrite" />
+							<asp:CheckBox ID="chkExecuteOthers" runat="server" Text="Execute" meta:resourcekey="chkExecute" />
+					    </td>
+					</tr>
+				</table>
+            </div>
+			<div class="FormRow">
+				<asp:CheckBox ID="chkReplaceChildPermissionsUnix" Runat="server" Text="Replace permissions on all child objects" meta:resourcekey="chkReplaceChildPermissions"></asp:CheckBox>
+			</div>
+			<br />
+		</div>
+		<div class="FormFooter">
+            <asp:Button ID="btnSetPermissionsUnix" runat="server" CssClass="Button1" meta:resourcekey="btnSetPermissions" Text="Set Permissions" OnClick="btnSetPermissionsUnix_Click" />
+            <asp:Button ID="btnCancelPermissionsUnix" runat="server" CssClass="Button1" meta:resourcekey="btnCancelPermissions" Text="Cancel" CausesValidation="false" OnClick="btnCancelPermissionsUnix_Click" />
+		</div>
+	</div>
+</asp:Panel>
+
 <asp:LinkButton ID="btnSetPermissionsFile" runat="server" style="display:none;" />
 <ajaxToolkit:ModalPopupExtender ID="PermissionsFileModal" runat="server"
-    TargetControlID="btnSetPermissionsFile" PopupControlID="PermissionsFilePanel"
+    TargetControlID="btnSetPermissionsFile" PopupControlID="PermissionsWindowsFilePanel"
     BackgroundCssClass="modalBackground" DropShadow="false" />
 
 	</ContentTemplate>

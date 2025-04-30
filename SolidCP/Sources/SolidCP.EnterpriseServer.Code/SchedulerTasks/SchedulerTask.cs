@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SolidCP.EnterpriseServer
 {
-	public abstract class SchedulerTask: ControllerAsyncBase
+	public abstract class SchedulerTask: ControllerAsyncBase, ISchedulerTask
 	{
 		public abstract void DoWork();
 

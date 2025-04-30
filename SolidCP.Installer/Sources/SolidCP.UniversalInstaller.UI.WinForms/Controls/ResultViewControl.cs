@@ -31,6 +31,7 @@
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace SolidCP.UniversalInstaller.Controls
@@ -40,6 +41,7 @@ namespace SolidCP.UniversalInstaller.Controls
 		private SCPAppContext appContext;
 		private bool isInitialized;
 
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
 		public SCPAppContext AppContext
 		{
 			get { return appContext; }

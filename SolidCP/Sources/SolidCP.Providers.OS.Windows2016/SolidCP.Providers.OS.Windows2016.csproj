@@ -1,13 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net48</TargetFramework>
-    <PublishUrl>publish\</PublishUrl>
     <WarningsAsErrors>618</WarningsAsErrors>
     <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    
     <LangVersion>11</LangVersion>
     <Nullable>disable</Nullable>
   </PropertyGroup>

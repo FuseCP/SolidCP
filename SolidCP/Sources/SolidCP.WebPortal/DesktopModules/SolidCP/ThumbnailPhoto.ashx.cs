@@ -51,14 +51,9 @@ namespace SolidCP.Portal
             }
             else
             {
-                MemoryStream pictureStream = new MemoryStream();
-                Bitmap emptyBmp = new Bitmap(1, 1);
-                emptyBmp.Save(pictureStream, System.Drawing.Imaging.ImageFormat.Jpeg);
-
-                context.Response.ContentType = "image/jpeg";
-                context.Response.BinaryWrite(pictureStream.ToArray());
-            }
-        }
+				context.Response.Redirect(PortalUtils.GetThemedImage("empty.gif"), true);
+			}
+		}
 
         public bool IsReusable
         {

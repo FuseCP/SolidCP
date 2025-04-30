@@ -1409,30 +1409,11 @@ namespace SolidCP.Providers.Virtualization
         public ConcreteJob GetJob(string jobId)
         {
             throw new NotImplementedException();
+        }
 
-            //HostedSolutionLog.LogStart("GetJob");
-            //HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
-
-            //Runspace runSpace = null;
-            //ConcreteJob job;
-
-            //try
-            //{
-            //    Command cmd = new Command("Get-Job");
-
-            //    if (!string.IsNullOrEmpty(jobId)) cmd.Parameters.Add("Id", jobId);
-
-            //    Collection<PSObject> result = PowerShell.Execute(cmd, true);
-            //    job = JobHelper.CreateFromPSObject(result);
-            //}
-            //catch (Exception ex)
-            //{
-            //    HostedSolutionLog.LogError("GetJob", ex);
-            //    throw;
-            //}
-
-            //HostedSolutionLog.LogEnd("GetJob");
-            //return job;
+        public ConcreteJob GetPsJob(string jobId)
+        {
+            throw new NotImplementedException();
         }
 
         public List<ConcreteJob> GetAllJobs()
@@ -1440,7 +1421,7 @@ namespace SolidCP.Providers.Virtualization
             throw new NotImplementedException();
         }
 
-        public void ClearOldJobs()
+        public void ClearOldPsJobs()
         {
             throw new NotImplementedException();
         }

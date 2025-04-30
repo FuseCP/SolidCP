@@ -1,10 +1,10 @@
 ﻿<%@ Control Language="C#" CodeBehind="MariaDB_Settings.ascx.cs" Inherits="SolidCP.Portal.ProviderControls.MariaDB_Settings" %>
-<fieldset>
+<%--<fieldset>
     <legend>
         <asp:Label runat="server" CssClass="NormalBold" meta:resourcekey="lblFtuNote" />
     </legend>
     <div runat="server" id="lblFirsttimeUserNote" />
-</fieldset>
+</fieldset>--%>
 
 <fieldset>
     <legend>

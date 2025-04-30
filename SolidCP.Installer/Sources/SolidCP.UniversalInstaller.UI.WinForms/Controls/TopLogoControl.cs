@@ -47,7 +47,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
-			lblVersion.Text = "v" + this.GetType().Assembly.GetName().Version.ToString(3);
+			lblVersion.Text = "v" + typeof(Installer).Assembly.GetName().Version.ToString(3);
 		}
 
 		internal void ShowProgress()

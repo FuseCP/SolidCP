@@ -42,7 +42,7 @@ using System.Data;
 using System.Text;
 using System.Linq;
 using System.Windows.Forms;
-
+using System.Threading.Tasks;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller.Controls
@@ -91,8 +91,16 @@ namespace SolidCP.UniversalInstaller.Controls
             return Assembly.GetEntryAssembly().GetName().Version.ToString();
         }
 
-		private void StartInstaller(ComponentInfo info)
+		private void StartInstaller(ComponentInfo component)
         {
+            var res = Installer.Current.Install(component);
+			Update();
+			if (res)
+			{
+				AppContext.AppForm.ReloadApplication();
+			}
+
+            /*
             string applicationName = info.ApplicationName;
             string componentName = info.ComponentName;
             string componentCode = info.ComponentCode;
@@ -103,7 +111,7 @@ namespace SolidCP.UniversalInstaller.Controls
             string installerPath = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
             string installerType = info.InstallerType;
 
-            if (CheckForInstalledComponent(info))
+            if (info.IsInstalled)
             {
                 AppContext.AppForm.ShowWarning(Global.Messages.ComponentIsAlreadyInstalled);
                 return;
@@ -134,20 +142,20 @@ namespace SolidCP.UniversalInstaller.Controls
                     args[Global.Parameters.InstallerPath] = installerPath;
                     args[Global.Parameters.InstallerType] = installerType;
                     args[Global.Parameters.Installer] = Path.GetFileName(fileName);
-                    args[Global.Parameters.ShellVersion] = AssemblyLoader.GetShellVersion();
+                    args[Global.Parameters.ShellVersion] = Installer.Current.LoadContext.GetShellVersion();
                     args[Global.Parameters.BaseDirectory] = FileUtils.GetCurrentDirectory();
                     args[Global.Parameters.ShellMode] = Global.VisualInstallerShell;
                     args[Global.Parameters.IISVersion] = Global.IISVersion;
                     args[Global.Parameters.SetupXml] = this.componentSettingsXml;
                     args[Global.Parameters.ParentForm] = FindForm();
-                    args[Global.Parameters.UIType] = UI.Current.GetType().FullName;
+                    args[Global.Parameters.UIType] = UI.Current.GetType().Name;
 
                     //run installer
-                    DialogResult res = (DialogResult)AssemblyLoader.Execute(path, installerType, method, new object[] { args });
+                    var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args }) == Result.OK; 
                     Log.WriteInfo(string.Format("Installer returned {0}", res));
                     Log.WriteEnd("Installer finished");
                     Update();
-                    if (res == DialogResult.OK)
+                    if (res)
                     {
                         AppContext.AppForm.ReloadApplication();
                     }
@@ -164,32 +172,7 @@ namespace SolidCP.UniversalInstaller.Controls
                 this.componentSettingsXml = null;
                 this.componentCode = null;
             }
-
-        }
-
-        private bool CheckForInstalledComponent(ComponentInfo componentInfo)
-        {
-            var componentCode = componentInfo.ComponentCode;
-            bool ret = false;
-            List<string> installedComponents = new List<string>();
-            foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
-            {
-                string code = component.ComponentCode;
-                installedComponents.Add(code);
-                if (code == componentCode)
-                {
-                    ret = true;
-                    break;
-                }
-            }
-            if (componentCode == "standalone")
-            {
-                if ((installedComponents.Contains("server") || installedComponents.Contains("serverunix")) &&
-                    installedComponents.Contains("enterprise server") &&
-                    installedComponents.Contains("portal"))
-                    ret = true;
-            }
-            return ret;
+            */
         }
 
         /// <summary>
@@ -206,51 +189,45 @@ namespace SolidCP.UniversalInstaller.Controls
             }
         }
 
-        /// <summary>
-        /// Start new thread to load components
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void OnLoadComponentsClick(object sender, EventArgs e)
+		protected override void OnLoad(EventArgs e)
+		{
+			base.OnLoad(e);
+            StartLoadingComponents();
+		}
+		/// <summary>
+		/// Start new thread to load components
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void OnLoadComponentsClick(object sender, EventArgs e)
         {
             StartLoadingComponents();
         }
 
-        private void StartLoadingComponents()
+        public void StartLoadingComponents()
         {
             //load list of available components in the separate thread
             AppContext.AppForm.StartAsyncProgress("Connecting...", true);
-            ThreadPool.QueueUserWorkItem(o => LoadComponents());
+            Task.Run(LoadComponents);
         }
-
-		private bool CheckIsAvailableOnPlatform(ComponentInfo component)
-		{
-            var platforms = component.Platforms;
-            if (platforms == Platforms.Undefined) platforms = Platforms.Windows;
-
-            return OSInfo.IsWindows && platforms.HasFlag(Platforms.Windows) ||
-                !OSInfo.IsWindows && platforms.HasFlag(Platforms.Unix);
-   		}
 
 		/// <summary>
 		/// Loads list of available components via web service
 		/// </summary>
-		private void LoadComponents()
+		private async Task LoadComponents()
         {
             try
             {
                 Log.WriteStart("Loading list of available components");
                 lblDescription.Text = string.Empty;
                 //load components via web service
-                var webService = Installer.Current.InstallerWebService;
-                var dsComponents = webService.GetAvailableComponents();
+                var releases = Installer.Current.Releases;
+                var dsComponents = await releases.GetAvailableComponentsAsync();
 
                 //remove already installed components or components not available on this platform
                 foreach (var component in dsComponents.ToArray())
                 {
-                    string componentCode = component.ComponentCode;
-                    if (CheckForInstalledComponent(component)) dsComponents.Remove(component);
-                    else if (!CheckIsAvailableOnPlatform(component)) dsComponents.Remove(component);
+                    if (component.IsInstalled || !component.IsAvailableOnPlatform) dsComponents.Remove(component);
 				}
 
 				this.grdComponents.ClearSelection();

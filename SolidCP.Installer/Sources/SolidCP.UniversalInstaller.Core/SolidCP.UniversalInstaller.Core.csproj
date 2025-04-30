@@ -2,21 +2,22 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <OutputType>Exe</OutputType>
-        <UseWindowsForms>true</UseWindowsForms>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <LangVersion>13</LangVersion>
         <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
         <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
-        <OutputPath>..\..\Build\$(Configuration)</OutputPath>
+        <OutputPath>bin\$(Configuration)</OutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <StartupObject>SolidCP.UniversalInstaller.Core.Program</StartupObject>
         <GenerateDependencyFile>true</GenerateDependencyFile>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <Optimize>false</Optimize>
     </PropertyGroup>
+    <ItemGroup>
+      <Compile Remove="Common\Utils.Old.cs" />
+    </ItemGroup>
     <ItemGroup>
         <Using Remove="System.Windows.Forms" />
     </ItemGroup>
@@ -43,14 +44,26 @@
         <Compile Include="..\..\..\SolidCP\Sources\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
     <ItemGroup>
+      <EmbeddedResource Include="Resources\EULA.rtf" />
+      <EmbeddedResource Include="Resources\EULA.Unix.rtf" />
+    </ItemGroup>
+    <ItemGroup>
+      <None Include="Common\Utils.Old.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.Web.Administration" Version="11.1.0" />
+        <PackageReference Include="Mono.Cecil" Version="0.11.6" />
         <PackageReference Include="System.IO.Compression" Version="4.3.0" />
         <PackageReference Include="System.Net.Http" Version="4.3.4" />
-        <PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Octokit" Version="14.0.0" />
+
+        <!--<PackageReference Include="System.ServiceModel.Duplex" Version="4.4.*" />
         <PackageReference Include="System.ServiceModel.Http" Version="4.4.*" />
         <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
         <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.0" />
-        <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
+        <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />-->
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.4" />
     </ItemGroup>
     <ItemGroup Condition=" ('$(TargetFramework)' == 'netstandard2.0') Or ('$(TargetFramework)' == 'net8.0')">
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />

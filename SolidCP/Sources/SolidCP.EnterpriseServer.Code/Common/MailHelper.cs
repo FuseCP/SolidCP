@@ -33,119 +33,226 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Net;
-using System.Net.Mail;
+using MimeKit;
+using MailKit;
+using MailKit.Security;
+using MailKit.Net.Smtp;
+using System.Threading.Tasks;
+using System.Security.Authentication;
+using System.IO;
 
 namespace SolidCP.EnterpriseServer
 {
     public class MailHelper
     {
+        public static async Task<int> SendMessageAsync(string from, string to, string bcc, string subject, string body,
+            MimeKit.MessagePriority priority, bool isHtml, IEnumerable<MimePart> attachments)
+        {
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    SystemSettings settings;
+
+					using (var systemController = new SystemController()) {
+                        settings = systemController.GetSystemSettingsInternal(
+                           SystemSettings.SMTP_SETTINGS,
+                           true
+                       );
+                    }
+                    string smtpServer = settings["SmtpServer"];
+                    int smtpPort = settings.GetInt("SmtpPort");
+                    string smtpUsername = settings["SmtpUsername"];
+                    string smtpPassword = settings["SmtpPassword"];
+                    bool enableSsl = Utils.ParseBool(settings["SmtpEnableSsl"], false);
+                    bool enableLegacySSL = Utils.ParseBool(settings["SmtpEnableLegacySSL"], false);
+
+                    // Determine SecureSocketOptions based on EnableSsl and Port
+                    // Common logic: Port 465 usually implies SslOnConnect, others often use StartTls. Adjust as needed.
+                    SecureSocketOptions secureSocketOptions = SecureSocketOptions.Auto;
+                    if (enableSsl)
+                    {
+                        secureSocketOptions = smtpPort == 465 ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.StartTls;
+                    }
+
+                    if (enableLegacySSL)
+                    {
+                        client.SslProtocols = SslProtocols.Tls11 | SslProtocols.Tls | SslProtocols.Tls12 | SslProtocols.Tls13;
+                    }
+                    else
+                    {
+                        client.SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls13;
+                    }
+
+                    // Connect
+                    await client.ConnectAsync(smtpServer, smtpPort, secureSocketOptions);
+
+                    // Authenticate if username is provided
+                    if (!String.IsNullOrEmpty(smtpUsername))
+                    {
+                        await client.AuthenticateAsync(smtpUsername, smtpPassword);
+                    }
+
+                    var message = new MimeMessage();
+                    message.From.Add(MailboxAddress.Parse(from));
+                    message.To.Add(MailboxAddress.Parse(to));
+                    if (!String.IsNullOrEmpty(bcc))
+                    {
+                        message.Bcc.Add(MailboxAddress.Parse(bcc));
+                    }
+                    message.Subject = subject;
+                    message.Priority = priority;
+
+                    // Create body
+                    var bodyBuilder = new BodyBuilder();
+                    if (isHtml)
+                    {
+                        bodyBuilder.HtmlBody = body;
+                    }
+                    else
+                    {
+                        bodyBuilder.TextBody = body;
+                    }
+
+                    // Add attachments if any
+                    if (attachments != null) //
+                    {
+                        foreach (var attachment in attachments) // Now iterating MimePart objects
+                        {
+                            if (attachment.IsAttachment) // Check if it's meant as an attachment or inline
+                            {
+                                bodyBuilder.Attachments.Add(attachment); // Add to regular attachments
+                            }
+                            else
+                            {
+                                // If it's inline (ContentDisposition.Inline), add to LinkedResources
+                                // This assumes the HTML body references it via cid:ContentId
+                                bodyBuilder.LinkedResources.Add(attachment); //
+                            }
+                        }
+                    }
+
+                    message.Body = bodyBuilder.ToMessageBody();
+
+
+                    // Send messages
+                    await client.SendAsync(message);
+
+                    return 0;
+                }
+                catch (SmtpCommandException ex)
+                {
+                    return BusinessErrorCodes.SMTP_GENERAL_FAILURE;
+                }
+                catch (MailKit.Security.AuthenticationException ex)
+                {
+                    return BusinessErrorCodes.SMTP_CLIENT_NOT_PERMITTED;
+                }
+                catch (Exception ex)
+                {
+                    return BusinessErrorCodes.SMTP_UNKNOWN_ERROR;
+                }
+                finally
+                {
+                    // Disconnect
+                    if (client.IsConnected)
+                    {
+                        await client.DisconnectAsync(true);
+                    }
+                }
+            }
+        }
+
+        public static int SendMessage(string from, string to, string bcc, string subject, string body,
+           System.Net.Mail.MailPriority priority, bool isHtml, System.Net.Mail.Attachment[] attachments)
+        {
+            // Convert priority
+            MimeKit.MessagePriority mailkitPriority;
+            switch (priority)
+            {
+                case System.Net.Mail.MailPriority.High:
+                    mailkitPriority = MessagePriority.Urgent;
+                    break;
+                case System.Net.Mail.MailPriority.Low:
+                    mailkitPriority = MessagePriority.NonUrgent;
+                    break;
+                default:
+                    mailkitPriority = MessagePriority.Normal;
+                    break;
+            }
+
+            var mailkitAttachments = new List<MimePart>();
+            if (attachments != null) //
+            {
+                foreach (var attachment in attachments) //
+                {
+                    try
+                    {
+                        // Determine ContentType - MimeKit has better auto-detection but respecting original if possible
+                        var contentType = MimeKit.ContentType.Parse(attachment.ContentType?.ToString() ?? "application/octet-stream"); //
+
+                        // Create MimePart - primarily handles streams.
+                        // System.Net.Mail.Attachment exposes its content via ContentStream.
+                        var mimePart = new MimePart(contentType)
+                        {
+                            Content = new MimeContent(attachment.ContentStream), // Get stream
+                            ContentDisposition = new ContentDisposition(ContentDisposition.Attachment), // Mark as attachment
+                            ContentTransferEncoding = attachment.TransferEncoding == System.Net.Mime.TransferEncoding.Base64 ? ContentEncoding.Base64 : ContentEncoding.Default, // Map encoding
+                            FileName = attachment.Name // Set filename
+                        };
+
+                        // Handle ContentId if present (for inline attachments)
+                        if (!string.IsNullOrEmpty(attachment.ContentId)) //
+                        {
+                            mimePart.ContentId = attachment.ContentId; //
+                                                                       // Override ContentDisposition for inline
+                            mimePart.ContentDisposition = new ContentDisposition(ContentDisposition.Inline); //
+                        }
+
+                        mailkitAttachments.Add(mimePart); //
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the error if a specific attachment fails conversion
+                        Console.WriteLine($"Error converting attachment '{attachment.Name}': {ex.Message}"); //
+                                                                                                             // Decide whether to continue without this attachment or fail the whole send
+                    }
+                    finally
+                    {
+                        // IMPORTANT: Dispose the original System.Net.Mail.Attachment
+                        // to release any resources it holds (like file handles or streams
+                        // if it created them internally). MailKit takes ownership of the stream passed to MimeContent.
+                        attachment.Dispose(); //
+                    }
+                }
+            }
+
+
+            try
+            {
+                return SendMessageAsync(from, to, bcc, subject, body, mailkitPriority, isHtml, mailkitAttachments).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                return BusinessErrorCodes.SMTP_UNKNOWN_ERROR;
+            }
+        }
+
         public static int SendMessage(string from, string to, string subject, string body, bool isHtml)
         {
-            return SendMessage(from, to, null, subject, body, MailPriority.Normal, isHtml);
+            return SendMessage(from, to, null, subject, body, System.Net.Mail.MailPriority.Normal, isHtml, null);
         }
 
         public static int SendMessage(string from, string to, string bcc, string subject, string body, bool isHtml)
         {
-            return SendMessage(from, to, bcc, subject, body, MailPriority.Normal, isHtml);
+            return SendMessage(from, to, bcc, subject, body, System.Net.Mail.MailPriority.Normal, isHtml, null);
         }
 
         public static int SendMessage(string from, string to, string bcc, string subject, string body,
-            MailPriority priority, bool isHtml, Attachment[] attachments)
-        {
-            // Command line argument must the the SMTP host.
-            SmtpClient client = new SmtpClient();
-
-            // load SMTP client settings
-            SystemSettings settings;
-
-            using (var systemController = new SystemController())
-            {
-                settings = systemController.GetSystemSettingsInternal(
-                    SystemSettings.SMTP_SETTINGS,
-                    true
-                );
-            }
-            client.Host = settings["SmtpServer"];
-            client.Port = settings.GetInt("SmtpPort");
-            if (!String.IsNullOrEmpty(settings["SmtpUsername"]))
-            {
-                client.Credentials = new NetworkCredential(
-                    settings["SmtpUsername"],
-                    settings["SmtpPassword"]
-                );
-            }
-
-            if (!String.IsNullOrEmpty(settings["SmtpEnableSsl"]))
-            {
-                client.EnableSsl = Utils.ParseBool(settings["SmtpEnableSsl"], false);
-            }
-
-            // create message
-            MailMessage message = new MailMessage(from, to);
-            message.Body = body;
-            message.BodyEncoding = System.Text.Encoding.UTF8;
-            message.IsBodyHtml = isHtml;
-            message.Subject = subject;
-            message.SubjectEncoding = System.Text.Encoding.UTF8;
-            if (!String.IsNullOrEmpty(bcc))
-                message.Bcc.Add(bcc);
-            message.Priority = priority;
-
-            if (attachments != null)
-            {
-                foreach(Attachment current in attachments)
-                {
-                    message.Attachments.Add(current);    
-                }                
-            }
-            
-            // send message
-            try
-            {
-                client.Send(message);
-
-                return 0;
-            }
-            catch (SmtpException ex)
-            {
-                switch (ex.StatusCode)
-                {
-                    case SmtpStatusCode.BadCommandSequence: return BusinessErrorCodes.SMTP_BAD_COMMAND_SEQUENCE;
-                    case SmtpStatusCode.CannotVerifyUserWillAttemptDelivery: return BusinessErrorCodes.SMTP_CANNOT_VERIFY_USER_WILL_ATTEMPT_DELIVERY;
-                    case SmtpStatusCode.ClientNotPermitted: return BusinessErrorCodes.SMTP_CLIENT_NOT_PERMITTED;
-                    case SmtpStatusCode.CommandNotImplemented: return BusinessErrorCodes.SMTP_COMMAND_NOT_IMPLEMENTED;
-                    case SmtpStatusCode.CommandParameterNotImplemented: return BusinessErrorCodes.SMTP_COMMAND_PARAMETER_NOT_IMPLEMENTED;
-                    case SmtpStatusCode.CommandUnrecognized: return BusinessErrorCodes.SMTP_COMMAND_UNRECOGNIZED;
-                    case SmtpStatusCode.ExceededStorageAllocation: return BusinessErrorCodes.SMTP_EXCEEDED_STORAGE_ALLOCATION;
-                    case SmtpStatusCode.GeneralFailure: return BusinessErrorCodes.SMTP_GENERAL_FAILURE;
-                    case SmtpStatusCode.InsufficientStorage: return BusinessErrorCodes.SMTP_INSUFFICIENT_STORAGE;
-                    case SmtpStatusCode.LocalErrorInProcessing: return BusinessErrorCodes.SMTP_LOCAL_ERROR_IN_PROCESSING;
-                    case SmtpStatusCode.MailboxBusy: return BusinessErrorCodes.SMTP_MAILBOX_BUSY;
-                    case SmtpStatusCode.MailboxNameNotAllowed: return BusinessErrorCodes.SMTP_MAILBOX_NAME_NOTALLOWED;
-                    case SmtpStatusCode.MailboxUnavailable: return BusinessErrorCodes.SMTP_MAILBOX_UNAVAILABLE;
-                    case SmtpStatusCode.MustIssueStartTlsFirst: return BusinessErrorCodes.SMTP_MUST_ISSUE_START_TLS_FIRST;
-                    case SmtpStatusCode.ServiceClosingTransmissionChannel: return BusinessErrorCodes.SMTP_SERVICE_CLOSING_TRANSMISSION_CHANNEL;
-                    case SmtpStatusCode.ServiceNotAvailable: return BusinessErrorCodes.SMTP_SERVICE_NOT_AVAILABLE;
-                    case SmtpStatusCode.SyntaxError: return BusinessErrorCodes.SMTP_SYNTAX_ERROR;
-                    case SmtpStatusCode.TransactionFailed: return BusinessErrorCodes.SMTP_TRANSACTION_FAILED;
-                    case SmtpStatusCode.UserNotLocalTryAlternatePath: return BusinessErrorCodes.SMTP_USER_NOT_LOCAL_TRY_ALTERNATE_PATH;
-                    case SmtpStatusCode.UserNotLocalWillForward: return BusinessErrorCodes.SMTP_USER_NOT_LOCAL_WILL_FORWARD;
-                    default: return BusinessErrorCodes.SMTP_UNKNOWN_ERROR;
-                }
-            }
-            finally
-            {
-                // Clean up.
-                message.Dispose();
-            }
-        }
-        
-        
-        public static int SendMessage(string from, string to, string bcc, string subject, string body,
-            MailPriority priority, bool isHtml)
+            System.Net.Mail.MailPriority priority, bool isHtml)
         {
             return SendMessage(from, to, bcc, subject, body, priority, isHtml, null);
         }
+
     }
 }

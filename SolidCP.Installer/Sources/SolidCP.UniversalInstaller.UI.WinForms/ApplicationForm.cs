@@ -42,12 +42,14 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using System.Linq;
 using Microsoft.Win32;
 using System.Xml;
-using System.Runtime.Remoting.Lifetime;
-
+using SolidCP.Providers.OS;
 using SolidCP.UniversalInstaller.Controls;
-
+#if NETFRAMEWORK
+using System.Runtime.Remoting.Lifetime;
+#endif
 //using SolidCP.Installer.Common;
 //using SolidCP.Installer.Services;
 //using SolidCP.Installer.Configuration;
@@ -259,7 +261,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			get
 			{
-				return this.GetType().Assembly.GetName().Version.ToString();
+				return typeof(Installer).Assembly.GetName().Version.ToString();
 			}
 		}
 
@@ -283,6 +285,11 @@ namespace SolidCP.UniversalInstaller
 				componentsNode.Nodes.Clear();
 				componentsNode.Populated = false;
 				OnScopeTreeAfterSelect(scopeTree, new TreeViewEventArgs(componentsNode));
+				var components = pnlResultView.Controls
+					.OfType<ComponentsControl>()
+					.FirstOrDefault();
+				if (components != null) components.StartLoadingComponents();
+
 			}
 		}
 
@@ -292,8 +299,9 @@ namespace SolidCP.UniversalInstaller
 		internal void InitializeApplication()
 		{
 			CheckForIllegalCrossThreadCalls = false;
+#if NETFRAMEWORK
 			LifetimeServices.LeaseTime = TimeSpan.Zero;
-
+#endif
 			this.splitContainer.Panel2MinSize = 380;
 			this.splitContainer.Panel1MinSize = 150;
 			this.progressManager = new ProgressManager(this, this.statusBarLabel);
@@ -411,16 +419,15 @@ namespace SolidCP.UniversalInstaller
 
 			foreach (var component in Installer.Current.Settings.Installer.InstalledComponents)
 			{
-				string instance = string.Empty;
+				/*string instance = string.Empty;
 				if (!string.IsNullOrEmpty(component.ComponentCode))
 				{
 					instance = $"({component.ComponentCode})";
-				}
-				string title = string.Format("{0} {1} {2} {3}",
+				}*/
+				string title = string.Format("{0} {1} {2}",
 					component.ApplicationName,
 					component.ComponentName,
-					component.Version,
-					instance);
+					component.Version);
 
 				AddComponentNode(node, title, component);
 			}
@@ -433,33 +440,9 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="fileName">File name</param>
 		/// <returns>true if update is available for download; otherwise false</returns>
-		internal bool CheckForUpdate(out string fileName)
+		internal bool CheckForUpdate(out ComponentUpdateInfo component)
 		{
-			bool ret = false;
-			fileName = string.Empty;
-			Log.WriteStart("Checking for a new version");
-			//
-			var webService = Installer.Current.InstallerWebService;
-			var info = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
-			//
-			Log.WriteEnd("Checked for a new version");
-			if (info != null)
-			{
-				Version currentVersion = GetType().Assembly.GetName().Version;
-				Version newVersion = null;
-				if (info.Version != default) newVersion = info.Version;
-				else {
-					Log.WriteError("Version error");
-					return false;
-				}
-				if (newVersion > currentVersion)
-				{
-					ret = true;
-					fileName = info.UpgradeFilePath;
-					Log.WriteInfo(string.Format("Version {0} is available for download", newVersion));
-				}
-			}
-			return ret;
+			return Installer.Current.CheckForInstallerUpdate(out component);
 		}
 
 		/// <summary>
@@ -467,55 +450,9 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		/// <param name="fileName">File name</param>
 		/// <returns>true if updater started successfully</returns>
-		internal bool StartUpdateProcess(string fileName)
+		internal bool StartUpdateProcess(ComponentUpdateInfo component)
 		{
-			Log.WriteStart("Starting updater");
-			string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), ".exe");
-			using (Stream writeStream = File.Create(tmpFile))
-			{
-				using (Stream readStream = typeof(Installer).Assembly.GetManifestResourceStream("SolidCP.Installer.Resources.SolidCP.Updater.exe"))
-				{
-					byte[] buffer = new byte[(int)readStream.Length];
-					readStream.Read(buffer, 0, buffer.Length);
-					writeStream.Write(buffer, 0, buffer.Length);
-				}
-			}
-			string targetFile = GetType().Module.FullyQualifiedName;
-			//
-			string url = Installer.Current.Settings.Installer.WebServiceUrl;
-			//
-			string proxyServer = string.Empty;
-			string user = string.Empty;
-			string password = string.Empty;
-
-			// check if we need to add a proxy to access Internet
-			bool useProxy = Installer.Current.Settings.Installer.Proxy != null;
-			if (useProxy)
-			{
-				proxyServer = Installer.Current.Settings.Installer.Proxy.Address;
-				user = Installer.Current.Settings.Installer.Proxy.Username;
-				password = Installer.Current.Settings.Installer.Proxy.Password;
-			}
-
-			ProcessStartInfo info = new ProcessStartInfo();
-			info.FileName = tmpFile;
-
-			//prepare command line args
-			StringBuilder sb = new StringBuilder();
-			sb.AppendFormat("\\url:\"{0}\" ", url);
-			sb.AppendFormat("\\target:\"{0}\" ", targetFile);
-			sb.AppendFormat("\\file:\"{0}\" ", fileName);
-			sb.AppendFormat("\\proxy:\"{0}\" ", proxyServer);
-			sb.AppendFormat("\\user:\"{0}\" ", user);
-			sb.AppendFormat("\\password:\"{0}\" ", password);
-			info.Arguments = sb.ToString();
-			Process process = Process.Start(info);
-			if (process.Handle != IntPtr.Zero)
-			{
-				User32.SetForegroundWindow(process.Handle);
-			}
-			Log.WriteEnd("Updater started");
-			return (process.Handle != IntPtr.Zero);
+			return Installer.Current.DownloadInstallerUpdate(component);
 		}
 		#endregion
 
@@ -564,6 +501,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		internal void FinishProgress()
 		{
+			
 			topLogoControl.HideProgress();
 			progressManager.FinishProgress();
 			EnableContent();
@@ -573,6 +511,8 @@ namespace SolidCP.UniversalInstaller
 
 		private void OnApplicationFormShown(object sender, EventArgs e)
 		{
+			if (OSInfo.IsWindows) ConsoleExtension.Hide();
+
 			StartUnattendedSetup();
 		}
 
@@ -641,11 +581,15 @@ namespace SolidCP.UniversalInstaller
 
 		public override object InitializeLifetimeService()
 		{
+#if NETFRAMEWORK
 			ILease lease = (ILease)base.InitializeLifetimeService();
 
 			//Set lease properties
 			lease.InitialLeaseTime = TimeSpan.Zero;
 			return lease;
+#else
+			return new object();
+#endif
 		}
 
 	}

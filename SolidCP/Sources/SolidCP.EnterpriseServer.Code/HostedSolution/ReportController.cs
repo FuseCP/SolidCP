@@ -36,7 +36,6 @@ using System.Data;
 using System.Text;
 using SolidCP.EnterpriseServer.Code.SharePoint;
 using SolidCP.Server.Client;
-//using SolidCP.Providers.CRM;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.SharePoint;

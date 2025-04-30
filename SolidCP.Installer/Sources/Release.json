@@ -1,0 +1,61 @@
+[
+    {
+        "id": 200,
+        "application": "SolidCP",
+        "name": "Standalone Server Setup",
+        "code": "standalone",
+        "platforms": "windows,unix",
+        "description": "Express setup for standalone server configuration. It installs Portal, Enterprise, and Server components on the same server and configures SolidCP using sample settings.",
+        "fullFile": "SolidCP-StandaloneServerSetup.zip",
+        "installerPath": "Setup\\Setup2.dll",
+        "installerType": "SolidCP.Setup.StandaloneServer200"
+    },
+    {
+        "id": 250,
+        "application": "SolidCP",
+        "name": "Portal",
+        "code": "portal",
+        "platforms": "windows,unix",
+        "description": "SolidCP Portal is a user interface to the control panel which allows managing user accounts, hosting spaces, web sites, FTP accounts, files, etc.",
+        "fullFile": "SolidCP-Portal.zip",
+        "updateFile": "SolidCP-Portal-Update.zip",
+        "installerPath": "Setup\\Setup2.dll",
+        "installerType": "SolidCP.Setup.Portal200"
+    },
+    {
+        "id": 350,
+        "application": "SolidCP",
+        "name": "Enterprise Server",
+        "code": "enterprise server",
+        "platforms": "windows,unix",
+        "description": "Enterprise Server is the core of SolidCP system. It includes all business logic of the application. Enterprise Server should have access to Server and be accessible from Portal applications.",
+        "fullFile": "SolidCP-EnterpriseServer.zip",
+        "updateFile": "SolidCP-EnterpriseServer-Update.zip",
+        "installerPath": "Setup\\Setup2.dll",
+        "installerType": "SolidCP.Setup.EnterpriseServer200"
+    },
+    {
+        "id": 450,
+        "application": "SolidCP",
+        "name": "Server",
+        "code": "server",
+        "platforms": "windows,unix",
+        "description": "SolidCP Server is a set of services running on the remote server to be controlled. Server application should be reachable from Enterprise Server one.",
+        "fullFile": "SolidCP-Server.zip",
+        "updateFile": "SolidCP-Server-Update.zip",
+        "installerPath": "Setup\\Setup2.dll",
+        "installerType": "SolidCP.Setup.Server200"
+    },
+    {
+        "id": 550,
+        "application": "SolidCP",
+        "name": "Cloud Storage Portal",
+        "code": "WebDavPortal",
+        "platforms": "windows",
+        "description": "SolidCP Cloud Storage Portal is a client frontend for viewing and editing their Cloud (WebDav) storage files.",
+        "fullFile": "SolidCP-Web-Dav-Portal.zip",
+        "updateFile": "SolidCP-Web-Dav-Portal.zip",
+        "installerPath": "Setup\\Setup2.dll",
+        "installerType": "SolidCP.Setup.WebDavPortal200"
+    }
+]

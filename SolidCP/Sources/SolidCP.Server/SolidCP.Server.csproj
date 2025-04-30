@@ -5,23 +5,13 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <LangVersion>12</LangVersion>
+        <LangVersion>13</LangVersion>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
+        <UserSecretsId>f2178b6b-fdfa-4b50-ba11-779a6fcd69f3</UserSecretsId>
     </PropertyGroup>
 
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net7.0'">
-        <OutputPath>bin_dotnet</OutputPath>
-        <StartupObject>SolidCP.Server.Program</StartupObject>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(TargetFramework)' == 'net6.0'">
-        <OutputPath>bin_dotnet</OutputPath>
-        <StartupObject>SolidCP.Server.Program</StartupObject>
-        <ImplicitUsings>enable</ImplicitUsings>
-    </PropertyGroup>
     <PropertyGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <OutputPath>bin_dotnet</OutputPath>
         <StartupObject>SolidCP.Server.Program</StartupObject>
@@ -40,6 +30,7 @@
         <None Include="WebServices\**\*.cs" Exclude="WebServices\SolidCP.Build\obj\**\*.cs" />
         <None Remove="WebServices\SolidCP.Build\obj\**" />
         <None Remove="**\*.asmx" />
+        <Content Remove="bin_dotnet\**\*.*" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
@@ -57,11 +48,10 @@
     </ItemGroup>
  
     <ItemGroup>
-        <Content Remove="WebServces\**\*.*" />
-        <Content Remove="bin_dotnet\**\*.*" />
         <Compile Remove="Code\WPIHelper.cs" />
         <None Include="Code\WPIHelper.cs" />
-   </ItemGroup>
+        <!--<Content Include="wwwroot\img\logo.png" />-->
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
@@ -71,11 +61,13 @@
         <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="8.0.1" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
+        <PackageReference Include="System.Memory" Version="4.6.3" />
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System" />
         <Reference Include="System.Configuration" />
@@ -91,12 +83,13 @@
         <Reference Include="SwaggerWcf">
             <HintPath>..\..\Lib\SwaggerWcf.dll</HintPath>
         </Reference>
-        <PackageReference Include="System.Memory" Version="4.5.5" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-        <PackageReference Include="CoreWCF.Primitives" Version="1.6.0" />
-        <PackageReference Include="CoreWCF.WebHttp" Version="1.6.0" />
+        <PackageReference Include="CoreWCF.Primitives" Version="1.7.0" />
+        <PackageReference Include="CoreWCF.WebHttp" Version="1.7.0" />
         <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
+        <!--<PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true"
+            IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
     <ItemGroup>
         <Analyzer Include="..\SolidCP.Build\bin\$(Configuration)\netstandard2.0\RazorBlade.dll" />
@@ -131,10 +124,29 @@
             <FilesToMove Include="bin\SolidCP.Build.*" />
             <FilesToMove Include="bin\Microsoft.Web.Administration.*" />
             <FilesToMove Include="bin\SwaggerWcf.*" />
+            <FilesToMove Include="bin\SolidCP.Providers.*" />
+            <FilesToMove Include="bin\Microsoft.SharePoint.*" />
+            <FilesToMove Include="bin\Microsoft.Identity.*" />
+            <FilesToMove Include="bin\Microsoft.IdentityModel.*" />
+            <FilesToMove Include="bin\Microsoft.Practices.*" />
+            <FilesToMove Include="bin\Mono.Posix.*" />
+            <FilesToMove Include="bin\MySql.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
+            <FilesToMove Include="bin\SolidCP.Server.WPIService.*" />
+            <FilesToMove Include="bin\WPIServiceContract.*" />
+            <FilesToMove Include="bin\Azure.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
         <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" ContinueOnError="true" />
         <RemoveDir Directories="bin\bin_dotnet;bin\WebServices" ContinueOnError="true" />
     </Target>
 
+    <!--<Target Name="CopySystemManagement" AfterTargets="Build">
+        <ItemGroup>
+            <Dll Include="$(PkgSystem_Managemenet)\runtimes\win\lib\net8.0\System.Management.dll" />
+        </ItemGroup>
+        <Copy SourceFiles="@(Dll)" DestinationFolder="$(OutputDir)" />
+    </Target>-->
+    
 </Project>

@@ -25,14 +25,10 @@ namespace SolidCP.UniversalInstaller
 					// install from ubuntu
 					installFromMicrosoftFeed = false;
 				}
-				else if (OSInfo.Architecture == Architecture.Arm) throw new PlatformNotSupportedException("NET 8 not supported on Arm platform. Please install NET 8 runtime manually.");
 				else if (OSInfo.Architecture == Architecture.X86) throw new PlatformNotSupportedException("NET 8 not supported on this platform. Please install NET 8 runtime manually.");
-
-				else
-				{
-					installFromMicrosoftFeed = true;
-
-				}
+				else if (OSInfo.Architecture == Architecture.Arm ||
+					OSInfo.OSVersion.Major >= 24) installFromMicrosoftFeed = false;
+				else installFromMicrosoftFeed = true;
 			}
 			else installFromMicrosoftFeed = false;
 
@@ -57,6 +53,8 @@ rm packages-microsoft-prod.deb
 			}
 
 			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
+
+			Net8RuntimeInstalled = true;
 
 			ResetHasDotnet();
 		}

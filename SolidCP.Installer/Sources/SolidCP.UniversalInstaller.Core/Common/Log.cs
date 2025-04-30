@@ -37,6 +37,7 @@ using System.IO;
 
 using System.Security.Principal;
 using System.Reflection;
+using Renci.SshNet.Messages;
 
 namespace SolidCP.UniversalInstaller
 {
@@ -50,6 +51,7 @@ namespace SolidCP.UniversalInstaller
 		/// </summary>
 		public LogWriter()
 		{
+			Installer.Current.Shell.Log += WriteLine;
 		}
 
 		/// <summary>
@@ -66,9 +68,9 @@ namespace SolidCP.UniversalInstaller
 			//
 			Trace.Listeners.Clear();
 			//
-			FileStream fileLog = new FileStream(fileName, FileMode.Append);
+			//FileStream fileLog = new FileStream(fileName, FileMode.Append);
 			//
-			TextWriterTraceListener fileListener = new TextWriterTraceListener(fileLog);
+			TextWriterTraceListener fileListener = new TextWriterTraceListener(fileName);
 			fileListener.TraceOutputOptions = TraceOptions.DateTime;
 			Trace.Listeners.Add(fileListener);
 			//
@@ -98,6 +100,8 @@ namespace SolidCP.UniversalInstaller
 		string logFile = null;
 		public virtual string File { get => logFile ??= DefaultFile; set => logFile = value; }
 
+		public Action OnWrite { get; set; }
+
 		/// <summary>
 		/// Write error to the log.
 		/// </summary>
@@ -107,6 +111,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] ERROR: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 				Trace.WriteLine(ex);
@@ -122,6 +127,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] ERROR: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 			}
@@ -136,6 +142,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] {1}", DateTime.Now, message);
 				Trace.Write(line);
 			}
@@ -151,6 +158,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 			}
@@ -175,6 +183,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] INFO: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 			}
@@ -189,6 +198,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] START: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 			}
@@ -203,6 +213,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] END: {1}", DateTime.Now, message);
 				Trace.WriteLine(line);
 			}
@@ -213,6 +224,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string name = Assembly.GetEntryAssembly().GetName().Name;
 				string version = Assembly.GetEntryAssembly().GetName().Version.ToString();
 				string identity = WindowsIdentity.GetCurrent().Name;
@@ -226,6 +238,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				OnWrite?.Invoke();
 				string name = Assembly.GetEntryAssembly().GetName().Name;
 				string line = string.Format("[{0:G}] {1} Ended", DateTime.Now, name);
 				Trace.WriteLine(line);
@@ -237,6 +250,11 @@ namespace SolidCP.UniversalInstaller
 		/// Opens notepad to view log file.
 		/// </summary>
 		public virtual void ShowLogFile() => Installer.Current.ShowLogFile();
+		public void ProgressOne()
+		{
+			OnWrite?.Invoke();
+			Trace.Write(".");
+		}
 	}
 
 	public static class Log
@@ -253,5 +271,6 @@ namespace SolidCP.UniversalInstaller
 		public static void WriteApplicationStart() => Installer.Current.Log.WriteApplicationStart();
 		public static void WriteApplicationEnd() => Installer.Current.Log.WriteApplicationEnd();
 		public static void ShowLogFile() => Installer.Current.Log.ShowLogFile();
+		public static void ProgressOne() => Installer.Current.Log.ProgressOne();
 	}
 }

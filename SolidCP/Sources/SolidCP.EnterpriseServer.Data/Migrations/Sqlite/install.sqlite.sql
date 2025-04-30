@@ -2576,6 +2576,10 @@ VALUES (75, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MsSQL2022', 10
 SELECT changes();
 
 INSERT INTO "ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
+VALUES (76, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MsSQL2025', 10, 1);
+SELECT changes();
+
+INSERT INTO "ResourceGroups" ("GroupID", "GroupController", "GroupName", "GroupOrder", "ShowGroup")
 VALUES (90, 'SolidCP.EnterpriseServer.DatabaseServerController', 'MySQL8', 12, 1);
 SELECT changes();
 
@@ -3268,7 +3272,7 @@ VALUES (1560, NULL, 'MariaDB 10.2', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1570, 1, 'MariaDB 10.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB');
+VALUES (1570, NULL, 'MariaDB 10.3', 'MariaDB', 50, 'MariaDB', 'SolidCP.Providers.Database.MariaDB103, SolidCP.Providers.Database.MariaDB');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
@@ -3356,15 +3360,19 @@ VALUES (1703, NULL, 'SimpleDNS Plus 6.x', 'SimpleDNS', 7, 'SimpleDNS', 'SolidCP.
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1704, 1, 'Microsoft SQL Server 2017', 'MSSQL', 72, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer');
+VALUES (1704, NULL, 'Microsoft SQL Server 2017', 'MSSQL', 72, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2017, SolidCP.Providers.Database.SqlServer');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1705, 1, 'Microsoft SQL Server 2019', 'MSSQL', 74, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer');
+VALUES (1705, NULL, 'Microsoft SQL Server 2019', 'MSSQL', 74, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2019, SolidCP.Providers.Database.SqlServer');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
 VALUES (1706, NULL, 'Microsoft SQL Server 2022', 'MSSQL', 75, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2022, SolidCP.Providers.Database.SqlServer');
+SELECT changes();
+
+INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
+VALUES (1707, NULL, 'Microsoft SQL Server 2025', 'MSSQL', 76, 'MsSQL', 'SolidCP.Providers.Database.MsSqlServer2025, SolidCP.Providers.Database.SqlServer');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
@@ -3388,7 +3396,7 @@ VALUES (1803, 1, 'Microsoft Hyper-V 2022', 'HyperV2012R2', 33, 'HyperV2022', 'So
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
-VALUES (1804, 1, 'Windows Server 2025', 'Windows2012', 1, 'Windows2025', 'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025');
+VALUES (1804, NULL, 'Windows Server 2025', 'Windows2012', 1, 'Windows2025', 'SolidCP.Providers.OS.Windows2025, SolidCP.Providers.OS.Windows2025');
 SELECT changes();
 
 INSERT INTO "Providers" ("ProviderID", "DisableAutoDiscovery", "DisplayName", "EditorControl", "GroupID", "ProviderName", "ProviderType")
@@ -4560,6 +4568,30 @@ INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrgan
 VALUES (753, 7, NULL, NULL, NULL, 'Allow editing TTL in DNS Editor', 'DNS.EditTTL', 2, 1, 0);
 SELECT changes();
 
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (754, 4, 1, NULL, NULL, 'Allow changes to access controls', 'Mail.AllowAccessControls', 9, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (762, 76, NULL, NULL, NULL, 'Max Database Size', 'MsSQL2025.MaxDatabaseSize', 3, 3, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (763, 76, NULL, NULL, NULL, 'Database Backups', 'MsSQL2025.Backup', 5, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (764, 76, NULL, NULL, NULL, 'Database Restores', 'MsSQL2025.Restore', 6, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (765, 76, NULL, NULL, NULL, 'Database Truncate', 'MsSQL2025.Truncate', 7, 1, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (766, 76, NULL, NULL, NULL, 'Max Log Size', 'MsSQL2025.MaxLogSize', 4, 3, 0);
+SELECT changes();
+
 
 INSERT INTO "ResourceGroupDnsRecords" ("RecordID", "GroupID", "MXPriority", "RecordData", "RecordName", "RecordOrder", "RecordType")
 VALUES (1, 2, 0, '[IP]', '', 1, 'A');
@@ -5304,6 +5336,14 @@ INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth"
 VALUES (204, 1, 0, 1, 'SharePointEnterpriseSiteCollection', 1, 73, 1, 1, 0, 'SolidCP.Providers.SharePoint.SharePointEnterpriseSiteCollection, SolidCP.Providers.Base', 100);
 SELECT changes();
 
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (205, 1, 0, 1, 'MsSQL2025Database', 1, 76, 1, 1, 0, 'SolidCP.Providers.Database.SqlDatabase, SolidCP.Providers.Base', 1);
+SELECT changes();
+
+INSERT INTO "ServiceItemTypes" ("ItemTypeID", "Backupable", "CalculateBandwidth", "CalculateDiskspace", "DisplayName", "Disposable", "GroupID", "Importable", "Searchable", "Suspendable", "TypeName", "TypeOrder")
+VALUES (206, 1, 0, 0, 'MsSQL2025User', 1, 76, 1, 1, 0, 'SolidCP.Providers.Database.SqlUser, SolidCP.Providers.Base', 1);
+SELECT changes();
+
 
 INSERT INTO "UserSettings" ("PropertyName", "SettingsName", "UserID", "PropertyValue")
 VALUES ('CC', 'AccountSummaryLetter', 1, 'support@HostingCompany.com');
@@ -6029,6 +6069,14 @@ SELECT changes();
 
 INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
 VALUES (733, 75, NULL, 80, NULL, 'Users', 'MsSQL2022.Users', 2, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (760, 76, NULL, 79, NULL, 'Databases', 'MsSQL2025.Databases', 1, 2, 0);
+SELECT changes();
+
+INSERT INTO "Quotas" ("QuotaID", "GroupID", "HideQuota", "ItemTypeID", "PerOrganization", "QuotaDescription", "QuotaName", "QuotaOrder", "QuotaTypeID", "ServiceQuota")
+VALUES (761, 76, NULL, 80, NULL, 'Users', 'MsSQL2025.Users', 2, 2, 0);
 SELECT changes();
 
 
@@ -8200,7 +8248,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20241208071543_InitialCreate', '9.0.0');
+VALUES ('20250419122653_InitialCreate', '9.0.3');
 
 COMMIT;
 

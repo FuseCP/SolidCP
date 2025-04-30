@@ -11,3 +11,6 @@
 [submodule "SolidCP/Lib/WebFormsForCore"]
 	path = SolidCP/Lib/WebFormsForCore
 	url = https://github.com/webformsforcore/WebFormsForCore
+[submodule "tools/MSBuildCommunityTasks/Source"]
+	path = tools/MSBuildCommunityTasks/Source
+	url = http://github.com/simonegli8/msbuildtasks

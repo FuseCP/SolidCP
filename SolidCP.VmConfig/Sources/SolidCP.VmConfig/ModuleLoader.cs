@@ -37,13 +37,21 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Collections.Generic;
 using System.Text;
+#if NETFRAMEWORK
 using System.Runtime.Remoting.Lifetime;
+#else
+using System.Runtime.Loader;
+#endif
 
 namespace SolidCP.VmConfig
 {
 	[Serializable]
 	internal class ModuleLoader : MarshalByRefObject
 	{
+
+#if NETCOREAPP
+		internal AssemblyLoadContext LoadContext { get; private set; }
+#endif
 		internal ExecutionResult RemoteRun(string typeName, ref ExecutionContext context)
 		{
 			if (string.IsNullOrEmpty(typeName))
@@ -59,7 +67,11 @@ namespace SolidCP.VmConfig
 				fileName = fileName + ".dll"; 
 
 			string path = Path.Combine(Path.GetDirectoryName(assembly.Location), fileName);
+#if NETFRAMEWORK
 			assembly = Assembly.LoadFrom(path);
+#else
+			assembly = LoadContext.LoadFromAssemblyPath(path);
+#endif
 			Type type = assembly.GetType(parts[0].Trim());
 			//Type type = Type.GetType(typeName);
 			if (type == null)
@@ -84,8 +96,10 @@ namespace SolidCP.VmConfig
 		internal static ExecutionResult Run(string typeName, ref ExecutionContext context)
 		{
 			AppDomain domain = null;
+			ModuleLoader loader = null;
 			try
 			{
+#if NETFRAMEWORK
 				Evidence securityInfo = AppDomain.CurrentDomain.Evidence;
 				AppDomainSetup info = new AppDomainSetup();
 				info.ApplicationBase = AppDomain.CurrentDomain.BaseDirectory;
@@ -97,25 +111,38 @@ namespace SolidCP.VmConfig
 					lease.InitialLeaseTime = TimeSpan.Zero;
 				}
 				domain.UnhandledException += new UnhandledExceptionEventHandler(OnDomainUnhandledException);
-				ModuleLoader loader = (ModuleLoader)domain.CreateInstanceAndUnwrap(
+				loader = (ModuleLoader)domain.CreateInstanceAndUnwrap(
 					typeof(ModuleLoader).Assembly.FullName,
 					typeof(ModuleLoader).FullName);
-
+#else
+				loader = new ModuleLoader();
+				loader.LoadContext = new AssemblyLoadContext("ModuleLoader", true);
+#endif
 				foreach (TraceListener listener in Trace.Listeners)
 				{
 					loader.AddTraceListener(listener);
 				}
 
 				ExecutionResult ret = loader.RemoteRun(typeName, ref context);
+#if NETFRAMEWORK
 				AppDomain.Unload(domain);
+#else
+				loader.LoadContext.Unload();
+				loader.LoadContext = null;
+#endif
 				return ret;
 			}
 			catch (Exception)
 			{
+#if NETFRAMEWORK
 				if (domain != null)
 				{
 					AppDomain.Unload(domain);
 				}
+#else
+				loader.LoadContext.Unload();
+				loader.LoadContext = null;
+#endif
 				throw;
 			}
 		}

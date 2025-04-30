@@ -45,20 +45,18 @@ namespace SolidCP.Providers.OS
                 || version == WindowsVersion.Windows7;
         }
 
-        public override Web.IWebServer WebServer
+        protected override Type WebServerType
         {
             get
             {
-                if (webServer != null) return webServer;
-
                 var ver = OSInfo.WindowsVersion;
                 if (ver == WindowsVersion.WindowsServer2008 ||
                     ver == WindowsVersion.Vista)
                 {
-                    return webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs70, SolidCP.Providers.Web.IIs70"));
+                    return Type.GetType("SolidCP.Providers.Web.IIs70, SolidCP.Providers.Web.IIs70");
                 } else
                 {
-                    return webServer = (Web.IWebServer)Activator.CreateInstance(Type.GetType("SolidCP.Providers.Web.IIs80, SolidCP.Providers.Web.IIs80"));
+                    return Type.GetType("SolidCP.Providers.Web.IIs80, SolidCP.Providers.Web.IIs80");
                 }
             }
         }

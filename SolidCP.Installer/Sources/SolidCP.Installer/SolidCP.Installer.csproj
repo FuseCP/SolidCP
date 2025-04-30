@@ -14,6 +14,7 @@
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
         <EmbeddReferences>false</EmbeddReferences>
+        <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
     </PropertyGroup>
     <Target Name="CopySetupPDBfile" Condition=" '$(Configuration)' == 'Debug' " AfterTargets="Build">
         <Copy SourceFiles="..\..\Build\$(Configuration)\Setup.pdb" DestinationFolder="$(OutputPath)" ContinueOnError="true" />
@@ -52,10 +53,11 @@
       <None Remove="Resources\SolidCP.Updater.exe" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" OutputItemType="EmbeddedResource" />
+        <PackageReference Include="DotNetZip.NetStandard" Version="1.12.0" />
+        <PackageReference Include="System.Resources.Extensions" Version="8.0.0" />
     </ItemGroup>
-    <ItemGroup Condition="$(EmbdeddReferences) == 'true'">
-        <PackageReference Include="CosturaPortable.Fody" Version="6.0.0">
+    <ItemGroup Condition="$(EmbeddReferences) == 'true'">
+        <PackageReference Include="PortableCostura.Fody" Version="6.0.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive; compile</IncludeAssets>
         </PackageReference>
@@ -245,12 +247,11 @@
         <None Include="SolidCP.ico" />
     </ItemGroup>
     <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj" />
+        <ProjectReference Include="..\SolidCP.Setup.Legacy\SolidCP.Setup.Legacy.csproj" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.Installer.Core\SolidCP.Installer.Core.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
-        <ProjectReference Include="..\SolidCP.Updater\SolidCP.Updater.csproj" />
     </ItemGroup>
 </Project>

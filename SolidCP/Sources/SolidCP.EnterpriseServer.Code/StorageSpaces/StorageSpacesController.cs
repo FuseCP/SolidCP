@@ -18,7 +18,6 @@ namespace SolidCP.EnterpriseServer
     {
         public StorageSpacesController(ControllerBase provider) : base(provider) { }
 
-
         #region Storage Spaces Levels
         public StorageSpaceLevelPaged GetStorageSpaceLevelsPaged(string filterColumn, string filterValue, string sortColumn, int startRow, int maximumRows)
         {

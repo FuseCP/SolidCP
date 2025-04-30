@@ -183,13 +183,29 @@ namespace SolidCP.EnterpriseServer
             return FilesController.GetFilePermissions(packageId, path);
         }
 
-        [WebMethod]
+		[WebMethod]
+		public UnixFilePermissions GetUnixFilePermissions(int packageId, string path)
+		{
+			return FilesController.GetUnixFilePermissions(packageId, path);
+		}
+
+		[WebMethod]
         public int SetFilePermissions(int packageId, string path, UserPermission[] users, bool resetChildPermissions)
         {
             return FilesController.SetFilePermissions(packageId, path, users, resetChildPermissions);
         }
 
-        [WebMethod]
+		[WebMethod]
+		public int SetUnixFilePermissions(int packageId, string path,
+        	string owner,
+	        string group,
+        	Providers.OS.UnixFileMode permissions,
+	        bool resetChildPermissions)
+		{
+			return FilesController.SetUnixFilePermissions(packageId, path, owner, group, permissions, resetChildPermissions);
+		}
+
+		[WebMethod]
         public FolderGraph GetFolderGraph(int packageId, string path)
         {
             return FilesController.GetFolderGraph(packageId, path);

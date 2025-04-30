@@ -33,69 +33,28 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Windows.Forms;
-using SolidCP.Setup.Actions;
+using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
 {
-    /// <summary>
-    /// Release 2.1.0
-    /// </summary>
-    public class Portal210 : Portal
-    {
-        public static new object Install(object obj)
-        {
-            //
-            return Portal.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
-
-        public static new DialogResult Uninstall(object obj)
-        {
-            return Portal.Uninstall(obj);
-        }
-
-        public static new DialogResult Setup(object obj)
-        {
-            return Portal.Setup(obj);
-        }
-
-        public static new DialogResult Update(object obj)
-        {
-            return UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "2.0.0,2.1.0",
-                updateSql: false);
-        }
-    }
-
     /// <summary>
     /// Release 2.0.0
     /// </summary>
     public class Portal200 : Portal
     {
-        public static new object Install(object obj)
-        {
-            //
-            return Portal.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
+		public override Version MinimalInstallerVersion => new Version("2.0.0");
+		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public override CommonSettings CommonSettings => Settings.WebPortal;
+		public Result Install(object args) => base.InstallOrSetup(args, "Install WebPortal",
+			Installer.Current.InstallWebPortal, false);
 
-        public static new DialogResult Uninstall(object obj)
-        {
-            return Portal.Uninstall(obj);
-        }
+		public Result Update(object args) => base.Update(args, "Update WebPortal",
+			Installer.Current.UpdateWebPortal);
 
-        public static new DialogResult Setup(object obj)
-        {
-            return Portal.Setup(obj);
-        }
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebPortal",
+			Installer.Current.ConfigureWebPortal, true);
 
-        public static new DialogResult Update(object obj)
-        {
-            return UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionsToUpgrade: "1.2.1,2.0.0",
-                updateSql: false,
-                versionSpecificAction: new InstallAction(ActionTypes.ConfigureSecureSessionModuleInWebConfig));
-        }
-    }
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebPortal",
+			Installer.Current.RemoveWebPortal);
+	}
 }

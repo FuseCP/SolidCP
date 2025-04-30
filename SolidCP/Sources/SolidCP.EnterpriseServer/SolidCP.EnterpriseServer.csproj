@@ -6,10 +6,9 @@
         <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
         <CompilerGeneratedFilesOutputPath>WebServices</CompilerGeneratedFilesOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <LangVersion>12</LangVersion>
+        <LangVersion>13</LangVersion>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
         <IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
         <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
         <DisableTransitiveProjectReferences>true</DisableTransitiveProjectReferences>
@@ -48,7 +47,7 @@
         <Compile Remove="bin_dotnet\**\*.*" />
         <None Remove="**\*.asmx" />
     </ItemGroup>
-
+    
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
         <ProjectReference Include="..\SolidCP.Build\SolidCP.Build.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" Private="false" ExcludeAssets="all" />
@@ -89,8 +88,13 @@
         </Reference>
         <Content Remove="appsettings.json" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Content Remove="Core.Web.config" />
+    </ItemGroup>
     
     <ItemGroup>
+        <None Include="Core.Web.config" />
         <None Include="Web.config">
             <SubType>Designer</SubType>
         </None>
@@ -98,15 +102,11 @@
 
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs">
-            <Link>VersionInfo.cs</Link>
+            <Link>Properties\VersionInfo.cs</Link>
         </Compile>
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="Properties\PublishProfiles\Default Settings %282%29.pubxml" />
-        <None Include="Properties\PublishProfiles\Default Settings %283%29.pubxml" />
-        <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
-        <None Include="Properties\PublishProfiles\Enterprise Server.pubxml" />
         <None Include="TaskEventHandlers.config" />
         <None Include="WsePolicyCache.Config" />
     </ItemGroup>
@@ -126,6 +126,11 @@
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </Content>
     </ItemGroup>
+
+    <Target Name="CopyCoreWebConfig" AfterTargets="Build">
+        <Copy SourceFiles="Core.Web.config" DestinationFiles="bin_dotnet\Web.config" />
+        <Message Text="Copied Core.Web.config" Importance="high" />
+    </Target>
 
     <Target Name="DeleteUnusedDlls" AfterTargets="Build">
 
@@ -154,6 +159,8 @@
             <FilesToMove Include="bin\SwaggerWcf.*" />
             <FilesToMove Include="bin\Renci.SshNet.*" />
             <FilesToMove Include="bin\SkiaSharp.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
             <FilesToDelete Include="bin\WebServices\**\*.*" />
             <FilesToDelete Include="bin_dotnet\WebServices\**\*.*" />
             <!--<FilesToDelete Include="bin\refs\**\*.*" />-->

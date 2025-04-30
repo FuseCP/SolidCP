@@ -21,7 +21,9 @@ namespace SolidCP.UniversalInstaller
 			else throw new PlatformNotSupportedException("Only x64 and Arm64 architectures allowed.");
 
 			Shell.Exec($"installer -pkg \"{tmp}\" -target /");
-			
+
+			Net8RuntimeInstalled = true;
+
 			ResetHasDotnet();
 		}
 

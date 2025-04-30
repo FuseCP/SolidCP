@@ -15,7 +15,7 @@ using Microsoft.Search.Interop;
 using SolidCP.Providers.OS;
 using SolidCP.Providers.Utils;
 using SolidCP.Server.Utils;
-using Scripting;
+//using Scripting;
 
 namespace SolidCP.Providers.StorageSpaces
 {
@@ -225,7 +225,53 @@ namespace SolidCP.Providers.StorageSpaces
             }
         }
 
-        public void DeleteFolder(string fullPath)
+		public void DeleteFolder(string fullPath)
+		{
+			Log.WriteStart("DeleteFolder");
+			Log.WriteInfo("Folder Path : {0}", fullPath);
+
+			try
+			{
+				DirectoryInfo treeRoot = new DirectoryInfo(fullPath);
+
+				if (treeRoot.Exists)
+				{
+					DirectoryInfo[] dirs = treeRoot.GetDirectories();
+					while (dirs.Length > 0)
+					{
+						foreach (DirectoryInfo dir in dirs)
+						{
+							DeleteFolder(dir.FullName);
+						}
+
+						dirs = treeRoot.GetDirectories();
+					}
+
+					// DELETE THE FILES UNDER THE CURRENT ROOT
+					string[] files = Directory.GetFiles(treeRoot.FullName);
+					foreach (string file in files)
+					{
+						File.SetAttributes(file, FileAttributes.Normal);
+						File.Delete(file);
+					}
+
+					Directory.Delete(treeRoot.FullName, true);
+
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(ex);
+				throw;
+			}
+			finally
+			{
+				Log.WriteEnd("DeleteFolder");
+			}
+		}
+
+        /* Remove the version that needs COM Reference, so we can build the solution with dotnet build
+		public void DeleteFolder(string fullPath)
         {
             Log.WriteStart("DeleteFolder");
             Log.WriteInfo("Folder Path : {0}", fullPath);
@@ -244,7 +290,7 @@ namespace SolidCP.Providers.StorageSpaces
             {
                 Log.WriteEnd("DeleteFolder");
             }
-        }
+        }*/
 
         public bool FileOrDirectoryExist(string fullPath)
         {

@@ -2,22 +2,22 @@
 	<PropertyGroup>
 		<RootNamespace>SolidCP.Providers.Database</RootNamespace>
 		<TargetFramework>netstandard2.0</TargetFramework>
-		<PublishUrl>publish\</PublishUrl>
-		<WarningsAsErrors>618</WarningsAsErrors>
-				<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
+		<OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<LangVersion>11</LangVersion>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.1.0" GeneratePathProperty="true" />
-	</ItemGroup>
+		<PackageReference Include="MySql.Data" Version="9.3.0" GeneratePathProperty="true" />
+        <PackageReference Include="System.Security.Permissions" Verison="9.0.4" GeneratePathProperty="true" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" GeneratePathProperty="true" />
+    </ItemGroup>
 	<ItemGroup>
 		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
 	</ItemGroup>
@@ -28,10 +28,16 @@
 
     <Target Name="CopyPackageReferences" AfterTargets="Build">
         <ItemGroup>
-            <CopyToOutputFiles Include="$(PkgMySql_Data)\lib\netstandard2.0\**\*.*" />
+            <CopyToNetFX Include="$(PkgMySql_Data)\lib\net48\**\*.*" />
+            <CopyToNetCore Include="$(PkgMySql_Data)\lib\net8.0\**\*.*" />
+            <CopyToNetCore Include="$(PkgSystem_Security_Permissions)\lib\net8.0\**\*.*" />
+            <CopyToNetFX Include="$(PkgSystem_Security_Permissions)\lib\net462\**\*.*" />
+            <CopyToNetFX Include="$(PkgSystem_Runtime_Loader)\lib\netstandard1.5\**\*.*" />
         </ItemGroup>
 
         <Copy SourceFiles="@(CopyToOutputFiles)" DestinationFolder="$(OutputPath)\%(RecursiveDir)" />
+        <Copy SourceFiles="@(CopyToNetCore)" DestinationFolder="$(OutputPath)\..\..\bin_dotnet\%(RecursiveDir)" />
+        <Copy SourceFiles="@(CopyToNetFX)" DestinationFolder="$(OutputPath)\..\%(RecursiveDir)" />
     </Target>
 
 </Project>

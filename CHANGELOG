@@ -1,3 +1,38 @@
+Version 1.5.2
+- Moving from System.Net.Mail to MailKit to send SMTP traffic due to issues with newer SMTP Servers with TLS1.2 and TLS1.3 enabled on default. Added option to allow unsecure SSL Versions (TLS 1.0 & TLS 1.1)
+
+- [HyperV2012R2+] Fix for cpuCores on HyperV2012R2
+- [Installer] Add partial offline installer option, using network only for version retrieval
+- [Installer] Fix issue where installer updater throws a fatal error due to SQL update.
+- [Installer] Disable overwriting of the SolidCP.Installer.exe.config file during re-installation/repairing
+- [HyperV2012R2+] Rewritten PowerShell function Convert-VHD to a native WMI variant.
+- [HyperV2012R2+] Add methods for handling WMI jobs
+- Fix VirtualHardDiskFormat as mentioned in the MS documentation
+- [EnterpriseServer] Add a WMI JobCompleted support
+- [HyperV2012R2+] Rewritten PowerShell function New-VHD to a native WMI variant.
+- Fix VirtualizationServer2012Proxy url
+- Create mailbox - user selector - use only AccountId argument
+- [SmarterMail100] Added Access Controls to limit logins in Smartermail100. - Work sponsored by Enterprise Guardian Inc.
+- [SmarterMail100] Fixes for access controls and using the current set values for the api call.
+
+
+Version 1.5.1
+- [SmarterMail100] Fix for GetGroup showing the wrong emails when more than one group is returned.
+- [SmarterMail100] Fix for large numbers when going from MB to kb for domain settings
+- [SimpleDNS Plus 9.x] Fixed issue where domain name is not used & added support for getting and setting TTL
+- [MailEnable] Fix for MailAlias when an password policy is set.
+- [SmarterMail100] Removing tinymce character limit as found in #206
+- [SimpleDNS Plus 9.x] Fix issue from earlier commit which broke deleting domains.
+- [SimpleDNS Plus 9.x] Fixed issue where txt record may not be recorded correctly. #52
+- [MailEnable] Added Delete Message on Forward to Portal. It appears to already be in Server and working.
+- [SimpleDNS] Added Provider Zone settings #210 #211
+- Adding the RecordDefaultTTL and RecordMinimumTTL property to existing DNS providers
+- [SimpleDNS Plus 9.x] Fix for preview domain when DNS server supports setting TTL. Fixes records added with 0 TTL.
+- [SmarterMail100] Added extra group options and fixing import bug when no target emails set. - Work sponsored by Enterprise Guardian Inc.
+- [HyperV] Fix for #212 (Additional VHDX bug)
+- [SmarterMail100] Added option to Allow send from group address
+
+
 Version 1.5.0
 - [SQL] GetSearchObject - wrong join fixed
 - MFA form will resent pin instead of logging in when enter key is pressed

@@ -27,6 +27,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+    <ProjectReference Include="..\SolidCP.Setup.Legacy\SolidCP.Setup.Legacy.csproj" />
     <!--<ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.OS.Unix\SolidCP.Providers.OS.Unix.csproj">
 			<Project>{1273d02f-6c5c-4752-86ce-99d504f6cffa}</Project>
 			<Name>SolidCP.Providers.OS.Unix</Name>
@@ -71,7 +72,6 @@
 			<Project>{6e348968-461d-45a1-b235-4f552947b9f1}</Project>
 			<Name>SolidCP.Providers.Web.IIs80</Name>
 		</ProjectReference>-->
-    <ProjectReference Include="..\SolidCP.Setup\SolidCP.Setup.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="obj\x86\Debug\.NETFramework,Version=v4.8.AssemblyAttributes.cs" />

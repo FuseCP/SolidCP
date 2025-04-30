@@ -225,7 +225,14 @@ namespace SolidCP.EnterpriseServer.Data.Scaffolding
 		}
 
 		public static string Escape(string txt) => txt.Replace("\\", "\\\\").Replace("\r", "\\r").Replace("\n", "\\n");
-		public static string Unescape(string txt) => txt.Replace("\\n", "\n").Replace("\\r", "\r").Replace("\\\\", "\\");
+	
+		public static string Unescape(string txt)
+		{
+			txt = Regex.Replace(txt, @"(?<!(?:^|[^\\])(?:\\\\)*\\)\\n", "\n");
+			txt = Regex.Replace(txt, @"(?<!(?:^|[^\\])(?:\\\\)*\\)\\r", "\r");
+			txt = txt.Replace("\\\\", "\\");
+			return txt;
+		}
 
 		const bool Prefetch = true;
 

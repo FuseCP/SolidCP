@@ -9,7 +9,6 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
@@ -21,17 +20,17 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="SkiaSharp" Version="2.88.8" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="2.88.8" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="2.88.8" GeneratePathProperty="true" />
-		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="2.88.8" GeneratePathProperty="true" />
-		<!--<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.7" GenerateProperty="true" />-->
+		<PackageReference Include="SkiaSharp" Version="3.116.1" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.1" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="3.116.1" GeneratePathProperty="true" />
+		<PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.116.1" GeneratePathProperty="true" />
+		<!--<PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="3.116.1" GenerateProperty="true" />-->
 	</ItemGroup>
 
 	<!--<Import Project="$(PkgSkiaSharp_NativeAssets_Linux_NoDependencies)\build\net462\SkiaSharp.NativeAssets.Linux.NoDependencies.targets" Condition=" '$(UseSkia)' == 'true' " />-->
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\build\net462\SkiaSharp.NativeAssets.Linux.targets" />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\build\net462\SkiaSharp.NativeAssets.macOS.targets" />
-	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\build\net462\SkiaSharp.NativeAssets.Win32.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Linux)\buildTransitive\net462\SkiaSharp.NativeAssets.Linux.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_macOS)\buildTransitive\net462\SkiaSharp.NativeAssets.macOS.targets" />
+	<Import Project="$(PkgSkiaSharp_NativeAssets_Win32)\buildTransitive\net462\SkiaSharp.NativeAssets.Win32.targets" />
 
 	<ItemGroup>
 	  <None Remove="Resources\power-button.svg" />
@@ -40,23 +39,23 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.2.5" GeneratePathProperty="true" />
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.2.5" GeneratePathProperty="true" />
-		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="8.0.0" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.3.0" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.3.0" GeneratePathProperty="true" />
+		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.4" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="RestSharp" Version="112.1.0" GeneratePathProperty="true" />
-		<PackageReference Include="SSH.NET" Version="2024.1.0" GeneratePathProperty="true" />
-		<PackageReference Include="System.Buffers" Version="4.5.1" />
-		<PackageReference Include="System.IO.Pipelines" Version="8.0.0" />
-		<PackageReference Include="System.Memory" Version="4.5.5" />
+		<PackageReference Include="SSH.NET" Version="2025.0.0" GeneratePathProperty="true" />
+		<PackageReference Include="System.Buffers" Version="4.6.1" />
+		<PackageReference Include="System.IO.Pipelines" Version="9.0.4" />
+		<PackageReference Include="System.Memory" Version="4.6.3" />
 		<PackageReference Include="System.Net.Primitives" Version="4.3.1" />
-		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+		<PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
 		<PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-		<PackageReference Include="System.Text.Encodings.Web" Version="8.0.0" />
-		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
-		<PackageReference Include="System.ValueTuple" Version="4.5.0" />
+		<PackageReference Include="System.Text.Encodings.Web" Version="9.0.4" />
+		<PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+		<PackageReference Include="System.ValueTuple" Version="4.6.1" />
 	</ItemGroup>
 	
 	<ItemGroup>

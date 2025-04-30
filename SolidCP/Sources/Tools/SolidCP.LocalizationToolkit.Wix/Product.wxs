@@ -56,7 +56,7 @@
       <!-- Binaries -->
       <Component Id="ProductFiles" Guid="E9FE031C-8DAA-4085-AE96-89FFEFD1B62F">
         <File Id="LocalizationToolkit.exe" Source="$(var.BUILDPATH)\LocalizationToolkit.exe" />
-        <File Id="DotNetZip" Source="$(var.BUILDPATH)\Ionic.Zip.Reduced.dll" />
+        <!--<File Id="DotNetZip" Source="$(var.BUILDPATH)\Ionic.Zip.Reduced.dll" />-->
       </Component>
       
       <Directory Id="Data" Name="Data">

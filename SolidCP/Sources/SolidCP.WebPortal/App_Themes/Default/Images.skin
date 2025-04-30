@@ -51,3 +51,5 @@ Default skin template. The following skins are provided as examples only.
 <asp:Image runat="server" SkinID="Rdc16" ImageUrl="images/VPS/rdc16.png" ImageAlign="AbsMiddle" Width="16" Height="16" />
 
 <asp:Image runat="server" SkinID="PveRdc32" ImageUrl="images/Proxmox/remote-desktop.svg" ImageAlign="AbsMiddle" Width="32" Height="32" />
+
+<asp:Image SkinID="RenameButton" runat="server" ImageUrl="Images/rename.gif" hspace="1" ImageAlign="AbsMiddle"></asp:Image>

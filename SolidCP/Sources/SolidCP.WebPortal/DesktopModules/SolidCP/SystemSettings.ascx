@@ -69,7 +69,19 @@
                                                 <asp:Localize ID="SettinglblSmtpEnableSSL" runat="server" meta:resourcekey="SettinglblSmtpEnableSSL" />
                                         </CPCC:H5Label>
                                         <div class="col-sm-6">
-                                            <asp:CheckBox ID="chkEnableSsl" runat="server" CssClass="form-control" Text="Yes" meta:resourcekey="SettingchkSmtpEnableSSL" />
+                                            <asp:CheckBox ID="chkEnableSsl" runat="server" CssClass="form-control" Text="Enable" meta:resourcekey="SettingchkSmtpEnableSSL" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <CPCC:H5Label runat="server" for="chkEnableLegacySSL" class="col-sm-2 control-label">
+                                                <asp:Localize ID="SettinglblEnableLegacySSL" runat="server" meta:resourcekey="SettinglblSmtpEnableLegacySSL" Text="Enable Support for unsecure SSL Versions TLS1 and TLS1.1 (Not recommended):" />
+                                        </CPCC:H5Label>
+                                        <div class="col-sm-6">
+                                            <asp:CheckBox ID="chkEnableLegacySSL" runat="server" CssClass="form-control" Text="Enable" meta:resourcekey="SettingchkSmtpEnableLegacySSL"/>
                                         </div>
                                     </div>
                                 </div>

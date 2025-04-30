@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net48</TargetFrameworks>
+        <LangVersion>13</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Remove="Initialization\localhost.pfx" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="Initialization\localhost.pfx" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
+        <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
+        <Reference Include="System.Net.Http" />
+    </ItemGroup>
+
+</Project>

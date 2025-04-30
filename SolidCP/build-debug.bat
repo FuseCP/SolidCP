@@ -7,8 +7,8 @@ IF not defined NoRebuild (
 )
 
 IF not defined MsBuildSwitches ( Set MsBuildSwitches=/v:n /m)
-IF not defined SolidCPVersion ( Set SolidCPVersion=1.5.0)
-IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=1.5.0)
+IF not defined SolidCPVersion ( Set SolidCPVersion=2.0.0)
+IF not defined SolidCPFileVersion ( Set SolidCPFileVersion=2.0.0)
 IF not defined Configuration ( Set Configuration=Debug)
 
 IF EXIST "%ProgramFiles%\Microsoft Visual Studio\2022\Community\MSBuild\Current\bin\MSBuild.exe" (
@@ -79,4 +79,4 @@ IF EXIST "%ProgramFiles(x86)%\MSBuild\14.0\Bin\MSBuild.exe" (
  )
 
 :Build
-%SCPMSBuild%  build.xml /target:Build /p:BuildConfiguration=%Configuration% /p:Version="%SolidCPVersion%" /p:FileVersion="%SolidCPFileVersion%" /p:VersionLabel="%SolidCPFileVersion%" %MsBuildSwitches% /fileLogger /flp:verbosity=normal /p:VisualStudioVersion=%SCPVSVer%
+%SCPMSBuild% build.xml /target:Build /p:BuildConfiguration=%Configuration% /p:Version="%SolidCPVersion%" /p:FileVersion="%SolidCPFileVersion%" /p:VersionLabel="%SolidCPFileVersion%" %MsBuildSwitches% /fileLogger /flp:verbosity=normal /p:VisualStudioVersion=%SCPVSVer%

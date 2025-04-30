@@ -509,7 +509,7 @@ namespace SolidCP.EnterpriseServer
                 }
 
                 // load hosting plan
-                HostingPlanInfo plan = PackageController.GetHostingPlan(planId);
+                HostingPlanInfo plan = GetHostingPlan(planId);
 
                 string packageName = spaceName;
                 if (String.IsNullOrEmpty(packageName) || packageName.Trim() == "")
@@ -519,7 +519,7 @@ namespace SolidCP.EnterpriseServer
                 int packageId = -1;
                 try
                 {
-                    result = PackageController.AddPackage(
+                    result = AddPackage(
                         userId, planId, packageName, "", statusId, DateTime.Now, false);
                 }
                 catch (Exception ex)
@@ -791,19 +791,19 @@ namespace SolidCP.EnterpriseServer
                 result.Result = packageId;
 
                 // allocate "Web Sites" IP addresses
-                int webServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Web);
+                int webServiceId = GetPackageServiceId(packageId, ResourceGroups.Web);
                 StringDictionary webSettings = ServerController.GetServiceSettings(webServiceId);
                 if (Utils.ParseBool(webSettings["AutoAssignDedicatedIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.Web, IPAddressPool.WebSites);
 
                 // allocate "VPS" IP addresses
-                int vpsServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS);
+                int vpsServiceId = GetPackageServiceId(packageId, ResourceGroups.VPS);
                 StringDictionary vpsSettings = ServerController.GetServiceSettings(vpsServiceId);
                 if (Utils.ParseBool(vpsSettings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPS, IPAddressPool.VpsExternalNetwork);
 
                 // allocate "VPS" IP addresses
-                int vps2012ServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
+                int vps2012ServiceId = GetPackageServiceId(packageId, ResourceGroups.VPS2012);
                 StringDictionary vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                 if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
@@ -815,7 +815,7 @@ namespace SolidCP.EnterpriseServer
                     ServerController.AllocateMaximumPackageVLANs(packageId, ResourceGroups.VPS2012, true);
 
                 // allocate "VPSForPC" IP addresses
-                int vpsfcpServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPSForPC);
+                int vpsfcpServiceId = GetPackageServiceId(packageId, ResourceGroups.VPSForPC);
                 StringDictionary vpfcpsSettings = ServerController.GetServiceSettings(vpsfcpServiceId);
                 if (Utils.ParseBool(vpfcpsSettings["AutoAssignExternalIP"], true))
                     ServerController.AllocateMaximumPackageIPAddresses(packageId, ResourceGroups.VPSForPC, IPAddressPool.VpsExternalNetwork);
@@ -1066,7 +1066,7 @@ namespace SolidCP.EnterpriseServer
             string initialPath = null;
 
             // load package settings
-            PackageSettings packageSettings = PackageController.GetPackageSettings(packageId,
+            PackageSettings packageSettings = GetPackageSettings(packageId,
                 PackageSettings.SPACES_FOLDER);
 
             if (!String.IsNullOrEmpty(packageSettings["ChildSpacesFolder"]))
@@ -1153,7 +1153,7 @@ namespace SolidCP.EnterpriseServer
 
         //public void UpdateESHardQuota(int packageId)
         //{
-        //    int esServiceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.EnterpriseStorage);
+        //    int esServiceId = GetPackageServiceId(packageId, ResourceGroups.EnterpriseStorage);
 
         //    if (esServiceId != 0)
         //    {
@@ -1166,7 +1166,7 @@ namespace SolidCP.EnterpriseServer
 
         //        string homePath = string.Format("{0}:\\{1}", locationDrive, usersHome);
 
-        //        int osId = PackageController.GetPackageServiceId(packageId, ResourceGroups.Os);
+        //        int osId = GetPackageServiceId(packageId, ResourceGroups.Os);
         //        bool enableHardQuota = (esSesstings["enablehardquota"] != null)
         //            ? bool.Parse(esSesstings["enablehardquota"])
         //            : false;
@@ -1240,7 +1240,7 @@ namespace SolidCP.EnterpriseServer
             UpdatePackageHardQuota(addon.PackageId);
 
             // check resources to allocate
-            PackageContext cntx = PackageController.GetPackageContext(addon.PackageId);
+            PackageContext cntx = GetPackageContext(addon.PackageId);
             if (cntx != null && cntx.Quotas.Count > 0)
             {
                 foreach (KeyValuePair<string, QuotaValueInfo> quota in cntx.Quotas)
@@ -1264,14 +1264,14 @@ namespace SolidCP.EnterpriseServer
                         case Quotas.VPS2012_EXTERNAL_IP_ADDRESSES_NUMBER:
                             if (vps2012Settings == null)
                             {
-                                vps2012ServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
+                                vps2012ServiceId = GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
                                 vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                             }
                             if (Utils.ParseBool(vps2012Settings["AutoAssignExternalIP"], true))
                                 ServerController.AllocateMaximumPackageIPAddresses(addon.PackageId, ResourceGroups.VPS2012, IPAddressPool.VpsExternalNetwork);
                             break;
                         case Quotas.WEB_IP_ADDRESSES:
-                            int webServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.Web, false);
+                            int webServiceId = GetPackageServiceId(addon.PackageId, ResourceGroups.Web, false);
                             StringDictionary webSettings = ServerController.GetServiceSettings(webServiceId);
                             if (Utils.ParseBool(webSettings["AutoAssignDedicatedIP"], true))
                                 ServerController.AllocateMaximumPackageIPAddresses(addon.PackageId, ResourceGroups.Web, IPAddressPool.WebSites);
@@ -1279,7 +1279,7 @@ namespace SolidCP.EnterpriseServer
                         case Quotas.VPS2012_PRIVATE_VLANS_NUMBER:
                             if (vps2012Settings == null)
                             {
-                                vps2012ServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
+                                vps2012ServiceId = GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
                                 vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                             }
                             if (Utils.ParseBool(vps2012Settings["AutoAssignVLAN"], true))
@@ -1288,7 +1288,7 @@ namespace SolidCP.EnterpriseServer
                         case Quotas.VPS2012_DMZ_VLANS_NUMBER:
                             if (vps2012Settings == null)
                             {
-                                vps2012ServiceId = PackageController.GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
+                                vps2012ServiceId = GetPackageServiceId(addon.PackageId, ResourceGroups.VPS2012, false);
                                 vps2012Settings = ServerController.GetServiceSettings(vps2012ServiceId);
                             }
                             if (Utils.ParseBool(vps2012Settings["DmzAutoAssignVLAN"], true))
@@ -1415,7 +1415,7 @@ namespace SolidCP.EnterpriseServer
             DataSet dsItems = Database.GetServiceItems(SecurityContext.User.UserId,
                 packageId, groupName, typeName, recursive);
 
-            FlatternItemsTable(dsItems, 0, itemType);
+            FlattenItemsTable(dsItems, 0, itemType);
 
             return dsItems;
         }
@@ -1479,7 +1479,7 @@ namespace SolidCP.EnterpriseServer
                 SecurityContext.User.UserId, packageId, groupName, typeName, serverId, recursive, filterColumn, filterValue,
                 sortColumn, startRow, maximumRows);
 
-            FlatternItemsTable(dsItems, 1, itemType);
+            FlattenItemsTable(dsItems, 1, itemType);
 
             return dsItems;
         }
@@ -1765,7 +1765,7 @@ namespace SolidCP.EnterpriseServer
 
 			return item;
 		}
-		private void FlatternItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
+		private void FlattenItemsTable(DataSet dsItems, int itemsTablePosition, Type itemType)
         {
             DataTable dtItems = dsItems.Tables[itemsTablePosition];
             DataTable dtProps = dsItems.Tables[itemsTablePosition + 1];
@@ -1774,7 +1774,13 @@ namespace SolidCP.EnterpriseServer
             PropertyInfo[] props = itemType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
             foreach (PropertyInfo prop in props)
             {
-                if (!dtItems.Columns.Contains(prop.Name) && !prop.PropertyType.IsArray)
+                if (!dtItems.Columns.Contains(prop.Name) && !prop.PropertyType.IsArray &&
+				    (prop.PropertyType == typeof(string) ||
+				    prop.PropertyType == typeof(int) ||
+				    prop.PropertyType == typeof(long) ||
+				    prop.PropertyType == typeof(bool) ||
+				    prop.PropertyType == typeof(Guid) ||
+                    prop.PropertyType.IsEnum))
                     dtItems.Columns.Add(prop.Name, prop.PropertyType);
             }
 
@@ -1803,8 +1809,10 @@ namespace SolidCP.EnterpriseServer
                         propValue = (sVal != "") ? Boolean.Parse(sVal) : false;
                     if (columnType == typeof(Guid))
                         propValue = (!string.IsNullOrEmpty(sVal)) ? new Guid(sVal) : Guid.Empty;
+					if (columnType.IsEnum)
+						propValue = (sVal != "") ? Enum.Parse(columnType, sVal) : Convert.ChangeType(0, columnType);
 
-                    drItem[columnName] = propValue;
+					drItem[columnName] = propValue;
                 }
             }
         }
@@ -2185,7 +2193,7 @@ namespace SolidCP.EnterpriseServer
                 items["plan"] = plan;
 
             // name servers
-            PackageSettings packageSettings = PackageController.GetPackageSettings(packageId, PackageSettings.NAME_SERVERS);
+            PackageSettings packageSettings = GetPackageSettings(packageId, PackageSettings.NAME_SERVERS);
             string[] nameServers = new string[] { };
             if (!String.IsNullOrEmpty(packageSettings["NameServers"]))
                 nameServers = packageSettings["NameServers"].Split(';');
@@ -2194,7 +2202,7 @@ namespace SolidCP.EnterpriseServer
 
             // Preview Domain
             string previewDomain = null;
-            packageSettings = PackageController.GetPackageSettings(packageId, PackageSettings.INSTANT_ALIAS);
+            packageSettings = GetPackageSettings(packageId, PackageSettings.INSTANT_ALIAS);
             if (!String.IsNullOrEmpty(packageSettings["PreviewDomain"]))
                 previewDomain = packageSettings["PreviewDomain"];
 

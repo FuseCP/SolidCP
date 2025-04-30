@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net48</TargetFrameworks>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <LangVersion>13</LangVersion>
+        <PackageId>SolidCP.UniversalInstaller.Runtime</PackageId>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(TargetFramework) == 'net48'">
+        <AssemblyName>SolidCP.UniversalInstaller.Runtime.NetFX</AssemblyName>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(TargetFramework) == 'net8.0'">
+        <AssemblyName>SolidCP.UniversalInstaller.Runtime.NetCore</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup Condition="$(TargetFramework) == 'net48'">
+        <Reference Include="System.ServiceModel" />
+        <Reference Include="System.Management" />
+        <Reference Include="System.Net.Http" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+        <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.2" />
+        <PackageReference Include="System.ServiceModel.Http" Version="8.1.2" />
+        <PackageReference Include="System.Management" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="System.Management">
+            <HintPath>$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll</HintPath>
+            <Private>True</Private>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\SolidCP.EnterpriseServer.Data.csproj" />
+      <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="..\SolidCP.UniversalInstaller\AssemblyLoader.cs" />
+    </ItemGroup>
+
+    <Target Name="CopySystemManagement" AfterTargets="CopyFilesToOutputDirectory" Condition="'$(TargetFramework)' == 'net8.0'">
+        <ItemGroup>
+            <MgmtDll Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(MgmtDll)" DestinationFolder="$(OutputPath)" />
+    </Target>
+</Project>

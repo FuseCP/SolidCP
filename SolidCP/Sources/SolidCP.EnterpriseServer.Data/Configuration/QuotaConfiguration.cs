@@ -685,6 +685,22 @@ public partial class QuotaConfiguration: EntityTypeConfiguration<Quota>
 			new Quota() { QuotaId = 752, GroupId = 33, QuotaDescription = "Number of DMZ Network VLANs", QuotaName = "VPS2012.DMZVLANsNumber", QuotaOrder = 24, QuotaTypeId = 2,
 				ServiceQuota = false },
 			new Quota() { QuotaId = 753, GroupId = 7, QuotaDescription = "Allow editing TTL in DNS Editor", QuotaName = "DNS.EditTTL", QuotaOrder = 2, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 754, GroupId = 4, QuotaDescription = "Allow changes to access controls", QuotaName = "Mail.AllowAccessControls", QuotaOrder = 9, QuotaTypeId = 1,
+				ServiceQuota = false, HideQuota = true },
+			new Quota() { QuotaId = 760, GroupId = 76, ItemTypeId = 79, QuotaDescription = "Databases", QuotaName = "MsSQL2025.Databases", QuotaOrder = 1,
+				QuotaTypeId = 2, ServiceQuota = false },
+			new Quota() { QuotaId = 761, GroupId = 76, ItemTypeId = 80, QuotaDescription = "Users", QuotaName = "MsSQL2025.Users", QuotaOrder = 2,
+				QuotaTypeId = 2, ServiceQuota = false },
+			new Quota() { QuotaId = 762, GroupId = 76, QuotaDescription = "Max Database Size", QuotaName = "MsSQL2025.MaxDatabaseSize", QuotaOrder = 3, QuotaTypeId = 3,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 763, GroupId = 76, QuotaDescription = "Database Backups", QuotaName = "MsSQL2025.Backup", QuotaOrder = 5, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 764, GroupId = 76, QuotaDescription = "Database Restores", QuotaName = "MsSQL2025.Restore", QuotaOrder = 6, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 765, GroupId = 76, QuotaDescription = "Database Truncate", QuotaName = "MsSQL2025.Truncate", QuotaOrder = 7, QuotaTypeId = 1,
+				ServiceQuota = false },
+			new Quota() { QuotaId = 766, GroupId = 76, QuotaDescription = "Max Log Size", QuotaName = "MsSQL2025.MaxLogSize", QuotaOrder = 4, QuotaTypeId = 3,
 				ServiceQuota = false }
 		});
 		#endregion

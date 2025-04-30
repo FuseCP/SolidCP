@@ -87,8 +87,10 @@ namespace SolidCP.Providers.Virtualization
         }
 
         ///<summary>
-        ///Not all commands support native Async work! 
-        ///Please check your command manually that it has the -asJob argument!
+        ///IMPORTANT: It is not recommended to use this method if the task/job can be implemented via WMI, 
+        ///as PowerShell does not guarantee that the session will remain open, which may result in the loss of the Job ID.
+        ///Not all commands support native asynchronous execution.
+        ///Please manually verify that your command includes the -AsJob argument!
         ///</summary>
         public Collection<PSObject> TryExecuteAsJob(Command cmd, bool addComputerNameParameter)
         {
@@ -134,12 +136,6 @@ namespace SolidCP.Providers.Virtualization
         }
         private Collection<PSObject> ExecuteInternal(Command cmd, bool addComputerNameParameter, bool withExceptions)//, bool asJobScript, bool ignoreStaticCheck)
         {
-            //if (!ignoreStaticCheck)
-            //    if (isStatic && !asJobScript)
-            //        throw new Exception("Invoke error: You can't execute this method Execute as not a Job from a static object");
-            //    else if (!isStatic && asJobScript)
-            //        throw new Exception("Invoke error: You can't execute this method Execute as a Job from a Non static object!");
-
             HostedSolutionLog.LogStart("Execute");
 
             List<object> errorList = new List<object>();
@@ -225,7 +221,7 @@ namespace SolidCP.Providers.Virtualization
             Command cmd = new Command("Receive-Job");
             if (string.IsNullOrEmpty(jobId))
                 throw new NullReferenceException("jobId is null");
-            cmd.Parameters.Add("Id", jobId);
+            cmd.Parameters.Add("InstanceId", jobId);
             cmd.Parameters.Add("Keep");
 
             return ExecuteFromStaticObj(cmd, false, true);
@@ -241,7 +237,7 @@ namespace SolidCP.Providers.Virtualization
 
             if (string.IsNullOrEmpty(jobId))
                 throw new NullReferenceException("jobId is null");
-            cmd.Parameters.Add("Id", jobId);
+            cmd.Parameters.Add("InstanceId", jobId);
 
             return ExecuteFromStaticObj(cmd, false, true); //only for Get-Job or different commands, that can't be packed as Job
         }

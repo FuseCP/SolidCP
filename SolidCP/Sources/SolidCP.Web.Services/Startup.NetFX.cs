@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 #if NETFRAMEWORK
 using System.ServiceModel;
@@ -21,26 +22,21 @@ namespace SolidCP.Web.Services
 	public static class StartupNetFX
 	{
 
-		static object startLock = new object();
-		static bool wasCalled = false;
-
+		static int initialized = 0;
 		public static void Start()
 		{
 #if NETFRAMEWORK
-			lock (startLock)
-			{
-				if (wasCalled) return;
-				wasCalled = true;
-			}
+			if (Interlocked.CompareExchange(ref initialized, 1, 0) != 0) return;
+
 			AddServiceRoutes(ServiceTypes.Types.Select(srvc => srvc.Service));
 			//SvcVirtualPathProvider.SetupSvcServices(webServices);
 			//DictionaryVirtualPathProvider.Startup();
 
 			// set Log trace switch, as it is not working
 #endif
-        }
+		}
 
-        static void AddServiceRoutes(IEnumerable<Type> services)
+		static void AddServiceRoutes(IEnumerable<Type> services)
 		{
 #if NETFRAMEWORK
 			foreach (var service in services)

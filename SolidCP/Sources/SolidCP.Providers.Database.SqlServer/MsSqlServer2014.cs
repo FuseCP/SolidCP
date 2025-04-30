@@ -34,7 +34,7 @@
 
 namespace SolidCP.Providers.Database
 {
-    public class MsSqlServer2014 : MsSqlServer2012
+    public class MsSqlServer2014 : MsSqlServerMicrosoftData
     {
         public override bool IsInstalled()
         {

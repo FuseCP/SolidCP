@@ -18,6 +18,7 @@ v2.2	18th August 2020	 Fix for the Database not backed up, better support for th
 v2.2.1	23rd May 2021		 Fix for v1.4.8 web.config version
 v2.2.2  29th January 2022	 Changes for v1.4.9 web.config changes
 v2.2.3  02th December 2024	 Changes for v1.5.0 web.config changes
+v2.2.4  17th December 2024	 Changes for v1.5.1 web.config changes
 
 Written By Marc Banyard for the SolidCP Project (c) 2016 SolidCP
 Updated By Trevor Robinson.
@@ -658,8 +659,8 @@ function UpgradeSCPPortal() # Function to upgrade the SolidCP Portal Component
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/configSections/sectionGroup[@name='system.data.dataset.serialization']" "section" @( ("name","allowedTypes"), ("type","System.Data.AllowedTypesSectionHandler, System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089") )
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration" "system.data.dataset.serialization"
 				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization" "allowedTypes"
-				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.5.0.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
-				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.5.0.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Update" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.5.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
+				ModifyXML "$SCP_Portal_Dir\web.config" "Add" "//configuration/system.data.dataset.serialization/allowedTypes" "add" @( ("type","SolidCP.Providers.ResultObjects.HeliconApeStatus, SolidCP.Providers.Base, Version=1.5.1.0, Culture=neutral, PublicKeyToken=da8782a6fc4d0081") )
 				
 				# Add the edditional "<dependentAssembly>" tags in the Runtime section and remove any additional charichter returns from the end of the file
 				((Get-Content "$SCP_Portal_Dir\web.config" -Raw) -replace '        <bindingRedirect oldVersion="0\.0\.0\.0-13\.0\.0\.0" newVersion="13\.0\.0\.0" \/>[\r\n]+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" \/>', "        <bindingRedirect oldVersion=`"0.0.0.0-13.0.0.0`" newVersion=`"13.0.0.0`" />`r`n      </dependentAssembly>`r`n      <dependentAssembly>`r`n        <assemblyIdentity name=`"WebGrease`" publicKeyToken=`"31bf3856ad364e35`" culture=`"neutral`" />" -replace '</configuration>[\r\n]+', "</configuration>") | Set-Content "$SCP_Portal_Dir\web.config"

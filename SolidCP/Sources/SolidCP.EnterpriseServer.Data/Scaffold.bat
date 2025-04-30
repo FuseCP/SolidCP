@@ -1,1 +1,3 @@
-dotnet build -target:Scaffold
+REM dotnet build -target:Scaffold
+dotnet ef dbcontext scaffold "Server=(local);Database=SolidCPFresh;uid=SolidCP;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300" Microsoft.EntityFrameworkCore.SqlServer --data-annotations --output-dir Entities\Sources --context-dir Configuration\Sources --context DbContextBase --force
+move Configuration\Sources\DbContextBase.cs DbContextBase.Source.cs

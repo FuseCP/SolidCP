@@ -10,7 +10,6 @@
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>SolidCP.snk</AssemblyOriginatorKeyFile>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework.ToLowerInvariant())\</IntermediateOutputPath>
 	</PropertyGroup>
 
@@ -28,7 +27,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
         <ProjectReference Include="..\..\..\SolidCP.Server\SolidCP.Server.csproj" Condition="'$(AnyServices)' == ''"
-		 ReferenceOutputAssembly="false" PrivateAssets="All" />
+			ReferenceOutputAssembly="false" PrivateAssets="All" />
     </ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
 		<Reference Include="System.ServiceModel" />
@@ -36,9 +35,9 @@
 		<Reference Include="System.DirectoryServices" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="System.ServiceModel.Primitives" Version="8.1.0" />
-		<PackageReference Include="System.DirectoryServices" Version="8.0.0" />
-		<PackageReference Include="CoreWCF.Primitives" Version="1.6.0"/>
+		<PackageReference Include="System.ServiceModel.Primitives" Version="8.1.2" />
+		<PackageReference Include="System.DirectoryServices" Version="9.0.4" />
+		<PackageReference Include="CoreWCF.Primitives" Version="1.7.0"/>
 	</ItemGroup>
 
     <Target Name="RerunAnalyzer" Condition="'$(AnyServices)' == ''" BeforeTargets="ResolveProjectReferences">

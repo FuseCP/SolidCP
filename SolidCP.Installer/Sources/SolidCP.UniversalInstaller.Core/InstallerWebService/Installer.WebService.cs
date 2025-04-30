@@ -34,7 +34,6 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Net;
-using System.ServiceModel;
 using System.Data;
 using System.Xml;
 using System.Xml.Linq;
@@ -68,9 +67,8 @@ namespace SolidCP.UniversalInstaller
 				string url = Settings.Installer.WebServiceUrl;
 				if (string.IsNullOrEmpty(url)) url = "http://installer.solidcp.com/Services/InstallerService-1.0.asmx";
 
-				var type = OSInfo.IsCore ?
-					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.WebService.NetCore") :
-					Type.GetType("SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.WebService.NetFX");
+				var type = GetType($"SolidCP.UniversalInstaller.InstallerWebService, SolidCP.UniversalInstaller.Runtime.{
+					(OSInfo.IsCore ? "NetCore" : "NetFX")}");
 
 				var webService = Activator.CreateInstance(type, url) as IInstallerWebService;
 				
@@ -95,5 +93,9 @@ namespace SolidCP.UniversalInstaller
 				return webService;
 			}
 		}
+
+		public const string GitHubUrl = "https://github.com/FuseCP/SolidCP";
+ 		public GitHubReleases GitHub => new GitHubReleases(Settings.Installer.GitHubUrl ?? GitHubUrl);
+		public Releases Releases => new Releases();
 	}
 }

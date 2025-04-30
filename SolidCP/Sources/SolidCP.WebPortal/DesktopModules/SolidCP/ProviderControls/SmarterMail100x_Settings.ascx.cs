@@ -78,6 +78,8 @@ namespace SolidCP.Portal.ProviderControls
                 ViewState[MailFilterDestinations] = sed;
                 gvSEDestinations.DataSource = sed;
                 gvSEDestinations.DataBind();
+
+                bool cbAccessControlsHidden = !ES.Services.Servers.GetQuotaHidden("Mail.AllowAccessControls", 4);
             }
         }
 
@@ -93,6 +95,7 @@ namespace SolidCP.Portal.ProviderControls
             cbEnableDomainAdmin.Checked = Utils.ParseBool(settings[Constants.EnableDomainAdministrators], false);
             chkSEEnable.Checked = Utils.ParseBool(settings["EnableMailFilter"], false);
             txtDefaultDomainHostName.Text = settings["DefaultDomainHostName"];
+            cbAccessControlsHidden.Checked = !ES.Services.Servers.GetQuotaHidden("Mail.AllowAccessControls", 4);
         }
 
         public void SaveSettings(StringDictionary settings)
@@ -106,6 +109,8 @@ namespace SolidCP.Portal.ProviderControls
             settings[Constants.EnableDomainAdministrators] = cbEnableDomainAdmin.Checked.ToString();
             settings["EnableMailFilter"] = chkSEEnable.Checked.ToString();
             settings["DefaultDomainHostName"] = txtDefaultDomainHostName.Text.Trim();
+
+            ES.Services.Servers.UpdateQuotaHidden("Mail.AllowAccessControls", 4, !cbAccessControlsHidden.Checked);
         }
 
         protected void gvSEDestinations_RowCommand(object sender, GridViewCommandEventArgs e)

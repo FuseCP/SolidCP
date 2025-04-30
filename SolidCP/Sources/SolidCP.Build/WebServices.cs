@@ -154,8 +154,8 @@ namespace SolidCP.Build
 						((INamedTypeSymbol)ws.Model.GetTypeInfo(a).Type).GetFullTypeName() == "SolidCP.Web.Services.WebServiceAttribute");
 
 				var parent = ws.Class.Parent;
-				while (parent != null && !(parent is NamespaceDeclarationSyntax)) parent = parent.Parent;
-				NamespaceDeclarationSyntax serverNS, clientNS, oldNS;
+				while (parent != null && !(parent is BaseNamespaceDeclarationSyntax)) parent = parent.Parent;
+				BaseNamespaceDeclarationSyntax serverNS, clientNS, oldNS;
 				if (parent == null)
 				{
 					oldNS = null;
@@ -190,7 +190,7 @@ namespace SolidCP.Build
 				}
 				else
 				{
-					oldNS = (NamespaceDeclarationSyntax)parent;
+					oldNS = (BaseNamespaceDeclarationSyntax)parent;
 
 					serverNS = NamespaceDeclaration(
 						QualifiedName(oldNS.Name, IdentifierName("Services")))

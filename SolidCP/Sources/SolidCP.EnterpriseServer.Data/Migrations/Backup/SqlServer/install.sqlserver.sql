@@ -29412,8 +29412,7 @@ IF NOT EXISTS (
     WHERE [MigrationId] = N'20240627111421_InitialCreate'
 )
 BEGIN
-    EXECUTE sp_executesql N'/****** Object:  StoredProcedure [dbo].[GetScheduleTaskViewConfigurations]    Script Date: 09/10/2007 17:53:56 ******/
-
+    EXECUTE sp_executesql N'
     CREATE PROCEDURE [dbo].[GetScheduleTaskViewConfigurations]
     (
     	@TaskID nvarchar(100)

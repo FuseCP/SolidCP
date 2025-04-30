@@ -32,68 +32,29 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
+using SolidCP.UniversalInstaller;
 
 namespace SolidCP.Setup
 {
-    /// <summary>
-    /// Release 2.1.0
-    /// </summary>
-    public class WebDavPortal210 : WebDavPortal
-    {
-        public static new object Install(object obj)
-        {
-            //
-            return WebDavPortal.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
-
-        public static new object Uninstall(object obj)
-        {
-            return WebDavPortal.Uninstall(obj);
-        }
-
-        public static new object Setup(object obj)
-        {
-            return WebDavPortal.Setup(obj);
-        }
-
-        public static new object Update(object obj)
-        {
-            return WebDavPortal.UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "2.0.0,2.1.0",
-                updateSql: false);
-        }
-    }
-
     /// <summary>
     /// Release 2.0.0
     /// </summary>
     public class WebDavPortal200 : WebDavPortal
     {
-        public static new object Install(object obj)
-        {
-            //
-            return WebDavPortal.InstallBase(obj, minimalInstallerVersion: "2.0.0");
-        }
+		public override Version MinimalInstallerVersion => new Version("2.0.0");
+		public override string VersionsToUpgrade => "1.5.0,1.4.9,1.4.8,1.4.7,1.4.6,1.4.5";
+		public override CommonSettings CommonSettings => Settings.WebDavPortal;
+		public Result Install(object args) => base.InstallOrSetup(args, "Install WebDavPortal",
+			Installer.Current.InstallWebDavPortal, false);
 
-        public static new object Uninstall(object obj)
-        {
-            return WebDavPortal.Uninstall(obj);
-        }
+		public Result Update(object args) => base.Update(args, "Update WebDavPortal",
+			Installer.Current.UpdateWebDavPortal);
 
-        public static new object Setup(object obj)
-        {
-            return WebDavPortal.Setup(obj);
-        }
+		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebDavPortal",
+			Installer.Current.ConfigureWebDavPortal, true);
 
-        public static new object Update(object obj)
-        {
-            return WebDavPortal.UpdateBase(obj,
-                minimalInstallerVersion: "2.0.0",
-                versionToUpgrade: "1.2.1,2.0.0",
-                updateSql: false);
-        }
-    }
+		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebDavPortal",
+			Installer.Current.RemoveWebDavPortal);
+	}
 }

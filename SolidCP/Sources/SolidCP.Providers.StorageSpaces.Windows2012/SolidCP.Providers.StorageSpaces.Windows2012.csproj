@@ -5,7 +5,6 @@
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<LangVersion>11</LangVersion>
 		<Nullable>disable</Nullable>
 	</PropertyGroup>
@@ -36,7 +35,7 @@
 		<ProjectReference Include="..\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj" />
 		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
 	</ItemGroup>
-	<ItemGroup>
+	<!--<ItemGroup>
 		<COMReference Include="Scripting">
 			<Guid>{420B2830-E718-11CF-893D-00A0C9054228}</Guid>
 			<VersionMajor>1</VersionMajor>
@@ -46,5 +45,5 @@
 			<Isolated>False</Isolated>
 			<EmbedInteropTypes>True</EmbedInteropTypes>
 		</COMReference>
-	</ItemGroup>
+	</ItemGroup>-->
 </Project>

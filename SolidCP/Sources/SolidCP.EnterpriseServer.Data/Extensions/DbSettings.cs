@@ -124,8 +124,10 @@ namespace SolidCP.EnterpriseServer.Data
 				return connectionString;
 			}
 		}
-
-		public static string ConnectionString => OSInfo.IsNetFX ? ConnectionStringNetFX : ConnectionStringNetCore;
+	
+		public static string ConnectionString =>
+			Environment.GetEnvironmentVariable("SOLIDCP_CONNECTIONSTRING") ??
+			(OSInfo.IsNetFX ? ConnectionStringNetFX : ConnectionStringNetCore);
 		public static string NativeConnectionString => GetNativeConnectionString(ConnectionString);
 
         public static string GetNativeConnectionString(string connectionString)
@@ -144,6 +146,7 @@ namespace SolidCP.EnterpriseServer.Data
         public static DbType DbType => dbType != DbType.Unknown ? dbType : (dbType = GetDbType(ConnectionString));
 
 		public static bool AlwaysUseEntityFrameworkNetFX =>
+			Environment.GetEnvironmentVariable("SOLIDCP_ALWAYS_USE_ENTITY_FRAMEWORK") == "true" ||
 			string.Equals(ConfigurationManager.AppSettings["SolidCP.AlwaysUseEntityFramework"], "true", StringComparison.OrdinalIgnoreCase);
 	}
 }

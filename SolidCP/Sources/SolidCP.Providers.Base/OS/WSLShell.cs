@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Specialized;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 
 namespace SolidCP.Providers.OS
 {
@@ -405,8 +404,8 @@ namespace SolidCP.Providers.OS
 			public WSLGlobalConfiguration(WSLShell shell, string user) { User = user; Shell = shell; Open(); }
 			public virtual string User { get; set; } = null;
 			public override string File => User == null ?
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".wslconfig") :
-				Path.Combine(Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), User, ".wslconfig");
+				Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".wslconfig") :
+				Path.Combine(Path.GetDirectoryName(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile)), User, ".wslconfig");
 			protected override bool IsWslFile => false;
 			public Wsl2Section Wsl2 => (Wsl2Section)this[nameof(Wsl2)];
 			public ExperimentalSection Experimental => (ExperimentalSection)this[nameof(Experimental)];
@@ -434,12 +433,20 @@ namespace SolidCP.Providers.OS
 		}
 		public bool Debug { get; set; } = false;
 
-		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Native, Other };
-		public override string ShellExe => IsWindows ?
-			(CurrentDistro == Distro.Default ? "wsl" : $"wsl --distribution {CurrentDistroName}") :
-			"bash";
-
-		public WSLShell() : base() => BaseShell = Shell.Default.Clone;
+		public enum Distro { Default, Ubuntu, Debian, Kali, Ubuntu18, Ubuntu20, Ubuntu22, Ubuntu24, Oracle7, Oracle8, Oracle9, openSUSELeap, SUSE15_4, SUSE15_5, openSUSEThumbleweed, FedoraRemix, Alpine, AlmaLinux, Native, Other };
+		public override string ShellExe
+		{
+			get
+			{
+				string user = "";
+				if (!string.IsNullOrEmpty(User)) user = $" --user {User}";
+				return IsWindows ?
+					(CurrentDistro == Distro.Default ? $"wsl{user}" : $"wsl --distribution {CurrentDistroName}{user}") :
+					"bash";
+			}
+		}
+		public string User { get; set; } = null;
+		public WSLShell() : base() => BaseShell = Shell.Standard.Clone;
 		public WSLShell(WSLDistro distro) : this() => Use(distro);
 
 		Shell baseShell = null;
@@ -495,6 +502,8 @@ namespace SolidCP.Providers.OS
 				case Distro.SUSE15_5: return "SUSE-Linux-Enterprise-15-SP5";
 				case Distro.openSUSEThumbleweed: return "openSUSE-Tumbleweed";
 				case Distro.FedoraRemix: return "fedoraremix";
+				case Distro.Alpine: return "Alpine";
+				case Distro.AlmaLinux: return "AlmaLinux";
 				case Distro.Native: return "unix";
 				case Distro.Other: return distro.OtherDistroName;
 			}
@@ -522,31 +531,41 @@ namespace SolidCP.Providers.OS
 		public bool IsInstalled(WSLDistro distro) => !IsWindows || Regex.IsMatch(WSLList, $@"^\*?\s+{Regex.Escape(distro)}\s", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 		public bool IsInstalledAny() => !IsWindows || IsWslInstalled && InstalledDistros.Length > 0;
 		public bool IsInstalled() => !IsWindows || IsInstalled(CurrentDistroName);
-		public void UpdateWsl() => BaseShell.Exec("wsl --update");
+		public void UpdateWsl() => BaseShell.Exec("wsl --update", Encoding.Unicode);
 		public void ShutdownAll()
 		{
-			if (IsWindows) base.Exec("wsl --shutdown");
+			if (IsWindows) BaseShell.Exec("wsl --shutdown", Encoding.Unicode);
 		}
 		public void Terminate(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --terminate {distro}");
+			if (IsWindows) BaseShell.Exec($"wsl --terminate {distro}", Encoding.Unicode);
 		}
 		public void Install(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --install {distro}");
+			if (IsWindows)
+			{
+				if (distro.Distro == Distro.FedoraRemix) BaseShell.Exec(@"winget install ""Fedora Remix for WSL"" --accept-source-agreements --accept-package-agreements");
+				else if (distro.Distro == Distro.Alpine) BaseShell.Exec(@"winget install ""Alpine WSL"" --accept-source-agreements --accept-package-agreements");
+				else if (distro.Distro == Distro.AlmaLinux) BaseShell.Exec(@"winget install ""AlmaLinux OS 9"" --accept-source-agreements --accept-package-agreements");
+				else BaseShell.Exec($"wsl --install -d {distro}", Encoding.Unicode);
+			}
+		}
+		public void SetDefaultVersion(int n)
+		{
+			if (IsWindows) BaseShell.Exec($"wsl --set-default-version {n}", Encoding.Unicode); 
 		}
 		public void Uninstall(WSLDistro distro)
 		{
-			if (IsWindows) base.Exec($"wsl --unregister {distro}");
+			if (IsWindows) BaseShell.Exec($"wsl --unregister {distro}", Encoding.Unicode);
 		}
 
 		public void Import(WSLDistro distro, string file)
 		{
-			if (IsWindows) base.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
+			if (IsWindows) BaseShell.Exec($"wsl --import {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
 		}
 		public void Export(WSLDistro distro, string file)
 		{
-			if (IsWindows) base.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}");
+			if (IsWindows) BaseShell.Exec($"wsl --export {distro} {file}{(file.EndsWith(".vhdx", StringComparison.OrdinalIgnoreCase) ? " --vhd" : "")}", Encoding.Unicode);
 		}
 		public string ReadTextFile(string path)
 		{
@@ -588,35 +607,40 @@ namespace SolidCP.Providers.OS
 			.Replace(Path.DirectorySeparatorChar, '/') :
 			path;
 
+		public override string WorkingDirectory
+		{
+			get { return base.WorkingDirectory; }
+			set { BaseShell.WorkingDirectory = base.WorkingDirectory = value; }
+		}
 		protected override string ToTempFile(string script)
 		{
-			script = script.Replace(Environment.NewLine, "\n");
+			script = script.Replace(System.Environment.NewLine, "\n");
 			var localTmp = base.ToTempFile(script);
 			return WSLPath(localTmp);
 		}
 
-		public override Shell ExecAsync(string command, Encoding encoding = null, StringDictionary environmentVariables = null)
+		public override Shell ExecAsync(string command, Encoding encoding = null, Dictionary<string, string> environment = null)
 		{
 			LogCommand?.Invoke(command);
 
 			if (IsWindows)
 			{
-				return BaseShell.ExecAsync($"{ShellExe} {command}", encoding, environmentVariables);
+				return BaseShell.ExecAsync($"{ShellExe} {command}", encoding, environment);
 			}
 			else // System is already unix, do not use WSL
 			{
-				return BaseShell.ExecAsync(command, encoding, environmentVariables);
+				return BaseShell.ExecAsync(command, encoding, environment);
 			}
 		}
-		public override Shell ExecScriptAsync(string script, string args = null, Encoding encoding = null, StringDictionary environmentVariables = null)
+		public override Shell ExecScriptAsync(string script, string args = null, Encoding encoding = null, Dictionary<string, string> environment = null)
 		{
 			LogCommand?.Invoke($"bash {script}");
 
 			script = script.Trim();
 			// adjust new lines to OS type
-			script = Regex.Replace(script, @"\r?\n", Environment.NewLine);
+			script = Regex.Replace(script, @"\r?\n", System.Environment.NewLine);
 			var file = ToTempFile(script.Trim());
-			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding, environmentVariables);
+			var shell = BaseShell.ExecAsync($"{ShellExe} \"{file}\"", encoding, environment);
 			if (shell.Process != null)
 			{
 				shell.Process.Exited += (sender, args) =>
@@ -671,9 +695,17 @@ namespace SolidCP.Providers.OS
 
 		protected override void OnLogCommand(string text)
 		{
-			text = $"{CurrentDistroName}> {text}";
-			if (Redirect) Console.WriteLine(text);
-			if (LogFile != null) File.AppendAllText(LogFile, text);
+			OutputAndErrorLock.Wait();
+			try
+			{
+				text = $"{CurrentDistroName}> {text}";
+				if (Redirect) Console.WriteLine(text);
+				if (LogFile != null) AppendAllText(LogFile, text);
+			}
+			finally
+			{
+				OutputAndErrorLock.Release();
+			}
 		}
 		protected void OnBaseLog(string msg) => Log?.Invoke(msg);
 		protected void OnBaseLogCommandEnd() => LogCommandEnd?.Invoke();

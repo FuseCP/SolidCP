@@ -33,6 +33,7 @@
 using System;
 using System.Data;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Text;
 using System.IO;
 using System.Xml;
@@ -113,6 +114,7 @@ namespace SolidCP.EnterpriseServer
             AddAuditLogRecord(2, sourceName, taskName, itemName, executionValues);
         }
 
+        static ConcurrentDictionary<int, string> UsersCache = new ConcurrentDictionary<int, string>(); 
         public void AddAuditLogRecord(int severityId, string sourceName, string taskName, string itemName,
             string[] executionValues, int packageId = 0, int itemId = 0)
         {
@@ -125,10 +127,15 @@ namespace SolidCP.EnterpriseServer
                              : user.OwnerId;
 
             int effectiveUserId = user.UserId;
-            UserInfo userInternal = UserController.GetUserInternally(effectiveUserId);
-            string username = userInternal != null ? userInternal.Username : null;
+			string username;
+			if (!UsersCache.TryGetValue(effectiveUserId, out username))
+			{
+				UserInfo userInternal = UserController.GetUserInternally(effectiveUserId);
+				username = userInternal != null ? userInternal.Username : null;
+				if (username != null) UsersCache.AddOrUpdate(effectiveUserId, username, (key, oldValue) => username);
+			}
 
-            AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
+			AddAuditLogRecord(recordId, severityId, userId, username, packageId, itemId, itemName,
                     startAndfinishDate, startAndfinishDate, sourceName, taskName, DummyFormatExecutionLog(startAndfinishDate, 0, executionValues));
         }
 

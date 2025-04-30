@@ -32,336 +32,254 @@
 
 using System;
 using System.IO;
-using System.Windows.Forms;
 using System.Collections;
 using System.Xml;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Loader;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using SolidCP.UniversalInstaller;
+using OS = SolidCP.Providers.OS;
 
-namespace SolidCP.Setup
+namespace SolidCP.Setup;
+
+public class BaseSetup
 {
-	public class BaseSetup
+	public bool IsJsonArguments => true;
+	public InstallerSettings Settings => Installer.Current.Settings;
+
+	static AssemblyLoader loader = null;
+	static BaseSetup()
 	{
-		static BaseSetup()
-		{
+		//loader = AssemblyLoader.Init();
+		AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+	}
+	public void InitCostura()
+	{
 #if Costura
-			CosturaUtility.Initialize();
+		CosturaUtility.Initialize();
 #endif
-			//ResourceAssemblyLoader.Init();
-			AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
-		}
-		static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+	}
+
+	public void Unload()
+	{
+		AppDomain.CurrentDomain.UnhandledException -= OnDomainUnhandledException;
+		loader?.Unload();
+	}
+	static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+	{
+		Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
+	}
+
+	public void AssertLoadContext()
+	{
+		if (AssemblyLoadContext.GetLoadContext(Installer.Current.GetType().Assembly) ==
+			AssemblyLoadContext.Default) throw new NotSupportedException();
+	}
+
+	bool argsParsed = false;
+	public bool ParseArgs(object args)
+	{
+		if (OS.OSInfo.IsCore) AssertLoadContext();
+
+		if (!argsParsed)
 		{
-			Log.WriteError("Remote domain error", (Exception)e.ExceptionObject);
-		}
-
-		public static void InitInstall(Hashtable args, SetupVariables vars)
-		{
-			AppConfig.LoadConfiguration();
-
-			LoadSetupVariablesFromParameters(vars, args);
-
-			vars.SetupAction = SetupActions.Install;
-			vars.InstallationFolder = Path.Combine(Global.DefaultInstallPathRoot, vars.ComponentName);
-			vars.ComponentId = Guid.NewGuid().ToString();
-			vars.Instance = String.Empty;
-
-			//create component settings node
-			//vars.ComponentConfig = AppConfig.CreateComponentConfig(vars.ComponentId);
-			//add default component settings
-			//CreateComponentSettingsFromSetupVariables(vars, vars.ComponentId);
-		}
-
-		public static DialogResult UninstallBase(object obj)
-		{
-			Hashtable args = Utils.GetSetupParameters(obj);
-			string shellVersion = Utils.GetStringSetupParameter(args, Global.Parameters.ShellVersion);
-			var setupVariables = new SetupVariables
+			argsParsed = true;
+			string json;
+			json = args as string;
+			if (json == null)
 			{
-				ComponentId = Utils.GetStringSetupParameter(args, Global.Parameters.ComponentId),
-				ComponentCode = Utils.GetStringSetupParameter(args, Global.Parameters.ComponentCode),
-				SetupAction = SetupActions.Uninstall,
-				IISVersion = Global.IISVersion
-			};
-			//
-			AppConfig.LoadConfiguration();
-
-			InstallerForm form = new InstallerForm();
-			Wizard wizard = form.Wizard;
-			wizard.SetupVariables = setupVariables;
-			//
-			AppConfig.LoadComponentSettings(wizard.SetupVariables);
-
-			IntroductionPage page1 = new IntroductionPage();
-			ConfirmUninstallPage page2 = new ConfirmUninstallPage();
-			UninstallPage page3 = new UninstallPage();
-			page2.UninstallPage = page3;
-			FinishPage page4 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { page1, page2, page3, page4 });
-			wizard.LinkPages();
-			wizard.SelectedPage = page1;
-
-			//show wizard
-			IWin32Window owner = args[Global.Parameters.ParentForm] as IWin32Window;
-			return form.ShowModal(owner);
-		}
-
-		public static DialogResult SetupBase(object obj)
-		{
-			Hashtable args = Utils.GetSetupParameters(obj);
-			string shellVersion = Utils.GetStringSetupParameter(args, "ShellVersion");
-			string componentId = Utils.GetStringSetupParameter(args, "ComponentId");
-			AppConfig.LoadConfiguration();
-
-			InstallerForm form = new InstallerForm();
-			Wizard wizard = form.Wizard;
-			wizard.SetupVariables.SetupAction = SetupActions.Setup;
-			LoadSetupVariablesFromConfig(wizard.SetupVariables, componentId);
-			wizard.SetupVariables.WebSiteId = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteId");
-			wizard.SetupVariables.WebSiteIP = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteIP");
-			wizard.SetupVariables.WebSitePort = AppConfig.GetComponentSettingStringValue(componentId, "WebSitePort");
-			wizard.SetupVariables.WebSiteDomain = AppConfig.GetComponentSettingStringValue(componentId, "WebSiteDomain");
-			wizard.SetupVariables.NewWebSite = AppConfig.GetComponentSettingBooleanValue(componentId, "NewWebSite");
-			wizard.SetupVariables.NewVirtualDirectory = AppConfig.GetComponentSettingBooleanValue(componentId, "NewVirtualDirectory");
-			wizard.SetupVariables.VirtualDirectory = AppConfig.GetComponentSettingStringValue(componentId, "VirtualDirectory");
-			wizard.SetupVariables.IISVersion = Utils.GetVersionSetupParameter(args, "IISVersion");
-			//IntroductionPage page1 = new IntroductionPage();
-			WebPage page2 = new WebPage();
-			ExpressInstallPage page3 = new ExpressInstallPage();
-			//create install currentScenario
-			InstallAction action = new InstallAction(ActionTypes.UpdateWebSite);
-			action.Description = "Updating web site...";
-			page3.Actions.Add(action);
-
-			action = new InstallAction(ActionTypes.UpdateConfig);
-			action.Description = "Updating system configuration...";
-			page3.Actions.Add(action);
-
-			FinishPage page4 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { page2, page3, page4 });
-			wizard.LinkPages();
-			wizard.SelectedPage = page2;
-
-			//show wizard
-			IWin32Window owner = args["ParentForm"] as IWin32Window;
-			return form.ShowModal(owner);
-		}
-
-		public static DialogResult UpdateBase(object obj, string minimalInstallerVersion, string versionToUpgrade, bool updateSql)
-		{
-			return UpdateBase(obj, minimalInstallerVersion, versionToUpgrade, updateSql, null);
-		}
-
-		public static DialogResult UpdateBase(object obj, string minimalInstallerVersion,
-			string versionsToUpgrade, bool updateSql, InstallAction versionSpecificAction)
-		{
-			Hashtable args = Utils.GetSetupParameters(obj);
-			string shellVersion = Utils.GetStringSetupParameter(args, "ShellVersion");
-
-			Version version = new Version(shellVersion);
-			if (version < new Version(minimalInstallerVersion))
-			{
-				MessageBox.Show(
-					string.Format("SolidCP Installer {0} or higher required.", minimalInstallerVersion),
-					"Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				return DialogResult.Cancel;
+				var hashtable = args as Hashtable;
+				if (hashtable.Contains("ParametersJson")) json = hashtable["ParametersJson"] as string;
 			}
-			// Load application configuration
-			AppConfig.LoadConfiguration();
-			// 
-			var setupVariables = new SetupVariables
+			if (json != null)
 			{
-				SetupAction = SetupActions.Update,
-				ComponentId = Utils.GetStringSetupParameter(args, "ComponentId"),
-				IISVersion = Global.IISVersion,
-			};
-			// Load setup variables from app.config
-			AppConfig.LoadComponentSettings(setupVariables);
-			//
-			InstallerForm form = new InstallerForm();
-			form.Wizard.SetupVariables = setupVariables;
-			Wizard wizard = form.Wizard;
-			// Initialize setup variables with the data received from update procedure
-			wizard.SetupVariables.BaseDirectory = Utils.GetStringSetupParameter(args, "BaseDirectory");
-			wizard.SetupVariables.UpdateVersion = Utils.GetStringSetupParameter(args, "UpdateVersion");
-			wizard.SetupVariables.InstallerFolder = Utils.GetStringSetupParameter(args, "InstallerFolder");
-			wizard.SetupVariables.Installer = Utils.GetStringSetupParameter(args, "Installer");
-			wizard.SetupVariables.InstallerType = Utils.GetStringSetupParameter(args, "InstallerType");
-			wizard.SetupVariables.InstallerPath = Utils.GetStringSetupParameter(args, "InstallerPath");
-			
-			#region Support for multiple versions to upgrade from
-			// Find out whether the version(s) are supported in that upgrade
-			var upgradeSupported = versionsToUpgrade.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
-				.Any(x => { return VersionEquals(wizard.SetupVariables.Version, x.Trim()); });
-			// 
-			if (upgradeSupported == false)
-			{
-				Log.WriteInfo(
-					String.Format("Could not find a suitable version to upgrade. Current version: {0}; Versions supported: {1};", wizard.SetupVariables.Version, versionsToUpgrade));
-				//
-				MessageBox.Show(
-					"Your current software version either is not supported or could not be upgraded at this time. Please send log file from the installer to the software vendor for further research on the issue.", "Setup Wizard", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-				//
-				return DialogResult.Cancel;
-			} 
-			#endregion
+				Installer.Current.Settings = JsonConvert.DeserializeObject<InstallerSettings>(json, new VersionConverter(), new StringEnumConverter());
 
-			//
-			IntroductionPage introPage = new IntroductionPage();
-			LicenseAgreementPage licPage = new LicenseAgreementPage();
-			ExpressInstallPage page2 = new ExpressInstallPage();
-			//create install currentScenario
-			InstallAction action = new InstallAction(ActionTypes.StopApplicationPool);
-			action.Description = "Stopping IIS Application Pool...";
-			page2.Actions.Add(action);
-
-			action = new InstallAction(ActionTypes.Backup);
-			action.Description = "Backing up...";
-			page2.Actions.Add(action);
-
-			action = new InstallAction(ActionTypes.DeleteFiles);
-			action.Description = "Deleting files...";
-			action.Path = "setup\\delete.txt";
-			page2.Actions.Add(action);
-
-			action = new InstallAction(ActionTypes.CopyFiles);
-			action.Description = "Copying files...";
-			page2.Actions.Add(action);
-
-			if (versionSpecificAction != null)
-				page2.Actions.Add(versionSpecificAction);
-
-			if (updateSql)
-			{
-				action = new InstallAction(ActionTypes.ExecuteSql);
-				action.Description = "Updating database...";
-				action.Path = "setup\\update_db.sql";
-				page2.Actions.Add(action);
-			}
-
-			action = new InstallAction(ActionTypes.UpdateConfig);
-			action.Description = "Updating system configuration...";
-			page2.Actions.Add(action);
-
-			action = new InstallAction(ActionTypes.StartApplicationPool);
-			action.Description = "Starting IIS Application Pool...";
-			page2.Actions.Add(action);
-
-			FinishPage page3 = new FinishPage();
-			wizard.Controls.AddRange(new Control[] { introPage, licPage, page2, page3 });
-			wizard.LinkPages();
-			wizard.SelectedPage = introPage;
-
-			//show wizard
-			IWin32Window owner = args["ParentForm"] as IWin32Window;
-			return form.ShowModal(owner);
-		}
-
-		protected static void LoadSetupVariablesFromSetupXml(string xml, SetupVariables setupVariables)
-		{
-			if (string.IsNullOrEmpty(xml))
-				return;
-			XmlDocument doc = new XmlDocument();
-			doc.LoadXml(xml);
-			XmlNodeList settings = doc.SelectNodes("settings/add");
-			foreach (XmlElement node in settings)
-			{
-				string key = node.GetAttribute("key").ToLower();
-				string value = node.GetAttribute("value");
-				switch (key)
+				if (CommonSettings != null)
 				{
-					case "installationfolder":
-						setupVariables.InstallationFolder = value;
-						break;
-					case "websitedomain":
-						setupVariables.WebSiteDomain = value;
-						break;
-					case "websiteip":
-						setupVariables.WebSiteIP = value;
-						break;
-					case "websiteport":
-						setupVariables.WebSitePort = value;
-						break;
-					case "serveradminpassword":
-						setupVariables.ServerAdminPassword = value;
-						break;
-					case "serverpassword":
-						setupVariables.ServerPassword = value;
-						break;
-					case "useraccount":
-						setupVariables.UserAccount = value;
-						break;
-					case "userpassword":
-						setupVariables.UserPassword = value;
-						break;
-					case "userdomain":
-						setupVariables.UserDomain = value;
-						break;
-					case "enterpriseserverurl":
-						setupVariables.EnterpriseServerURL = value;
-						break;
-					case "licensekey":
-						setupVariables.LicenseKey = value;
-						break;
-					case "dbinstallconnectionstring":
-						setupVariables.DbInstallConnectionString = value;
-						break;
+					CommonSettings.Version = Installer.Current.Settings.Installer.Component.Version;
+				}
+				else
+				{
+					var version = Installer.Current.Settings.Installer.Component.Version;
+					Settings.EnterpriseServer.Version = Settings.Server.Version =
+						Settings.WebPortal.Version = version;
+				}
+
+				UI.SetCurrent(Installer.Current.Settings.Installer.UI);
+			}
+			else
+			{
+				UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
+				return false;
+			}
+			if (args is Hashtable hash) UI.Current.ReadArguments(hash);
+		}
+		return true;
+	}
+	public virtual Version MinimalInstallerVersion => new Version("2.0.0");
+	public virtual string VersionsToUpgrade => "";
+	public bool CheckInstallerVersion()
+	{
+		if (Settings.Installer.Version < MinimalInstallerVersion)
+		{
+			UI.Current.ShowWarning("You need to upgrade the Installer to install this component.");
+			return false;
+		}
+		else return true;
+	}
+	public virtual CommonSettings CommonSettings => null;
+	public virtual ComponentSettings ComponentSettings => (CommonSettings as ComponentSettings) ?? Installer.Current.Settings.Standalone;
+	public virtual ComponentInfo Component => null;
+
+	public virtual bool IsServer => ComponentSettings is ServerSettings;
+	public virtual bool IsEnterpriseServer => ComponentSettings is EnterpriseServerSettings;
+	public virtual bool IsStandalone => ComponentSettings is StandaloneSettings;
+	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
+	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
+	public virtual bool HasEnterpriseServerInstallation
+		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)) ||
+			Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)));
+
+	public void SetEnterpriseServerFolder()
+	{
+		if (IsStandalone) Installer.Current.EnterpriseServerFolder = Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder);
+	}
+
+	public virtual UI.SetupWizard Wizard(object args)
+	{
+		if (ParseArgs(args) && CheckInstallerVersion())
+		{
+			var wizard = UI.Current.Wizard
+				.Introduction(ComponentSettings)
+				.CheckPrerequisites()
+				.LicenseAgreement();
+			if (!IsStandalone)
+			{
+				wizard = wizard
+					.InstallFolder(CommonSettings)
+					.Web(CommonSettings)
+					.InsecureHttpWarning(CommonSettings)
+					.Certificate(CommonSettings)
+					.UserAccount(CommonSettings);
+
+				if (IsServer) wizard = wizard
+					.ServerPassword();
+
+				if (IsEnterpriseServer) wizard = wizard
+					.ServerAdminPassword();
+
+				if (IsWebPortal)
+				{
+					wizard = wizard.EnterpriseServerUrl();
 				}
 			}
-		}
-
-		public static void LoadSetupVariablesFromConfig(SetupVariables vars, string componentId)
-		{
-			vars.InstallationFolder = AppConfig.GetComponentSettingStringValue(componentId, "InstallFolder");
-			vars.ComponentName = AppConfig.GetComponentSettingStringValue(componentId, "ComponentName");
-			vars.ComponentCode = AppConfig.GetComponentSettingStringValue(componentId, "ComponentCode");
-			vars.ComponentDescription = AppConfig.GetComponentSettingStringValue(componentId, "ComponentDescription");
-			vars.ComponentId = componentId;
-			vars.ApplicationName = AppConfig.GetComponentSettingStringValue(componentId, "ApplicationName");
-			vars.Version = AppConfig.GetComponentSettingStringValue(componentId, "Release");
-			vars.Instance = AppConfig.GetComponentSettingStringValue(componentId, "Instance");
-		}
-
-		public static void LoadSetupVariablesFromParameters(SetupVariables vars, Hashtable args)
-		{
-			vars.ApplicationName = Utils.GetStringSetupParameter(args, "ApplicationName");
-			vars.ComponentName = Utils.GetStringSetupParameter(args, "ComponentName");
-			vars.ComponentCode = Utils.GetStringSetupParameter(args, "ComponentCode");
-			vars.ComponentDescription = Utils.GetStringSetupParameter(args, "ComponentDescription");
-			vars.Version = Utils.GetStringSetupParameter(args, "Version");
-			vars.InstallerFolder = Utils.GetStringSetupParameter(args, "InstallerFolder");
-			vars.Installer = Utils.GetStringSetupParameter(args, "Installer");
-			vars.InstallerType = Utils.GetStringSetupParameter(args, "InstallerType");
-			vars.InstallerPath = Utils.GetStringSetupParameter(args, "InstallerPath");
-			vars.IISVersion = Utils.GetVersionSetupParameter(args, "IISVersion");
-			vars.SetupXml = Utils.GetStringSetupParameter(args, "SetupXml");
-
-			// Add some extra variables if any, coming from SilentInstaller
-			#region SilentInstaller CLI arguments
-			var shellMode = Utils.GetStringSetupParameter(args, Global.Parameters.ShellMode);
-			//
-			if (shellMode.Equals(Global.SilentInstallerShell, StringComparison.OrdinalIgnoreCase))
+			else
 			{
-				vars.WebSiteIP = Utils.GetStringSetupParameter(args, Global.Parameters.WebSiteIP);
-				vars.WebSitePort = Utils.GetStringSetupParameter(args, Global.Parameters.WebSitePort);
-				vars.WebSiteDomain = Utils.GetStringSetupParameter(args, Global.Parameters.WebSiteDomain);
-				vars.UserDomain = Utils.GetStringSetupParameter(args, Global.Parameters.UserDomain);
-				vars.UserAccount = Utils.GetStringSetupParameter(args, Global.Parameters.UserAccount);
-				vars.UserPassword = Utils.GetStringSetupParameter(args, Global.Parameters.UserPassword);
+				// Set EnterpriseServer setting for embedded EnterpriseServer
+				Settings.EnterpriseServer.WebSiteDomain = "";
+				Settings.EnterpriseServer.WebSitePort = 9002;
+				Settings.EnterpriseServer.WebSiteIp = "";
+				Settings.EnterpriseServer.Username = "";
+				Settings.EnterpriseServer.Password = "";
+				Settings.EnterpriseServer.Urls = "http://localhost:9002";
+				Settings.EnterpriseServer.ConfigureCertificateManually = true;
+				SetEnterpriseServerFolder();
+
+				wizard = wizard
+					.InstallFolder(Settings.Standalone)
+					.Web(Settings.WebPortal)
+					.InsecureHttpWarning(Settings.WebPortal)
+					.Certificate(Settings.WebPortal)
+					.UserAccount(Settings.WebPortal)
+					.ServerAdminPassword()
+					.Database()
+					.Web(Settings.Server)
+					.InsecureHttpWarning(Settings.Server)
+					.Certificate(Settings.Server)
+					.UserAccount(Settings.Server)
+					.ServerPassword()
+					.Web(Settings.WebDavPortal)
+					.InsecureHttpWarning(Settings.WebDavPortal)
+					.Certificate(Settings.WebDavPortal)
+					.UserAccount(Settings.WebDavPortal);
 			}
-			#endregion
+			return wizard;
+		}
+		return null;
+	}
+	public virtual Result InstallOrSetup(object args, string title, Action installer, bool setup = false) {
+		var wizard = Wizard(args);
+		if (wizard == null) return Result.Abort;
+		if (IsEnterpriseServer) wizard = wizard.Database();
+		if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
+		else Installer.Current.Settings.Installer.Action = SetupActions.Install;
+		var res = wizard
+			.RunWithProgress(title, installer, ComponentSettings)
+			.Finish()
+			.Show() ? Result.OK : Result.Cancel;
+		Unload();
+		return res;
+	}
+
+	public bool CheckUpdate()
+	{
+		// Find out whether the version(s) are supported in that upgrade
+		var upgradeSupported = VersionsToUpgrade.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+			.Any(x => Component?.Version == new Version(x.Trim()));
+		// 
+		if (!upgradeSupported)
+		{
+			Log.WriteInfo(
+				String.Format("Could not find a suitable version to upgrade. Current version: {0}; Versions supported: {1};", Component?.Version.ToString() ?? "?", VersionsToUpgrade));
+			//
+			UI.Current.ShowWarning(
+				"Your current software version either is not supported or could not be upgraded at this time. Please send log file from the installer to the software vendor for further research on the issue.");
+			//
 		}
 
-		public static string GetDefaultDBName(string componentName)
+		return upgradeSupported;
+	}
+	public virtual Result Update(object args, string title, Action installer)
+	{
+		Result res;
+		if (ParseArgs(args))
 		{
-			return componentName.Replace(" ", string.Empty);
-		}
+			Installer.Current.Settings.Installer.Action = SetupActions.Update;
 
-		protected static bool VersionEquals(string version1, string version2)
-		{
-			Version v1 = new Version(version1);
-			Version v2 = new Version(version2);
-			return (v1.Major == v2.Major && v1.Minor == v2.Minor && v1.Build == v2.Build);
+			res = CheckUpdate() && Wizard(args)
+				.RunWithProgress(title, installer, ComponentSettings)
+				.Finish()
+				.Show() ? Result.OK : Result.Cancel;
+			Unload();
+			return res;
 		}
+		Unload();
+		return Result.Cancel;
+	}
+			
+	public virtual Result Uninstall(object args, string title, Action installer)
+	{
+		if (ParseArgs(args))
+		{
+			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
+			SetEnterpriseServerFolder();
+
+			if (CheckInstallerVersion())
+			{
+				var res = UI.Current.Wizard
+					.Introduction(ComponentSettings)
+					.ConfirmUninstall(ComponentSettings)
+					.RunWithProgress(title, installer, ComponentSettings)
+					.Finish()
+					.Show() ? Result.OK : Result.Cancel;
+				Unload();
+				return res;
+			}
+		}
+		Unload();
+		return Result.Cancel;
 	}
 }

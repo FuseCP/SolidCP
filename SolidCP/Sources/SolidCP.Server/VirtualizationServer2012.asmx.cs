@@ -952,6 +952,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public ConcreteJob GetPsJob(string jobId)
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetPsJob", ProviderSettings.ProviderName);
+                ConcreteJob result = VirtualizationProvider.GetPsJob(jobId);
+                Log.WriteEnd("'{0}' GetPsJob", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetPsJob", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public List<ConcreteJob> GetAllJobs()
         {
             try
@@ -969,17 +986,17 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public void ClearOldJobs()
+        public void ClearOldPsJobs()
         {
             try
             {
-                Log.WriteStart("'{0}' ClearOldJobs", ProviderSettings.ProviderName);
-                VirtualizationProvider.ClearOldJobs();
-                Log.WriteEnd("'{0}' ClearOldJobs", ProviderSettings.ProviderName);
+                Log.WriteStart("'{0}' ClearOldPsJobs", ProviderSettings.ProviderName);
+                VirtualizationProvider.ClearOldPsJobs();
+                Log.WriteEnd("'{0}' ClearOldPsJobs", ProviderSettings.ProviderName);
             }
             catch (Exception ex)
             {
-                Log.WriteError(String.Format("'{0}' ClearOldJobs", ProviderSettings.ProviderName), ex);
+                Log.WriteError(String.Format("'{0}' ClearOldPsJobs", ProviderSettings.ProviderName), ex);
                 throw;
             }
         }

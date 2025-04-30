@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35707.178
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SolidCP.UniversalInstaller.Msi", "SolidCP.UniversalInstaller.Msi\SolidCP.UniversalInstaller.Msi.vdproj", "{0119D928-758E-46CC-9DD8-B90B7DB027E5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0119D928-758E-46CC-9DD8-B90B7DB027E5}.Debug|Any CPU.ActiveCfg = Debug
+		{0119D928-758E-46CC-9DD8-B90B7DB027E5}.Debug|Any CPU.Build.0 = Debug
+		{0119D928-758E-46CC-9DD8-B90B7DB027E5}.Release|Any CPU.ActiveCfg = Release
+		{0119D928-758E-46CC-9DD8-B90B7DB027E5}.Release|Any CPU.Build.0 = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

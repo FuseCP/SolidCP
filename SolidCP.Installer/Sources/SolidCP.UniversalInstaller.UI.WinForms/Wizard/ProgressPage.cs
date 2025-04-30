@@ -1,0 +1,268 @@
+// Copyright (c) 2016, SolidCP
+// SolidCP is distributed under the Creative Commons Share-alike license
+// 
+// SolidCP is a fork of WebsitePanel:
+// Copyright (c) 2015, Outercurve Foundation.
+// All rights reserved.
+//
+// Redistribution and use in source and binary forms, with or without modification,
+// are permitted provided that the following conditions are met:
+//
+// - Redistributions of source code must  retain  the  above copyright notice, this
+//   list of conditions and the following disclaimer.
+//
+// - Redistributions in binary form  must  reproduce the  above  copyright  notice,
+//   this list of conditions  and  the  following  disclaimer in  the documentation
+//   and/or other materials provided with the distribution.
+//
+// - Neither  the  name  of  the  Outercurve Foundation  nor   the   names  of  its
+//   contributors may be used to endorse or  promote  products  derived  from  this
+//   software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+// ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,  BUT  NOT  LIMITED TO, THE IMPLIED
+// WARRANTIES  OF  MERCHANTABILITY   AND  FITNESS  FOR  A  PARTICULAR  PURPOSE  ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+// ANY DIRECT, INDIRECT, INCIDENTAL,  SPECIAL,  EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+// (INCLUDING, BUT NOT LIMITED TO,  PROCUREMENT  OF  SUBSTITUTE  GOODS OR SERVICES;
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)  HOWEVER  CAUSED AND ON
+// ANY  THEORY  OF  LIABILITY,  WHETHER  IN  CONTRACT,  STRICT  LIABILITY,  OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
+// SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+using System;
+using System.IO;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Data;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Reflection;
+using System.Collections.Specialized;
+using System.Data.SqlClient;
+
+using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
+using SolidCP.Providers.ResultObjects;
+using SolidCP.UniversalInstaller;
+using SolidCP.UniversalInstaller.Web;
+
+namespace SolidCP.UniversalInstaller.WinForms
+{
+	public partial class ProgressPage : BannerWizardPage
+	{
+		private Thread thread;
+
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public ComponentSettings Settings { get; set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+		public Action Action { get; set; }
+		[DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+
+		public int Maximum { get => progressBar.Maximum; set => progressBar.Maximum = value; }
+		public ProgressPage()
+		{
+			InitializeComponent();
+			Maximum = 1000;
+			//
+			this.CustomCancelHandler = true;
+		}
+
+		delegate void StringCallback(string value);
+		delegate void IntCallback(int value);
+
+		private void SetProgressValue(int value)
+		{
+			//thread safe call
+			if (InvokeRequired)
+			{
+				IntCallback callback = new IntCallback(SetProgressValue);
+				Invoke(callback, new object[] { value });
+			}
+			else
+			{
+				if (value > 0)
+				{
+					if (value < 100) value = (Maximum * value / (5 * 100));
+					else value = (Maximum / 5) + (int)(Maximum * 0.8 * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
+				}
+				if (value > Maximum) value = Maximum;
+
+				if (progressBar.Value != value)
+				{
+					progressBar.Value = value;
+					Update();
+				}
+			}
+		}
+
+		private void SetProgressText(string text)
+		{
+			//thread safe call
+			if (InvokeRequired)
+			{
+				StringCallback callback = new StringCallback(SetProgressText);
+				Invoke(callback, new object[] { text });
+			}
+			else
+			{
+				lblProcess.Text = text;
+				Update();
+			}
+		}
+		
+		protected internal override void OnBeforeDisplay(EventArgs e)
+		{
+			base.OnBeforeDisplay(e);
+			string name = Settings.ComponentName;
+			switch (Installer.Current.Settings.Installer.Action)
+			{
+				case SetupActions.Install:
+					this.Text = string.Format("Installing {0}", name);
+					this.Description = string.Format("Please wait while {0} is being installed.", name);
+					break;
+				case SetupActions.Setup:
+					this.Text = string.Format("Configuring {0}", name);
+					this.Description = string.Format("Please wait while {0} is being configured.", name);
+					break;
+				case SetupActions.Update:
+					this.Text = string.Format("Updating {0}", name);
+					this.Description = string.Format("Please wait while {0} is being updated.", name);
+					break;
+				case SetupActions.Uninstall:
+					this.Text = string.Format("Uninstalling {0}", name);
+					this.Description = string.Format("Please wait while {0} is being uninstalled.", name);
+					break;
+			}
+			this.AllowMoveBack = false;
+			this.AllowMoveNext = false;
+			this.AllowCancel = false;
+		}
+
+		protected internal override void OnAfterDisplay(EventArgs e)
+		{
+			base.OnAfterDisplay(e);
+			Task.Run(Start, Installer.Current.Cancel.Token);
+		}
+
+		bool progressFinished = false;
+
+		/// <summary>
+		/// Displays process progress.
+		/// </summary>
+		public void Start()
+		{
+			SetProgressValue(0);
+
+			string componentName = Settings.ComponentName;
+
+			int n = 0;
+			try
+			{
+				SetProgressText("Download && Unzip component...");
+
+				var reportProgress = () => SetProgressValue(n++);
+				Installer.Current.Log.OnWrite += reportProgress;
+				Installer.Current.OnInfo += SetProgressText;
+				Installer.Current.OnError += ShowError;
+
+				Installer.Current.WaitForDownloadToComplete();
+
+				Action?.Invoke();
+
+				progressFinished = true;
+
+				Installer.Current.Log.OnWrite -= reportProgress;
+				Installer.Current.OnInfo -= SetProgressText;
+				Installer.Current.OnError -= ShowError;
+
+				this.progressBar.Value = Maximum;
+
+				SetProgressText("Completed. Click Next to continue.");
+			}
+			catch (Exception ex)
+			{
+				if (Installer.Current.Error == null)
+				{
+					Installer.Current.Error = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex);
+				} else
+				{
+					ShowError(ex);
+				}
+				this.progressBar.Value = 0;
+				SetProgressText("Installation failed. Click Next to continue.");
+				this.AllowMoveNext = true;
+				this.AllowCancel = false;
+				//ParentForm.DialogResult = DialogResult.Abort;
+			}
+
+			this.AllowMoveNext = true;
+			this.AllowCancel = false;
+			//unattended setup
+			if (Installer.Current.Settings.Installer.IsUnattended) Wizard.GoNext();
+		}
+
+
+		protected override void InitializePageInternal()
+		{
+			base.InitializePageInternal();
+			if (this.Wizard != null)
+			{
+				this.Wizard.Cancel += new EventHandler(OnWizardCancel);
+			}
+			Form parentForm = FindForm();
+			parentForm.FormClosing += new FormClosingEventHandler(OnFormClosing);
+		}
+
+		void OnFormClosing(object sender, FormClosingEventArgs e)
+		{
+			if (!progressFinished) AbortProcess();
+		}
+
+		private void OnWizardCancel(object sender, EventArgs e)
+		{
+			AbortProcess();
+			this.CustomCancelHandler = false;
+			Wizard.Close();
+		}
+
+		private void AbortProcess()
+		{
+			Installer.Current.Cancel.Cancel();
+		}
+
+		/// <summary>
+		/// Displays an error message box with the specified text.
+		/// </summary>
+		/// <param name="text">The text to display in the message box.</param>
+		protected void ShowError(string text)
+		{
+			MessageBox.Show(this, text, FindForm().Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+		}
+
+		protected void ShowError()
+		{
+			ShowError("An unexpected error has occurred. We apologize for this inconvenience.\n" +
+				"Please contact Technical Support at support@solidcp.com.\n\n" +
+				"Make sure you include a copy of the Installer.log file from the\n" +
+				"SolidCP Installer home directory.");
+			SetProgressText("Rollback ...");
+		}
+
+		bool errorShown = false;
+		protected void ShowError(Exception ex)
+		{
+			if (!errorShown)
+			{
+				errorShown = true;
+				ShowError();
+			}
+		}
+	}
+}

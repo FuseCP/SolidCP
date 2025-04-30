@@ -1,15 +1,17 @@
 using System.Diagnostics;
 using System.Reflection;
+using System.Collections;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller
-{
-
+{	
 	[Flags]
 	public enum Packages { None = 0, Server = 1, EnterpriseServer = 2, WebPortal = 4, WebDavPortal = 8, All = 15 }
 
 	public abstract class UI
 	{
+		public const bool UseWinForms = true;
+
 		static UI current;
 		public static UI Current
 		{
@@ -18,40 +20,91 @@ namespace SolidCP.UniversalInstaller
 				if (current == null)
 				{
 					var naUI = new NotAvailableUI();
-					UI ui = AvaloniaUI;
-					if (!ui.IsAvailable) ui = WinFormsUI;
+					UI ui = naUI;
+					if (!ui.IsAvailable && UseWinForms) ui = WinFormsUI;
+					if (!ui.IsAvailable) ui = AvaloniaUI;
 					if (!ui.IsAvailable) ui = ConsoleUI;
 					if (!ui.IsAvailable) ui = naUI;
 					current = ui;
+					Installer.Current.Settings.Installer.UI = ui.GetType().Name;
 				}
 				return current;
 			}
-			protected set
+			set
 			{
 				current = value;
 			}
 		}
+
+		public static UI SetCurrent(string name)
+		{
+			switch (name)
+			{
+				case nameof(AvaloniaUI): Current = AvaloniaUI; break;
+				case nameof(WinFormsUI): Current = WinFormsUI; break;
+				case nameof(NotAvailableUI): Current = new NotAvailableUI(); break;
+				default:
+				case nameof(ConsoleUI): Current = ConsoleUI; break;
+			}
+			Installer.Current.Settings.Installer.UI = name;
+			return Current;
+		}
+
 		public abstract bool IsAvailable { get; }
+
+		static UI winFormsUI = null;
 		public static UI WinFormsUI
 		{
 			get
 			{
-				var type = Type.GetType("SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms");
-				if (type != null) return Activator.CreateInstance(type) as UI;
-				else return new NotAvailableUI();
+				if (winFormsUI == null)
+				{
+					var type = Installer.Current.GetType($"SolidCP.UniversalInstaller.WinFormsUI, SolidCP.UniversalInstaller.UI.WinForms.{
+						(OSInfo.IsNetFX ? "NetFX" : "NetCore")}");
+					if (type != null) winFormsUI = Activator.CreateInstance(type) as UI;
+					else winFormsUI = NotAvailableUI;
+				}
+				return winFormsUI;
 			}
 		}
-		public static UI ConsoleUI => new ConsoleUI();
-		public static UI AvaloniaUI {
+
+		static UI consoleUI = null;
+		public static UI ConsoleUI {
 			get {
-				var type = Type.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
-				if (type != null) return Activator.CreateInstance(type) as UI;
-				else return new NotAvailableUI();
+				if (consoleUI == null)
+				{
+					var type = Installer.Current.GetType("SolidCP.UniversalInstaller.ConsoleUI, SolidCP.UniversalInstaller.UI.Console");
+					if (type != null) consoleUI = Activator.CreateInstance(type) as UI;
+					else consoleUI = NotAvailableUI;
+				}
+				return consoleUI;
 			}
 		}
+
+		static UI notAvailableUI = null;
+		public static UI NotAvailableUI => notAvailableUI ??= new NotAvailableUI();
+
+		static UI avaloniaUI = null;
+		public static UI AvaloniaUI {
+			get
+			{
+				if (avaloniaUI == null)
+				{
+					var type = Installer.Current.GetType("SolidCP.UniversalInstaller.AvaloniaUI, SolidCP.UniversalInstaller.UI.Avalonia");
+					if (type != null) avaloniaUI = Activator.CreateInstance(type) as UI;
+					else avaloniaUI = NotAvailableUI;
+				}
+				return avaloniaUI;
+			}
+		}
+		public bool IsConsole => this == ConsoleUI;
+		public bool IsWinForms => this == WinFormsUI;
+		public bool IsAvalonia => this == AvaloniaUI;
+		public bool IsGraphical => !IsConsole && this != NotAvailableUI;
+
 		public void ShowRunningInstance()
 		{
-			if (!(this is ConsoleUI) && OSInfo.IsWindows)
+			if (OSInfo.IsWindows && IsGraphical)
 			{
 				Process currentProcess = Process.GetCurrentProcess();
 				foreach (Process process in Process.GetProcessesByName(currentProcess.ProcessName))
@@ -74,31 +127,25 @@ namespace SolidCP.UniversalInstaller
 
 			public SetupWizard(UI ui) => UI = ui;
 
-			public virtual SetupWizard BannerWizard() => this;
-			public virtual SetupWizard Certificate() => this;
-			public virtual SetupWizard ConfigurationCheck() => this;
-			public virtual SetupWizard ConfirmUninstall() => this;
+			public virtual SetupWizard Introduction(ComponentSettings settings) => this;
+			public virtual SetupWizard Certificate(CommonSettings settings) => this;
+			public virtual SetupWizard CheckPrerequisites() => this;
+			public virtual SetupWizard ConfirmUninstall(ComponentSettings settings) => this;
 			public virtual SetupWizard Database() => this;
-			public virtual SetupWizard EmbeddEnterpriseServer() => this;
+			public virtual SetupWizard EmbedEnterpriseServer() => this;
+			public virtual SetupWizard EnterpriseServerUrl() => this;
 			public virtual SetupWizard Progress() => this;
 			public virtual SetupWizard Download() => this;
 			public virtual SetupWizard Finish() => this;
-			public virtual SetupWizard InsecureHttpWarning() => this;
-			public virtual SetupWizard InstallFolder() => this;
-			public virtual SetupWizard Introduction() => this;
+			public virtual SetupWizard InsecureHttpWarning(CommonSettings settings) => this;
+			public virtual SetupWizard InstallFolder(ComponentSettings settings) => this;
 			public virtual SetupWizard LicenseAgreement() => this;
-			public virtual SetupWizard MarginWizards() => this;
-			public virtual SetupWizard Rollback() => this;
 			public virtual SetupWizard ServerAdminPassword() => this;
 			public virtual SetupWizard ServerPassword() => this;
-			public virtual SetupWizard ServiceAddress() => this;
-			public virtual SetupWizard SetupComplete() => this;
-			public virtual SetupWizard SQLServers() => this;
-			public virtual SetupWizard Uninstall() => this;
-			public virtual SetupWizard Url() => this;
-			public virtual SetupWizard UserAccount() => this;
-			public virtual SetupWizard Web() => this;
-			public abstract void Show();
+			public virtual SetupWizard RunWithProgress(string title, Action action, ComponentSettings settings) => this;
+			public virtual SetupWizard UserAccount(CommonSettings settings) => this;
+			public virtual SetupWizard Web(CommonSettings settings) => this;
+			public abstract bool Show();
 		}
 
 		public Installer Installer => Installer.Current;
@@ -108,24 +155,33 @@ namespace SolidCP.UniversalInstaller
 		public abstract void Exit();
 		public abstract void RunMainUI();
 		public abstract string GetRootPassword();
-		public abstract ServerSettings GetServerSettings();
-		public abstract EnterpriseServerSettings GetEnterpriseServerSettings();
-		public abstract WebPortalSettings GetWebPortalSettings();
-		public abstract void GetCommonSettings(CommonSettings settings);
-		public abstract Packages GetPackagesToInstall();
-		public abstract void ShowInstallationProgress();
-		public abstract void CloseInstallationProgress();
 		public abstract void ShowError(Exception ex);
-		public abstract void ShowInstallationSuccess(Packages packages);
 		public abstract void ShowLogFile();
+		public virtual void ShowWaitCursor() { }
+		public virtual void EndWaitCursor() { }
+		public virtual void PassArguments(Hashtable args) { }
+		public virtual void ReadArguments(Hashtable args) { }
 		public virtual void PrintInstallerVersion()
 		{
-			var assembly = Assembly.GetExecutingAssembly();
-			var version = assembly.GetName().Version;
+			var version = Installer.Current.Version;
 			Console.WriteLine($"SolidCP UniversalInstaller {version}");
 			Log.WriteLine($"SolidCP UniversalInstaller {version}");
 		}
 
-		public abstract void CheckPrerequisites();
+		public abstract void ShowWarning(string msg);
+		public abstract bool DownloadSetup(RemoteFile file, bool setupOnly = false);
+		public virtual bool ExecuteSetup(string path, string installerType, string method, object[] args)
+		{
+			var res = (Result)Installer.Current.LoadContext.Execute(path, installerType, method, new object[] { args });
+			Log.WriteInfo(string.Format("Installer returned {0}", res));
+			Log.WriteEnd("Installer finished");
+			
+			EndWaitCursor();
+			
+			return res == Result.OK;
+		}
+		public abstract void DownloadInstallerUpdate();
+		public abstract bool CheckForInstallerUpdate(bool appStartup = false);
+		public virtual object MainForm { get; set; }
 	}
 }
