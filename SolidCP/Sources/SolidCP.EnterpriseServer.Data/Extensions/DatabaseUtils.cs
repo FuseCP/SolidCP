@@ -720,7 +720,7 @@ LOG ON(
 #if NETFRAMEWORK
 			SQLiteConnection.CreateFile(dbFile);
 #else
-			File.Create(dbFile);
+			//File.Create(dbFile);
 #endif
 
 		}
