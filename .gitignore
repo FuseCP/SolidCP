@@ -62,7 +62,7 @@ msbuild.log
 **/UpgradeLog.htm
 **/.vs/*
 
-
+**/TestResults/**
 bin/Debug
 bin/Release
 **/bin_dotnet/
