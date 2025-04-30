@@ -160,9 +160,10 @@ public class EnterpriseServer : IDisposable
 		var dir = IO.Path.GetDirectoryName(dbfile);
 		if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
+		string connectionString = "";
 		try
 		{
-			var connectionString = DatabaseUtils.BuildSqliteConnectionString(dbfile);
+			connectionString = DatabaseUtils.BuildSqliteConnectionString(dbfile);
 
 			if (DatabaseUtils.DatabaseExists(connectionString, DatabaseName))
 			{
@@ -177,7 +178,7 @@ public class EnterpriseServer : IDisposable
 			return sqliteConnectionString = connectionString;
 		} catch (Exception ex)
 		{
-			throw new Exception($"Error, CS: {sqliteConnectionString}; {ex}", ex);
+			throw new Exception($"Error, CS: {connectionString}; {ex}", ex);
 		}
 	}
 
