@@ -160,19 +160,25 @@ public class EnterpriseServer : IDisposable
 		var dir = IO.Path.GetDirectoryName(dbfile);
 		if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-		var connectionString = DatabaseUtils.BuildSqliteConnectionString(dbfile);
-	
-		if (DatabaseUtils.DatabaseExists(connectionString, DatabaseName))
+		try
 		{
-			DatabaseUtils.DeleteDatabase(connectionString, DatabaseName);
+			var connectionString = DatabaseUtils.BuildSqliteConnectionString(dbfile);
+
+			if (DatabaseUtils.DatabaseExists(connectionString, DatabaseName))
+			{
+				DatabaseUtils.DeleteDatabase(connectionString, DatabaseName);
+			}
+
+			DatabaseUtils.InstallFreshDatabase(connectionString, DatabaseName, null, null);
+
+			DatabaseUtils.SetServerAdminPassword(connectionString, DatabaseName,
+				CryptoUtils.Encrypt(SysadminPassword));
+
+			return sqliteConnectionString = connectionString;
+		} catch (Exception ex)
+		{
+			throw new Exception($"Error, CS: {sqliteConnectionString}; {ex}", ex);
 		}
-
-		DatabaseUtils.InstallFreshDatabase(connectionString, DatabaseName, null, null);
-
-		DatabaseUtils.SetServerAdminPassword(connectionString, DatabaseName,
-			CryptoUtils.Encrypt(SysadminPassword));
-
-		return sqliteConnectionString = connectionString;
 	}
 
 	public static void ConfigureDatabase(string connectionString) 
