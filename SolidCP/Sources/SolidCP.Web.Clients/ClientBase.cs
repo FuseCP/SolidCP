@@ -43,7 +43,6 @@ namespace SolidCP.Web.Clients
 		public const bool UseMessageSecurityOverHttp = true;
 		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
 		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
-
 		public static bool TrustAllCertificates = false;
 
 		Protocols protocol = Protocols.NetHttp;
@@ -590,19 +589,20 @@ namespace SolidCP.Web.Clients
 						if (!FactoryPool.TryGetValue(serviceurl, out factory))
 						{
 							factory = new ChannelFactory<T>(binding, endpoint);
-							if (TrustAllCertificates)
-							{
-								factory.Credentials.ServiceCertificate.SslCertificateAuthentication =
-									new System.ServiceModel.Security.X509ServiceCertificateAuthentication()
-									{
-										CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
-									};
-							}
 						}
 						else
 						{
 							FactoryPool[url] = null;
 						}
+					}
+
+					if (TrustAllCertificates)
+					{
+						factory.Credentials.ServiceCertificate.SslCertificateAuthentication =
+							new System.ServiceModel.Security.X509ServiceCertificateAuthentication()
+							{
+								CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
+							};
 					}
 
 					if (SoapHeader != null || Credentials != null && Credentials.Password != null && (IsSecureProtocol || IsLocal))
