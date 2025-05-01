@@ -650,6 +650,39 @@ public class WindowsInstaller : Installer
 		RemoveUser(setting.Username);
 	}
 
+	public virtual string SchedulerServiceId => "SolidCP.SchedulerService";
+	public override void InstallSchedulerService()
+	{
+		var services = OSInfo.Current.ServiceController;
+		if (services.Info(SchedulerServiceId) != null) services.Remove(SchedulerServiceId);
+
+		Transaction(() =>
+		{
+			var service = new WindowsServiceDescription()
+			{
+				ServiceId = SchedulerServiceId,
+				DisplayName = "SolidCP Scheduler Service",
+				Executable = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "SolidCP.Scheduler.exe"),
+				Start = WindowsServiceStartMode.DelayedAuto,
+				Type = WindowsServiceType.Own,
+				Error = WindowsServiceErrorHandling.Normal
+			};
+			services.Install(service);
+		}).WithRollback(() =>
+		{
+			try
+			{
+				RemoveSchedulerService();
+			}
+			catch { }
+		});
+	}
+
+	public override void RemoveSchedulerService()
+	{
+		var services = OSInfo.Current.ServiceController;
+		services.Remove(SchedulerServiceId);
+	}
 	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;
 
 	public override bool CheckIISVersionSupported() => CheckOSSupported();
