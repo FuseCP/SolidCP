@@ -246,7 +246,7 @@ public abstract partial class Installer
 				var esAppSettings = esConf.Element("appSettings");
 
 
-				var esCryptoKey = esAppSettings?.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
+				var esCryptoKey = esAppSettings?.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "SolidCP.CryptoKey");
 				if (esCryptoKey != null)
 				{
 					settings.CryptoKey = esCryptoKey.Attribute("value")?.Value;
@@ -283,10 +283,10 @@ public abstract partial class Installer
 			settings.CryptoKey = CryptoUtils.GetRandomString(20);
 		}
 
-		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
+		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "SolidCP.CryptoKey");
 		if (cryptoKey == null)
 		{
-			cryptoKey = new XElement("add", new XAttribute("key", "HostPanelPro.CryptoKey"), new XAttribute("value", settings.CryptoKey));
+			cryptoKey = new XElement("add", new XAttribute("key", "SolidCP.CryptoKey"), new XAttribute("value", settings.CryptoKey));
 			appSettings.Add(cryptoKey);
 		}
 		else

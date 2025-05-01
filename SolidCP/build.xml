@@ -476,8 +476,8 @@
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="$(InstallerProjectBin)\**\Setup2.dll;$(InstallerProjectBin)\**\ref\**" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.runtimeconfig.json" />
-			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
-			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
+			<SetupDll Include="$(InstallerProjectRoot)\SolidCP.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
+			<SetupDll Include="$(InstallerProjectRoot)\SolidCP.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
 			<InstallerExe Include="$(InstallerProjectBin)\net48\SolidCP.Installer.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />

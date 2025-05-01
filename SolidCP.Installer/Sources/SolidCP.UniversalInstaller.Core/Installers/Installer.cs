@@ -1147,7 +1147,7 @@ public abstract partial class Installer
 			process.WaitForExit();
 			UI.EndWaitCursor();
 
-			Console.WriteLine("HostPanelPro Installer has been updated. Please restart it...");
+			Console.WriteLine("SolidCP Installer has been updated. Please restart it...");
 			Installer.Current.Exit();
 		}
 
