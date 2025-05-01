@@ -658,6 +658,7 @@ public class WindowsInstaller : Installer
 
 		Transaction(() =>
 		{
+			// TODO install net8.0 scheduler when EnerpriseServer is also running on net8.0
 			var service = new WindowsServiceDescription()
 			{
 				ServiceId = SchedulerServiceId,
