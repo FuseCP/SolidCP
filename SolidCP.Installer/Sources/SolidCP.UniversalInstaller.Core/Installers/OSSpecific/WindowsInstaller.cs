@@ -667,7 +667,9 @@ public class WindowsInstaller : Installer
 				Type = WindowsServiceType.Own,
 				Error = WindowsServiceErrorHandling.Normal
 			};
-			services.Install(service);
+			var serviceManager = services.Install(service);
+			serviceManager.Start();
+
 		}).WithRollback(() =>
 		{
 			try
