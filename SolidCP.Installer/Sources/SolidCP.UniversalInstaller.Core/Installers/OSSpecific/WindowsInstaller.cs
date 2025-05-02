@@ -415,6 +415,8 @@ public class WindowsInstaller : Installer
 			throw new Exception($"'{oldSiteName}' web site already has server binding ( IP: {ip}, Port: {port}, Domain: {domain} )");
 		}
 
+		if (setting.RunOnNetCore) contentPath = Path.Combine(contentPath, "bin_dotnet");
+
 		//TODO certificate
 
 		// create site
