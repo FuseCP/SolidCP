@@ -5680,6 +5680,10 @@
         <Content Include="ExchangeServer\ExchangeMailboxAutoReply.ascx" />
         <Content Include="ExchangeServer\ExchangeJournalingMailboxes.ascx" />
         <Content Include="ExchangeServer\ExchangeJournalingMailboxGeneralSettings.ascx" />
+        <Content Include="ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.de-DE.resx" />
+        <Content Include="ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx">
+          <SubType>Designer</SubType>
+        </Content>
         <Content Include="ProviderControls\HyperV2016_Settings.ascx" />
         <Content Include="ProviderControls\vsftpd_EditAccount.ascx" />
         <Content Include="ProviderControls\RemoteDesktopServices_Settings.ascx" />

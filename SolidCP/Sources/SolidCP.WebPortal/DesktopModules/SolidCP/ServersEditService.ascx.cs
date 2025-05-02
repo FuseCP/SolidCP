@@ -36,6 +36,7 @@ using System.Configuration;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Linq;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
@@ -214,7 +215,10 @@ namespace SolidCP.Portal
 			await loadSettingsControl;
 
 			// find control
-			IHostingServiceProviderSettings ctrl = serviceProps.Controls[0] as IHostingServiceProviderSettings;
+			IHostingServiceProviderSettings ctrl = serviceProps.Controls
+				.OfType<Control>()
+				.FirstOrDefault()
+				as IHostingServiceProviderSettings;
 			if (ctrl == null)
 				return;
 
