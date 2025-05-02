@@ -72,7 +72,7 @@ namespace SolidCP.Providers.OS
                     {
                         var uri = new Uri(url);
 
-                        var match = Regex.Match(uri.PathAndQuery, @"^/?(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?:/(?<path>.*?))?(?:?(?<query>.*?))?$");
+                        var match = Regex.Match(uri.PathAndQuery, @"^/?(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?:/(?<path>.*?))?(?:(?<query>.*?))?$");
                         if (match.Success)
                         {
                             if (match.Groups["localport"].Success)
