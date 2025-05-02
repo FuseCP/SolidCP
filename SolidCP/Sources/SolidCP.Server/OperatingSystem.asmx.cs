@@ -1364,6 +1364,7 @@ namespace SolidCP.Server
 		public ServiceController ServiceController => OSProvider.ServiceController;
 		public WSLShell WSL => WinProvider.WSL;
 		public bool IsSystemd => Provider is IUnixOperatingSystem && UnixProvider.IsSystemd;
+		public bool IsOpenRC => Provider is IUnixOperatingSystem && UnixProvider.IsOpenRC;
 		public TraceListener DefaultTraceListener => OSProvider.DefaultTraceListener;
 
 	}
