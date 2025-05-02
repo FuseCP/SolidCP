@@ -658,12 +658,14 @@ public class WindowsInstaller : Installer
 
 		Transaction(() =>
 		{
-			// TODO install net8.0 scheduler when EnerpriseServer is also running on net8.0
+			var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
+				Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
+					"bin_dotnet" : "bin";
 			var service = new WindowsServiceDescription()
 			{
 				ServiceId = SchedulerServiceId,
 				DisplayName = "SolidCP Scheduler Service",
-				Executable = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "SolidCP.Scheduler.exe"),
+				Executable = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, binFolder, "SolidCP.Scheduler.exe"),
 				Start = WindowsServiceStartMode.DelayedAuto,
 				Type = WindowsServiceType.Own,
 				Error = WindowsServiceErrorHandling.Normal
