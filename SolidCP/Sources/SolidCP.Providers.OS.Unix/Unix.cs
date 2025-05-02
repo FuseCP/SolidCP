@@ -835,7 +835,8 @@ public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 			{
 				if (IsSystemd) serviceController = new SystemdServiceController();
 				else if (IsOpenRC) serviceController = new OpenRCServiceController();
-				else throw new NotSupportedException("Only SystemD and OpenRC service controllers are supported.");
+				else if (OSInfo.IsMac) serviceController = new LaunchdServiceController();
+				else throw new NotSupportedException("Only SystemD, OpenRC & Launchd service controllers are supported.");
 			}
 			return serviceController;
 		}

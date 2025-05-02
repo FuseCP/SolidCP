@@ -1,31 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <LangVersion>12</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
-    <OutputPath>bin\$(Configuration)\net48</OutputPath>
-  </PropertyGroup>
-  <Target Name="CopyMonoPosixNETStandard" AfterTargets="Build">
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <OutputPath>..\SolidCP.Server\bin\netstandard\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+        <LangVersion>12</LangVersion>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(TargetFramework)' == 'net48' ">
+        <OutputPath>bin\$(Configuration)\net48</OutputPath>
+    </PropertyGroup>
+    <Target Name="CopyMonoPosixNETStandard" AfterTargets="Build">
+        <ItemGroup>
+            <CopyFiles Include="..\..\Lib\Mono.Posix.NETStandard.dll" />
+            <CopyFiles Include="$(PkgSyslogNet_ClientStandard)\lib\netstandard2.0\SyslogNet.Client.*" />
+        </ItemGroup>
+        <Message Text="Copy Files: @(CopyFiles)" Importance="high" />
+        <Copy SourceFiles="@(CopyFiles)" DestinationFolder="$(OutputPath)" />
+    </Target>
     <ItemGroup>
-      <CopyFiles Include="..\..\Lib\Mono.Posix.NETStandard.dll" />
-      <CopyFiles Include="$(PkgSyslogNet_ClientStandard)\lib\netstandard2.0\SyslogNet.Client.*" />
+        <PackageReference Include="SyslogNet.ClientStandard" Version="0.3.4" />
+        <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
+        <PackageReference Include="plist-cil" Version="2.2.0" />
     </ItemGroup>
-    <Message Text="Copy Files: @(CopyFiles)" Importance="high" />
-    <Copy SourceFiles="@(CopyFiles)" DestinationFolder="$(OutputPath)" />
-  </Target>
-  <ItemGroup>
-    <PackageReference Include="SyslogNet.ClientStandard" Version="0.3.4" />
-    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    </ItemGroup>
 </Project>

@@ -79,7 +79,28 @@ public abstract class UnixInstaller : Installer
 				StopTimeout = 30
 			};
 		}
-		else throw new NotSupportedException("Only SystemD and OpenRC are supported.");
+		else if (OSInfo.IsMac)
+		{
+			var log = Path.Combine(WebsiteLogsPath, $"{serviceId}.log");
+			service = new LaunchdServiceDescription()
+			{
+				Label = serviceId,
+				Executable = dotnet,
+				Arguments = dll,
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				WorkingDirectory = Path.GetDirectoryName(dll),
+				ExitTimeout = 30,
+				KeepAlive = true,
+				RunAtLoad = true,
+				StandardOutPath = log,
+				StandardErrorPath = log,
+				StartOnMount = true
+			};
+		}
+		else throw new NotSupportedException("Only SystemD, OpenRC & Launchd are supported.");
 
 		InstallService(service);
 

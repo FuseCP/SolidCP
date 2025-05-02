@@ -25,8 +25,6 @@ public class OpenRCServiceController: ServiceController
 			if (string.IsNullOrEmpty(srvc.Need)) srvc.Need = deps;
 			else srvc.Need += " " + deps;
 		}
-		if (!string.IsNullOrEmpty(srvc.Executable) && string.IsNullOrEmpty(srvc.Command))
-			srvc.Command = srvc.Executable;
 		if (!string.IsNullOrEmpty(srvc.WorkingDirectory)) body.AppendLine($"directory=\"{srvc.WorkingDirectory}\"");
 
 		if (!string.IsNullOrEmpty(srvc.Provide) ||
