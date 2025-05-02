@@ -381,13 +381,17 @@ namespace SolidCP.Web.Clients
 			Thread.Sleep(0);
 			// block until ssh tunnel is ready
             bool wait;
-            lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-            while (wait)
-            {
-                Thread.Sleep(1);
-                lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-            }
-        }
+			lock (tunnel) wait = (tunnel.Client == null || tunnel.ForwardedPort == null ||
+					!tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting) &&
+					tunnel.ConnectException == null;
+			while (wait)
+			{
+				Thread.Sleep(1);
+				lock (tunnel) wait = (tunnel.Client == null || tunnel.ForwardedPort == null ||
+						!tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting) &&
+						tunnel.ConnectException == null;
+			}
+		}
 
         public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
