@@ -405,11 +405,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 		}
 		internal static CheckStatuses CheckSystemd(out string details)
 		{
-			var system = OSInfo.IsSystemd ? "Systemd" :
-				OSInfo.IsOpenRC ? "OpenRC" : "Init System";
+			var system = OSInfo.IsSystemd ? "SystemD" :
+				OSInfo.IsOpenRC ? "OpenRC" :
+				OSInfo.IsMac ? "LaunchD" : "Init System";
 			details = $"{system} is installed.";
 
-			if (OSInfo.IsOpenRC || OSInfo.IsSystemd) return CheckStatuses.Success;
+			if (Installer.Current.CheckInitSystemSupported()) return CheckStatuses.Success;
 
 			details = "Init System not supported.";
 			return CheckStatuses.Error;

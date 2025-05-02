@@ -1438,13 +1438,15 @@ Checking System Requirements
 				string system = "";
 				if (Installer.IsSystemd) system = "SystemD";
 				else if (Installer.IsOpenRC) system = "OpenRC";
+				else if (Installer.IsMac) system = "LaunchD";
+				else throw new NotSupportedException("Only SystemD, OpenRC & LaunchD are supported.");
 				form[4].Text = "x";
 				form["SysD"].Text = $" {system} Supported";
 			}
 			else
 			{
 				form[4].Text = "!";
-				form["SysD"].Text = " Init System not Supported";
+				form["SysD"].Text = " Init System not supported";
 				ok = false;
 			}
 

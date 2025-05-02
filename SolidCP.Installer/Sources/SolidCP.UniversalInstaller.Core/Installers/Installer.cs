@@ -49,6 +49,7 @@ public abstract partial class Installer
 	public virtual string ComponentTempPath => Path.Combine(TempPath, "Component");
 	public virtual bool IsWindows => OSInfo.IsWindows;
 	public virtual bool IsUnix => OSInfo.IsUnix;
+	public virtual bool IsMac => OSInfo.IsMac;
 	public virtual bool IsSystemd => OSInfo.IsSystemd;
 	public virtual bool IsOpenRC => OSInfo.IsOpenRC;
 	public virtual bool IsInstallAction => Settings.Installer.Action == SetupActions.Install;

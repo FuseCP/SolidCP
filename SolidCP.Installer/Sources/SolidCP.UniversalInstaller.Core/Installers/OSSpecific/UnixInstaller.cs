@@ -203,15 +203,10 @@ public abstract class UnixInstaller : Installer
 			return euid == 0;
 		}
 	}
-
 	public override bool CheckOSSupported() => CheckInitSystemSupported();
-
 	public override bool CheckIISVersionSupported() => false;
-
-	public override bool CheckInitSystemSupported() => new SystemdServiceController().IsInstalled;
-
+	public override bool CheckInitSystemSupported() => IsSystemd || IsOpenRC || IsMac;
 	public override bool CheckNetVersionSupported() => OSInfo.IsMono || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
-
 	public override void RestartAsAdmin()
 	{
 		var password = UI.GetRootPassword();
