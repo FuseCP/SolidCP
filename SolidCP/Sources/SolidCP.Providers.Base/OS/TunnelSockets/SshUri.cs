@@ -126,8 +126,9 @@ namespace SolidCP.Providers.OS
 
         public string AccessUrl(IPAddress loopback, int port, string scheme = null)
         {
-            // Replace authority and remote port path
-            var accessUrl = Regex.Replace(RawUrl, @"(?<=^[0-9a-zA-Z.-]+://)[^/?$]*", $"{loopback}:{port}");
+			if (port == -1) port = 22;
+			// Replace authority and remote port path
+			var accessUrl = Regex.Replace(RawUrl, @"(?<=^[0-9a-zA-Z.-]+://)[^/?$]*", $"{loopback}:{port}");
             scheme = scheme ?? Protocol ?? "http";
             // Replace scheme
             accessUrl = Regex.Replace(accessUrl, @"^[a-zA-Z.-0-9]+(?=://)", scheme);
