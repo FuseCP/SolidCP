@@ -21604,3 +21604,61 @@ SELECT
     INNER JOIN [dbo].[Servers] AS [Extent7] ON [Distinct1].[C1] = [Extent7].[ServerID]
     
 GO
+
+
+-- Fix endless loop in UserParents for UserId 0
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'TF' AND name = 'UserParents')
+DROP FUNCTION [dbo].[UserParents]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION [dbo].[UserParents]
+    (
+    	@ActorID int,
+    	@UserID int
+    )
+    RETURNS @T TABLE (UserOrder int IDENTITY(1,1), UserID int)
+    AS
+    BEGIN
+    	-- insert current user
+    	INSERT @T VALUES (@UserID)
+
+    	DECLARE @TopUserID int
+    	IF @ActorID = -1
+    	BEGIN
+    		SELECT @TopUserID = UserID FROM Users WHERE OwnerID IS NULL
+    	END
+    	ELSE
+    	BEGIN
+    		SET @TopUserID = @ActorID
+
+    		IF EXISTS (SELECT UserID FROM Users WHERE UserID = @ActorID AND IsPeer = 1)
+    		SELECT @TopUserID = OwnerID FROM Users WHERE UserID = @ActorID AND IsPeer = 1
+    	END
+
+    	-- owner
+    	DECLARE @OwnerID int, @TmpUserID int
+
+    	SET @TmpUserID = @UserID
+        SET @OwnerID = -1
+
+    	WHILE (@TmpUserID <> @TopUserID AND @OwnerID IS NOT NULL)
+    	BEGIN
+
+    		SET @OwnerID = NULL
+    		SELECT @OwnerID = OwnerID FROM Users WHERE UserID = @TmpUserID
+
+    		IF @OwnerID IS NOT NULL
+    		BEGIN
+    			INSERT @T VALUES (@OwnerID)
+    			SET @TmpUserID = @OwnerID
+    		END
+    	END
+
+    RETURN
+    END
+GO
+
