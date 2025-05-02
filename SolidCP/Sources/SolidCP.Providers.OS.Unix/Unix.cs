@@ -726,7 +726,8 @@ public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 
 	public void RebootSystem()
 	{
-		ServiceController.SystemReboot();
+		if (IsSystemd || IsOpenRC) ServiceController.SystemReboot();
+		else DefaultShell.Exec("reboot");
 	}
 
 	public Memory GetMemory()
@@ -826,22 +827,22 @@ public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 	public Web.IWebServer WebServer => throw new NotImplementedException();
 
 	ServiceController serviceController = null;
-	bool isInstalledChecked = false;
 	public ServiceController ServiceController
 	{
 		get
 		{
-			if (!isInstalledChecked)
+			if (serviceController == null)
 			{
-				isInstalledChecked = true;
-				serviceController = serviceController ?? (serviceController = new SystemdServiceController());
-				if (!serviceController.IsInstalled) throw new PlatformNotSupportedException("This operating system does not use Systemd.");
+				if (IsSystemd) serviceController = new SystemdServiceController();
+				else if (IsOpenRC) serviceController = new OpenRCServiceController();
+				else throw new NotSupportedException("Only SystemD and OpenRC service controllers are supported.");
 			}
 			return serviceController;
 		}
 	}
 
-	public bool IsSystemd => new SystemdServiceController().IsInstalled;
+	public bool IsSystemd => OSInfo.IsSystemd;
+	public bool IsOpenRC => OSInfo.IsOpenRC;
 
 	static TraceListener defaultTraceListener = null;
 	public TraceListener DefaultTraceListener => defaultTraceListener ?? (defaultTraceListener = new SyslogTraceListener());

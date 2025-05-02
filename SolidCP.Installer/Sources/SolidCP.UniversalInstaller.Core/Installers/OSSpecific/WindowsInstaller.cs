@@ -672,8 +672,8 @@ public class WindowsInstaller : Installer
 				Type = WindowsServiceType.Own,
 				Error = WindowsServiceErrorHandling.Normal
 			};
-			var serviceManager = services.Install(service);
-			serviceManager.Start();
+
+			InstallService(service);
 
 		}).WithRollback(() =>
 		{
@@ -684,18 +684,10 @@ public class WindowsInstaller : Installer
 			catch { }
 		});
 	}
-
-	public override void RemoveSchedulerService()
-	{
-		var services = OSInfo.Current.ServiceController;
-		services.Remove(SchedulerServiceId);
-	}
+	public override void RemoveSchedulerService() => RemoveService(SchedulerServiceId);
 	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;
-
 	public override bool CheckIISVersionSupported() => CheckOSSupported();
-
-	public override bool CheckSystemdSupported() => false;
-
+	public override bool CheckInitSystemSupported() => true;
 	public override bool CheckNetVersionSupported() => OSInfo.IsNet48 || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
 
 	public override void RestartAsAdmin()

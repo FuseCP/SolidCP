@@ -34,23 +34,52 @@ public abstract class UnixInstaller : Installer
 
 		AddUnixUser(serviceId, SolidCPUnixGroup);
 
-		var service = new SystemdServiceDescription()
+		var dotnet = Shell.Find("dotnet");
+
+		ServiceDescription service;
+		if (IsSystemd)
 		{
-			ServiceId = serviceId,
-			Directory = Path.GetDirectoryName(dll),
-			Description = description,
-			Executable = $"dotnet {dll}",
-			DependsOn = new List<string>() { "network-online.target" },
-			EnvironmentVariables = new Dictionary<string, string>(),
-			Restart = "on-failure",
-			RestartSec = "1s",
-			StartLimitBurst = "5",
-			StartLimitIntervalSec = "500",
-			User = settings.Username ?? "",
-			Group = group,
-			SyslogIdentifier = serviceId
-		};
-		service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
+			service = new SystemdServiceDescription()
+			{
+				ServiceId = serviceId,
+				Directory = Path.GetDirectoryName(dll),
+				Description = description,
+				Executable = $"{dotnet} {dll}",
+				DependsOn = new List<string>() { "network-online.target" },
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				Restart = "on-failure",
+				RestartSec = "1s",
+				StartLimitBurst = "5",
+				StartLimitIntervalSec = "500",
+				User = settings.Username ?? "",
+				Group = group,
+				SyslogIdentifier = serviceId
+			};
+		}
+		else if (IsOpenRC)
+		{
+			service = new OpenRCServiceDescription()
+			{
+				ServiceId = serviceId,
+				Description = description,
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				CommandUser = settings.Username ?? "",
+				Command = dotnet,
+				CommandArgs = dll,
+				WorkingDirectory = Path.GetDirectoryName(dll),
+				CommandBackground = true,
+				PidFile = $"/run/{serviceId}.pid",
+				Need = "net",
+				StopTimeout = 30
+			};
+		}
+		else throw new NotSupportedException("Only SystemD and OpenRC are supported.");
 
 		InstallService(service);
 
@@ -154,11 +183,11 @@ public abstract class UnixInstaller : Installer
 		}
 	}
 
-	public override bool CheckOSSupported() => CheckSystemdSupported();
+	public override bool CheckOSSupported() => CheckInitSystemSupported();
 
 	public override bool CheckIISVersionSupported() => false;
 
-	public override bool CheckSystemdSupported() => new SystemdServiceController().IsInstalled;
+	public override bool CheckInitSystemSupported() => new SystemdServiceController().IsInstalled;
 
 	public override bool CheckNetVersionSupported() => OSInfo.IsMono || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
 

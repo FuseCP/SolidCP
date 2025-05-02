@@ -1406,11 +1406,11 @@ Checking System Requirements
 Checking System Requirements
 ============================
 
-[x] Operating System:  [?OS                                ]
-[x] .NET 8 Runtime:    [?NET                                ]
-[x] SystemD:           [?SysD                                ]
+  [x] Operating System: [?OS                                ]
+  [x] .NET 8 Runtime:   [?NET                                ]
+  [x] Init System:      [?SysD                                ]
 
-[    OK    ]
+  [    OK    ]
 ");
 			form["OK"].HasFocus = true;
 			form.Show();
@@ -1433,15 +1433,18 @@ Checking System Requirements
 				form["NET"].Text = " Not Installed";
 			}
 			form.Show();
-			if (Installer.CheckSystemdSupported())
+			if (Installer.CheckInitSystemSupported())
 			{
+				string system = "";
+				if (Installer.IsSystemd) system = "SystemD";
+				else if (Installer.IsOpenRC) system = "OpenRC";
 				form[4].Text = "x";
-				form["SysD"].Text = " SystemD Supported";
+				form["SysD"].Text = $" {system} Supported";
 			}
 			else
 			{
 				form[4].Text = "!";
-				form["SysD"].Text = " SystemD not Supported";
+				form["SysD"].Text = " Init System not Supported";
 				ok = false;
 			}
 

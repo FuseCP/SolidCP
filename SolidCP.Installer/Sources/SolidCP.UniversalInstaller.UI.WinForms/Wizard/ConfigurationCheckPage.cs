@@ -79,7 +79,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 				{
 					new ConfigurationCheck(CheckTypes.OperatingSystem, "Operating System Requirement"),
 					new ConfigurationCheck(CheckTypes.Net8Runtime, ".NET 8 Runtime Requirement"),
-					new ConfigurationCheck(CheckTypes.Systemd, "Systemd Requirement")
+					new ConfigurationCheck(CheckTypes.InitSystem, "Init System Requirement")
 				});
 			}
 
@@ -183,7 +183,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 						case CheckTypes.ApacheVersion:
 							status = CheckApacheVersion(out details);
 							break;
-						case CheckTypes.Systemd:
+						case CheckTypes.InitSystem:
 							status = CheckSystemd(out details);
 							break;
 						default:
@@ -405,13 +405,13 @@ namespace SolidCP.UniversalInstaller.WinForms
 		}
 		internal static CheckStatuses CheckSystemd(out string details)
 		{
-			details = "Systemd is installed.";
+			var system = OSInfo.IsSystemd ? "Systemd" :
+				OSInfo.IsOpenRC ? "OpenRC" : "Init System";
+			details = $"{system} is installed.";
 
-			if (OSInfo.Current.ServiceController != null &&
-				OSInfo.Current.ServiceController.IsInstalled &&
-				OSInfo.Current.ServiceController is SystemdServiceController) return CheckStatuses.Success;
+			if (OSInfo.IsOpenRC || OSInfo.IsSystemd) return CheckStatuses.Success;
 
-			details = "Systemd not found.";
+			details = "Init System not supported.";
 			return CheckStatuses.Error;
 		}
 		internal static CheckStatuses CheckNet8Runtime(out string details)

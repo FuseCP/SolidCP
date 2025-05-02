@@ -35,7 +35,33 @@ namespace SolidCP.Providers.OS
 		public string StartLimitBurst { get; set; }
 		public string Restart { get; set; }
 		public string RestartSec { get; set; }
-		public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
+		public Dictionary<string, string> Environment { get; set; } = new Dictionary<string, string>();
+	}
+	public class OpenRCServiceDescription : ServiceDescription
+	{
+		public string Need { get; set; }
+		public string Use { get; set; }
+		public string Want { get; set; }
+		public string Before { get; set; }
+		public string After { get; set; }
+		public string Provide { get; set; }
+		public string Keyword { get; set; }
+		public string Command { get; set; }
+		public string CommandArgs { get; set; }
+		public string CommandArgsBackground { get; set; }
+		public string PidFile { get; set; }
+		public bool? CommandBackground { get; set; }
+		public string CommandUser { get; set; }
+		public string Capabilities { get; set; }
+		public string Procname { get; set; }
+		public string ExtraCommands { get; set; }
+		public string ExtraStartedCommands { get; set; }
+		public string ExtraStoppedCommands { get; set; }
+		public string WorkingDirectory { get; set; }
+		public Dictionary<string, string> Environment { get; set; } = new Dictionary<string, string>();
+		public string Body { get; set; }
+		public string Description { get; set; }
+		public int? StopTimeout { get; set; }
 	}
 	public class ServiceManager
 	{

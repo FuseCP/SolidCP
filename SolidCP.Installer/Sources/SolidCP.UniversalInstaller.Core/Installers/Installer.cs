@@ -49,6 +49,8 @@ public abstract partial class Installer
 	public virtual string ComponentTempPath => Path.Combine(TempPath, "Component");
 	public virtual bool IsWindows => OSInfo.IsWindows;
 	public virtual bool IsUnix => OSInfo.IsUnix;
+	public virtual bool IsSystemd => OSInfo.IsSystemd;
+	public virtual bool IsOpenRC => OSInfo.IsOpenRC;
 	public virtual bool IsInstallAction => Settings.Installer.Action == SetupActions.Install;
 	public virtual bool IsUpdateAction => Settings.Installer.Action == SetupActions.Update;
 	public virtual bool IsSetupAction => Settings.Installer.Action == SetupActions.Setup;
@@ -947,7 +949,7 @@ public abstract partial class Installer
 		trustCertificate = tc != null && tc.Equals("true", StringComparison.OrdinalIgnoreCase);
 	}
 	public abstract bool CheckOSSupported();
-	public abstract bool CheckSystemdSupported();
+	public abstract bool CheckInitSystemSupported();
 	public abstract bool CheckIISVersionSupported();
 	public abstract bool CheckNetVersionSupported();
 
