@@ -508,8 +508,9 @@ namespace SolidCP.EnterpriseServer
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2016)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2017)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2019)
-                    || context.Groups.ContainsKey(ResourceGroups.MsSql2022)
-                    || context.Groups.ContainsKey(ResourceGroups.MySql4)
+					|| context.Groups.ContainsKey(ResourceGroups.MsSql2022)
+					|| context.Groups.ContainsKey(ResourceGroups.MsSql2025)
+					|| context.Groups.ContainsKey(ResourceGroups.MySql4)
                     || context.Groups.ContainsKey(ResourceGroups.MySql5)
                     || context.Groups.ContainsKey(ResourceGroups.MySql8)
                     || context.Groups.ContainsKey(ResourceGroups.MySql9)
@@ -526,7 +527,8 @@ namespace SolidCP.EnterpriseServer
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2016)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2017)
                     || context.Groups.ContainsKey(ResourceGroups.MsSql2019)
-                    || context.Groups.ContainsKey(ResourceGroups.MsSql2022)))
+					|| context.Groups.ContainsKey(ResourceGroups.MsSql2022)
+                    || context.Groups.ContainsKey(ResourceGroups.MsSql2025)))
                     result.ErrorCodes.Add(GalleryErrors.SQLRequired);
 
                 // MySQL
