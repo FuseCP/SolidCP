@@ -257,6 +257,7 @@ namespace SolidCP.Portal
 																				 (resourceGroup.GroupName == ResourceGroups.MsSql2017) |
 																				 (resourceGroup.GroupName == ResourceGroups.MsSql2019) |
 																				 (resourceGroup.GroupName == ResourceGroups.MsSql2022) |
+																				 (resourceGroup.GroupName == ResourceGroups.MsSql2025) |
 																				 (resourceGroup.GroupName == ResourceGroups.MySql4) |
 																				 (resourceGroup.GroupName == ResourceGroups.MySql5) |
 																				 (resourceGroup.GroupName == ResourceGroups.MySql8) |
