@@ -78,11 +78,14 @@ namespace SolidCP.EnterpriseServer
 					return true;
 				}
 
-				UserInfo user = controller.UserController.GetUserByUsernamePassword(username, password, hostAddress, false);
+				UserInfo user = controller.UserController.GetUserByUsernamePassword(username, password, hostAddress, true);
 
 				if (user == null)
 				{
 					Users.TryRemove(username, out cachedUser);
+					
+					controller.AuditLog.AddAuditLogWarningRecord("User", "Login", username, new string[] { "Invalid username or password" });
+
 					return false;
 				}
 
