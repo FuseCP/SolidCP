@@ -16,7 +16,6 @@
         <DefineConstants Condition="$(EmbedReferences) == 'true'">$(DefineConstants);Costura</DefineConstants>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
-        <GenerateDependencyFile>false</GenerateDependencyFile>
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
     </PropertyGroup>
 
@@ -46,12 +45,13 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj">
+        <!--<ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj">
             <SetTargetFramework>TargetFramework=net8.0</SetTargetFramework>
-        </ProjectReference>
+        </ProjectReference>-->
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Avalonia\SolidCP.UniversalInstaller.UI.Avalonia.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj" />
     </ItemGroup>
+
     <ItemGroup Condition="$(TargetFramework) == 'net48'">
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
             <SetTargetFramework>TargetFramework=net48</SetTargetFramework>
@@ -69,6 +69,8 @@
         <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
         <PackageReference Include="System.Management" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     </ItemGroup>
     
     <ItemGroup>
@@ -135,6 +137,7 @@
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.dll" />
             <DllsToKeep Include="$(OutputPath)\**\installer.settings.json" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.runtimeconfig.json" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.deps.json" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.pdb" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.Core.deps.json" />
             <DllsToDelete Include="$(OutputPath)\**\*.*" Exclude="@(DllsToKeep)" />

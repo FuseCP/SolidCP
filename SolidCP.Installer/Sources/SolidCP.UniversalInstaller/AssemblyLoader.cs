@@ -319,7 +319,7 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		"System.Memory.dll",
 		"System.Threading.dll",
 		"System.Threading.Tasks.dll",
-		"System.Diagnostics.DiagnosticSource.dll",
+		//"System.Diagnostics.DiagnosticSource.dll",
 		"System.IO.FileSystem.AccessControl.dll",
 		"System.Security.AccessControl.dll",
 		"System.Security.Principal.Windows.dll",

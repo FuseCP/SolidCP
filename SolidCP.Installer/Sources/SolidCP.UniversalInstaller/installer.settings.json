@@ -118,7 +118,7 @@
     "Action": "Uninstall",
     "TempPath": "C:\\GitHub\\SolidCP\\SolidCP.Installer\\Sources\\SolidCP.UniversalInstaller\\bin\\Debug\\net8.0\\Tmp",
     "IsUnattended": false,
-    "WebServiceUrl": "http://172.26.0.1/solidcp-installer-service/Services/InstallerService-Beta.asmx",
+    "WebServiceUrl": "http://localhost/solidcp-installer-service/Services/InstallerService-Beta.asmx",
     "CheckForUpdate": false,
     "Proxy": null,
     "UI": "WinFormsUI"

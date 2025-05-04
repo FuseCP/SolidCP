@@ -391,18 +391,17 @@ SQL Server Settings:
 
 Server:   [?DatabaseServer                               ]
 Database: [?DatabaseName                               ]
+          [x DatabaseWindowsAuthentication] Windows Authentication
 User:     [?DatabaseUser                               ]
 Password: [?DatabasePassword                               ]
-Always Trust Server Certificate: [x]
+Always Trust Server Certificate: [x DatabaseTrustServerCertificate]
 
 [  Next  ]  [  Back  ]")
 							.Load(settings)
-							.Apply(f => f[3].Checked = settings.DatabaseTrustServerCertificate)
 							.ShowDialog();
 						if (form["Next"].Clicked)
 						{
 							form.Save(settings);
-							settings.DatabaseTrustServerCertificate = form[3].Checked;
 							Next();
 						}
 						else

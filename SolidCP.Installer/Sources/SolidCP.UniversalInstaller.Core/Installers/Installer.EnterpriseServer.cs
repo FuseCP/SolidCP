@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Xml.Linq;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -71,10 +72,11 @@ public abstract partial class Installer
 			var connstr = settings.DbInstallConnectionString;
 			if (string.IsNullOrEmpty(connstr) ||
 				!DatabaseUtils.CheckSqlConnection(connstr)) throw new DataException("Unable to connect to database.");
-			if (string.IsNullOrEmpty(settings.DatabaseUser))
+			if (settings.DatabaseWindowsAuthentication)
 			{
-				settings.DatabaseUser = DefaultDatabaseUser;
-				settings.DatabasePassword = Utils.GetRandomString(32);
+				settings.DatabaseUser = settings.DatabaseName;
+				settings.DatabasePassword = Utils.GetRandomString(16);
+				settings.DatabaseWindowsAuthentication = false;
 			}
 			var user = settings.DatabaseUser;
 			var password = settings.DatabasePassword;
@@ -106,8 +108,7 @@ public abstract partial class Installer
 		DatabaseUtils.DeleteDatabase(connstr, settings.DatabaseName);
 		if (string.IsNullOrEmpty(settings.DatabaseUser))
 		{
-			settings.DatabaseUser = (settings.DatabaseName + "User").Replace(" ", "_");
-			settings.DatabasePassword = Utils.GetRandomString(32);
+			settings.DatabaseUser = settings.DatabaseName;
 		}
 		DatabaseUtils.DeleteUser(connstr, settings.DatabaseUser);
 		DatabaseUtils.DeleteLogin(connstr, settings.DatabaseUser);
@@ -267,6 +268,24 @@ public abstract partial class Installer
 				}
 
 				var esConStrings = esConf.Element("connectionStrings");
+				if (esConStrings != null)
+				{
+					var esConString = esConStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
+					var esCstring = esConString?.Attribute("value")?.Value;
+					if (esCstring != null)
+					{
+						var csb = new ConnectionStringBuilder(esCstring);
+						if ((csb["DbType"] as string)?.Contains("Sqlite") == true)
+						{
+							if (csb["Data Source"] != null)
+							{
+								csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+							}
+							csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+							esConString.Attribute("value").SetValue(csb.ConnectionString);
+						}
+					}
+				}
 				var conStrings = configuration.Element("connectionStrings");
 				conStrings.ReplaceWith(esConStrings);
 
@@ -299,8 +318,9 @@ public abstract partial class Installer
 			// Connection String
 			var connectionStrings = configuration.Element("connectionStrings");
 			var cstring = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-			var authentication = settings.DatabaseWindowsAuthentication ? "Integrated Security=true" : $"User ID={settings.DatabaseUser};Password={settings.DatabasePassword}";
-			cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database={settings.DatabaseName};{authentication}{(settings.DatabaseTrustServerCertificate ? ";TrustServerCertificate=true" : "")}");
+			var connectionString = DatabaseUtils.BuildConnectionString(settings.DatabaseType, settings.DatabaseServer,
+				settings.DatabasePort, settings.DatabaseName, settings.DatabaseUser, settings.DatabasePassword, Settings.WebPortal.EnterpriseServerPath, webPortalEmbedded && Settings.WebPortal.EmbedEnterpriseServer);
+			cstring.Attribute("connectionString").SetValue(connectionString);
 
 			// Swagger Version
 			var swaggerwcf = configuration.Element("swaggerwcf");
