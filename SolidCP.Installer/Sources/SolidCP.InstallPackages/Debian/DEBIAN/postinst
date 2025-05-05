@@ -1,2 +1,2 @@
 #!/bin/sh
-echo "run solidcp-installer to complete the installation of SolidCP"
+echo "run sudo solidcp-installer to complete the installation of SolidCP"
