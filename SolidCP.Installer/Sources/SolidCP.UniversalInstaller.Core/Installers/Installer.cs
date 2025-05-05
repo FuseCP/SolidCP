@@ -757,21 +757,6 @@ public abstract partial class Installer
 		if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
 		else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
 
-		if (settings is ServerSettings srvSettings && 
-			(!string.IsNullOrEmpty(srvSettings.ServerPassword) || !string.IsNullOrEmpty(srvSettings.ServerPasswordSHA)))
-		{
-			string pwsha;
-			if (!string.IsNullOrEmpty(srvSettings.ServerPassword))
-			{
-				pwsha = CryptoUtils.ComputeSHAServerPassword(srvSettings.ServerPassword);
-			}
-			else
-			{
-				pwsha = srvSettings.ServerPasswordSHA;
-			}
-			appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha };
-		}
-
 		if (!string.IsNullOrEmpty(settings.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
 		{
 			appsettings.LettuceEncrypt = new AppSettings.LettuceEncryptSetting()
@@ -852,6 +837,20 @@ public abstract partial class Installer
 				ConnectionString = connectionString,
 				EncryptionEnabled = true,
 			};
+		}
+		else if (settings is ServerSettings srvSettings &&
+			(!string.IsNullOrEmpty(srvSettings.ServerPassword) || !string.IsNullOrEmpty(srvSettings.ServerPasswordSHA)))
+		{
+			string pwsha;
+			if (!string.IsNullOrEmpty(srvSettings.ServerPassword))
+			{
+				pwsha = CryptoUtils.ComputeSHAServerPassword(srvSettings.ServerPassword);
+			}
+			else
+			{
+				pwsha = srvSettings.ServerPasswordSHA;
+			}
+			appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha };
 		}
 
 		var path = Path.GetDirectoryName(appsettingsfile);
