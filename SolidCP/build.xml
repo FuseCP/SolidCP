@@ -1059,8 +1059,8 @@
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip&quot; &quot;$(EnterpriseServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
-		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update.zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
-		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update-Linux.zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-$(Version).zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Unix-$(Version).zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
 
 		<!-- zip tools
 		<Zip Files="@(ImportCsvInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-CsvBulk-$(Version).zip" WorkingDirectory="$(ImportCsvInstall)" />
