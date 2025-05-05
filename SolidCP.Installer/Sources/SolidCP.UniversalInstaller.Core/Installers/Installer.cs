@@ -1,19 +1,10 @@
 using System;
 using System.Reflection;
-using SolidCP.Providers;
-using SolidCP.Providers.Web;
-using SolidCP.Providers.OS;
-using SolidCP.Providers.Utils;
 using System.IO.Compression;
-using System.Globalization;
-using System.Security.Policy;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Net;
-using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
@@ -21,6 +12,12 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Microsoft.Web.Administration;
+using SolidCP.Providers;
+using SolidCP.Providers.Web;
+using SolidCP.Providers.OS;
+using SolidCP.Providers.Common;
+using SolidCP.Providers.Utils;
+using SolidCP.EnterpriseServer.Data;
 using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.UniversalInstaller;
@@ -817,19 +814,44 @@ public abstract partial class Installer
 
 		if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
 
-		if (settings is WebPortalSettings)
+		if (settings is WebPortalSettings wsettings)
 		{
 			if (webSettings.EmbedEnterpriseServer)
 			{
-				appsettings.probingPaths = @$"..\bin\netstandard;{webSettings.EnterpriseServerPath}\bin_dotnet;{webSettings.EnterpriseServerPath}\bin\netstandard";
+				appsettings.probingPaths = @$"..\bin\netstandard;..\{webSettings.EnterpriseServerPath}\bin_dotnet;..\{webSettings.EnterpriseServerPath}\bin\netstandard";
+				appsettings.probingPaths = appsettings.probingPaths.Replace('\\', Path.DirectorySeparatorChar);
+
 				var esJsonFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "appsettings.json");
 				if (File.Exists(esJsonFile))
 				{
 					var esSettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(esJsonFile),
 						new VersionConverter(), new StringEnumConverter()) ?? new AppSettings();
 					appsettings.EnterpriseServer = esSettings.EnterpriseServer;
+
+					var esCstring = appsettings.EnterpriseServer?.ConnectionString;
+					var csb = new ConnectionStringBuilder(esCstring);
+					if ((csb["DbType"] as string)?.Contains("Sqlite") == true)
+					{
+						if (csb["Data Source"] != null)
+						{
+							csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+						}
+						csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+						appsettings.EnterpriseServer.ConnectionString = csb.ConnectionString;
+					}
 				}
 			}
+		}
+		else if (settings is EnterpriseServerSettings esettings)
+		{
+			var connectionString = DatabaseUtils.BuildConnectionString(esettings.DatabaseType, esettings.DatabaseServer,
+				esettings.DatabasePort, esettings.DatabaseName, esettings.DatabaseUser, esettings.DatabasePassword, null, false);
+			appsettings.EnterpriseServer = new AppSettings.EnterpriseServerSetting()
+			{
+				CryptoKey = esettings.CryptoKey ?? CryptoUtils.GetRandomString(20),
+				ConnectionString = connectionString,
+				EncryptionEnabled = true,
+			};
 		}
 
 		var path = Path.GetDirectoryName(appsettingsfile);
