@@ -825,6 +825,7 @@ public abstract partial class Installer
 						appsettings.EnterpriseServer.ConnectionString = csb.ConnectionString;
 					}
 				}
+				else throw new NotSupportedException("EnterpriseServer settings file not found. You must install EnterpriseServer prior to install WebPortal with embedded EnterpriseServer.");
 			}
 		}
 		else if (settings is EnterpriseServerSettings esettings)

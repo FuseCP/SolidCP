@@ -293,6 +293,7 @@ public abstract partial class Installer
 				var swagger = configuration.Element("swaggerwcf");
 				swagger.ReplaceWith(esSwagger);
 			}
+			else throw new NotSupportedException("EnterpriseServer settings file not found. You must install EnterpriseServer prior to install WebPortal with embedded WnterpriseServer.");
 		}
 
 		// CryptoKey
