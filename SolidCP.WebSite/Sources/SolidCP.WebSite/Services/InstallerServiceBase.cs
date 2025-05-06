@@ -181,7 +181,7 @@ namespace SolidCP.WebSite.Services
 
             // select all available components
             var components = from component in xml.Descendants("component")
-                             select component;
+							 select component;
 
             // build dataset structure
             DataSet ds = new DataSet();

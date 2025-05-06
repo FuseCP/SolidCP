@@ -897,4 +897,19 @@
       </release>
     </releases>
   </component>
+    
+  <!-- Setup2.dll -->
+  <component application="setup2.dll" name="setup2.dll" code="setup2">
+    <description>Setup2.dll</description>
+    <releases>
+      <release version="2.0.0" date="05/06/2025" available="false" beta="false">
+        <releaseFileID>700</releaseFileID>
+        <fullFilePath>~/Files/2.0.0/Setup2.dll</fullFilePath>
+        <upgradeFilePath></upgradeFilePath>
+        <installerPath></installerPath>
+        <installerType></installerType>
+      </release>
+    </releases>
+  </component>
+
 </components>

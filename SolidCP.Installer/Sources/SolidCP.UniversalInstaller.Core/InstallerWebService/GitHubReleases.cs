@@ -85,6 +85,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public async Task<Release> GetReleaseAsync(string release)
 		{
+			if (string.IsNullOrEmpty(release)) return null;
 			Version version = default;
 			var vm = Regex.Match(release, "[0-9][0-9.]+");
 			if (vm.Success) version = Version.Parse(vm.Value);

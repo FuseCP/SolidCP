@@ -132,7 +132,7 @@
     </ItemGroup>
     <Target Name="DeleteDlls" AfterTargets="Build" Condition="$(EmbedReferences) == 'true'">
         <ItemGroup>
-            <DllsToKeep Include="$(OutputPath)\**\Setup2.*" />
+            <!--<DllsToKeep Include="$(OutputPath)\**\Setup2.*" />-->
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.exe" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.dll" />
             <DllsToKeep Include="$(OutputPath)\**\installer.settings.json" />
