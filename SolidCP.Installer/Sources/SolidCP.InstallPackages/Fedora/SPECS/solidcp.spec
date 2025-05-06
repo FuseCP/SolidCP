@@ -40,6 +40,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 /usr/bin/solidcp-installer
 /usr/share/solidcp/SolidCP.Installer.dll
+/usr/share/solidcp/SolidCP.Installer.deps.json
 /usr/share/solidcp/SolidCP.Installer.runtimeconfig.json
 /usr/share/pixmaps/SolidCP.png
 /usr/share/applications/solidcp-installer.desktop
