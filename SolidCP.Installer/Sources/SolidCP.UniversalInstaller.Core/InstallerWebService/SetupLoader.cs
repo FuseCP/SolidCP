@@ -526,7 +526,7 @@ public class SetupLoader
 
 				long downloadedSize = 0;
 
-				await Installer.Current.Releases.GetFileAsync(remoteFile, tmpFile,
+				await Installer.Current.Releases.GetFileAsync(sourceFile, tmpFile,
 					(downloaded, fileSize) =>
 					{
 						downloadedSize = downloaded;
