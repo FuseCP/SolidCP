@@ -165,13 +165,15 @@ Install Component to:
 		}
 		public override UI.SetupWizard UserAccount(CommonSettings settings)
 		{
-			Pages.Add(() =>
+			if (OSInfo.IsWindows || !(settings is ServerSettings))
 			{
-				bool passwordMatch = true;
-				ConsoleForm form;
-				do
+				Pages.Add(() =>
 				{
-					form = new ConsoleForm(@$"
+					bool passwordMatch = true;
+					ConsoleForm form;
+					do
+					{
+						form = new ConsoleForm(@$"
 Security Settings:
 ==================
 
@@ -187,32 +189,37 @@ Passwords must match!
 ")}
 [  Next  ]  [  Back  ]
 ")
-						.Load(settings)
-						.Apply(f =>
-						{
-							if (OSInfo.IsWindows)
+							.Load(settings)
+							.Apply(f =>
 							{
-								f[0].Checked = settings.UseActiveDirectory;
-							}
-						})
-						.ShowDialog();
-					if (form["Back"].Clicked)
-					{
-						Back();
-						break;
-					} else
-					{
-						passwordMatch = form["Password"].Text == form["RepeatPassword"].Text;
-						if (passwordMatch)
+								if (OSInfo.IsWindows)
+								{
+									f[0].Checked = settings.UseActiveDirectory;
+								}
+							})
+							.ShowDialog();
+						if (form["Back"].Clicked)
 						{
-							form.Save(settings);
-							settings.UseActiveDirectory = OSInfo.IsWindows && form[0].Checked;
-							Next();
+							Back();
+							break;
 						}
-					}
-				} while (!passwordMatch);
-			});
-			return this;
+						else
+						{
+							passwordMatch = form["Password"].Text == form["RepeatPassword"].Text;
+							if (passwordMatch)
+							{
+								form.Save(settings);
+								settings.UseActiveDirectory = OSInfo.IsWindows && form[0].Checked;
+								Next();
+							}
+						}
+					} while (!passwordMatch);
+				});
+			} else
+			{
+				settings.Username = settings.Password = null;
+			}
+				return this;
 		}
 		public override UI.SetupWizard Web(CommonSettings settings)
 		{
@@ -542,13 +549,13 @@ Passwords must match!
 Certificate Settings:
 =====================
 
-[  Use a certificate from the store  ]
-[  Use a certificate from a file  ]
+[  Us(e a certificate from the store  ]
+" + (!OSInfo.IsWindows ? @"[  Use a certificate from a file  ]
 [  Use a Let's Encrypt certificate  ]
-[  Configure the certificate manually  ]
+" : "") + @"[  Configure the certificate manually  ]
 
 [  Back  ]")
-					.ShowDialog();
+				.ShowDialog();
 				if (form["Back"].Clicked) Back();
 				else if (form[0].Clicked)
 				{
@@ -733,6 +740,8 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 		{
 			try
 			{
+				UI.EndWaitCursor();
+
 				while (!HasExited) Current();
 
 				Installer.Current.UpdateSettings();
