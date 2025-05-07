@@ -583,7 +583,7 @@ Find Value:      [?CertificateFindValue                                     ]
 						Next();
 					}
 					else Back();
-				} else if (form[1].Clicked)
+				} else if (form[1].Clicked && !OSInfo.IsWindows)
 				{
 					form = new ConsoleForm(@"
 Certificate from File:
@@ -601,7 +601,7 @@ Password: [?CertificatePassword                                     ]
 						Next();
 					}
 					else Back();
-				} else if (form[2].Clicked)
+				} else if (form[2].Clicked && !OSInfo.IsWindows)
 				{
 					form = new ConsoleForm(@"
 Let's Encrypt Certificate:
