@@ -549,10 +549,12 @@ Passwords must match!
 Certificate Settings:
 =====================
 
-[  Us(e a certificate from the store  ]
-" + (!OSInfo.IsWindows ? @"[  Use a certificate from a file  ]
-[  Use a Let's Encrypt certificate  ]
-" : "") + @"[  Configure the certificate manually  ]
+[  Use a certificate from the store  ]
+" + (!OSInfo.IsWindows ?
+@"[   Use a certificate from a file    ]
+[  Use a Let's Encrypt certificate   ]
+" : "") + 
+@"[ Configure the certificate manually ]
 
 [  Back  ]")
 				.ShowDialog();
