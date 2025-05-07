@@ -1534,6 +1534,7 @@ SolidCP cannot be installed on this System.
 	}
 
 	bool downloadComplete = false;
+	int maxProgress = 200;
 	public override bool DownloadSetup(RemoteFile file, bool setupOnly = false)
 	{
 		var loader = Core.SetupLoaderFactory.CreateFileLoader(file);
@@ -1541,6 +1542,7 @@ SolidCP cannot be installed on this System.
 		ShowInstallationProgress("Download and Extract Component");
 		loader.OperationCompleted += DownloadAndUnzipCompleted;
 		loader.DownloadComplete += DownloadCompleted;
+		loader.NoUnzipStatus += (sender, args) => maxProgress = 100;
 		loader.SetupOnly = setupOnly;
 		loader.LoadAppDistributive();
 
@@ -1556,7 +1558,7 @@ SolidCP cannot be installed on this System.
 	}
 	void DownloadProgressChanged(object sender, Core.LoaderEventArgs<int> args)
 	{
-		InstallationProgress.Progress.Value = (float)args.EventData / 200 + delta;
+		InstallationProgress.Progress.Value = (float)args.EventData / maxProgress + delta;
 	}
 
 	void DownloadAndUnzipCompleted(object sender, EventArgs args)
