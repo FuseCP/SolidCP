@@ -32,7 +32,8 @@ public abstract class UnixInstaller : Installer
 			throw new FileNotFoundException($"The service executable {dll} was not found.");
 		}
 
-		AddUnixUser(serviceId, SolidCPUnixGroup);
+		if (!string.IsNullOrEmpty(settings.Username))
+			AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
 
 		var dotnet = Shell.Find("dotnet");
 
@@ -106,10 +107,16 @@ public abstract class UnixInstaller : Installer
 
 		OpenFirewall(settings.Urls ?? "");
 	}
-	public virtual void AddUnixUser(string user, string group)
+	public virtual void AddUnixUser(string user, string group, string password)
 	{
 		Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
 
+		var shell = Shell.ExecAsync($"passwd {user}");
+		shell.Input.WriteLine(password);
+		shell.Input.WriteLine(password);
+		var output = shell.Output().Result;
+		Log.WriteLine(output);
+		
 		InstallLog($"Added System User {user}.");
 	}
 	public override void RemoveWebsite(string serviceId, CommonSettings settings)
