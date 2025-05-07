@@ -939,19 +939,16 @@ Password: [!ProxyPassword                           ]
 		str.AppendLine("[  Back  ]  [  Check for Updates  ]  [  Uninstall  ]  [  Settings  ]");
 		var form = new ConsoleForm(str.ToString())
 			.ShowDialog();
-		if (form["Back"].Clicked) AvailableComponents();
+		if (form["Back"].Clicked) InstalledComponents();
 		else if (form["Check for Updates"].Clicked)
 		{
 			CheckForUpdate(component);
-		} else if (form["Unintsall"].Clicked)
+		} else if (form["Uninstall"].Clicked)
 		{
 			Installer.Current.Uninstall(component);
 		} else if (form["Settings"].Clicked)
 		{
 			Installer.Current.Setup(component);
-		}
-		{
-			Installer.Current.Install(component);
 		}
 	}
 

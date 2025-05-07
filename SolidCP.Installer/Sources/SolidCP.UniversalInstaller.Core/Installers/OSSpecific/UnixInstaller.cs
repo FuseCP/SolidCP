@@ -32,6 +32,8 @@ public abstract class UnixInstaller : Installer
 			throw new FileNotFoundException($"The service executable {dll} was not found.");
 		}
 
+		AddUnixGroup(SolidCPUnixGroup);
+
 		if (!string.IsNullOrEmpty(settings.Username))
 			AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
 
@@ -107,6 +109,8 @@ public abstract class UnixInstaller : Installer
 
 		OpenFirewall(settings.Urls ?? "");
 	}
+
+	public virtual void AddUnixGroup(string group) => Shell.Exec($"groupadd {group}");
 	public virtual void AddUnixUser(string user, string group, string password)
 	{
 		Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
