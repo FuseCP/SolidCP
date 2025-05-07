@@ -679,13 +679,14 @@ Exception Message: {Installer.Error.SourceException.Message}
 
 		private void SetProgressValue(int value)
 		{
+			float fvalue = 0;
 			if (value > 0)
 			{
-				if (value < 100) value = (ProgressMaximum * value / (5 * 100));
-				else value = (ProgressMaximum / 5) + (int)((ProgressMaximum - ProgressMaximum / 5) * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
+				if (value < 100) fvalue = (ProgressMaximum * (float)value / (5f * 100f));
+				else fvalue = (ProgressMaximum / 5f) + (float)(((float)ProgressMaximum - (float)ProgressMaximum / 5f) * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
 			}
 			var ui = UI as ConsoleUI;
-			var fvalue = (float)value / ProgressMaximum;
+			fvalue = fvalue / ProgressMaximum;
 			if (ui.InstallationProgress.Progress.Value != fvalue)
 			{
 				ui.InstallationProgress.Progress.Value = fvalue;
