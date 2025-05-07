@@ -559,7 +559,7 @@ Certificate Settings:
 				if (form["Back"].Clicked)
 				{
 					Back();
-					if (!IsSecure(settings.Urls)) Back(); // Go also back in InsecureHttpWarnings
+					if (IsSecure(settings.Urls)) Back(); // Go also back in InsecureHttpWarnings
 				}
 				else if (form[0].Clicked)
 				{

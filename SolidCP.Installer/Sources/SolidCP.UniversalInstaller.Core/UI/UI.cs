@@ -164,8 +164,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void PrintInstallerVersion()
 		{
 			var version = Installer.Current.Version;
-			Console.WriteLine($"SolidCP UniversalInstaller {version}");
-			Log.WriteLine($"SolidCP UniversalInstaller {version}");
+			Console.WriteLine($"SolidCP UniversalInstaller {version.ToString(3)}");
+			Log.WriteLine($"SolidCP UniversalInstaller {version.ToString(3)}");
 		}
 
 		public abstract void ShowWarning(string msg);
