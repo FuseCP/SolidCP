@@ -168,7 +168,7 @@ namespace SolidCP.EnterpriseServer
 
                 var varList = new List<KeyValuePair<string, string>>();
                 varList.Add(new KeyValuePair<string, string>(domainVariableKey, domain));
-                varList.Add(new KeyValuePair<string, string>(urlVariableKey, domain));
+                varList.Add(new KeyValuePair<string, string>(urlVariableKey, url));
 
                 var task = GetServerCertificateAsync(url, HttpMethod.Head);
                 task.Wait();
