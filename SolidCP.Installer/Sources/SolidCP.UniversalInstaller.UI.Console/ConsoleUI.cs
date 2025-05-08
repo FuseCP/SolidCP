@@ -57,7 +57,6 @@ It is recommended that you close all other applications before starting Setup. "
 					.ShowDialog();
 				if (form["Cancel"].Clicked)
 				{
-					UI.RunMainUI();
 					Exit();
 				}
 				Next();
@@ -117,7 +116,6 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 					form.ShowDialog();
 					if (form["Cancel"].Clicked)
 					{
-						UI.RunMainUI();
 						Exit();
 					}
 					else if (lastPage && form["I Agree"].Clicked)
@@ -842,8 +840,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 				Installer.Current.UpdateSettings();
 				Installer.Current.Cleanup();
 
-				UI.RunMainUI();
-				UI.Exit();
+				Exit();
 			});
 			return this;
 		}
@@ -908,7 +905,7 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 				.ShowDialog();
 				if (form["Cancel"].Clicked)
 				{
-					UI.RunMainUI();
+					Exit();
 				}
 				else Next();
 			});
@@ -1065,6 +1062,7 @@ Password: [!ProxyPassword                           ]
 		else
 		{
 			Installer.Current.Install(component);
+			RunMainUI();
 		}
 	}
 	public void InstalledComponents()
@@ -1118,12 +1116,14 @@ Password: [!ProxyPassword                           ]
 		} else if (form["Uninstall"].Clicked)
 		{
 			Installer.Current.Uninstall(component);
-		} else if (form["Settings"].Clicked)
+			RunMainUI();
+		}
+		else if (form["Settings"].Clicked)
 		{
 			Installer.Current.Setup(component);
+			RunMainUI();
 		}
 	}
-
 
 	public void CheckForUpdate(ComponentInfo component)
 	{
