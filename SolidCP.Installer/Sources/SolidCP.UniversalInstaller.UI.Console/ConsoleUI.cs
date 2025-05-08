@@ -163,16 +163,179 @@ Install Component to:
 			});
 			return this;
 		}
+
+		string warning = "";
+		private bool CheckSettings(CommonSettings settings, string confirm)
+		{
+			string name = settings.Username;
+			string password = settings.Password;
+			var tokens = name.Split('\\');
+			string domain = "";
+			if (tokens.Length == 2) domain = tokens[0];
+
+			if (settings.UseActiveDirectory)
+			{
+				if (domain.Trim().Length == 0)
+				{
+					warning = "Please enter domain name!";
+					return false;
+				}
+
+				string users = Installer.Current.SecurityUtils.GetDomainUsersContainer(domain);
+				if (string.IsNullOrEmpty(users))
+				{
+					warning = "Domain not found or access denied!";
+					return false;
+				}
+
+				if (!Installer.Current.SecurityUtils.ADObjectExists(users))
+				{
+					warning = "Domain not found or access denied!";
+					return false;
+				}
+			}
+
+			if (name.Trim().Length == 0)
+			{
+				warning = "Please enter user name!";
+				return false;
+			}
+
+			if (password.Trim().Length == 0)
+			{
+				warning = "Please enter password!";
+				return false;
+			}
+
+			if (password != confirm)
+			{
+				warning = "The password was not correctly confirmed. Please ensure that the password and confirmation match exactly.";
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool ProcessSettings(CommonSettings settings, string confirm)
+		{
+			if (!CheckSettings(settings, confirm))
+			{
+				return false;
+			}
+
+			if (!CheckUserAccount(settings))
+			{
+				return false;
+			}
+			return true;
+		}
+		private bool CheckUserAccount(CommonSettings settings)
+		{
+			string userName = settings.Username;
+			string password = settings.Password;
+			var tokens = userName.Split('\\');
+			string domain = "";
+			if (tokens.Length == 2) domain = tokens[0];
+			domain = settings.UseActiveDirectory ? domain : null;
+
+			if (Installer.Current.SecurityUtils.UserExists(domain, userName))
+			{
+				warning = $"{userName} user account already exists!";
+				return false;
+			}
+
+			bool created = false;
+			try
+			{
+				// create account
+				Log.WriteStart($"Creating temp user account \"{userName}\"");
+				SystemUserItem user = new SystemUserItem();
+				user.Name = userName;
+				user.FullName = userName;
+				user.Description = string.Empty;
+				user.MemberOf = null;
+				user.Password = password;
+				user.PasswordCantChange = true;
+				user.PasswordNeverExpires = true;
+				user.AccountDisabled = false;
+				user.System = true;
+				user.Domain = domain;
+				Installer.Current.SecurityUtils.CreateUser(user);
+				//update log
+				Log.WriteEnd("Created temp local user account");
+				created = true;
+			}
+			catch (Exception ex)
+			{
+				System.Runtime.InteropServices.COMException e = ex.InnerException as System.Runtime.InteropServices.COMException;
+				Log.WriteError("Create temp local user account error", ex);
+				string errorMessage = "Unable to create Windows user account";
+				if (e != null)
+				{
+					string errorCode = string.Format("{0:x}", e.ErrorCode);
+					switch (errorCode)
+					{
+						case "8007089a":
+							errorMessage = "Invalid username!";
+							break;
+						case "800708c5":
+							errorMessage = "The password does not meet the password policy requirements. Check the minimum password length, password complexity and password history requirements!";
+							break;
+						case "800708b0":
+							errorMessage = "The account already exists!";
+							break;
+					}
+				}
+				warning = errorMessage;
+				return false;
+			}
+
+			if (created)
+			{
+				Log.WriteStart(string.Format("Deleting temp local user account \"{0}\"", userName));
+				try
+				{
+					Installer.Current.SecurityUtils.DeleteUser(domain, userName);
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError("Delete temp local user account error", ex);
+				}
+				Log.WriteEnd("Deleted temp local user account");
+			}
+			return true;
+		}
 		public override UI.SetupWizard UserAccount(CommonSettings settings)
 		{
 			if (OSInfo.IsWindows || !(settings is ServerSettings))
 			{
 				Pages.Add(() =>
 				{
-					bool passwordMatch = true;
+					bool passwordMatch = true, settingsValid = false;
 					ConsoleForm form;
 					do
 					{
+						//creating user account
+						string userName = settings.ComponentName.Replace(" ", string.Empty);
+						userName = userName.Replace("HostPanelPro", "HPP");
+
+						var domain = "mydomain.com";
+
+						if (Environment.UserDomainName != Environment.MachineName)
+						{
+
+							string domainName = Installer.Current.SecurityUtils.GetFullDomainName(Environment.UserDomainName);
+							if (!string.IsNullOrEmpty(domainName))
+							{
+								settings.Username = $"{domainName}\\{userName}";
+								settings.UseActiveDirectory = true;
+							}
+						}
+						else
+						{
+							settings.UseActiveDirectory = false;
+						}
+
 						form = new ConsoleForm(@$"
 Security Settings:
 ==================
@@ -184,9 +347,11 @@ Please specify a new user account for the website anonymous access and applicati
 Username:        [?Username                                     ]
 Password:        [!Password                                     ]
 Repeat Password: [!RepeatPassword                                     ]
-{(passwordMatch ? "" : @"
+{(!passwordMatch ? @"
 Passwords must match!
-")}
+" : !settingsValid ? @$"
+{warning}
+" : "")}
 [  Next  ]  [  Back  ]
 ")
 							.Load(settings)
@@ -210,10 +375,13 @@ Passwords must match!
 							{
 								form.Save(settings);
 								settings.UseActiveDirectory = OSInfo.IsWindows && form[0].Checked;
-								Next();
+
+								settingsValid = ProcessSettings(settings, form["RepeatPassword"].Text);
+
+								if (settingsValid) Next();
 							}
 						}
-					} while (!passwordMatch);
+					} while (!passwordMatch || !settingsValid);
 				});
 			} else
 			{
@@ -237,6 +405,9 @@ Urls: [?Urls                                                                    
 ")
 					.Load(settings)
 					.ShowDialog();
+				settings.WebSiteDomain = null;
+				settings.WebSiteIp = null;
+				settings.WebSitePort = default;
 				if (form["Back"].Clicked)
 				{
 					Back();
@@ -1588,26 +1759,25 @@ SolidCP cannot be installed on this System.
 	{
 		if (!Directory.Exists(Settings.Installer.TempPath)) Directory.CreateDirectory(Settings.Installer.TempPath);
 		Console.Clear();
-		var write = (string txt) =>
+		var write = async (string txt) =>
 		{
 			if (CancelWaitCursor.Token.IsCancellationRequested || File.Exists(CancelFile)) throw new Exception();
 			Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
 			Console.Write(txt);
-			Thread.Sleep(333);
+			await Task.Delay(333);
 		};
-		write("|");
 		CursorVisibleAfterWaitCursor = false; // Console.CursorVisible;
 		Console.CursorVisible = false;
-		Task.Run(() =>
+		Task.Run(async () =>
 		{
 			try
 			{
 				while (true)
 				{
-					write("/");
-					write("-");
-					write("\\");
-					write("|");
+					await write("/");
+					await write("-");
+					await write("\\");
+					await write("|");
 				}
 			}
 			catch {
