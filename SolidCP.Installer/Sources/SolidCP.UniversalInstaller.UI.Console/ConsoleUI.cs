@@ -35,7 +35,11 @@ public class ConsoleUI : UI
 		{
 			if (CurrentPage > 0) CurrentPage--;
 		}
-		protected void Exit() => CurrentPage = -1;
+		protected void Exit()
+		{
+			CurrentPage = int.MinValue / 2;
+			Installer.Current.Cleanup();
+		}
 		protected bool HasExited => CurrentPage < 0 || CurrentPage >= Pages.Count;
 		protected Action Current => CurrentPage >= 0 && CurrentPage < Pages.Count ? Pages[CurrentPage] : () => { };
 
@@ -55,11 +59,8 @@ It is recommended that you close all other applications before starting Setup. "
 
 [  Next  ]  [  Cancel  ]")
 					.ShowDialog();
-				if (form["Cancel"].Clicked)
-				{
-					Exit();
-				}
-				Next();
+				if (form["Cancel"].Clicked) Exit();
+				else Next();
 			});
 			return this;
 		}
@@ -116,6 +117,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 					form.ShowDialog();
 					if (form["Cancel"].Clicked)
 					{
+						exit = true;
 						Exit();
 					}
 					else if (lastPage && form["I Agree"].Clicked)
@@ -381,11 +383,12 @@ Passwords must match!
 						}
 					} while (!passwordMatch || !settingsValid);
 				});
-			} else
+			}
+			else
 			{
 				settings.Username = settings.Password = null;
 			}
-				return this;
+			return this;
 		}
 		public override UI.SetupWizard Web(CommonSettings settings)
 		{
@@ -409,7 +412,8 @@ Urls: [?Urls                                                                    
 				if (form["Back"].Clicked)
 				{
 					Back();
-				} else
+				}
+				else
 				{
 					form.Save(settings);
 					Next();
@@ -447,7 +451,8 @@ Path to EnterpriseServer: [?EnterpriseServerPath                                
 				if (form["Back"].Clicked)
 				{
 					Back();
-				} else
+				}
+				else
 				{
 					form.Save(settings);
 					settings.EmbedEnterpriseServer = form[0].Checked;
@@ -722,7 +727,7 @@ Certificate Settings:
 " + (!OSInfo.IsWindows ?
 @"[   Use a certificate from a file    ]
 [  Use a Let's Encrypt certificate   ]
-" : "") + 
+" : "") +
 @"[ Configure the certificate manually ]
 
 [  Back  ]")
@@ -752,7 +757,8 @@ Find Value:      [?CertificateFindValue                                     ]
 						Next();
 					}
 					else Back();
-				} else if (form[1].Clicked && !OSInfo.IsWindows)
+				}
+				else if (form[1].Clicked && !OSInfo.IsWindows)
 				{
 					form = new ConsoleForm(@"
 Certificate from File:
@@ -770,7 +776,8 @@ Password: [?CertificatePassword                                     ]
 						Next();
 					}
 					else Back();
-				} else if (form[2].Clicked && !OSInfo.IsWindows)
+				}
+				else if (form[2].Clicked && !OSInfo.IsWindows)
 				{
 					form = new ConsoleForm(@"
 Let's Encrypt Certificate:
@@ -788,7 +795,8 @@ Domains: [?LetsEncryptCertificateDomains                                     ]
 						Next();
 					}
 					else Back();
-				} else
+				}
+				else
 				{
 					form = new ConsoleForm(@"
 Configure Certificate Manually:
@@ -825,7 +833,8 @@ SolidCP Installer successfully has:
 
 [  Finish  ]")
 					.ShowDialog();
-				} else
+				}
+				else
 				{
 					var form = new ConsoleForm($@"
 Installation Failed
@@ -861,7 +870,8 @@ Exception Message: {Installer.Error.SourceException.Message}
 			}
 		}
 
-		private void SetProgressText(string text) {
+		private void SetProgressText(string text)
+		{
 			var ui = UI as ConsoleUI;
 			ui.ShowInstallationProgress(null, text);
 		}
@@ -903,10 +913,7 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 
 [*  Cancel  ]  [  Uninstall  ]")
 				.ShowDialog();
-				if (form["Cancel"].Clicked)
-				{
-					Exit();
-				}
+				if (form["Cancel"].Clicked) Exit();
 				else Next();
 			});
 			return this;
@@ -923,7 +930,8 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 				Installer.Current.UpdateSettings();
 
 				return true;
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
 				return false;
 			}
@@ -973,7 +981,8 @@ Password: [!ProxyPassword                           ]
 					f["ProxyAddress"].Text = Settings.Installer.Proxy.Address;
 					f["ProxyUsername"].Text = Settings.Installer.Proxy.Username;
 					f["ProxyPassword"].Text = Settings.Installer.Proxy.Password;
-				} else
+				}
+				else
 				{
 					f[2].Checked = false;
 					f["ProxyAddress"].Text = f["ProxyUsername"].Text = f["ProxyPassword"].Text = "";
@@ -1002,7 +1011,7 @@ Password: [!ProxyPassword                           ]
 		{
 			CheckForInstallerUpdate();
 		}
-		
+
 		RunMainUI();
 	}
 
@@ -1014,7 +1023,7 @@ Password: [!ProxyPassword                           ]
 		str.AppendLine();
 		//load components via web service
 		var releases = Installer.Current.Releases;
-		
+
 		ShowWaitCursor();
 		var components = releases.GetAvailableComponents();
 		EndWaitCursor();
@@ -1113,7 +1122,8 @@ Password: [!ProxyPassword                           ]
 		else if (form["Check for Updates"].Clicked)
 		{
 			CheckForUpdate(component);
-		} else if (form["Uninstall"].Clicked)
+		}
+		else if (form["Uninstall"].Clicked)
 		{
 			Installer.Current.Uninstall(component);
 			RunMainUI();
@@ -1568,23 +1578,26 @@ Checking System Requirements
 				form[0].Text = "!";
 				ok = false;
 			}
-			form["OS"].Text = " "+Regex.Replace(OSInfo.Description, @"(?<=[0-9]+)\.[0-9.]*", "");
+			form["OS"].Text = " " + Regex.Replace(OSInfo.Description, @"(?<=[0-9]+)\.[0-9.]*", "");
 			form.Show();
 			if (Installer.CheckNetVersionSupported()) form[2].Text = "x";
-			else {
+			else
+			{
 				form[2].Text = "!";
 				ok = false;
 			}
-			form["NET"].Text = " "+OSInfo.NetDescription;
+			form["NET"].Text = " " + OSInfo.NetDescription;
 			form.Show();
 			if (Installer.CheckIISVersionSupported()) form[4].Text = "x";
-			else {
+			else
+			{
 				form[4].Text = "!";
 				ok = false;
 			}
 			form["IIS"].Text = $" IIS {OSInfo.Current.WebServer.Version}";
 			form.Show();
-		} else
+		}
+		else
 		{
 			var form = new ConsoleForm(@"
 Checking System Requirements
@@ -1604,7 +1617,7 @@ Checking System Requirements
 				form[0].Text = "!";
 				ok = false;
 			}
-			form["OS"].Text = " "+OSInfo.Description;
+			form["OS"].Text = " " + OSInfo.Description;
 			form.Show();
 			if (Installer.CheckNet8RuntimeInstalled())
 			{
@@ -1637,7 +1650,8 @@ Checking System Requirements
 			form.Show();
 		}
 		ConsoleKeyInfo key;
-		do {
+		do
+		{
 			key = Console.ReadKey();
 		} while (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Spacebar);
 
@@ -1697,7 +1711,7 @@ SolidCP cannot be installed on this System.
 
 			if (form["Up"].Clicked) Y = Math.Max(0, Y - height);
 			else if (form["Down"].Clicked) Y = Math.Min(lines.Count, Y + height);
-		} while (!form["Exit"].Clicked); 
+		} while (!form["Exit"].Clicked);
 	}
 
 	public override void ShowWarning(string msg)
@@ -1766,6 +1780,8 @@ SolidCP cannot be installed on this System.
 			Console.Write(txt);
 			await Task.Delay(333);
 		};
+		CancelWaitCursor = new CancellationTokenSource();
+		if (File.Exists(CancelFile)) File.Delete(CancelFile);
 		CursorVisibleAfterWaitCursor = false; // Console.CursorVisible;
 		Console.CursorVisible = false;
 		Task.Run(async () =>
@@ -1780,7 +1796,8 @@ SolidCP cannot be installed on this System.
 					await write("|");
 				}
 			}
-			catch {
+			catch
+			{
 				CancelWaitCursor = new CancellationTokenSource();
 				if (File.Exists(CancelFile)) File.Delete(CancelFile);
 			}
