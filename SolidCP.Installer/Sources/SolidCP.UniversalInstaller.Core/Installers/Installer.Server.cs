@@ -81,7 +81,8 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveServerFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, ServerFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Server files");
 	}
 	public virtual void RemoveServerUser() { }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Runtime.ExceptionServices;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer.Data;
 
@@ -933,6 +934,7 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 			}
 			catch (Exception ex)
 			{
+				Installer.Current.Error = ExceptionDispatchInfo.Capture(ex);
 				return false;
 			}
 		}

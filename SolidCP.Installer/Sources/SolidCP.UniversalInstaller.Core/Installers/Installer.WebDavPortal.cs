@@ -56,7 +56,9 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void RemoveWebDavPortalFolder()
 		{
-			Directory.Delete(Path.Combine(InstallWebRootPath, WebDavPortalFolder), true);
+			var dir = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
+			if (Directory.Exists(dir)) Directory.Delete(dir, true);
+			InstallLog("Removed WebDavPortal files");
 		}
 
 		public virtual void UpdateWebDavPortalConfig() { }

@@ -67,7 +67,9 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveWebPortalFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, WebPortalFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
+		InstallLog("Removed Portal files");
 	}
 	public virtual void ReadWebPortalConfiguration()
 	{

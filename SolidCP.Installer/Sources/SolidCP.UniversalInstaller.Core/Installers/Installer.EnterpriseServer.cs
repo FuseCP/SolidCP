@@ -167,7 +167,9 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveEnterpriseServerFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, EnterpriseServerFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
+		InstallLog("Removed EnterpriseServer files");
 	}
 
 	public virtual void RemoveEnterpriseServer()
