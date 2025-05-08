@@ -38,7 +38,7 @@ namespace SolidCP.UniversalInstaller
 			ResetEstimatedOutputLines();
 			CountInstallDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(StandardInstallFilter);
+			CopyStandaloneServer(true, StandardInstallFilter);
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			InstallDatabase();
@@ -53,7 +53,7 @@ namespace SolidCP.UniversalInstaller
 			ResetEstimatedOutputLines();
 			CountUpdateDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(StandardUpdateFilter);
+			CopyStandaloneServer(true, StandardUpdateFilter);
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			UpdateDatabase();
@@ -107,11 +107,11 @@ namespace SolidCP.UniversalInstaller
 			if (OSInfo.IsWindows) ConfigureWebDavPortal();
 		}
 
-		public virtual void CopyStandaloneServer(Func<string, string> filter = null)
+		public virtual void CopyStandaloneServer(bool clearDestination = false, Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
 			var websitePath = InstallWebRootPath;
-			CopyFiles(ComponentTempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
 	}
 }

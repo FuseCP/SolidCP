@@ -29,7 +29,7 @@ public abstract partial class Installer
 		ResetEstimatedOutputLines();
 		CountInstallDatabaseStatements();
 		InstallEnterpriseServerPrerequisites();
-		CopyEnterpriseServer(StandardInstallFilter);
+		CopyEnterpriseServer(true, StandardInstallFilter);
 		SetEnterpriseServerFilePermissions();
 		SetEnterpriseServerFileOwner();
 		InstallDatabase();
@@ -44,7 +44,7 @@ public abstract partial class Installer
 		InstallEnterpriseServerPrerequisites();
 		RemoveSchedulerService();
 		DisableEnterpriseServerWebsite();
-		CopyEnterpriseServer(StandardUpdateFilter);
+		CopyEnterpriseServer(true, StandardUpdateFilter);
 		SetEnterpriseServerFilePermissions();
 		SetEnterpriseServerFileOwner();
 		UpdateEnterpriseServerConfig();
@@ -342,10 +342,10 @@ public abstract partial class Installer
 		ConfigureEnterpriseServerNetFX();
 		InstallLog("Configured Enterprise Server.");
 	}
-	public virtual void CopyEnterpriseServer(Func<string, string> filter = null)
+	public virtual void CopyEnterpriseServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

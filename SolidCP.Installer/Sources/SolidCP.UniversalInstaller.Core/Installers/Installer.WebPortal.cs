@@ -41,7 +41,7 @@ public abstract partial class Installer
 	{
 		InstallWebPortalPrerequisites();
 		ReadWebPortalConfiguration();
-		CopyWebPortal(WebPortalInstallFilter);
+		CopyWebPortal(true, WebPortalInstallFilter);
 		SetWebPortalFilePermissions();
 		SetWebPortalFileOwner();
 		ConfigureWebPortal();
@@ -53,7 +53,7 @@ public abstract partial class Installer
 	public virtual void UpdateWebPortal() {
 		InstallWebPortalPrerequisites();
 		ReadWebPortalConfiguration();
-		CopyWebPortal(WebPortalSetupFilter);
+		CopyWebPortal(true, WebPortalSetupFilter);
 		SetWebPortalFilePermissions();
 		SetWebPortalFileOwner();
 		UpdateWebPortalConfig();
@@ -134,10 +134,10 @@ public abstract partial class Installer
 		InstallLog("Configured Web Portal.");
 	}
 	public virtual void UpdateWebPortalConfig() { }
-	public virtual void CopyWebPortal(Func<string, string> filter = null)
+	public virtual void CopyWebPortal(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

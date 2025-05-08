@@ -591,7 +591,7 @@ public abstract partial class Installer
 		}
 	}
 
-	public void CopyFiles(string source, string destination,
+	public void CopyFiles(string source, string destination, bool clearDestination = false,
 		Func<string, string> filter = null, string root = null, string destroot = null, bool settings = false)
 	{
 		if (root == null && destroot == null)
@@ -601,11 +601,13 @@ public abstract partial class Installer
 			{
 				// Create backup
 				if (Directory.Exists(BackupPath)) Directory.Delete(BackupPath, true);
-				CopyFiles(destination, BackupPath, null, destination, BackupPath, true);
+				CopyFiles(destination, BackupPath, clearDestination, null, destination, BackupPath, true);
 			}
 			Transaction(() =>
 			{
-				CopyFiles(source, destination, filter, source, destination);
+
+				if (clearDestination && Directory.Exists(destination)) Directory.Delete(destination, true);
+				CopyFiles(source, destination, clearDestination, filter, source, destination);
 				InstallLog("Unzipped & installed distribution files");
 			})
 				.WithRollback(() =>
@@ -614,7 +616,7 @@ public abstract partial class Installer
 					if (IsUpdateAction)
 					{
 						// Restore backup
-						CopyFiles(BackupPath, destination, null, source, BackupPath, true);
+						CopyFiles(BackupPath, destination, clearDestination, null, source, BackupPath, true);
 					}
 				});
 		}
@@ -661,7 +663,7 @@ public abstract partial class Installer
 				}
 				foreach (var dir in Directory.GetDirectories(source))
 				{
-					CopyFiles(dir, Path.Combine(destination, Path.GetFileName(dir)), filter, root, destroot);
+					CopyFiles(dir, Path.Combine(destination, Path.GetFileName(dir)), clearDestination, filter, root, destroot);
 				}
 			}
 			else if (File.Exists(source))

@@ -30,7 +30,7 @@ public abstract partial class Installer
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardInstallFilter);
+		CopyServer(true, StandardInstallFilter);
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		ConfigureServer();
@@ -40,7 +40,7 @@ public abstract partial class Installer
 	public virtual void UpdateServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardUpdateFilter);
+		CopyServer(true, StandardUpdateFilter);
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		UpdateServerConfig();
@@ -156,11 +156,11 @@ public abstract partial class Installer
 
 		InstallLog("Configured Server.");
 	}
-	public virtual void CopyServer(Func<string, string> filter = null)
+	public virtual void CopyServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 	public virtual int InstallServerMaxProgress => 100;
 	public virtual int UninstallServerMaxProgress => 100;
