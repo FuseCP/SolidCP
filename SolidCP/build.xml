@@ -1023,7 +1023,12 @@
 			<StandaloneInstallFiles Include="$(StandaloneInstall)\**\*.*" />
 		</ItemGroup>
 		-->
-
+		<ItemGroup>
+			<ZipFilesToDelete Include="$(DeployFolder)\*.zip" />
+			<ZipFilesToDelete Include="$(ToolsFolder)\*.zip" />
+		</ItemGroup>
+		
+		<Delete Files="@(ZipFilesToDelete)" />
 		<!--
 		<Zip Files="@(PortalInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Portal-$(Version).zip" WorkingDirectory="$(PortalInstall)" />
 		<Zip Files="@(WebDavPortalInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Web-Dav-Portal-$(Version).zip" WorkingDirectory="$(WebDavPortalInstall)" />

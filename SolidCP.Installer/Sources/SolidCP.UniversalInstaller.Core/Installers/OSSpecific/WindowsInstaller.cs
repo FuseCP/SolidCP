@@ -688,7 +688,14 @@ public class WindowsInstaller : Installer
 	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;
 	public override bool CheckIISVersionSupported() => CheckOSSupported();
 	public override bool CheckInitSystemSupported() => true;
-	public override bool CheckNetVersionSupported() => OSInfo.IsNet48 || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
+	public override bool CheckNetVersionSupported()
+	{
+		if (OSInfo.IsNet48) return true;
+		var fxver = new Version(OSInfo.NetFXVersion);
+		return OSInfo.IsCore &&
+			int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8 &&
+			(fxver.Major > 4 || fxver.Major == 4 && fxver.Minor >= 8);
+	}
 
 	public override void RestartAsAdmin()
 	{

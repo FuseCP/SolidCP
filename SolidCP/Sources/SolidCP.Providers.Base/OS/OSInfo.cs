@@ -52,6 +52,7 @@ namespace SolidCP.Providers.OS
 				return WindowsOSInfo.NetFXVersion;
 			}
 		}
+		public static string NetFXVersion => WindowsOSInfo.NetFXVersion;
 
 		public static string NetDescription
 		{
