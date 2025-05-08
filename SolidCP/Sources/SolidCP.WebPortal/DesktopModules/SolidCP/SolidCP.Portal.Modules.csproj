@@ -645,6 +645,13 @@
     <Compile Include="ScheduleTaskControls\AuditLogReportView.ascx.designer.cs">
       <DependentUpon>AuditLogReportView.ascx</DependentUpon>
     </Compile>
+    <Compile Include="ScheduleTaskControls\CheckWebsitesSslView.ascx.cs">
+      <DependentUpon>CheckWebsitesSslView.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ScheduleTaskControls\CheckWebsitesSslView.ascx.designer.cs">
+      <DependentUpon>CheckWebsitesSslView.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ServerVLANsControl.ascx.cs">
       <DependentUpon>ServerVLANsControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -5711,6 +5718,7 @@
     <Content Include="ProviderControls\MailCleaner_Settings.ascx" />
     <Content Include="ProviderControls\SfB_Settings.ascx" />
     <Content Include="ScheduleTaskControls\AuditLogReportView.ascx" />
+    <Content Include="ScheduleTaskControls\CheckWebsitesSslView.ascx" />
     <Content Include="ServerVLANsControl.ascx" />
     <Content Include="SettingsVerificationCodeLetter.ascx" />
     <Content Include="SkinControls\BootstrapDropDownList.ascx" />
@@ -6746,6 +6754,8 @@
     <Content Include="ScheduleTaskControls\App_LocalResources\CheckWebsite.ascx.de-DE.resx" />
     <Content Include="ScheduleTaskControls\App_LocalResources\DomainExpirationView.ascx.de-DE.resx" />
     <Content Include="ScheduleTaskControls\App_LocalResources\DomainLookupView.ascx.de-DE.resx" />
+    <Content Include="ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx" />
+    <Content Include="ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.de-DE.resx" />
     <EmbeddedResource Include="ScheduleTaskControls\App_LocalResources\DomainLookupView.ascx.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>DomainLookupView.ascx.Designer.cs</LastGenOutput>
