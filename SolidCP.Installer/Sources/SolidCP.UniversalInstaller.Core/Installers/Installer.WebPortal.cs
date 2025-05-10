@@ -20,6 +20,8 @@ public abstract partial class Installer
 	public virtual string UnixPortalServiceId => "solidcp-portal";
 	public virtual void InstallWebPortalPrerequisites() { }
 	public virtual void RemoveWebPortalPrerequisites() { }
+	public virtual void CreateWebPortalUser() => CreateUser(Settings.WebPortal);
+	public virtual void RemoveWebPortalUser() => RemoveUser(Settings.WebPortal.Username);
 	public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
 	public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
 	public virtual void InstallWebPortalWebsite()
@@ -41,7 +43,8 @@ public abstract partial class Installer
 	{
 		InstallWebPortalPrerequisites();
 		ReadWebPortalConfiguration();
-		CopyWebPortal(WebPortalInstallFilter);
+		CopyWebPortal(true, WebPortalInstallFilter);
+		CreateWebPortalUser();
 		SetWebPortalFilePermissions();
 		SetWebPortalFileOwner();
 		ConfigureWebPortal();
@@ -53,7 +56,7 @@ public abstract partial class Installer
 	public virtual void UpdateWebPortal() {
 		InstallWebPortalPrerequisites();
 		ReadWebPortalConfiguration();
-		CopyWebPortal(WebPortalSetupFilter);
+		CopyWebPortal(true, WebPortalSetupFilter);
 		SetWebPortalFilePermissions();
 		SetWebPortalFileOwner();
 		UpdateWebPortalConfig();
@@ -64,10 +67,13 @@ public abstract partial class Installer
 	{
 		RemoveWebPortalWebsite();
 		RemoveWebPortalFolder();
+		RemoveWebPortalUser();
 	}
 	public virtual void RemoveWebPortalFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, WebPortalFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
+		InstallLog("Removed Portal files");
 	}
 	public virtual void ReadWebPortalConfiguration()
 	{
@@ -134,10 +140,10 @@ public abstract partial class Installer
 		InstallLog("Configured Web Portal.");
 	}
 	public virtual void UpdateWebPortalConfig() { }
-	public virtual void CopyWebPortal(Func<string, string> filter = null)
+	public virtual void CopyWebPortal(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

@@ -19,6 +19,21 @@ namespace SolidCP.UniversalInstaller
 	{
 		public virtual void InstallStandaloneServerPrerequisites() { }
 		public virtual void RemoveStandaloneServerPrerequisites() { }
+		public virtual void CreateStandaloneUsers()
+		{
+			CreateServerUser();
+			CreateEnterpriseServerUser();
+			CreateWebPortalUser();
+			CreateWebDavPortalUser();
+		}
+
+		public virtual void RemoveStandaloneUsers()
+		{
+			RemoveServerUser();
+			RemoveEnterpriseServerUser();
+			RemoveWebPortalUser();
+			RemoveWebDavPortalUser();
+		}
 		public virtual void SetStandaloneServerFilePermissions() {
 			SetEnterpriseServerFilePermissions();
 			SetServerFilePermissions();
@@ -38,7 +53,8 @@ namespace SolidCP.UniversalInstaller
 			ResetEstimatedOutputLines();
 			CountInstallDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(StandardInstallFilter);
+			CopyStandaloneServer(true, StandardInstallFilter);
+			CreateStandaloneUsers();
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			InstallDatabase();
@@ -53,7 +69,7 @@ namespace SolidCP.UniversalInstaller
 			ResetEstimatedOutputLines();
 			CountUpdateDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(StandardUpdateFilter);
+			CopyStandaloneServer(true, StandardUpdateFilter);
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			UpdateDatabase();
@@ -69,7 +85,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallStandaloneServerWebsite() => InstallWebPortalWebsite();
 		public virtual void RemoveSetupFolder()
 		{
-			Directory.Delete(Path.Combine(InstallWebRootPath, "Setup"), true);
+			var dir = Path.Combine(InstallWebRootPath, "Setup");
+			if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		}
 		public virtual void RemoveStandaloneServerFolder()
 		{
@@ -82,7 +99,7 @@ namespace SolidCP.UniversalInstaller
 
 		public virtual void RemoveStandaloneServer()
 		{
-			if (OSInfo.IsWindows) RemoveWebDavPortalWebsite();
+			RemoveWebDavPortalWebsite();
 			RemoveWebPortalWebsite();
 			RemoveServerWebsite();
 			RemoveStandaloneServerFolder();
@@ -107,11 +124,11 @@ namespace SolidCP.UniversalInstaller
 			if (OSInfo.IsWindows) ConfigureWebDavPortal();
 		}
 
-		public virtual void CopyStandaloneServer(Func<string, string> filter = null)
+		public virtual void CopyStandaloneServer(bool clearDestination = false, Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
 			var websitePath = InstallWebRootPath;
-			CopyFiles(ComponentTempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
 	}
 }

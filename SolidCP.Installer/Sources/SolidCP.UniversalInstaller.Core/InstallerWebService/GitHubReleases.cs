@@ -35,6 +35,8 @@ namespace SolidCP.UniversalInstaller
 		{
 			try
 			{
+				if (release == null) return Enumerable.Empty<ComponentWithRelease>();
+
 				var releaseJsonAsset = release.Assets.FirstOrDefault(asset => asset.Name.Equals("release.json", StringComparison.OrdinalIgnoreCase));
 
 				if (releaseJsonAsset != null)
@@ -54,7 +56,7 @@ namespace SolidCP.UniversalInstaller
 				}
 			}
 			catch (Exception ex) { }
-			return null;
+			return Enumerable.Empty<ComponentWithRelease>();
 		}
 
 		public async Task<IEnumerable<Release>> GetAllAsync()
@@ -85,6 +87,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public async Task<Release> GetReleaseAsync(string release)
 		{
+			if (string.IsNullOrEmpty(release)) return null;
 			Version version = default;
 			var vm = Regex.Match(release, "[0-9][0-9.]+");
 			if (vm.Success) version = Version.Parse(vm.Value);
@@ -154,7 +157,7 @@ namespace SolidCP.UniversalInstaller
 			var ghrelease = await GetReleaseAsync(release);
 			var component = (await ReleaseComponentsAsync(ghrelease))
 				.Where(component => component.Component.ComponentCode == componentCode)
-				.FirstOrDefault().Component;
+				.FirstOrDefault()?.Component;
 			return component;
 		}
 

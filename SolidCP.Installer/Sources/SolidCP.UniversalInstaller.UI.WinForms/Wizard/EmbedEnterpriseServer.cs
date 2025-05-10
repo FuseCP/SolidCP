@@ -69,8 +69,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			get
 			{
 				var installerPath = Settings.InstallFolder;
-				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "HostPanelPro.Web.Clients.dll"));
-				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "HostPanelPro.Web.Clients.dll"));
+				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
+				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "SolidCP.Web.Clients.dll"));
 				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder &&
 					(File.Exists(webClientsPath1) || File.Exists(webClientsPath2));
 			}

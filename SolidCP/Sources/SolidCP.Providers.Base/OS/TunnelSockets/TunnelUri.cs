@@ -116,7 +116,7 @@ namespace SolidCP.Providers.OS
                         Host = uri.Host;
                         DnsSafeHost = uri.DnsSafeHost;
                         IdnHost = uri.IdnHost;
-                        port = uri.Port == 0 ? 22 : uri.Port;
+                        port = uri.Port <= 0 ? 22 : uri.Port;
                         Path = uri.AbsolutePath;
                         Query = new QueryStringDictionary(url);
                     }

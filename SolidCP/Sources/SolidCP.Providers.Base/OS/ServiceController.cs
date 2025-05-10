@@ -35,7 +35,70 @@ namespace SolidCP.Providers.OS
 		public string StartLimitBurst { get; set; }
 		public string Restart { get; set; }
 		public string RestartSec { get; set; }
-		public Dictionary<string, string> EnvironmentVariables { get; set; } = new Dictionary<string, string>();
+		public Dictionary<string, string> Environment { get; set; } = new Dictionary<string, string>();
+	}
+	public class OpenRCServiceDescription : ServiceDescription
+	{
+		public string Need { get; set; }
+		public string Use { get; set; }
+		public string Want { get; set; }
+		public string Before { get; set; }
+		public string After { get; set; }
+		public string Provide { get; set; }
+		public string Keyword { get; set; }
+		public string Command
+		{
+			get => Executable;
+			set => Executable = value;
+		}
+		public string CommandArgs { get; set; }
+		public string CommandArgsBackground { get; set; }
+		public string PidFile { get; set; }
+		public bool? CommandBackground { get; set; }
+		public string CommandUser { get; set; }
+		public string Capabilities { get; set; }
+		public string Procname { get; set; }
+		public string ExtraCommands { get; set; }
+		public string ExtraStartedCommands { get; set; }
+		public string ExtraStoppedCommands { get; set; }
+		public string WorkingDirectory { get; set; }
+		public Dictionary<string, string> Environment { get; set; } = new Dictionary<string, string>();
+		public string Body { get; set; }
+		public string Description { get; set; }
+		public int? StopTimeout { get; set; }
+	}
+
+	public class LaunchdServiceDescription: ServiceDescription
+	{
+		public string Label
+		{
+			get => ServiceId;
+			set => ServiceId = value;
+		}
+		public string Program
+		{
+			get => Executable;
+			set => Executable = value;
+		}
+		public string Arguments { get; set; }
+		public string UserName { get; set; }
+		public bool? OnDemand { get; set; }
+		public bool? StartOnMount { get; set; }
+		public List<string> QueueDirectories { get; set; } = new List<string>();
+		public List<string> WatchPaths { get; set; } = new List<string>();
+		public int? StartInterval { get; set; }
+		public bool? RunAtLoad { get; set; }
+		public string RootDirectory { get; set; }
+		public string WorkingDirectory { get; set; }
+		public string StandardOutPath { get; set; }
+		public string StandardErrorPath { get; set; }
+		public string StandardInPath { get; set; }
+		public bool? LowPriorityIO { get; set; }
+		public bool? AbandonProcessGroup { get; set; }
+		public bool? SessionCreate { get; set; }
+		public bool? KeepAlive { get; set; }
+		public int? ExitTimeout { get; set; }
+		public Dictionary<string, string> Environment { get; set; } = new Dictionary<string, string>();
 	}
 	public class ServiceManager
 	{

@@ -415,6 +415,8 @@ public class WindowsInstaller : Installer
 			throw new Exception($"'{oldSiteName}' web site already has server binding ( IP: {ip}, Port: {port}, Domain: {domain} )");
 		}
 
+		if (setting.RunOnNetCore) contentPath = Path.Combine(contentPath, "bin_dotnet");
+
 		//TODO certificate
 
 		// create site
@@ -650,13 +652,50 @@ public class WindowsInstaller : Installer
 		RemoveUser(setting.Username);
 	}
 
+	public virtual string SchedulerServiceId => "SolidCP.SchedulerService";
+	public override void InstallSchedulerService()
+	{
+		var services = OSInfo.Current.ServiceController;
+		if (services.Info(SchedulerServiceId) != null) services.Remove(SchedulerServiceId);
+
+		Transaction(() =>
+		{
+			var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
+				Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
+					"bin_dotnet" : "bin";
+			var service = new WindowsServiceDescription()
+			{
+				ServiceId = SchedulerServiceId,
+				DisplayName = "SolidCP Scheduler Service",
+				Executable = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, binFolder, "SolidCP.Scheduler.exe"),
+				Start = WindowsServiceStartMode.DelayedAuto,
+				Type = WindowsServiceType.Own,
+				Error = WindowsServiceErrorHandling.Normal
+			};
+
+			InstallService(service);
+
+		}).WithRollback(() =>
+		{
+			try
+			{
+				RemoveSchedulerService();
+			}
+			catch { }
+		});
+	}
+	public override void RemoveSchedulerService() => RemoveService(SchedulerServiceId);
 	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;
-
 	public override bool CheckIISVersionSupported() => CheckOSSupported();
-
-	public override bool CheckSystemdSupported() => false;
-
-	public override bool CheckNetVersionSupported() => OSInfo.IsNet48 || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
+	public override bool CheckInitSystemSupported() => true;
+	public override bool CheckNetVersionSupported()
+	{
+		if (OSInfo.IsNet48) return true;
+		var fxver = new Version(OSInfo.NetFXVersion);
+		return OSInfo.IsCore &&
+			int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8 &&
+			(fxver.Major > 4 || fxver.Major == 4 && fxver.Minor >= 8);
+	}
 
 	public override void RestartAsAdmin()
 	{
@@ -719,6 +758,68 @@ public class WindowsInstaller : Installer
 - Delete SolidCP WebPortal, EnterpriseServer & Server folder.
 - Remove firewall rule.";
 			default: throw new NotSupportedException();
+		}
+	}
+
+	public virtual void CreateUser(CommonSettings settings)
+	{
+		var username = settings.Username;
+		var password = settings.Password;
+		string domain = "";
+		if (settings.UseActiveDirectory)
+		{
+			var tokens = username.Split('\\');
+			if (tokens.Length == 2)
+			{
+				domain = tokens[0];
+				username = tokens[1];
+			}
+		}
+
+		const string UserAccountDescription = "{0} account for anonymous access to Internet Information Services";
+
+		var description = String.Format(UserAccountDescription, settings.ComponentName);
+		var memberOf = new string[0];
+
+		// create account
+		SystemUserItem user = new SystemUserItem
+		{
+			Domain = domain,
+			Name = username,
+			FullName = username,
+			Description = description,
+			MemberOf = memberOf,
+			Password = password,
+			PasswordCantChange = true,
+			PasswordNeverExpires = true,
+			AccountDisabled = false,
+			System = true
+		};
+
+		SecurityUtils.CreateUser(user);
+	}
+	public virtual void RemoveUser(string username)
+	{
+		if (!string.IsNullOrEmpty(username))
+		{
+			var bslash = username.IndexOf('\\');
+			string machine, user;
+			if (bslash >= 0)
+			{
+				machine = username.Substring(0, bslash);
+				if (bslash < username.Length - 1) user = username.Substring(bslash, username.Length - bslash - 1);
+				else user = "";
+			}
+			else
+			{
+				machine = "";
+				user = username;
+			}
+			if (SecurityUtils.UserExists(machine, user))
+			{
+				SecurityUtils.DeleteUser(machine, user);
+				InstallLog($"Removed user {username}");
+			}
 		}
 	}
 }

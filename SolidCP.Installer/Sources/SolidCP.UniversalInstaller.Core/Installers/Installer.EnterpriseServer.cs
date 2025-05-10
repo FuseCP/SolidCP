@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Xml.Linq;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -21,6 +22,8 @@ public abstract partial class Installer
 	public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
 	public virtual void InstallEnterpriseServerPrerequisites() { }
 	public virtual void RemoveEnterpriseServerPrerequisites() { }
+	public virtual void CreateEnterpriseServerUser() => CreateUser(Settings.EnterpriseServer);
+	public virtual void RemoveEnterpriseServerUser() => RemoveUser(Settings.EnterpriseServer.Username);
 	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
 	public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCP.ToLower());
 	public virtual void InstallEnterpriseServer()
@@ -28,7 +31,8 @@ public abstract partial class Installer
 		ResetEstimatedOutputLines();
 		CountInstallDatabaseStatements();
 		InstallEnterpriseServerPrerequisites();
-		CopyEnterpriseServer(StandardInstallFilter);
+		CopyEnterpriseServer(true, StandardInstallFilter);
+		CreateEnterpriseServerUser();
 		SetEnterpriseServerFilePermissions();
 		SetEnterpriseServerFileOwner();
 		InstallDatabase();
@@ -43,7 +47,7 @@ public abstract partial class Installer
 		InstallEnterpriseServerPrerequisites();
 		RemoveSchedulerService();
 		DisableEnterpriseServerWebsite();
-		CopyEnterpriseServer(StandardUpdateFilter);
+		CopyEnterpriseServer(true, StandardUpdateFilter);
 		SetEnterpriseServerFilePermissions();
 		SetEnterpriseServerFileOwner();
 		UpdateEnterpriseServerConfig();
@@ -71,10 +75,11 @@ public abstract partial class Installer
 			var connstr = settings.DbInstallConnectionString;
 			if (string.IsNullOrEmpty(connstr) ||
 				!DatabaseUtils.CheckSqlConnection(connstr)) throw new DataException("Unable to connect to database.");
-			if (string.IsNullOrEmpty(settings.DatabaseUser))
+			if (settings.DatabaseWindowsAuthentication)
 			{
-				settings.DatabaseUser = DefaultDatabaseUser;
-				settings.DatabasePassword = Utils.GetRandomString(32);
+				settings.DatabaseUser = settings.DatabaseName;
+				settings.DatabasePassword = Utils.GetRandomString(16);
+				settings.DatabaseWindowsAuthentication = false;
 			}
 			var user = settings.DatabaseUser;
 			var password = settings.DatabasePassword;
@@ -106,8 +111,7 @@ public abstract partial class Installer
 		DatabaseUtils.DeleteDatabase(connstr, settings.DatabaseName);
 		if (string.IsNullOrEmpty(settings.DatabaseUser))
 		{
-			settings.DatabaseUser = (settings.DatabaseName + "User").Replace(" ", "_");
-			settings.DatabasePassword = Utils.GetRandomString(32);
+			settings.DatabaseUser = settings.DatabaseName;
 		}
 		DatabaseUtils.DeleteUser(connstr, settings.DatabaseUser);
 		DatabaseUtils.DeleteLogin(connstr, settings.DatabaseUser);
@@ -166,13 +170,16 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveEnterpriseServerFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, EnterpriseServerFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
+		InstallLog("Removed EnterpriseServer files");
 	}
 
 	public virtual void RemoveEnterpriseServer()
 	{
 		RemoveEnterpriseServerWebsite();
 		RemoveEnterpriseServerFolder();
+		RemoveEnterpriseServerUser();
 		DeleteDatabase();
 	}
 	public virtual void ReadEnterpriseServerConfiguration() => ReadEnterpriseServerConfigurationNetFX();
@@ -246,7 +253,7 @@ public abstract partial class Installer
 				var esAppSettings = esConf.Element("appSettings");
 
 
-				var esCryptoKey = esAppSettings?.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
+				var esCryptoKey = esAppSettings?.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "SolidCP.CryptoKey");
 				if (esCryptoKey != null)
 				{
 					settings.CryptoKey = esCryptoKey.Attribute("value")?.Value;
@@ -267,6 +274,24 @@ public abstract partial class Installer
 				}
 
 				var esConStrings = esConf.Element("connectionStrings");
+				if (esConStrings != null)
+				{
+					var esConString = esConStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
+					var esCstring = esConString?.Attribute("value")?.Value;
+					if (esCstring != null)
+					{
+						var csb = new ConnectionStringBuilder(esCstring);
+						if ((csb["DbType"] as string)?.Contains("Sqlite") == true)
+						{
+							if (csb["Data Source"] != null)
+							{
+								csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+							}
+							csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+							esConString.Attribute("value").SetValue(csb.ConnectionString);
+						}
+					}
+				}
 				var conStrings = configuration.Element("connectionStrings");
 				conStrings.ReplaceWith(esConStrings);
 
@@ -274,6 +299,7 @@ public abstract partial class Installer
 				var swagger = configuration.Element("swaggerwcf");
 				swagger.ReplaceWith(esSwagger);
 			}
+			else throw new NotSupportedException("EnterpriseServer settings file not found. You must install EnterpriseServer prior to install WebPortal with embedded WnterpriseServer.");
 		}
 
 		// CryptoKey
@@ -283,10 +309,10 @@ public abstract partial class Installer
 			settings.CryptoKey = CryptoUtils.GetRandomString(20);
 		}
 
-		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "HostPanelPro.CryptoKey");
+		var cryptoKey = appSettings.Elements("add").FirstOrDefault(e => e.Attribute("key")?.Value == "SolidCP.CryptoKey");
 		if (cryptoKey == null)
 		{
-			cryptoKey = new XElement("add", new XAttribute("key", "HostPanelPro.CryptoKey"), new XAttribute("value", settings.CryptoKey));
+			cryptoKey = new XElement("add", new XAttribute("key", "SolidCP.CryptoKey"), new XAttribute("value", settings.CryptoKey));
 			appSettings.Add(cryptoKey);
 		}
 		else
@@ -299,8 +325,9 @@ public abstract partial class Installer
 			// Connection String
 			var connectionStrings = configuration.Element("connectionStrings");
 			var cstring = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-			var authentication = settings.DatabaseWindowsAuthentication ? "Integrated Security=true" : $"User ID={settings.DatabaseUser};Password={settings.DatabasePassword}";
-			cstring.Attribute("connectionString").SetValue($"Server={settings.DatabaseServer};Database={settings.DatabaseName};{authentication}{(settings.DatabaseTrustServerCertificate ? ";TrustServerCertificate=true" : "")}");
+			var connectionString = DatabaseUtils.BuildConnectionString(settings.DatabaseType, settings.DatabaseServer,
+				settings.DatabasePort, settings.DatabaseName, settings.DatabaseUser, settings.DatabasePassword, Settings.WebPortal.EnterpriseServerPath, webPortalEmbedded && Settings.WebPortal.EmbedEnterpriseServer);
+			cstring.Attribute("connectionString").SetValue(connectionString);
 
 			// Swagger Version
 			var swaggerwcf = configuration.Element("swaggerwcf");
@@ -321,10 +348,10 @@ public abstract partial class Installer
 		ConfigureEnterpriseServerNetFX();
 		InstallLog("Configured Enterprise Server.");
 	}
-	public virtual void CopyEnterpriseServer(Func<string, string> filter = null)
+	public virtual void CopyEnterpriseServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

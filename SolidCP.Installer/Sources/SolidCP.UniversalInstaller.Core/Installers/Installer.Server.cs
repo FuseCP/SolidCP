@@ -24,13 +24,15 @@ public abstract partial class Installer
 
 	public virtual void InstallServerPrerequisites() { }
 	public virtual void RemoveServerPrerequisites() { }
-
+	public virtual void CreateServerUser() => CreateUser(Settings.Server);
+	public virtual void RemoveServerUser() => RemoveUser(Settings.Server.Username);
 	public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
 	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCP.ToLower());
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardInstallFilter);
+		CopyServer(true, StandardInstallFilter);
+		CreateServerUser();
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		ConfigureServer();
@@ -40,7 +42,7 @@ public abstract partial class Installer
 	public virtual void UpdateServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardUpdateFilter);
+		CopyServer(true, StandardUpdateFilter);
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		UpdateServerConfig();
@@ -58,6 +60,7 @@ public abstract partial class Installer
 		//RemoveServerPrerequisites();
 		RemoveServerWebsite();
 		RemoveServerFolder();
+		RemoveServerUser();
 		//UpdateSettings();
 	}
 
@@ -81,10 +84,10 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveServerFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, ServerFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Server files");
 	}
-	public virtual void RemoveServerUser() { }
 	public virtual void RemoveServerApplicationPool() { }
 	public virtual void ReadServerConfigurationNetFX()
 	{
@@ -156,11 +159,11 @@ public abstract partial class Installer
 
 		InstallLog("Configured Server.");
 	}
-	public virtual void CopyServer(Func<string, string> filter = null)
+	public virtual void CopyServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 	public virtual int InstallServerMaxProgress => 100;
 	public virtual int UninstallServerMaxProgress => 100;

@@ -12,7 +12,7 @@
 @inherits RazorBlade.PlainTextTemplate
 
 [System.CodeDom.Compiler.GeneratedCodeAttribute("SolidCP.Build", "1.0")]
-public class @(Class.Identifier): SolidCP.Web.Clients.ClientBase<I@(Class.Identifier), @(Class.Identifier)AssemblyClient>, I@(Class.Identifier) {
+public partial class @(Class.Identifier): SolidCP.Web.Clients.ClientBase<I@(Class.Identifier), @(Class.Identifier)AssemblyClient>, I@(Class.Identifier) {
 
 	@foreach (var method in WebMethods
 		.Select(m => new {
