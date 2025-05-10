@@ -10,6 +10,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual string UnixWebDavPortalServiceId => "solidcp-webdavportal";
 		public virtual void InstallWebDavPortalPrerequisites() { }
 		public virtual void RemoveWebDavPortalPrerequisites() { }
+		public virtual void CreateWebDavPortalUser() => CreateUser(Settings.WebDavPortal);
+		public virtual void RemoveWebDavPortalUser() => RemoveUser(Settings.WebDavPortal.Username);
 		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(WebDavPortalFolder);
 		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(WebDavPortalFolder, Settings.WebDavPortal.Username, SolidCP.ToLower());
 		public virtual void InstallWebDavPortal()
@@ -17,6 +19,7 @@ namespace SolidCP.UniversalInstaller
 			InstallWebDavPortalPrerequisites();
 			ReadWebDavPortalConfiguration();
 			CopyWebDavPortal(true, StandardInstallFilter);
+			CreateWebDavPortalUser();
 			SetWebDavPortalFilePermissions();
 			SetWebDavPortalFileOwner();
 			ConfigureWebDavPortal();
@@ -53,6 +56,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			RemoveWebDavPortalWebsite();
 			RemoveWebDavPortalFolder();
+			RemoveWebDavPortalUser();
 		}
 		public virtual void RemoveWebDavPortalFolder()
 		{

@@ -22,6 +22,8 @@ public abstract partial class Installer
 	public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
 	public virtual void InstallEnterpriseServerPrerequisites() { }
 	public virtual void RemoveEnterpriseServerPrerequisites() { }
+	public virtual void CreateEnterpriseServerUser() => CreateUser(Settings.EnterpriseServer);
+	public virtual void RemoveEnterpriseServerUser() => RemoveUser(Settings.EnterpriseServer.Username);
 	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
 	public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCP.ToLower());
 	public virtual void InstallEnterpriseServer()
@@ -30,6 +32,7 @@ public abstract partial class Installer
 		CountInstallDatabaseStatements();
 		InstallEnterpriseServerPrerequisites();
 		CopyEnterpriseServer(true, StandardInstallFilter);
+		CreateEnterpriseServerUser();
 		SetEnterpriseServerFilePermissions();
 		SetEnterpriseServerFileOwner();
 		InstallDatabase();
@@ -176,6 +179,7 @@ public abstract partial class Installer
 	{
 		RemoveEnterpriseServerWebsite();
 		RemoveEnterpriseServerFolder();
+		RemoveEnterpriseServerUser();
 		DeleteDatabase();
 	}
 	public virtual void ReadEnterpriseServerConfiguration() => ReadEnterpriseServerConfigurationNetFX();

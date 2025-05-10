@@ -760,4 +760,66 @@ public class WindowsInstaller : Installer
 			default: throw new NotSupportedException();
 		}
 	}
+
+	public virtual void CreateUser(CommonSettings settings)
+	{
+		var username = settings.Username;
+		var password = settings.Password;
+		string domain = "";
+		if (settings.UseActiveDirectory)
+		{
+			var tokens = username.Split('\\');
+			if (tokens.Length == 2)
+			{
+				domain = tokens[0];
+				username = tokens[1];
+			}
+		}
+
+		const string UserAccountDescription = "{0} account for anonymous access to Internet Information Services";
+
+		var description = String.Format(UserAccountDescription, settings.ComponentName);
+		var memberOf = new string[0];
+
+		// create account
+		SystemUserItem user = new SystemUserItem
+		{
+			Domain = domain,
+			Name = username,
+			FullName = username,
+			Description = description,
+			MemberOf = memberOf,
+			Password = password,
+			PasswordCantChange = true,
+			PasswordNeverExpires = true,
+			AccountDisabled = false,
+			System = true
+		};
+
+		SecurityUtils.CreateUser(user);
+	}
+	public virtual void RemoveUser(string username)
+	{
+		if (!string.IsNullOrEmpty(username))
+		{
+			var bslash = username.IndexOf('\\');
+			string machine, user;
+			if (bslash >= 0)
+			{
+				machine = username.Substring(0, bslash);
+				if (bslash < username.Length - 1) user = username.Substring(bslash, username.Length - bslash - 1);
+				else user = "";
+			}
+			else
+			{
+				machine = "";
+				user = username;
+			}
+			if (SecurityUtils.UserExists(machine, user))
+			{
+				SecurityUtils.DeleteUser(machine, user);
+				InstallLog($"Removed user {username}");
+			}
+		}
+	}
 }

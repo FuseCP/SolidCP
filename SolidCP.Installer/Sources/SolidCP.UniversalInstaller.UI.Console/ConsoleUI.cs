@@ -175,7 +175,7 @@ Install Component to:
 			string domain = "";
 			if (tokens.Length == 2) domain = tokens[0];
 
-			if (settings.UseActiveDirectory)
+			if (OSInfo.IsWindows && settings.UseActiveDirectory)
 			{
 				if (domain.Trim().Length == 0)
 				{
@@ -233,6 +233,8 @@ Install Component to:
 		}
 		private bool CheckUserAccount(CommonSettings settings)
 		{
+			if (!OSInfo.IsWindows) return true;
+			
 			string userName = settings.Username;
 			string password = settings.Password;
 			var tokens = userName.Split('\\');

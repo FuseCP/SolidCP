@@ -32,10 +32,10 @@ public abstract class UnixInstaller : Installer
 			throw new FileNotFoundException($"The service executable {dll} was not found.");
 		}
 
-		AddUnixGroup(SolidCPUnixGroup);
+		//AddUnixGroup(SolidCPUnixGroup);
 
-		if (!string.IsNullOrEmpty(settings.Username))
-			AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
+		//if (!string.IsNullOrEmpty(settings.Username))
+		//	AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
 
 		var dotnet = Shell.Find("dotnet");
 
@@ -123,6 +123,14 @@ public abstract class UnixInstaller : Installer
 		
 		InstallLog($"Added System User {user}.");
 	}
+	public override void CreateUser(CommonSettings settings)
+	{
+		AddUnixGroup(SolidCPUnixGroup);
+		AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
+	}
+	public override void RemoveUser(string username) => Shell.Standard.Exec($"userdel {username}");
+
+
 	public override void RemoveWebsite(string serviceId, CommonSettings settings)
 	{
 		var service = ServiceController[serviceId];
@@ -278,4 +286,10 @@ public abstract class UnixInstaller : Installer
 			default: throw new NotSupportedException();
 		}
 	}
+
+	public override void CreateWebDavPortalUser() { }
+	public override void RemoveWebDavPortalUser() { }
+	public override void InstallWebDavPortalWebsite() { }
+	public override void RemoveWebDavPortalWebsite() { }
+	public override void RemoveWebPortalFolder() { }
 }

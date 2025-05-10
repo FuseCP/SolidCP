@@ -19,6 +19,21 @@ namespace SolidCP.UniversalInstaller
 	{
 		public virtual void InstallStandaloneServerPrerequisites() { }
 		public virtual void RemoveStandaloneServerPrerequisites() { }
+		public virtual void CreateStandaloneUsers()
+		{
+			CreateServerUser();
+			CreateEnterpriseServerUser();
+			CreateWebPortalUser();
+			CreateWebDavPortalUser();
+		}
+
+		public virtual void RemoveStandaloneUsers()
+		{
+			RemoveServerUser();
+			RemoveEnterpriseServerUser();
+			RemoveWebPortalUser();
+			RemoveWebDavPortalUser();
+		}
 		public virtual void SetStandaloneServerFilePermissions() {
 			SetEnterpriseServerFilePermissions();
 			SetServerFilePermissions();
@@ -39,6 +54,7 @@ namespace SolidCP.UniversalInstaller
 			CountInstallDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
 			CopyStandaloneServer(true, StandardInstallFilter);
+			CreateStandaloneUsers();
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			InstallDatabase();
@@ -83,7 +99,7 @@ namespace SolidCP.UniversalInstaller
 
 		public virtual void RemoveStandaloneServer()
 		{
-			if (OSInfo.IsWindows) RemoveWebDavPortalWebsite();
+			RemoveWebDavPortalWebsite();
 			RemoveWebPortalWebsite();
 			RemoveServerWebsite();
 			RemoveStandaloneServerFolder();

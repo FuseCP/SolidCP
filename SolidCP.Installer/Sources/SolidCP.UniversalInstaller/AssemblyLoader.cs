@@ -21,7 +21,7 @@ namespace SolidCP.UniversalInstaller;
 #if NETCOREAPP
 public class SetupAssemblyLoadContext : AssemblyLoadContext
 {
-	public AssemblyLoader Loader { get; set; } = null;
+	public object Loader { get; set; } = null;
 
 	public SetupAssemblyLoadContext() : base("Setup Context", true) { }
 	protected override Assembly Load(AssemblyName name)
@@ -41,17 +41,28 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		});
 		if (loadedAssembly != null)
 			return loadedAssembly;
-		
-		return Loader?.ResolveAssembly(this, name);
+
+		var type = Loader?.GetType();
+		var resolveAssembly = type?.GetMethod("ResolveAssembly", BindingFlags.Public | BindingFlags.Instance);
+		return resolveAssembly?.Invoke(Loader, new object[] { this, name }) as Assembly;
+		//return Loader?.ResolveAssembly(this, name);
+	}
+	protected override nint LoadUnmanagedDll(string unmanagedDllName)
+	{
+		var type = Loader?.GetType();
+		var resolveAssembly = type?.GetMethod("ResolveNativeDll", BindingFlags.Public | BindingFlags.Instance);
+		var result = resolveAssembly?.Invoke(Loader, new object[] { Assembly.GetExecutingAssembly(), unmanagedDllName });
+		return (nint)(result ?? IntPtr.Zero);
+		//return Loader?.ResolveNativeDll(Assembly.GetExecutingAssembly(), unmanagedDllName) ?? default(nint);
 	}
 }
 #endif
 
-	// This class exists in SolidCP.UniversalInstaller, SolidCP.Setup and in
-	// SolidCP.UniversalInstaller.Runtime. It is responsible for loading the assemblies in the
-	// EmbeddedResources. The version in SolidCP.Setup is for NET Standard and relies on the
-	// version in SolidCP.UniversalInstaller.Runtime that is NetFX & NetCore specific.
-	public class AssemblyLoader
+// This class exists in SolidCP.UniversalInstaller, SolidCP.Setup and in
+// SolidCP.UniversalInstaller.Runtime. It is responsible for loading the assemblies in the
+// EmbeddedResources. The version in SolidCP.Setup is for NET Standard and relies on the
+// version in SolidCP.UniversalInstaller.Runtime that is NetFX & NetCore specific.
+public class AssemblyLoader
 {
 	public const string TmpFolder = "SolidCPInstallerAssemblyLoaderDlls";
 	public const string NativeDllsFolder = "NativeDlls";
@@ -200,10 +211,18 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		IsDefault = ctx == System.Runtime.Loader.AssemblyLoadContext.Default;
 		if (IsDefault) {
 			ctx.Resolving += (loadContext, name) => ResolveAssembly(loadContext, name);
+			ctx.ResolvingUnmanagedDll += ResolveNativeDll;
 		}
 		else if (ctx is SetupAssemblyLoadContext setupCtx)
 		{
 			setupCtx.Loader = this;
+			//setupCtx.ResolvingUnmanagedDll += ResolveNativeDll;
+		}
+		else if (ctx.GetType().Name == nameof(SetupAssemblyLoadContext))
+		{
+			var type = ctx.GetType();
+			var loader = type.GetProperty("Loader", BindingFlags.Public | BindingFlags.Instance);
+			loader.SetValue(ctx, this);
 		}
 		AssemblyLoadContext = ctx;
 	}
@@ -213,11 +232,13 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 			(IsMac ? "osx-" : IsLinux ? "linux-" : "");
 		var arch = RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
 		runtimeId += arch;
+		file = Path.Combine(AssembliesPath, "runtimes", runtimeId, "native", file);
+		if (File.Exists(file)) return file;
 		file = Path.Combine(AssembliesPath, "runtimes", runtimeId, file);
 		if (File.Exists(file)) return file;
 		else return null;
 	}
-	public IntPtr ResolveNativeDll(string lib, Assembly assembly)
+	public IntPtr ResolveNativeDll(Assembly assembly, string lib)
 	{
 		var dll = TryFile(lib) ??
 			(IsWindows ? TryFile(lib + ".dll") : null) ??

@@ -385,6 +385,21 @@ public abstract partial class Installer
 		}
 	}
 
+	public virtual void CreateUser(CommonSettings settings)
+	{
+		var username = settings.Username;
+		var password = settings.Password;
+		string domain = "";
+		if (settings.UseActiveDirectory)
+		{
+			var tokens = username.Split('\\');
+			if (tokens.Length == 2)
+			{
+				domain = tokens[0];
+				username = tokens[1];
+			}
+		}
+	}
 	public virtual void InstallWebsite(string name, string path, CommonSettings settings,
 		string group, string dll, string description, string serviceId)
 	{

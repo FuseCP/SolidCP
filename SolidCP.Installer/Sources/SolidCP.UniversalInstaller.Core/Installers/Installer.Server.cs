@@ -24,13 +24,15 @@ public abstract partial class Installer
 
 	public virtual void InstallServerPrerequisites() { }
 	public virtual void RemoveServerPrerequisites() { }
-
+	public virtual void CreateServerUser() => CreateUser(Settings.Server);
+	public virtual void RemoveServerUser() => RemoveUser(Settings.Server.Username);
 	public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
 	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCP.ToLower());
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
 		CopyServer(true, StandardInstallFilter);
+		CreateServerUser();
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		ConfigureServer();
@@ -58,6 +60,7 @@ public abstract partial class Installer
 		//RemoveServerPrerequisites();
 		RemoveServerWebsite();
 		RemoveServerFolder();
+		RemoveServerUser();
 		//UpdateSettings();
 	}
 
@@ -85,7 +88,6 @@ public abstract partial class Installer
 		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Server files");
 	}
-	public virtual void RemoveServerUser() { }
 	public virtual void RemoveServerApplicationPool() { }
 	public virtual void ReadServerConfigurationNetFX()
 	{

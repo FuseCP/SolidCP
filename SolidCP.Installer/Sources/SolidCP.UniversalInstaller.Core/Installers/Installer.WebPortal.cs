@@ -20,6 +20,8 @@ public abstract partial class Installer
 	public virtual string UnixPortalServiceId => "solidcp-portal";
 	public virtual void InstallWebPortalPrerequisites() { }
 	public virtual void RemoveWebPortalPrerequisites() { }
+	public virtual void CreateWebPortalUser() => CreateUser(Settings.WebPortal);
+	public virtual void RemoveWebPortalUser() => RemoveUser(Settings.WebPortal.Username);
 	public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
 	public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
 	public virtual void InstallWebPortalWebsite()
@@ -42,6 +44,7 @@ public abstract partial class Installer
 		InstallWebPortalPrerequisites();
 		ReadWebPortalConfiguration();
 		CopyWebPortal(true, WebPortalInstallFilter);
+		CreateWebPortalUser();
 		SetWebPortalFilePermissions();
 		SetWebPortalFileOwner();
 		ConfigureWebPortal();
@@ -64,6 +67,7 @@ public abstract partial class Installer
 	{
 		RemoveWebPortalWebsite();
 		RemoveWebPortalFolder();
+		RemoveWebPortalUser();
 	}
 	public virtual void RemoveWebPortalFolder()
 	{
