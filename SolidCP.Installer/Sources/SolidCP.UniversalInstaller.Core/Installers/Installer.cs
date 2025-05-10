@@ -986,9 +986,10 @@ public abstract partial class Installer
 		var info = new FileInfo(progressFile);
 		while (info.Exists)
 		{
-			while (info.Exists && n++ < info.Length)
+			while (info.Exists && n < info.Length)
 			{
 				Log.ProgressOne();
+				n++;
 			}
 			Thread.Sleep(50);
 			info = new FileInfo(progressFile);

@@ -1,3 +1,9 @@
 ﻿<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
-    <PortableCostura LoadAtModuleInit="false" ExcludeAssemblies="Setup" DisableCleanup="true" />
+    <PortableCostura LoadAtModuleInit="false" DisableCleanup="true">
+        <ExcludeAssemblies>
+            Setup2
+            Setup
+            System.ServiceProcess.ServiceController
+        </ExcludeAssemblies>
+    </PortableCostura>
 </Weavers>

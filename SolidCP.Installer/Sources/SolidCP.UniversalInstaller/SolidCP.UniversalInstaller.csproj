@@ -71,6 +71,7 @@
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
         <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
     </ItemGroup>
     
     <ItemGroup>
@@ -124,6 +125,10 @@
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <EmbeddedResource Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll">
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll">
+            <LogicalName>DllsNetCore/System.ServiceProcess.ServiceController.dll</LogicalName>
+            <Link>DllsNetCore\System.ServiceProcess.ServiceController.dll</Link>
         </EmbeddedResource>
     </ItemGroup>
         

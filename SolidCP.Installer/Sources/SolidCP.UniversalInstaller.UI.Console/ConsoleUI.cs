@@ -11,6 +11,7 @@ using System.Text;
 using System.Runtime.ExceptionServices;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer.Data;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -322,7 +323,7 @@ Install Component to:
 
 						var domain = "mydomain.com";
 
-						if (Environment.UserDomainName != Environment.MachineName)
+						if (OSInfo.IsWindows && Environment.UserDomainName != Environment.MachineName)
 						{
 
 							string domainName = Installer.Current.SecurityUtils.GetFullDomainName(Environment.UserDomainName);
@@ -428,7 +429,12 @@ Urls: [?Urls                                                                    
 
 			Pages.Add(() =>
 			{
-				var form = new ConsoleForm(@"
+				var exit = false;
+				var message = "";
+
+				do
+				{
+					var form = new ConsoleForm(@"
 EnterpriseServer Settings:
 ==========================
 
@@ -440,26 +446,39 @@ EnterpriseServer URL: [?EnterpriseServerUrl                                     
 
 Path to EnterpriseServer: [?EnterpriseServerPath                                      ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]
 ")
-					.Load(settings)
-					.Apply(f =>
+						.Load(settings)
+						.Apply(f =>
+						{
+							f[0].Checked = settings.EmbedEnterpriseServer;
+							f[2].Checked = settings.ExposeEnterpriseServerWebServices;
+						})
+						.ShowDialog();
+					if (form["Back"].Clicked)
 					{
-						f[0].Checked = settings.EmbedEnterpriseServer;
-						f[2].Checked = settings.ExposeEnterpriseServerWebServices;
-					})
-					.ShowDialog();
-				if (form["Back"].Clicked)
-				{
-					Back();
-				}
-				else
-				{
-					form.Save(settings);
-					settings.EmbedEnterpriseServer = form[0].Checked;
-					settings.ExposeEnterpriseServerWebServices = form[0].Checked;
-					Next();
-				}
+						exit = true;
+						Back();
+					}
+					else
+					{
+						form.Save(settings);
+						settings.EmbedEnterpriseServer = form[0].Checked;
+						settings.ExposeEnterpriseServerWebServices = form[0].Checked;
+						if (Directory.Exists(Path.GetFullPath(Path.Combine(settings.InstallFolder, settings.EnterpriseServerPath))))
+						{
+							exit = true;
+							Next();
+						}
+						else
+						{
+							message = "EnterpriseServer path does not exist!";
+							exit = false;
+						}
+					}
+				} while (!exit);
 			});
 			return this;
 		}
@@ -562,12 +581,16 @@ Database Settings:
 				}
 
 				settings.DatabaseType = dbType;
+				var exit = false;
+				string message = "";
 
 				switch (dbType)
 				{
 					default:
 					case DbType.SqlServer:
-						form = new ConsoleForm(@"
+						do
+						{
+							form = new ConsoleForm(@"
 SQL Server Settings:
 ====================
 
@@ -576,25 +599,31 @@ Database: [?DatabaseName                               ]
           [x DatabaseWindowsAuthentication] Windows Authentication
 User:     [?DatabaseUser                               ]
 Password: [?DatabasePassword                               ]
-Always Trust Server Certificate: [x DatabaseTrustServerCertificate]
+
+" + message + @"
 
 [  Next  ]  [  Back  ]")
-							.Load(settings)
-							.ShowDialog();
-						if (form["Next"].Clicked)
-						{
-							form.Save(settings);
-							Next();
-						}
-						else
-						{
-							settings.DatabaseType = DbType.Unknown;
-							Back();
-						}
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								exit = CheckDbConnection(settings, ref message);
+								if (exit) Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								exit = true;
+								Back();
+							}
+						} while (!exit);
 						break;
 					case DbType.MySql:
 					case DbType.MariaDb:
-						form = new ConsoleForm(@"
+						do
+						{
+							form = new ConsoleForm(@"
 MySQL/MariaDB Settings:
 =======================
 
@@ -606,23 +635,30 @@ Port:     [?DatabasePort                               ]
 User:     [?DatabaseUser                               ]
 Password: [?DatabasePassword                               ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]")
-							.Load(settings)
-							.ShowDialog();
-						if (form["Next"].Clicked)
-						{
-							form.Save(settings);
-							Next();
-						}
-						else
-						{
-							settings.DatabaseType = DbType.Unknown;
-							Back();
-						}
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								exit = CheckDbConnection(settings, ref message);
+								if (exit) Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								exit = true;
+								Back();
+							}
+						} while (!exit);
 						break;
 					case DbType.Sqlite:
 					case DbType.SqliteFX:
-						form = new ConsoleForm(@"
+						do
+						{
+							form = new ConsoleForm(@"
 SQLite Settings:
 ================
 
@@ -631,22 +667,127 @@ SQLite Settings:
 Database: [?DatabaseName                               ]
 
 [  Next  ]  [  Back  ]")
-							.Load(settings)
-							.ShowDialog();
-						if (form["Next"].Clicked)
-						{
-							form.Save(settings);
-							Next();
-						}
-						else
-						{
-							settings.DatabaseType = DbType.Unknown;
-							Back();
-						}
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								exit = CheckDbConnection(settings, ref message);
+								if (exit) Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								exit = true;
+								Back();
+							}
+						} while (!exit);
 						break;
 				}
 			});
 			return this;
+		}
+
+		public bool CheckDbConnection(EnterpriseServerSettings settings, ref string warning)
+		{
+			int port = 0;
+			if (string.IsNullOrWhiteSpace(settings.DatabaseName) || !DatabaseUtils.IsValidDatabaseName(settings.DatabaseName))
+			{
+				warning = "Invalid Database name!";
+				return false;
+			}
+			if (string.IsNullOrWhiteSpace(settings.DatabaseServer) &&
+				settings.DatabaseType != DbType.Sqlite && settings.DatabaseType != DbType.SqliteFX)
+			{
+				warning = "No server specified!";
+				return false;
+			}
+			if (settings.DatabaseType != DbType.Sqlite && settings.DatabaseType != DbType.SqliteFX &&
+				(settings.DatabaseType != DbType.SqlServer || !settings.DatabaseWindowsAuthentication) &&
+				(string.IsNullOrWhiteSpace(settings.DatabaseUser) || string.IsNullOrWhiteSpace(settings.DatabasePassword)))
+			{
+				warning = string.IsNullOrWhiteSpace(settings.DatabaseUser) ?
+					"No user specified!" : "No password specified!";
+				return false;
+			}
+			if (settings.DatabaseType == DbType.MariaDb || settings.DatabaseType == DbType.MySql)
+			{
+				settings.DatabasePort = 3306;
+
+				var tokens = settings.DatabaseServer.Split(':', ',');
+				if (tokens.Length > 1)
+				{
+					settings.DatabaseServer = tokens[0];
+					if (!int.TryParse(tokens[1], out port))
+					{
+						warning = "Invalid port number!";
+						return false;
+					}
+					else
+					{
+						settings.DatabasePort = port;
+					}
+				}
+			}
+			if (settings.DatabaseType == DbType.SqlServer && settings.DatabaseWindowsAuthentication)
+			{
+				settings.DatabaseUser = null;
+				settings.DatabasePassword = null;
+			}
+			else if (settings.DatabaseType == DbType.Sqlite || settings.DatabaseType == DbType.SqliteFX)
+			{
+				settings.DatabaseServer = null;
+				settings.DatabasePort = 0;
+				settings.DatabaseUser = null;
+				settings.DatabasePassword = null;
+			}
+
+			if (settings.DatabaseType == DbType.SqlServer)
+			{
+				settings.DbInstallConnectionString = DatabaseUtils.BuildSqlServerMasterConnectionString(settings.DatabaseServer, settings.DatabaseUser, settings.DatabasePassword);
+			}
+			else
+			{
+				settings.DbInstallConnectionString = DatabaseUtils.BuildConnectionString(settings.DatabaseType, settings.DatabaseServer, settings.DatabasePort,
+					settings.DatabaseName, settings.DatabaseUser, settings.DatabasePassword);
+			}
+			if (!DatabaseUtils.CheckSqlConnection(settings.DbInstallConnectionString))
+			{
+				warning = "Unable to connect to the database server!";
+				return false;
+			}
+
+			if (settings.DatabaseType == DbType.SqlServer)
+			{
+				var version = DatabaseUtils.GetSqlServerVersion(settings.DbInstallConnectionString);
+				string major = Regex.Match(version, "^[0-9]+(?=\\.)").Value;
+				if (major.Length < 2) major = "0" + major;
+				if (string.Compare(major, "12") <= 0)
+				{
+					// SQL Server 2014 engine required
+					warning = "This program can be installed on SQL Server 2014/2016/2017/2016/2017/2019/2022/2025 only!";
+					return false;
+				}
+				int securityMode = DatabaseUtils.GetSqlServerSecurityMode(settings.DbInstallConnectionString);
+				if (securityMode != 0)
+				{
+					// mixed mode required
+					warning = "Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode!";
+					return false;
+				}
+				var csb = new ConnectionStringBuilder(settings.DbInstallConnectionString);
+				csb["TrustServerCertificate"] = "false";
+				settings.DatabaseTrustServerCertificate = !DatabaseUtils.CheckSqlConnection(csb.ToString());
+			}
+
+			if (DatabaseUtils.DatabaseExists(settings.DbInstallConnectionString, settings.DatabaseName))
+			{
+				warning = $"Database {settings.DatabaseName} already exists!";
+				return false;
+			}
+
+			warning = "";
+			return true;
 		}
 
 		public override UI.SetupWizard ServerPassword()
@@ -691,7 +832,7 @@ Passwords must match!
 				{
 					var form = new ConsoleForm(@$"
 ServerAdmin Password:
-================
+=====================
 
 Choose a password for the serveradmin user to log into WebPortal.
 
@@ -701,15 +842,19 @@ Repeat Password: [!RepeatPassword                             ]
 Passwords must match!
 ")}
 [  Next  ]  [  Back  ]")
-					.Load(Settings.Server)
+					.Load(Settings.EnterpriseServer)
 					.ShowDialog();
 					passwordMatch = form["ServerAdminPassword"].Text == form["RepeatPassword"].Text;
 					if (form["Next"].Clicked && passwordMatch)
 					{
-						form.Save(Settings.Server);
+						form.Save(Settings.EnterpriseServer);
 						Next();
 					}
-					else if (form["Back"].Clicked) Back();
+					else if (form["Back"].Clicked)
+					{
+						passwordMatch = true;
+						Back();
+					}
 				} while (!passwordMatch);
 
 			});
@@ -720,6 +865,9 @@ Passwords must match!
 		{
 			Pages.Add(() =>
 			{
+				bool exit = false;
+				string message = "";
+
 				var form = new ConsoleForm(@"
 Certificate Settings:
 =====================
@@ -740,7 +888,9 @@ Certificate Settings:
 				}
 				else if (form[0].Clicked)
 				{
-					form = new ConsoleForm(@"
+					do
+					{
+						form = new ConsoleForm(@"
 Certificate from Store:
 =======================
 
@@ -749,38 +899,58 @@ Store Name:      [?CertificateStoreName                                     ]
 Find Type:       [?CertificateFindType                                     ]
 Find Value:      [?CertificateFindValue                                     ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]")
-						.Load(settings)
-						.ShowDialog();
-					if (form["Next"].Clicked)
-					{
-						form.Save(settings);
-						Next();
-					}
-					else Back();
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							exit = CheckCertificate(settings, ref message);
+							if (exit) Next();
+						}
+						else
+						{
+							exit = true;
+							Back();
+						}
+					} while (!exit);
 				}
 				else if (form[1].Clicked && !OSInfo.IsWindows)
 				{
-					form = new ConsoleForm(@"
+					do
+					{
+						form = new ConsoleForm(@"
 Certificate from File:
 ======================
 
 File:     [?CertificateFile                                     ]
 Password: [?CertificatePassword                                     ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]")
-						.Load(settings)
-						.ShowDialog();
-					if (form["Next"].Clicked)
-					{
-						form.Save(settings);
-						Next();
-					}
-					else Back();
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							exit = CheckCertificate(settings, ref message);
+							if (exit) Next();
+						}
+						else
+						{
+							exit = true;
+							Back();
+						}
+					} while (!exit);
 				}
 				else if (form[2].Clicked && !OSInfo.IsWindows)
 				{
-					form = new ConsoleForm(@"
+					do
+					{
+						form = new ConsoleForm(@"
 Let's Encrypt Certificate:
 ==========================
 
@@ -788,14 +958,20 @@ Email:   [?LetsEncryptCertificateEmail                                     ]
 Domains: [?LetsEncryptCertificateDomains                                     ]
 
 [  Next  ]  [  Back  ]")
-.Load(settings)
-.ShowDialog();
-					if (form["Next"].Clicked)
-					{
-						form.Save(settings);
-						Next();
-					}
-					else Back();
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							exit = CheckCertificate(settings, ref message);
+							if (exit) Next();
+						}
+						else
+						{
+							exit = true;
+							Back();
+						}
+					} while (!exit);
 				}
 				else
 				{
@@ -817,6 +993,96 @@ Configure Certificate Manually:
 				}
 			});
 			return this;
+		}
+		public bool CheckCertificate(CommonSettings settings, ref string warning)
+		{
+			warning = "";
+			if (settings.ConfigureCertificateManually) return true;
+			if (!string.IsNullOrEmpty(settings.LetsEncryptCertificateEmail))
+			{
+				if (settings.LetsEncryptCertificateEmail.Contains('@')) return true;
+				else
+				{
+					warning = "Invaid Email!";
+					return false;
+				}
+			}
+			if (!string.IsNullOrEmpty(settings.CertificateFile))
+			{
+				if (File.Exists(settings.CertificateFile))
+				{
+					try
+					{
+						var cert = new X509Certificate2(settings.CertificateFile, settings.Password);
+						if (cert != null) return true;
+						else
+						{
+							warning = "Invalid Password!";
+							return false;
+						}
+					}
+					catch
+					{
+						warning = "Invalid Password!";
+						return false;
+					}
+				}
+				else
+				{
+					warning = "Certificate file not found!";
+					return false;
+				}
+			}
+			if (!string.IsNullOrEmpty(settings.CertificateStoreLocation) &&
+				!string.IsNullOrEmpty(settings.CertificateStoreName) &&
+				!string.IsNullOrEmpty(settings.CertificateFindType) &&
+				!string.IsNullOrEmpty(settings.CertificateFindValue))
+			{
+				try
+				{
+					StoreLocation location;
+					StoreName name;
+					X509FindType findType;
+					if (!Enum.TryParse(settings.CertificateStoreLocation, out location))
+					{
+						warning = "Invalid Store Location, valid values are 'LocalMachine' or 'CurrentUser'!";
+						return false;
+					}
+					if (!Enum.TryParse(settings.CertificateStoreName, out name))
+					{
+						warning = "Invalid Store Name!";
+						return false;
+
+					}
+					if (!Enum.TryParse(settings.CertificateFindType, out findType))
+					{
+						warning = "Invalid FindType!";
+						return false;
+					}
+
+					var store = new X509Store(name, location);
+					store.Open(OpenFlags.ReadOnly);
+					var cert = store.Certificates.Find(findType, settings.CertificateFindValue, true);
+					if (cert != null && cert.Count > 0) return true;
+					else
+					{
+						warning = "Certificate not foud!";
+						return false;	
+					}
+				}
+				catch
+				{
+					warning = "Certificate not found!";
+					return false;
+				}
+			}
+			else
+			{
+				warning = "Certificate not found!";
+				return false;
+			}
+			warning = "Certificate not found!";
+			return false;
 		}
 		public override UI.SetupWizard Finish()
 		{
@@ -934,8 +1200,12 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 			}
 			catch (Exception ex)
 			{
-				Installer.Current.Error = ExceptionDispatchInfo.Capture(ex);
+				UI.ShowError(ex);
 				return false;
+			}
+			finally
+			{
+				Installer.Current.Cleanup();
 			}
 		}
 	}
@@ -1370,9 +1640,20 @@ Enterprise Server Url: [?EnterpriseServerUrl http://localhost:9002              
 
 	public override void ShowError(Exception ex)
 	{
-		Console.Clear();
-		Console.WriteLine("Error:");
-		Console.WriteLine(ex.ToString());
+		var form = new ConsoleForm(@$"Error:
+======
+
+An error occurred during installation: {ex.Message}. Please consult the log file.
+
+[  Show Error Details  ]  [  Cancel  ]");
+		form.ShowDialog();
+		if (form[0].Clicked)
+		{
+			Console.Clear();
+			Console.WriteLine("Error:");
+			Console.WriteLine(ex.ToString());
+			Console.ReadKey();
+		}
 	}
 
 	const int ProgressMaximum = 1000;
