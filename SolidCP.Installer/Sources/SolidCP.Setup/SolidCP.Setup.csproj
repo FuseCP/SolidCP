@@ -86,7 +86,7 @@
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
             <Link>DllsNetCore\System.Management.dll</Link>
         </EmbeddedResource>
-        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll">
+        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll;$(PkgMono_Posix_NETStandard)\runtimes\**\*.so">
             <LogicalName>Dlls/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
             <Link>Dlls\runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
         </EmbeddedResource>
