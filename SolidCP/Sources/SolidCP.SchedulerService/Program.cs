@@ -65,12 +65,17 @@ namespace SolidCP.SchedulerService
             ServiceBase.Run(ServicesToRun);
 #else
             var builder = Host.CreateDefaultBuilder(args);
-			if (OSInfo.IsWindows) builder.UseWindowsService();
-			else if (OSInfo.IsSystemd) builder.UseSystemd();
 
 			ScheduleWorker.RunAsService = true;
 			
-            builder.ConfigureServices(services => services.AddHostedService<ScheduleWorker>());
+			builder.ConfigureServices((hostContext, services) =>
+			{
+				Web.Services.Configuration.Read(hostContext.Configuration, args);
+				services.AddHostedService<ScheduleWorker>();
+			});
+
+			if (OSInfo.IsWindows) builder.UseWindowsService();
+			else if (OSInfo.IsSystemd) builder.UseSystemd();
 
 			var host = builder.Build();
 			host.Run();

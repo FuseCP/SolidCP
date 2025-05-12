@@ -98,51 +98,34 @@ namespace SolidCP.Web.Services
 		public static void Init(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-			Configuration.ProbingPaths = builder.Configuration["probingPaths"];
-			AssemblyLoaderNetCore.Init();
-			string urls = null;
-			var urlsParPos = Array.IndexOf(args, "--urls");
-			if (urlsParPos >= 0 && urlsParPos < args.Length - 1) urls = args[urlsParPos + 1];
-			urls = urls ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ??
-				Environment.GetEnvironmentVariable("DOTNET_URLS") ??
-				builder.Configuration["applicationUrls"];
-			foreach (var url in urls.Split(';'))
-			{
-				var uri = new Uri(url);
-				if (uri.Scheme == "http")
-				{
-					Configuration.HttpPort = HttpPort = uri.Port;
-					Configuration.HttpHost = HttpHost = uri.Host;
-				}
-				else if (uri.Scheme == "https")
-				{
-					Configuration.HttpsPort = HttpsPort = uri.Port;
-					Configuration.HttpsHost = HttpsHost = uri.Host;
-				}
-				else if (uri.Scheme == "net.tcp")
-				{
-					Configuration.NetTcpPort = uri.Port;
-					Configuration.NetTcpHost = uri.Host;
-				}
-			}
-			Configuration.StoreLocation = StoreLocation = builder.Configuration.GetValue<StoreLocation?>("ServerCertificate:StoreLocation") ?? StoreLocation.LocalMachine;
-			Configuration.StoreName = StoreName = builder.Configuration.GetValue<StoreName?>("ServerCertificate:StoreName") ?? StoreName.My;
-			Configuration.FindType = FindType = builder.Configuration.GetValue<X509FindType?>("ServerCertificate:FindType") ?? X509FindType.FindBySubjectName;
-			Configuration.CertificateName = CertificateName = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
-			Configuration.CertificateFile = CertificateFile = builder.Configuration.GetValue<string>("ServerCertificate:File");
-			Configuration.CertificatePassword = CertificatePassword = builder.Configuration.GetValue<string>("ServerCertificate:Password");
-			Configuration.Password = Password = builder.Configuration.GetValue<string>("Server:Password") ?? String.Empty;
-			Configuration.AllowedHosts = AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "*";
-			Configuration.TraceLevel = TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
-			Configuration.KeyFile = KeyFile = builder.Configuration.GetValue<string>("ServerCertificate:KeyFile");
-			Configuration.ExposeWebServices = ExposeWebServices = builder.Configuration.GetValue<string>("exposeWebServices") ?? "";
-			Configuration.WebApplicationsPath = WebApplicationsPath = builder.Configuration.GetValue<string>("EnterpriseServer:WebApplicationPath");
-			Configuration.ServerRequestTimeout = ServerRequestTimeout = builder.Configuration.GetValue<int?>("EnterpriseServer:ServerRequestTimeout") ?? -1;
-			Configuration.ConnectionString = ConnectionString = builder.Configuration.GetValue<string>("EnterpriseServer:ConnectionString");
-			Configuration.AltConnectionString = AltConnectionString = builder.Configuration.GetValue<string>("EnterpriseServer:AltConnectionString");
-			Configuration.CryptoKey = CryptoKey = builder.Configuration.GetValue<string>("EnterpriseServer:CryptoKey");
-			Configuration.AltCryptoKey = AltCryptoKey = builder.Configuration.GetValue<string>("EnterpriseServer:AltCryptoKey");
-			Configuration.EncryptionEnabled = EncryptionEnabled = builder.Configuration.GetValue<bool?>("EnterpriseServer:EncryptionEnabled");
+			Configuration.Read(builder.Configuration, args);
+
+			HttpPort = Configuration.HttpPort;
+			HttpHost = Configuration.HttpHost;
+			HttpsPort = Configuration.HttpsPort;
+			HttpsHost = Configuration.HttpsHost;
+			NetTcpPort = Configuration.NetTcpPort;
+			NetTcpHost = Configuration.NetTcpHost;
+			StoreLocation = Configuration.StoreLocation;
+			StoreName = Configuration.StoreName;
+			FindType = Configuration.FindType;
+			CertificateName = Configuration.CertificateName;
+			CertificateFile = Configuration.CertificateFile;
+			CertificatePassword = Configuration.CertificatePassword;
+			Password = Configuration.Password;
+			AllowedHosts = Configuration.AllowedHosts;
+			TraceLevel = Configuration.TraceLevel;
+			KeyFile = Configuration.KeyFile;
+			ExposeWebServices = Configuration.ExposeWebServices;
+			WebApplicationsPath = Configuration.WebApplicationsPath;
+			ServerRequestTimeout = Configuration.ServerRequestTimeout;
+			ConnectionString = Configuration.ConnectionString;
+			AltConnectionString = Configuration.AltConnectionString;
+			CryptoKey = Configuration.CryptoKey;
+			AltCryptoKey = Configuration.AltCryptoKey;
+			EncryptionEnabled = Configuration.EncryptionEnabled;
+			TraceLevel = Configuration.TraceLevel;
+			IsLocalService = Configuration.IsLocalService;
 
 			if (TraceLevel != TraceLevel.Off)
 			{
@@ -150,8 +133,6 @@ namespace SolidCP.Web.Services
 				Trace.Listeners.Add(listener);
 				Log($"Trace level set to {TraceLevel}");
 			}
-			Configuration.IsLocalService = Configuration.AllowedHosts.Split(';')
-				.All(host => host != "*" && host != "0.0.0.0" && DnsService.IsHostLAN(host)); // local network ip
 
 			Server.ConfigurationComplete?.Invoke();
 
