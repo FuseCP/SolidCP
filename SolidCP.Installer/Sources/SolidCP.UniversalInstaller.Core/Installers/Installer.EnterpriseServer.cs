@@ -87,6 +87,8 @@ public abstract partial class Installer
 
 			DatabaseUtils.InstallFreshDatabase(connstr, db, user, password, progress => Log.WriteLine("."));
 
+			if (string.IsNullOrEmpty(settings.CryptoKey)) settings.CryptoKey = Utils.GetRandomString(20);
+
 			var cryptor = new Cryptor(settings.CryptoKey);
 			DatabaseUtils.SetServerAdminPassword(connstr, db, cryptor.Encrypt(settings.ServerAdminPassword));
 
