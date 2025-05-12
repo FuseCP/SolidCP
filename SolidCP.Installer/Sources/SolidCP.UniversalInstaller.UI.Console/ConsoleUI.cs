@@ -611,7 +611,11 @@ Password: [?DatabasePassword                               ]
 							{
 								form.Save(settings);
 								exit = CheckDbConnection(settings, ref message);
-								if (exit) Next();
+								if (exit)
+								{
+									settings.DatabasePassword = settings.DatabaseUser = null;
+									Next();
+								}
 							}
 							else
 							{
@@ -646,7 +650,11 @@ Password: [?DatabasePassword                               ]
 							{
 								form.Save(settings);
 								exit = CheckDbConnection(settings, ref message);
-								if (exit) Next();
+								if (exit)
+								{
+									settings.DatabasePassword = settings.DatabaseUser = null;
+									Next();
+								}
 							}
 							else
 							{
@@ -1155,7 +1163,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 				var reportProgress = () => SetProgressValue(n++);
 				Installer.Current.Log.OnWrite += reportProgress;
 				Installer.Current.OnInfo += SetProgressText;
-				Installer.Current.OnError += UI.ShowError;
+				//Installer.Current.OnError += UI.ShowError;
 
 				Installer.Current.WaitForDownloadToComplete();
 
@@ -1163,7 +1171,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 
 				Installer.Current.Log.OnWrite -= reportProgress;
 				Installer.Current.OnInfo -= SetProgressText;
-				Installer.Current.OnError -= UI.ShowError;
+				//Installer.Current.OnError -= UI.ShowError;
 
 				Next();
 			});

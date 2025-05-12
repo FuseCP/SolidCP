@@ -27,7 +27,7 @@ public abstract partial class Installer
 	public virtual void CreateServerUser() => CreateUser(Settings.Server);
 	public virtual void RemoveServerUser() => RemoveUser(Settings.Server.Username);
 	public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
-	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCP.ToLower());
+	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCPGroup);
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();

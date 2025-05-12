@@ -13,7 +13,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void CreateWebDavPortalUser() => CreateUser(Settings.WebDavPortal);
 		public virtual void RemoveWebDavPortalUser() => RemoveUser(Settings.WebDavPortal.Username);
 		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(WebDavPortalFolder);
-		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(WebDavPortalFolder, Settings.WebDavPortal.Username, SolidCP.ToLower());
+		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(WebDavPortalFolder, Settings.WebDavPortal.Username, SolidCPGroup);
 		public virtual void InstallWebDavPortal()
 		{
 			InstallWebDavPortalPrerequisites();

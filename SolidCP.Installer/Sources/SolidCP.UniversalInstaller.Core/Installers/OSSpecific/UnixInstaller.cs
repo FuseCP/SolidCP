@@ -21,7 +21,8 @@ public abstract class UnixInstaller : Installer
 	public virtual string UnixServerServiceId => "solidcp-server";
 	public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
 	public virtual string UnixPortalServiceId => "solidcp-portal";
-	public virtual string SolidCPUnixGroup => "solidcp";
+	public virtual string SolidCPGroup => SolidCP.ToLower();
+	public virtual string SolidCPUnixGroup => SolidCPGroup;
 	public UnixInstaller() : base() { }
 
 	public override void InstallWebsite(string name, string path, CommonSettings settings,

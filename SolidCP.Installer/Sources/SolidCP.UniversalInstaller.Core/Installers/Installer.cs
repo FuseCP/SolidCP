@@ -53,7 +53,8 @@ public abstract partial class Installer
 	public virtual bool IsUpdateAction => Settings.Installer.Action == SetupActions.Update;
 	public virtual bool IsSetupAction => Settings.Installer.Action == SetupActions.Setup;
 	public virtual bool IsUninstallAction => Settings.Installer.Action == SetupActions.Uninstall;
-	public virtual string SolidCPUnixGroup => "solidcp";
+	public virtual string SolidCPGroup => SolidCP.ToLower();
+	public virtual string SolidCPUnixGroup => SolidCPGroup;
 	public Action OnExit { get; set; }
 	public Action<Exception> OnError { get; set; }
 

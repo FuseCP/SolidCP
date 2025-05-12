@@ -25,7 +25,7 @@ public abstract partial class Installer
 	public virtual void CreateEnterpriseServerUser() => CreateUser(Settings.EnterpriseServer);
 	public virtual void RemoveEnterpriseServerUser() => RemoveUser(Settings.EnterpriseServer.Username);
 	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
-	public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCP.ToLower());
+	public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCPGroup);
 	public virtual void InstallEnterpriseServer()
 	{
 		ResetEstimatedOutputLines();

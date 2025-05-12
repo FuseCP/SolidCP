@@ -23,7 +23,7 @@ public abstract partial class Installer
 	public virtual void CreateWebPortalUser() => CreateUser(Settings.WebPortal);
 	public virtual void RemoveWebPortalUser() => RemoveUser(Settings.WebPortal.Username);
 	public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
-	public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCP.ToLower());
+	public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCPGroup);
 	public virtual void InstallWebPortalWebsite()
 	{
 		var web = Path.Combine(InstallWebRootPath, WebPortalFolder);
