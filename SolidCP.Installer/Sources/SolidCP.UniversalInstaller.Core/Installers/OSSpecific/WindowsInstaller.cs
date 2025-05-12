@@ -804,43 +804,7 @@ public class WindowsInstaller : Installer
 		}
 	}
 
-	public virtual void CreateUser(CommonSettings settings)
-	{
-		var username = settings.Username;
-		var password = settings.Password;
-		string domain = "";
-		if (settings.UseActiveDirectory)
-		{
-			var tokens = username.Split('\\');
-			if (tokens.Length == 2)
-			{
-				domain = tokens[0];
-				username = tokens[1];
-			}
-		}
-
-		const string UserAccountDescription = "{0} account for anonymous access to Internet Information Services";
-
-		var description = String.Format(UserAccountDescription, settings.ComponentName);
-		var memberOf = new string[0];
-
-		// create account
-		SystemUserItem user = new SystemUserItem
-		{
-			Domain = domain,
-			Name = username,
-			FullName = username,
-			Description = description,
-			MemberOf = memberOf,
-			Password = password,
-			PasswordCantChange = true,
-			PasswordNeverExpires = true,
-			AccountDisabled = false,
-			System = true
-		};
-
-		SecurityUtils.CreateUser(user);
-	}
+	public virtual void CreateUser(CommonSettings settings) => CreateWindowsAccount(settings);
 	public virtual void RemoveUser(string username)
 	{
 		if (!string.IsNullOrEmpty(username))

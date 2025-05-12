@@ -43,7 +43,7 @@ namespace SolidCP.UniversalInstaller
 			InstallWebsite(WebDavPortalSiteId,
 				web,
 				Settings.WebDavPortal,
-				UnixWebDavPortalServiceId,
+				SolidCPUnixGroup,
 				dll,
 				"SolidCP.WebDavPortal service, the WebDavPortal for the SolidCP control panel.",
 				UnixWebDavPortalServiceId);

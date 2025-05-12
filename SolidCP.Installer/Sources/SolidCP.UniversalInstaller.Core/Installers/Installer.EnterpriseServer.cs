@@ -155,7 +155,7 @@ public abstract partial class Installer
 		InstallWebsite(EnterpriseServerSiteId,
 			web,
 			Settings.EnterpriseServer,
-			UnixEnterpriseServerServiceId,
+			SolidCPUnixGroup,
 			dll,
 			"SolidCP.EnterpriseServer service, the EnterpriseServer for the SolidCP control panel.",
 			UnixEnterpriseServerServiceId);

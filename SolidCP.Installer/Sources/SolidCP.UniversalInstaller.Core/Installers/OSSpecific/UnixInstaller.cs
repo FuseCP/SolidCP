@@ -126,8 +126,11 @@ public abstract class UnixInstaller : Installer
 	}
 	public override void CreateUser(CommonSettings settings)
 	{
-		AddUnixGroup(SolidCPUnixGroup);
-		AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
+		Transaction(() =>
+		{
+			AddUnixGroup(SolidCPUnixGroup);
+			AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
+		}).WithRollback(() => RemoveUser(settings.Username));
 	}
 	public override void RemoveUser(string username) => Shell.Standard.Exec($"userdel {username}");
 

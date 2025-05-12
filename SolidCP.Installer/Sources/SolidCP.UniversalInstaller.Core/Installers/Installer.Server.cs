@@ -73,7 +73,7 @@ public abstract partial class Installer
 		InstallWebsite(ServerSiteId,
 			web,
 			Settings.Server,
-			UnixServerServiceId,
+			SolidCPUnixGroup,
 			dll,
 			"SolidCP.Server service, the server management service for the SolidCP control panel.",
 			UnixServerServiceId);

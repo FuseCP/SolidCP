@@ -31,7 +31,7 @@ public abstract partial class Installer
 		InstallWebsite(WebPortalSiteId,
 			web,
 			Settings.WebPortal,
-			UnixPortalServiceId,
+			SolidCPUnixGroup,
 			dll,
 			"SolidCP.WebPortal service, the portal service for the SolidCP control panel.",
 			UnixPortalServiceId);
