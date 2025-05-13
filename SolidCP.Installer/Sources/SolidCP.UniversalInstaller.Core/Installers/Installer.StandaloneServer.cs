@@ -53,7 +53,7 @@ namespace SolidCP.UniversalInstaller
 			ResetEstimatedOutputLines();
 			CountInstallDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(true, StandardInstallFilter);
+			CopyStandaloneServer(true, StandaloneInstallFilter);
 			CreateStandaloneUsers();
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
@@ -69,7 +69,7 @@ namespace SolidCP.UniversalInstaller
 			ResetEstimatedOutputLines();
 			CountUpdateDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(true, StandardUpdateFilter);
+			CopyStandaloneServer(true, StandaloneUpdateFilter);
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			UpdateDatabase();

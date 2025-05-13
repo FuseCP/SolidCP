@@ -115,15 +115,11 @@ namespace SolidCP.UniversalInstaller.WinForms
 				{
 					if (Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)))
 					{
-						Settings.EnterpriseServerPath = $"..\\{Installer.Current.EnterpriseServerFolder}";
+						Settings.EnterpriseServerPath = Path.Combine("..", "Installer.Current.EnterpriseServerFolder");
 					}
 					else if (Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder))))
 					{
-						Settings.EnterpriseServerPath = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
-					}
-					if (!OSInfo.IsWindows)
-					{
-						Settings.EnterpriseServerPath = Settings.EnterpriseServerPath.Replace('\\', Path.DirectorySeparatorChar);
+						Settings.EnterpriseServerPath = Path.Combine("..", Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder));
 					}
 				}
 			}
@@ -158,7 +154,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		private bool CheckFields() => true;
 
-		private string DefaultEntServerPath => $"..\\{Global.EntServer.ComponentName}";
+		private string DefaultEntServerPath => Path.Combine("..", Global.EntServer.ComponentName);
 		private string AbsolutePath(string relativePath) => Path.IsPathRooted(relativePath) ? relativePath :
 			Path.GetFullPath(Path.Combine(Settings.InstallFolder, relativePath));
 		private string RelativePath(string absolutePath) => GetRelativePath(Settings.InstallFolder, absolutePath);

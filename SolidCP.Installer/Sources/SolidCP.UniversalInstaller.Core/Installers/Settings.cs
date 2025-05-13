@@ -100,7 +100,7 @@ namespace SolidCP.UniversalInstaller
 			WebSitePort = 9001;
 		}
 		public string EnterpriseServerUrl { get; set; } = "assembly://SolidCP.EnterpriseServer";
-		public string EnterpriseServerPath { get; set; } = "..\\EnterpriseServer";
+		public string EnterpriseServerPath { get; set; } = Path.Combine("..", "EnterpriseServer");
 		public bool EmbedEnterpriseServer { get; set; } = true;
 		public bool ExposeEnterpriseServerWebServices { get; set; } = true;
 		public override string ComponentCode => Global.WebPortal.ComponentCode;

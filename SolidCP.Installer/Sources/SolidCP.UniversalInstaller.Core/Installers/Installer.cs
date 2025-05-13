@@ -579,7 +579,20 @@ public abstract partial class Installer
 	}
 	public virtual string StandardInstallFilter(string file) => SetupFilter(file);
 	public virtual string StandardUpdateFilter(string file) => ConfigAndSetupFilter(file);
-
+	static string ESFolder = $"{Path.DirectorySeparatorChar}Enterprise Server{Path.DirectorySeparatorChar}";
+	static string Replace = $"{Path.DirectorySeparatorChar}EnterpriseServer{Path.DirectorySeparatorChar}";
+	public virtual string StandaloneInstallFilter(string file)
+	{
+		file = SetupFilter(file);
+		if (file != null && !OSInfo.IsWindows) file = file.Replace(ESFolder, Replace);
+		return file;
+	}
+	public virtual string StandaloneUpdateFilter(string file)
+	{
+		file = ConfigAndSetupFilter(file);
+		if (file != null && !OSInfo.IsWindows) file = file.Replace(ESFolder, Replace);
+		return file;
+	}
 	public virtual void CopyFile(string source, string destination, bool settings = false)
 	{
 		if (File.Exists(source))
@@ -815,7 +828,7 @@ public abstract partial class Installer
 			Enum.TryParse<X509FindType>(settings.CertificateFindType, out appsettings.Certificate.FindType);
 		}
 
-		if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
+		if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = Path.Combine("..", "bin", "netstandard");
 
 		if (settings is WebPortalSettings wsettings)
 		{

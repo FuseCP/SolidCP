@@ -221,13 +221,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			get
 			{
-				var folder1 = $"..\\{Installer.Current.EnterpriseServerFolder}";
-				var folder2 = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
-				if (!OSInfo.IsWindows)
-				{
-					folder1 = folder1.Replace('\\', '/');
-					folder2 = folder2.Replace('\\', '/');
-				}
+				var folder1 = Path.Combine("..", Installer.Current.EnterpriseServerFolder);
+				var folder2 = Path.Combine("..", Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder));
 				if (Directory.Exists(folder1))
 				{
 					return folder1;
