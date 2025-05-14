@@ -114,6 +114,8 @@ public abstract class UnixInstaller : Installer
 	public virtual void AddUnixGroup(string group) => Shell.Exec($"groupadd {group}");
 	public virtual void AddUnixUser(string user, string group, string password)
 	{
+		if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password)) return;
+
 		Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
 
 		var shell = Shell.ExecAsync($"passwd {user}");
