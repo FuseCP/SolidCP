@@ -31,7 +31,7 @@ public abstract partial class Installer
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(true, StandardInstallFilter);
+		CopyServer(true);//, StandardInstallFilter);
 		CreateServerUser();
 		SetServerFilePermissions();
 		SetServerFileOwner();

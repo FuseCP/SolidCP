@@ -256,10 +256,6 @@ public abstract class UnixInstaller : Installer
 		}
 		catch { }
 	}
-
-	public override string StandardInstallFilter(string file) => Net8Filter(base.StandardInstallFilter(file));
-	public override string StandardUpdateFilter(string file) => Net8Filter(base.StandardUpdateFilter(file));
-
 	public override string GetUninstallLog(ComponentSettings settings)
 	{
 		switch (settings.ComponentCode)

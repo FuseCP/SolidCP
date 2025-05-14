@@ -50,6 +50,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void SetStandaloneServerSettings() { }
 		public virtual void InstallStandaloneServer()
 		{
+			if (OSInfo.IsWindows) EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
 			ResetEstimatedOutputLines();
 			CountInstallDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
@@ -66,10 +67,11 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void UpdateStandaloneServer()
 		{
+			if (OSInfo.IsWindows) EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
 			ResetEstimatedOutputLines();
 			CountUpdateDatabaseStatements();
 			InstallStandaloneServerPrerequisites();
-			CopyStandaloneServer(true, StandaloneUpdateFilter);
+			CopyStandaloneServer(true, StandaloneUpdateFiler);
 			SetStandaloneServerFilePermissions();
 			SetStandaloneServerFileOwner();
 			UpdateDatabase();
@@ -99,6 +101,7 @@ namespace SolidCP.UniversalInstaller
 
 		public virtual void RemoveStandaloneServer()
 		{
+			if (OSInfo.IsWindows) EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
 			RemoveWebDavPortalWebsite();
 			RemoveWebPortalWebsite();
 			RemoveServerWebsite();
@@ -113,7 +116,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void ConfigureStandaloneServer() {
 			Settings.WebPortal.EmbedEnterpriseServer = true;
-			if (!EnterpriseServerFolder.Contains(' '))
+			if (OSInfo.IsWindows && !EnterpriseServerFolder.Contains(' '))
 			{
 				EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
 			}

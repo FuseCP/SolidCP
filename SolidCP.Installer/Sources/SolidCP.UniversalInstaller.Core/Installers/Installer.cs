@@ -564,35 +564,33 @@ public abstract partial class Installer
 		file = SetupFilter(file);
 		return (file != null && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
-	public virtual string Net8Filter(string file)
+	public string Net8Filter(string file)
 	{
 		file = SetupFilter(file);
 		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
 			!Regex.IsMatch(file, "(?:^|/)web.config", RegexOptions.IgnoreCase) &&
 			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 	}
-	public string ConfigAndSetupFilter(string file)
+	public virtual string ConfigAndSetupFilter(string file)
 	{
-		file = SetupFilter(file);
+		file = OSInfo.IsWindows ? SetupFilter(file) : Net8Filter(file);
 		return (file != null && !file.EndsWith("/web.config", StringComparison.OrdinalIgnoreCase) &&
 			!Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
-	public virtual string StandardInstallFilter(string file) => SetupFilter(file);
+	public virtual string CorrectEnterpriseServer(string file)
+	{
+		if (OSInfo.IsWindows) return file;
+		if (file == null) return null;
+		if (file == "Enterprise Server") return "EnterpriseServer";
+		if (file.EndsWith("/Enterprise Server")) return file.Substring(0, file.Length - "/Enterprise Server".Length) + "/EnterpriseServer";
+		if (file.StartsWith("Enterprise Server/")) return "EnterpriseServer/" + file.Substring("Enterprise Server/".Length);
+		return file.Replace("/Enterprise Server/", "/EnterpriseServer/");
+		//return Regex.Replace(file, "(?<=/|^)Enterprise Server(?=/|$)", "EnterpriseServer");
+	}
+	public virtual string StandaloneInstallFilter(string file) => CorrectEnterpriseServer(SetupFilter(file));
+	public virtual string StandaloneUpdateFiler(string file) => CorrectEnterpriseServer(ConfigAndSetupFilter(file));
 	public virtual string StandardUpdateFilter(string file) => ConfigAndSetupFilter(file);
-	static string ESFolder = $"{Path.DirectorySeparatorChar}Enterprise Server{Path.DirectorySeparatorChar}";
-	static string Replace = $"{Path.DirectorySeparatorChar}EnterpriseServer{Path.DirectorySeparatorChar}";
-	public virtual string StandaloneInstallFilter(string file)
-	{
-		file = SetupFilter(file);
-		if (file != null && !OSInfo.IsWindows) file = file.Replace(ESFolder, Replace);
-		return file;
-	}
-	public virtual string StandaloneUpdateFilter(string file)
-	{
-		file = ConfigAndSetupFilter(file);
-		if (file != null && !OSInfo.IsWindows) file = file.Replace(ESFolder, Replace);
-		return file;
-	}
+	public virtual string StandardInstallFilter(string file) => OSInfo.IsWindows ? SetupFilter(file) : Net8Filter(file);
 	public virtual void CopyFile(string source, string destination, bool settings = false)
 	{
 		if (File.Exists(source))

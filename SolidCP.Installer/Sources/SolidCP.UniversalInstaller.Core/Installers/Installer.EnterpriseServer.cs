@@ -36,7 +36,7 @@ public abstract partial class Installer
 		ResetEstimatedOutputLines();
 		CountInstallDatabaseStatements();
 		InstallEnterpriseServerPrerequisites();
-		CopyEnterpriseServer(true, StandardInstallFilter);
+		CopyEnterpriseServer(true, this.StandardInstallFilter);
 		CreateEnterpriseServerUser();
 		SetEnterpriseServerFilePermissions();
 		SetEnterpriseServerFileOwner();
