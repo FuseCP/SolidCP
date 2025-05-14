@@ -564,11 +564,10 @@ public abstract partial class Installer
 		file = SetupFilter(file);
 		return (file != null && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
-	public string Net8Filter(string file)
+	public virtual string Net8Filter(string file)
 	{
 		file = SetupFilter(file);
 		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-			!Regex.IsMatch(file, "(?:^|/)web.config", RegexOptions.IgnoreCase) &&
 			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 	}
 	public virtual string ConfigAndSetupFilter(string file)

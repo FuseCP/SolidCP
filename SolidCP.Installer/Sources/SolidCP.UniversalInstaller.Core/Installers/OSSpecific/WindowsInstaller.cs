@@ -35,13 +35,6 @@ public class WindowsInstaller : Installer
 	public override string InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }
 	public override string WebsiteLogsPath => InstallExeRootPath ?? "";
 	WinGet WinGet => (WinGet)((IWindowsOperatingSystem)OSInfo.Current).WinGet;
-	public override string Net8Filter(string file)
-	{
-		file = SetupFilter(file);
-		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-			!Regex.IsMatch(file, "(?:^|/)(?<!(?:^|/)bin_dotnet/)web.config", RegexOptions.IgnoreCase) &&
-			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
-	}
 
 	public override void InstallNet8Runtime()
 	{
