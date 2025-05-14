@@ -2145,6 +2145,9 @@
   <data name="SchedulerTask.SCHEDULE_TASK_AUDIT_LOG_REPORT" xml:space="preserve">
     <value>Send Audit Log Report</value>
   </data>
+  <data name="SchedulerTask.SCHEDULE_TASK_CHECK_WEBSITES_SSL" xml:space="preserve">
+    <value>Check websites SSL certificate</value>
+  </data>
   <data name="SchedulerTask.SCHEDULE_TASK_SUSPEND_PACKAGES" xml:space="preserve">
     <value>Suspend Overused Hosting Spaces</value>
   </data>
