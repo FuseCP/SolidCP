@@ -25,7 +25,12 @@ public abstract partial class Installer
 	public virtual void CreateEnterpriseServerUser() => CreateUser(Settings.EnterpriseServer);
 	public virtual void RemoveEnterpriseServerUser() => RemoveUser(Settings.EnterpriseServer.Username);
 	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
-	public virtual void SetEnterpriseServerFileOwner() => SetFileOwner(EnterpriseServerFolder, Settings.EnterpriseServer.Username, SolidCPGroup);
+	public virtual void SetEnterpriseServerFileOwner()
+	{
+		var user = string.IsNullOrEmpty(Settings.EnterpriseServer.Username) && Settings.WebPortal.EmbedEnterpriseServer ?
+			Settings.WebPortal.Username : Settings.EnterpriseServer.Username;
+		SetFileOwner(EnterpriseServerFolder, user, SolidCPGroup);
+	}
 	public virtual void InstallEnterpriseServer()
 	{
 		ResetEstimatedOutputLines();
