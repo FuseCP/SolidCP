@@ -22,30 +22,30 @@ namespace SolidCP.UniversalInstaller
 		public virtual void CreateStandaloneUsers()
 		{
 			CreateServerUser();
-			CreateEnterpriseServerUser();
+			if (!Settings.WebPortal.EmbedEnterpriseServer) CreateEnterpriseServerUser();
 			CreateWebPortalUser();
-			CreateWebDavPortalUser();
+			if (OSInfo.IsWindows) CreateWebDavPortalUser();
 		}
 
 		public virtual void RemoveStandaloneUsers()
 		{
 			RemoveServerUser();
-			RemoveEnterpriseServerUser();
+			if (!Settings.WebPortal.EmbedEnterpriseServer) RemoveEnterpriseServerUser();
 			RemoveWebPortalUser();
-			RemoveWebDavPortalUser();
+			if (OSInfo.IsWindows) RemoveWebDavPortalUser();
 		}
 		public virtual void SetStandaloneServerFilePermissions() {
 			SetEnterpriseServerFilePermissions();
 			SetServerFilePermissions();
 			SetWebPortalFilePermissions();
-			SetWebDavPortalFilePermissions();
+			if (OSInfo.IsWindows) SetWebDavPortalFilePermissions();
 		}
 		public virtual void SetStandaloneServerFileOwner()
 		{
 			SetEnterpriseServerFileOwner();
 			SetServerFileOwner();
 			SetWebPortalFileOwner();
-			SetWebDavPortalFileOwner();
+			if (OSInfo.IsWindows) SetWebDavPortalFileOwner();
 		}
 		public virtual void SetStandaloneServerSettings() { }
 		public virtual void InstallStandaloneServer()

@@ -18,11 +18,11 @@ public abstract class UnixInstaller : Installer
 	public override string InstallExeRootPath { get => base.InstallExeRootPath ?? $"/usr/local/{SolidCP}"; set => base.InstallExeRootPath = value; }
 	public override string InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
 	public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
-	public virtual string UnixServerServiceId => "solidcp-server";
-	public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
-	public virtual string UnixPortalServiceId => "solidcp-portal";
-	public virtual string SolidCPGroup => SolidCP.ToLower();
-	public virtual string SolidCPUnixGroup => SolidCPGroup;
+	public override string UnixServerServiceId => "solidcp-server";
+	public override string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
+	public override string UnixPortalServiceId => "solidcp-portal";
+	public override string SolidCPGroup => SolidCP.ToLower();
+	public override string SolidCPUnixGroup => SolidCPGroup;
 	public UnixInstaller() : base() { }
 
 	public override void InstallWebsite(string name, string path, CommonSettings settings,

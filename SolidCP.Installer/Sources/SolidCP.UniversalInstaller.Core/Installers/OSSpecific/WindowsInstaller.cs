@@ -804,8 +804,8 @@ public class WindowsInstaller : Installer
 		}
 	}
 
-	public virtual void CreateUser(CommonSettings settings) => CreateWindowsAccount(settings);
-	public virtual void RemoveUser(string username)
+	public override void CreateUser(CommonSettings settings) => CreateWindowsAccount(settings);
+	public override void RemoveUser(string username)
 	{
 		if (!string.IsNullOrEmpty(username))
 		{
