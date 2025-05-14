@@ -194,7 +194,7 @@ public abstract partial class Installer
 	public virtual void ReadEnterpriseServerConfigurationNetFX()
 	{
 
-		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "web.config");
+		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "Web.config");
 
 		if (!File.Exists(confFile)) return;
 
@@ -238,8 +238,8 @@ public abstract partial class Installer
 	{
 		var settings = Settings.EnterpriseServer;
 
-		var confFile = webPortalEmbedded ? Path.Combine(InstallWebRootPath, WebPortalFolder, "web.config") :
-			Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "web.config");
+		var confFile = webPortalEmbedded ? Path.Combine(InstallWebRootPath, WebPortalFolder, "Web.config") :
+			Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "Web.config");
 
 		if (!File.Exists(confFile)) return;
 
@@ -253,7 +253,7 @@ public abstract partial class Installer
 		if (webPortalEmbedded)
 		{
 			// read CryptoKey
-			var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, WebPortalFolder, Settings.WebPortal.EnterpriseServerPath, "web.config"));
+			var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, WebPortalFolder, Settings.WebPortal.EnterpriseServerPath, "Web.config"));
 			if (File.Exists(esConfFile))
 			{
 				var esConf = XElement.Load(esConfFile);

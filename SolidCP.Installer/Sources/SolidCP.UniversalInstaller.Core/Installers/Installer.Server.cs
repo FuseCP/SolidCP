@@ -91,11 +91,11 @@ public abstract partial class Installer
 	public virtual void RemoveServerApplicationPool() { }
 	public virtual void ReadServerConfigurationNetFX()
 	{
-		// Read Server configuration from Server web.config
+		// Read Server configuration from Server Web.config
 
 		Settings.Server = new ServerSettings();
 
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
+		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "Web.config");
 
 		if (File.Exists(confFile))
 		{
@@ -127,7 +127,7 @@ public abstract partial class Installer
 	public virtual void ConfigureServerNetFX()
 	{
 		var settings = Settings.Server;
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
+		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "Web.config");
 		var configuration = XElement.Load(confFile);
 
 		ConfigureCertificateNetFX(settings, configuration);

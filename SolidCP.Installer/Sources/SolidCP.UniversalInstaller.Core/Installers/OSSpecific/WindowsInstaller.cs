@@ -667,7 +667,7 @@ public class WindowsInstaller : Installer
 		if (appSettings == null) xml.Add(appSettings = new XElement("appSettings"));
 
 		var conStrElement = conStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-		var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "web.config"));
+		var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "Web.config"));
 		if (File.Exists(esConfFile))
 		{
 			var esConf = XElement.Load(esConfFile);
