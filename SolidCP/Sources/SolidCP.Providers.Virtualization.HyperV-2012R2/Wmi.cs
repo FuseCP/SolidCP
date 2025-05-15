@@ -103,8 +103,7 @@ namespace SolidCP.Providers.Virtualization
         {
             ManagementObjectCollection col = obj.GetRelated(className);
             ManagementObjectCollection.ManagementObjectEnumerator enumerator = col.GetEnumerator();
-            enumerator.MoveNext();
-            return (ManagementObject)enumerator.Current;
+            return enumerator.MoveNext() ? (ManagementObject)enumerator.Current : null;
         }
 
         internal void Dump(ManagementBaseObject obj)

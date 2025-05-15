@@ -63,7 +63,10 @@ namespace SolidCP.Portal.ProviderControls
         {
             txtServerName.Text = settings["ServerName"];
             radioServer.SelectedIndex = (txtServerName.Text == "") ? 0 : 1;
-            
+            radioCimSessionMode.SelectedValue = settings["CimSessionMode"];
+            radioCimSessionMode.SelectedIndex = string.IsNullOrEmpty(radioCimSessionMode.SelectedValue)
+                ? 0 : radioCimSessionMode.SelectedIndex;
+
             // bind networks
             BindNetworksList();
 
@@ -205,10 +208,14 @@ namespace SolidCP.Portal.ProviderControls
 
         void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
         {            
-            if (radioServer.SelectedIndex == 0)
+            if (radioServer.SelectedIndex == 0){
                 settings["ServerName"] = "";
-            else
+                settings["CimSessionMode"] = "0";
+            }
+            else{
                 settings["ServerName"] = txtServerName.Text.Trim();
+                settings["CimSessionMode"] = radioCimSessionMode.SelectedValue;
+            }
 
             // MaintenanceMode
             settings["MaintenanceMode"] = radioMaintenanceMode.SelectedValue;
@@ -450,11 +457,13 @@ namespace SolidCP.Portal.ProviderControls
         private void ToggleControls()
         {
             ServerNameRow.Visible = (radioServer.SelectedIndex == 1);
+            ServerCimSessionModeRow.Visible = (radioServer.SelectedIndex == 1);
 
             txtRamReserve.Enabled = true;
             if (radioServer.SelectedIndex == 0)
             {
-                txtServerName.Text = "";                
+                txtServerName.Text = "";         
+                radioCimSessionMode.SelectedIndex = 0;
             }
             else
             {
