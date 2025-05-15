@@ -96,17 +96,17 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Configuration" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.1" ExcludeAssets="runtime" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.1" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.1" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Configuration" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.2" ExcludeAssets="runtime" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.2" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.2" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
         
         <!-- .NET 8 for SolidCP.EnterpriseServer.Data -->
