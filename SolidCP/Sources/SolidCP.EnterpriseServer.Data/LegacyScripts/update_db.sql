@@ -21340,7 +21340,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250419122736_InitialCreate'
+    WHERE [MigrationId] = N'20250515113607_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
@@ -21377,12 +21377,12 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250419122736_InitialCreate'
+    WHERE [MigrationId] = N'20250515113607_InitialCreate'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
     VALUES
-		(N'20250419122736_InitialCreate', N'9.0.3');
+		(N'20250515113607_InitialCreate', N'9.0.3');
 END;
 GO
 

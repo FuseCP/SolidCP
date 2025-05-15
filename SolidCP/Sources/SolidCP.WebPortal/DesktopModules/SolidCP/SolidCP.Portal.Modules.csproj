@@ -80,6 +80,8 @@
         <Compile Include="ApplyEnableHardQuotaFeature.ascx.designer.cs">
             <DependentUpon>ApplyEnableHardQuotaFeature.ascx</DependentUpon>
         </Compile>
+        <Compile Include="ScheduleTaskControls\CheckWebsitesSslView.ascx.cs" />
+        <Compile Include="ScheduleTaskControls\CheckWebsitesSslView.ascx.designer.cs" />
         <Content Include="App_Code\APIMailCleanerHelper.cs" />
         <Compile Include="AuditLog.ascx.cs">
             <DependentUpon>AuditLog.ascx</DependentUpon>
@@ -6794,6 +6796,8 @@
         <Content Include="ScheduleTaskControls\App_LocalResources\CheckWebsite.ascx.de-DE.resx" />
         <Content Include="ScheduleTaskControls\App_LocalResources\DomainExpirationView.ascx.de-DE.resx" />
         <Content Include="ScheduleTaskControls\App_LocalResources\DomainLookupView.ascx.de-DE.resx" />
+        <EmbeddedResource Include="ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.de-DE.resx" />
+        <EmbeddedResource Include="ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx" />
         <EmbeddedResource Include="ScheduleTaskControls\App_LocalResources\DomainLookupView.ascx.resx">
             <Generator>ResXFileCodeGenerator</Generator>
             <LastGenOutput>DomainLookupView.ascx.Designer.cs</LastGenOutput>
@@ -6885,6 +6889,7 @@
         <Content Include="VPSForPC\VdcFastCreateServer.ascx" />
         <Content Include="VPSForPC\VpsAlertsLog.ascx" />
         <Content Include="VPSForPC\VpsCheckPoints.ascx" />
+        <None Include="ScheduleTaskControls\CheckWebsitesSslView.ascx" />
         <None Include="VPSForPC\VpsMonitoring.ascx" />
         <Content Include="VPSForPC\RemoteDesktop\Connect.aspx" />
         <Content Include="VPSForPC\RemoteDesktop\msrdp.cab" />

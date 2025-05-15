@@ -50,8 +50,9 @@ public partial class ScheduleTaskViewConfigurationConfiguration: EntityTypeConfi
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_SUSPEND_PACKAGES", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/SuspendOverusedSpaces.ascx", Environment = "ASP.NET" },
             new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_USER_PASSWORD_EXPIRATION_NOTIFICATION", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/UserPasswordExpirationNotification" +
                 "View.ascx", Environment = "ASP.NET" },
-            new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_ZIP_FILES", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/ZipFiles.ascx", Environment = "ASP.NET" }
-        });
+            new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_ZIP_FILES", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/ZipFiles.ascx", Environment = "ASP.NET" },
+            new ScheduleTaskViewConfiguration() { ConfigurationId = "ASP_NET", TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx", Environment = "ASP.NET" }
+		});
         #endregion
 
     }
