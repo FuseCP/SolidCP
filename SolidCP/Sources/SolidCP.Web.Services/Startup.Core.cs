@@ -222,7 +222,8 @@ namespace SolidCP.Web.Services
 
 			Server.ContentRoot = builder.Environment.ContentRootPath;
 			Server.WebRoot = builder.Environment.WebRootPath;
-
+			if (Server.ContentRoot.EndsWith("bin_dotnet")) Server.ContentRoot = Path.GetDirectoryName(Server.ContentRoot);
+			
 			var app = builder.Build();
 
 			if (app.Environment.IsDevelopment())
