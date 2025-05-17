@@ -120,7 +120,18 @@ public partial class ScheduleTaskParameterConfiguration: EntityTypeConfiguration
             new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_SUSPEND_PACKAGES", ParameterId = "WARNING_USAGE_THRESHOLD", DataTypeId = "String", DefaultValue = "80", ParameterOrder = 1 },
             new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_USER_PASSWORD_EXPIRATION_NOTIFICATION", ParameterId = "DAYS_BEFORE_EXPIRATION", DataTypeId = "String", ParameterOrder = 1 },
             new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_ZIP_FILES", ParameterId = "FOLDER", DataTypeId = "String", ParameterOrder = 1 },
-            new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_ZIP_FILES", ParameterId = "ZIP_FILE", DataTypeId = "String", DefaultValue = "\\archive.zip", ParameterOrder = 2 }
+            new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_ZIP_FILES", ParameterId = "ZIP_FILE", DataTypeId = "String", DefaultValue = "\\archive.zip", ParameterOrder = 2 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "SEND_MAIL_TO_CUSTOMER", DataTypeId = "Boolean", DefaultValue = "true", ParameterOrder = 1 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "SEND_BCC", DataTypeId = "Boolean", DefaultValue = "false", ParameterOrder = 2 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "BCC_MAIL", DataTypeId = "String", DefaultValue = "admin@mydomain.com", ParameterOrder = 3 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "EXPIRATION_MAIL_SUBJECT", DataTypeId = "String", DefaultValue = "Website certificate expiration notice", ParameterOrder = 4 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "EXPIRATION_MAIL_BODY", DataTypeId = "MultiString", DefaultValue = "Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).", ParameterOrder = 5 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "SEND_30_DAYS_BEFORE_EXPIRATION", DataTypeId = "Boolean", DefaultValue = "true", ParameterOrder = 6 },
+       		new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "SEND_14_DAYS_BEFORE_EXPIRATION", DataTypeId = "Boolean", DefaultValue = "true", ParameterOrder = 7 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "SEND_TODAY_EXPIRED", DataTypeId = "Boolean", DefaultValue = "true", ParameterOrder = 8 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "SEND_SSL_ERROR", DataTypeId = "Boolean", DefaultValue = "false", ParameterOrder = 9 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "ERROR_MAIL_SUBJECT", DataTypeId = "String", DefaultValue = "Certificate error or website is unavailable", ParameterOrder = 10 },
+			new ScheduleTaskParameter() { TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL", ParameterId = "ERROR_MAIL_BODY", DataTypeId = "MultiString", DefaultValue = "Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.", ParameterOrder = 11 },
         });
         #endregion
 

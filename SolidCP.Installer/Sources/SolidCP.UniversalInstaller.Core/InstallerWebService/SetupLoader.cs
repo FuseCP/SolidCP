@@ -315,16 +315,13 @@ public class SetupLoader
 
 					Task downloadSetupTask = GetDownloadFileTask(new RemoteFile(info, true), setupFileName, token);
 					
-					if (!SetupOnly)
+					var downloadComponentTask = downloadSetupTask.ContinueWith(async task =>
 					{
-						var downloadComponentTask = downloadSetupTask.ContinueWith(async task =>
-						{
-							RaiseDownloadCompleteEvent();
-							RaiseOnOperationCompletedEvent();
-
-							StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
-						}, token);
-					}
+						RaiseDownloadCompleteEvent();
+						RaiseOnOperationCompletedEvent();
+						
+						if (!SetupOnly) StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
+					}, token);
 					downloadSetupTask.Start();
 				}
 				catch (Exception ex) { }
@@ -526,7 +523,7 @@ public class SetupLoader
 
 				long downloadedSize = 0;
 
-				await Installer.Current.Releases.GetFileAsync(remoteFile, tmpFile,
+				await Installer.Current.Releases.GetFileAsync(sourceFile, tmpFile,
 					(downloaded, fileSize) =>
 					{
 						downloadedSize = downloaded;

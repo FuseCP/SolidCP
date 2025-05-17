@@ -1,19 +1,10 @@
 using System;
 using System.Reflection;
-using SolidCP.Providers;
-using SolidCP.Providers.Web;
-using SolidCP.Providers.OS;
-using SolidCP.Providers.Utils;
 using System.IO.Compression;
-using System.Globalization;
-using System.Security.Policy;
-using System.Diagnostics.Contracts;
 using System.Diagnostics;
-using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Data;
 using System.Net;
-using static System.Net.Mime.MediaTypeNames;
 using System.Collections;
 using System.Security.Cryptography.X509Certificates;
 using System.Xml.Linq;
@@ -21,6 +12,12 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Microsoft.Web.Administration;
+using SolidCP.Providers;
+using SolidCP.Providers.Web;
+using SolidCP.Providers.OS;
+using SolidCP.Providers.Common;
+using SolidCP.Providers.Utils;
+using SolidCP.EnterpriseServer.Data;
 using SolidCP.UniversalInstaller.Core;
 
 namespace SolidCP.UniversalInstaller;
@@ -49,11 +46,15 @@ public abstract partial class Installer
 	public virtual string ComponentTempPath => Path.Combine(TempPath, "Component");
 	public virtual bool IsWindows => OSInfo.IsWindows;
 	public virtual bool IsUnix => OSInfo.IsUnix;
+	public virtual bool IsMac => OSInfo.IsMac;
+	public virtual bool IsSystemd => OSInfo.IsSystemd;
+	public virtual bool IsOpenRC => OSInfo.IsOpenRC;
 	public virtual bool IsInstallAction => Settings.Installer.Action == SetupActions.Install;
 	public virtual bool IsUpdateAction => Settings.Installer.Action == SetupActions.Update;
 	public virtual bool IsSetupAction => Settings.Installer.Action == SetupActions.Setup;
 	public virtual bool IsUninstallAction => Settings.Installer.Action == SetupActions.Uninstall;
-	public virtual string SolidCPUnixGroup => "solidcp";
+	public virtual string SolidCPGroup => SolidCP.ToLower();
+	public virtual string SolidCPUnixGroup => SolidCPGroup;
 	public Action OnExit { get; set; }
 	public Action<Exception> OnError { get; set; }
 
@@ -385,6 +386,21 @@ public abstract partial class Installer
 		}
 	}
 
+	public virtual void CreateUser(CommonSettings settings)
+	{
+		var username = settings.Username;
+		var password = settings.Password;
+		string domain = "";
+		if (settings.UseActiveDirectory)
+		{
+			var tokens = username.Split('\\');
+			if (tokens.Length == 2)
+			{
+				domain = tokens[0];
+				username = tokens[1];
+			}
+		}
+	}
 	public virtual void InstallWebsite(string name, string path, CommonSettings settings,
 		string group, string dll, string description, string serviceId)
 	{
@@ -552,18 +568,28 @@ public abstract partial class Installer
 	{
 		file = SetupFilter(file);
 		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-			!Regex.IsMatch(file, "(?:^|/)web.config", RegexOptions.IgnoreCase) &&
 			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
 	}
-	public string ConfigAndSetupFilter(string file)
+	public virtual string ConfigAndSetupFilter(string file)
 	{
-		file = SetupFilter(file);
+		file = OSInfo.IsWindows ? SetupFilter(file) : Net8Filter(file);
 		return (file != null && !file.EndsWith("/web.config", StringComparison.OrdinalIgnoreCase) &&
 			!Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
-	public virtual string StandardInstallFilter(string file) => SetupFilter(file);
+	public virtual string CorrectEnterpriseServer(string file)
+	{
+		if (OSInfo.IsWindows) return file;
+		if (file == null) return null;
+		if (file == "Enterprise Server") return "EnterpriseServer";
+		if (file.EndsWith("/Enterprise Server")) return file.Substring(0, file.Length - "/Enterprise Server".Length) + "/EnterpriseServer";
+		if (file.StartsWith("Enterprise Server/")) return "EnterpriseServer/" + file.Substring("Enterprise Server/".Length);
+		return file.Replace("/Enterprise Server/", "/EnterpriseServer/");
+		//return Regex.Replace(file, "(?<=/|^)Enterprise Server(?=/|$)", "EnterpriseServer");
+	}
+	public virtual string StandaloneInstallFilter(string file) => CorrectEnterpriseServer(SetupFilter(file));
+	public virtual string StandaloneUpdateFiler(string file) => CorrectEnterpriseServer(ConfigAndSetupFilter(file));
 	public virtual string StandardUpdateFilter(string file) => ConfigAndSetupFilter(file);
-
+	public virtual string StandardInstallFilter(string file) => OSInfo.IsWindows ? SetupFilter(file) : Net8Filter(file);
 	public virtual void CopyFile(string source, string destination, bool settings = false)
 	{
 		if (File.Exists(source))
@@ -591,7 +617,7 @@ public abstract partial class Installer
 		}
 	}
 
-	public void CopyFiles(string source, string destination,
+	public void CopyFiles(string source, string destination, bool clearDestination = false,
 		Func<string, string> filter = null, string root = null, string destroot = null, bool settings = false)
 	{
 		if (root == null && destroot == null)
@@ -601,11 +627,13 @@ public abstract partial class Installer
 			{
 				// Create backup
 				if (Directory.Exists(BackupPath)) Directory.Delete(BackupPath, true);
-				CopyFiles(destination, BackupPath, null, destination, BackupPath, true);
+				CopyFiles(destination, BackupPath, clearDestination, null, destination, BackupPath, true);
 			}
 			Transaction(() =>
 			{
-				CopyFiles(source, destination, filter, source, destination);
+
+				if (clearDestination && Directory.Exists(destination)) Directory.Delete(destination, true);
+				CopyFiles(source, destination, clearDestination, filter, source, destination);
 				InstallLog("Unzipped & installed distribution files");
 			})
 				.WithRollback(() =>
@@ -614,7 +642,7 @@ public abstract partial class Installer
 					if (IsUpdateAction)
 					{
 						// Restore backup
-						CopyFiles(BackupPath, destination, null, source, BackupPath, true);
+						CopyFiles(BackupPath, destination, clearDestination, null, source, BackupPath, true);
 					}
 				});
 		}
@@ -661,7 +689,7 @@ public abstract partial class Installer
 				}
 				foreach (var dir in Directory.GetDirectories(source))
 				{
-					CopyFiles(dir, Path.Combine(destination, Path.GetFileName(dir)), filter, root, destroot);
+					CopyFiles(dir, Path.Combine(destination, Path.GetFileName(dir)), clearDestination, filter, root, destroot);
 				}
 			}
 			else if (File.Exists(source))
@@ -757,21 +785,6 @@ public abstract partial class Installer
 		if (allowedHosts.Any(host => host == "*")) appsettings.AllowedHosts = null;
 		else appsettings.AllowedHosts = string.Join(";", allowedHosts.Distinct());
 
-		if (settings is ServerSettings srvSettings && 
-			(!string.IsNullOrEmpty(srvSettings.ServerPassword) || !string.IsNullOrEmpty(srvSettings.ServerPasswordSHA)))
-		{
-			string pwsha;
-			if (!string.IsNullOrEmpty(srvSettings.ServerPassword))
-			{
-				pwsha = CryptoUtils.ComputeSHAServerPassword(srvSettings.ServerPassword);
-			}
-			else
-			{
-				pwsha = srvSettings.ServerPasswordSHA;
-			}
-			appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha };
-		}
-
 		if (!string.IsNullOrEmpty(settings.LetsEncryptCertificateEmail) && !string.IsNullOrEmpty(settings.LetsEncryptCertificateDomains))
 		{
 			appsettings.LettuceEncrypt = new AppSettings.LettuceEncryptSetting()
@@ -812,21 +825,61 @@ public abstract partial class Installer
 			Enum.TryParse<X509FindType>(settings.CertificateFindType, out appsettings.Certificate.FindType);
 		}
 
-		if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = "..\\bin\\netstandard";
+		if (string.IsNullOrEmpty(appsettings.probingPaths)) appsettings.probingPaths = Path.Combine("..", "bin", "netstandard");
 
-		if (settings is WebPortalSettings)
+		if (settings is WebPortalSettings wsettings)
 		{
 			if (webSettings.EmbedEnterpriseServer)
 			{
-				appsettings.probingPaths = @$"..\bin\netstandard;{webSettings.EnterpriseServerPath}\bin_dotnet;{webSettings.EnterpriseServerPath}\bin\netstandard";
+				appsettings.probingPaths = @$"..\bin\netstandard;..\{webSettings.EnterpriseServerPath}\bin_dotnet;..\{webSettings.EnterpriseServerPath}\bin\netstandard";
+				appsettings.probingPaths = appsettings.probingPaths.Replace('\\', Path.DirectorySeparatorChar);
+
 				var esJsonFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "appsettings.json");
 				if (File.Exists(esJsonFile))
 				{
 					var esSettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(esJsonFile),
 						new VersionConverter(), new StringEnumConverter()) ?? new AppSettings();
 					appsettings.EnterpriseServer = esSettings.EnterpriseServer;
+
+					var esCstring = appsettings.EnterpriseServer?.ConnectionString;
+					var csb = new ConnectionStringBuilder(esCstring);
+					if ((csb["DbType"] as string)?.Contains("Sqlite") == true)
+					{
+						if (csb["Data Source"] != null)
+						{
+							csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+						}
+						csb["Data Source"] = Path.Combine(Settings.WebPortal.EnterpriseServerPath, (string)csb["Data Source"]);
+						appsettings.EnterpriseServer.ConnectionString = csb.ConnectionString;
+					}
 				}
+				else throw new NotSupportedException("EnterpriseServer settings file not found. You must install EnterpriseServer prior to install WebPortal with embedded EnterpriseServer.");
 			}
+		}
+		else if (settings is EnterpriseServerSettings esettings)
+		{
+			var connectionString = DatabaseUtils.BuildConnectionString(esettings.DatabaseType, esettings.DatabaseServer,
+				esettings.DatabasePort, esettings.DatabaseName, esettings.DatabaseUser, esettings.DatabasePassword, null, false);
+			appsettings.EnterpriseServer = new AppSettings.EnterpriseServerSetting()
+			{
+				CryptoKey = esettings.CryptoKey ?? CryptoUtils.GetRandomString(20),
+				ConnectionString = connectionString,
+				EncryptionEnabled = true,
+			};
+		}
+		else if (settings is ServerSettings srvSettings &&
+			(!string.IsNullOrEmpty(srvSettings.ServerPassword) || !string.IsNullOrEmpty(srvSettings.ServerPasswordSHA)))
+		{
+			string pwsha;
+			if (!string.IsNullOrEmpty(srvSettings.ServerPassword))
+			{
+				pwsha = CryptoUtils.ComputeSHAServerPassword(srvSettings.ServerPassword);
+			}
+			else
+			{
+				pwsha = srvSettings.ServerPasswordSHA;
+			}
+			appsettings.Server = new AppSettings.ServerSetting() { Password = pwsha };
 		}
 
 		var path = Path.GetDirectoryName(appsettingsfile);
@@ -947,7 +1000,7 @@ public abstract partial class Installer
 		trustCertificate = tc != null && tc.Equals("true", StringComparison.OrdinalIgnoreCase);
 	}
 	public abstract bool CheckOSSupported();
-	public abstract bool CheckSystemdSupported();
+	public abstract bool CheckInitSystemSupported();
 	public abstract bool CheckIISVersionSupported();
 	public abstract bool CheckNetVersionSupported();
 
@@ -959,9 +1012,10 @@ public abstract partial class Installer
 		var info = new FileInfo(progressFile);
 		while (info.Exists)
 		{
-			while (info.Exists && n++ < info.Length)
+			while (info.Exists && n < info.Length)
 			{
 				Log.ProgressOne();
+				n++;
 			}
 			Thread.Sleep(50);
 			info = new FileInfo(progressFile);
@@ -1147,7 +1201,7 @@ public abstract partial class Installer
 			process.WaitForExit();
 			UI.EndWaitCursor();
 
-			Console.WriteLine("HostPanelPro Installer has been updated. Please restart it...");
+			Console.WriteLine("SolidCP Installer has been updated. Please restart it...");
 			Installer.Current.Exit();
 		}
 

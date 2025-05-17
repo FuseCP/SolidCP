@@ -10,13 +10,16 @@ namespace SolidCP.UniversalInstaller
 		public virtual string UnixWebDavPortalServiceId => "solidcp-webdavportal";
 		public virtual void InstallWebDavPortalPrerequisites() { }
 		public virtual void RemoveWebDavPortalPrerequisites() { }
+		public virtual void CreateWebDavPortalUser() => CreateUser(Settings.WebDavPortal);
+		public virtual void RemoveWebDavPortalUser() => RemoveUser(Settings.WebDavPortal.Username);
 		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(WebDavPortalFolder);
-		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(WebDavPortalFolder, Settings.WebDavPortal.Username, SolidCP.ToLower());
+		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(WebDavPortalFolder, Settings.WebDavPortal.Username, SolidCPGroup);
 		public virtual void InstallWebDavPortal()
 		{
 			InstallWebDavPortalPrerequisites();
 			ReadWebDavPortalConfiguration();
-			CopyWebDavPortal(StandardInstallFilter);
+			CopyWebDavPortal(true);//, //this.StandardInstallFilter);
+			CreateWebDavPortalUser();
 			SetWebDavPortalFilePermissions();
 			SetWebDavPortalFileOwner();
 			ConfigureWebDavPortal();
@@ -26,7 +29,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			InstallWebDavPortalPrerequisites();
 			ReadWebDavPortalConfiguration();
-			CopyWebDavPortal(StandardUpdateFilter);
+			CopyWebDavPortal(true, StandardUpdateFilter);
 			SetWebDavPortalFilePermissions();
 			SetWebDavPortalFileOwner();
 			UpdateWebDavPortalConfig();
@@ -40,7 +43,7 @@ namespace SolidCP.UniversalInstaller
 			InstallWebsite(WebDavPortalSiteId,
 				web,
 				Settings.WebDavPortal,
-				UnixWebDavPortalServiceId,
+				SolidCPUnixGroup,
 				dll,
 				"SolidCP.WebDavPortal service, the WebDavPortal for the SolidCP control panel.",
 				UnixWebDavPortalServiceId);
@@ -53,20 +56,23 @@ namespace SolidCP.UniversalInstaller
 		{
 			RemoveWebDavPortalWebsite();
 			RemoveWebDavPortalFolder();
+			RemoveWebDavPortalUser();
 		}
 		public virtual void RemoveWebDavPortalFolder()
 		{
-			Directory.Delete(Path.Combine(InstallWebRootPath, WebDavPortalFolder), true);
+			var dir = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
+			if (Directory.Exists(dir)) Directory.Delete(dir, true);
+			InstallLog("Removed WebDavPortal files");
 		}
 
 		public virtual void UpdateWebDavPortalConfig() { }
 		public virtual void ConfigureWebDavPortal() { }
 
-		public virtual void CopyWebDavPortal(Func<string, string> filter = null)
+		public virtual void CopyWebDavPortal(bool clearDestination = false, Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
 			var websitePath = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
-			CopyFiles(ComponentTempPath, websitePath, filter);
+			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
 	}
 }

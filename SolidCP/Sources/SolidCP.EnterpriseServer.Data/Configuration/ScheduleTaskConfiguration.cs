@@ -52,7 +52,8 @@ public partial class ScheduleTaskConfiguration: EntityTypeConfiguration<Schedule
                 "ode" },
             new ScheduleTask() { TaskId = "SCHEDULE_TASK_USER_PASSWORD_EXPIRATION_NOTIFICATION", RoleId = 1, TaskType = "SolidCP.EnterpriseServer.UserPasswordExpirationNotificationTask, SolidCP.Enterpr" +
                 "iseServer.Code" },
-            new ScheduleTask() { TaskId = "SCHEDULE_TASK_ZIP_FILES", RoleId = 3, TaskType = "SolidCP.EnterpriseServer.ZipFilesTask, SolidCP.EnterpriseServer.Code" }
+            new ScheduleTask() { TaskId = "SCHEDULE_TASK_ZIP_FILES", RoleId = 3, TaskType = "SolidCP.EnterpriseServer.ZipFilesTask, SolidCP.EnterpriseServer.Code" },
+            new ScheduleTask() { TaskId = "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL", RoleId = 3, TaskType = "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code" }
         });
         #endregion
     }

@@ -59,8 +59,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			get
 			{
 				var installerPath = Settings.InstallFolder;
-				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "HostPanelPro.Web.Clients.dll"));
-				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "HostPanelPro.Web.Clients.dll"));
+				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
+				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "SolidCP.Web.Clients.dll"));
 				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder &&
 					(File.Exists(webClientsPath1) || File.Exists(webClientsPath2));
 			}
@@ -137,7 +137,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			Settings.EnterpriseServerPath = path;
 			if (Settings.EmbedEnterpriseServer)
 			{
-				Settings.EnterpriseServerUrl = "assembly://HostPanelPro.EnterpriseServer";
+				Settings.EnterpriseServerUrl = "assembly://SolidCP.EnterpriseServer";
 			}
 			else
 			{
@@ -221,13 +221,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			get
 			{
-				var folder1 = $"..\\{Installer.Current.EnterpriseServerFolder}";
-				var folder2 = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
-				if (!OSInfo.IsWindows)
-				{
-					folder1 = folder1.Replace('\\', '/');
-					folder2 = folder2.Replace('\\', '/');
-				}
+				var folder1 = Path.Combine("..", Installer.Current.EnterpriseServerFolder);
+				var folder2 = Path.Combine("..", Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder));
 				if (Directory.Exists(folder1))
 				{
 					return folder1;

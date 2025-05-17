@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
+                .HasAnnotation("ProductVersion", "9.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -9956,6 +9956,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             TaskId = "SCHEDULE_TASK_ZIP_FILES",
                             RoleId = 3,
                             TaskType = "SolidCP.EnterpriseServer.ZipFilesTask, SolidCP.EnterpriseServer.Code"
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            RoleId = 3,
+                            TaskType = "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code"
                         });
                 });
 
@@ -10675,6 +10681,94 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             DataTypeId = "String",
                             DefaultValue = "\\archive.zip",
                             ParameterOrder = 2
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_MAIL_TO_CUSTOMER",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 1
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_BCC",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "false",
+                            ParameterOrder = 2
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "BCC_MAIL",
+                            DataTypeId = "String",
+                            DefaultValue = "admin@mydomain.com",
+                            ParameterOrder = 3
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "EXPIRATION_MAIL_SUBJECT",
+                            DataTypeId = "String",
+                            DefaultValue = "Website certificate expiration notice",
+                            ParameterOrder = 4
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "EXPIRATION_MAIL_BODY",
+                            DataTypeId = "MultiString",
+                            DefaultValue = "Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).",
+                            ParameterOrder = 5
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_30_DAYS_BEFORE_EXPIRATION",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 6
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_14_DAYS_BEFORE_EXPIRATION",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 7
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_TODAY_EXPIRED",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 8
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_SSL_ERROR",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "false",
+                            ParameterOrder = 9
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "ERROR_MAIL_SUBJECT",
+                            DataTypeId = "String",
+                            DefaultValue = "Certificate error or website is unavailable",
+                            ParameterOrder = 10
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "ERROR_MAIL_BODY",
+                            DataTypeId = "MultiString",
+                            DefaultValue = "Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.",
+                            ParameterOrder = 11
                         });
                 });
 
@@ -10861,6 +10955,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             ConfigurationId = "ASP_NET",
                             TaskId = "SCHEDULE_TASK_ZIP_FILES",
                             Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/ZipFiles.ascx",
+                            Environment = "ASP.NET"
+                        },
+                        new
+                        {
+                            ConfigurationId = "ASP_NET",
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx",
                             Environment = "ASP.NET"
                         });
                 });

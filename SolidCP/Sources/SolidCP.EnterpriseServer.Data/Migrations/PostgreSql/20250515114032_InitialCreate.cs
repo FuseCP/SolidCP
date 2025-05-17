@@ -2811,6 +2811,31 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 
             migrationBuilder.InsertData(
                 schema: "public",
+                table: "ScheduleTaskParameters",
+                columns: new[] { "ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder" },
+                values: new object[,]
+                {
+                    { "BCC_MAIL", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "String", "admin@mydomain.com", 3 },
+                    { "ERROR_MAIL_BODY", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "MultiString", "Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.", 11 },
+                    { "ERROR_MAIL_SUBJECT", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "String", "Certificate error or website is unavailable", 10 },
+                    { "EXPIRATION_MAIL_BODY", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "MultiString", "Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).", 5 },
+                    { "EXPIRATION_MAIL_SUBJECT", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "String", "Website certificate expiration notice", 4 },
+                    { "SEND_14_DAYS_BEFORE_EXPIRATION", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "Boolean", "true", 7 },
+                    { "SEND_30_DAYS_BEFORE_EXPIRATION", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "Boolean", "true", 6 },
+                    { "SEND_BCC", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "Boolean", "false", 2 },
+                    { "SEND_MAIL_TO_CUSTOMER", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "Boolean", "true", 1 },
+                    { "SEND_SSL_ERROR", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "Boolean", "false", 9 },
+                    { "SEND_TODAY_EXPIRED", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "Boolean", "true", 8 }
+                });
+
+            migrationBuilder.InsertData(
+                schema: "public",
+                table: "ScheduleTaskViewConfiguration",
+                columns: new[] { "ConfigurationID", "TaskID", "Description", "Environment" },
+                values: new object[] { "ASP_NET", "SCHEDULE_TASK_CHECK_WEBSITES_SSL", "~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx", "ASP.NET" });
+
+            migrationBuilder.InsertData(
+                schema: "public",
                 table: "ScheduleTasks",
                 columns: new[] { "TaskID", "RoleID", "TaskType" },
                 values: new object[,]
@@ -2833,6 +2858,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
                     { "SCHEDULE_TASK_NOTIFY_OVERUSED_DATABASES", 2, "SolidCP.EnterpriseServer.NotifyOverusedDatabasesTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_RUN_PAYMENT_QUEUE", 0, "SolidCP.Ecommerce.EnterpriseServer.RunPaymentQueueTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_RUN_SYSTEM_COMMAND", 1, "SolidCP.EnterpriseServer.RunSystemCommandTask, SolidCP.EnterpriseServer.Code" },
+                    { "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL", 3, "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_SEND_MAIL", 3, "SolidCP.EnterpriseServer.SendMailNotificationTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_SUSPEND_OVERDUE_INVOICES", 0, "SolidCP.Ecommerce.EnterpriseServer.SuspendOverdueInvoicesTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_SUSPEND_PACKAGES", 2, "SolidCP.EnterpriseServer.SuspendOverusedPackagesTask, SolidCP.EnterpriseServer.Code" },

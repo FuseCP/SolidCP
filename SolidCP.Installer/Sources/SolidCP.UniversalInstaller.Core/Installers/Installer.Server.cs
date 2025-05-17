@@ -24,13 +24,15 @@ public abstract partial class Installer
 
 	public virtual void InstallServerPrerequisites() { }
 	public virtual void RemoveServerPrerequisites() { }
-
+	public virtual void CreateServerUser() => CreateUser(Settings.Server);
+	public virtual void RemoveServerUser() => RemoveUser(Settings.Server.Username);
 	public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
-	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCP.ToLower());
+	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCPGroup);
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardInstallFilter);
+		CopyServer(true);//, StandardInstallFilter);
+		CreateServerUser();
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		ConfigureServer();
@@ -40,7 +42,7 @@ public abstract partial class Installer
 	public virtual void UpdateServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardUpdateFilter);
+		CopyServer(true, StandardUpdateFilter);
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		UpdateServerConfig();
@@ -58,6 +60,7 @@ public abstract partial class Installer
 		//RemoveServerPrerequisites();
 		RemoveServerWebsite();
 		RemoveServerFolder();
+		RemoveServerUser();
 		//UpdateSettings();
 	}
 
@@ -70,7 +73,7 @@ public abstract partial class Installer
 		InstallWebsite(ServerSiteId,
 			web,
 			Settings.Server,
-			UnixServerServiceId,
+			SolidCPUnixGroup,
 			dll,
 			"SolidCP.Server service, the server management service for the SolidCP control panel.",
 			UnixServerServiceId);
@@ -81,18 +84,18 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveServerFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
+		var dir = Path.Combine(InstallWebRootPath, ServerFolder);
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Server files");
 	}
-	public virtual void RemoveServerUser() { }
 	public virtual void RemoveServerApplicationPool() { }
 	public virtual void ReadServerConfigurationNetFX()
 	{
-		// Read Server configuration from Server web.config
+		// Read Server configuration from Server Web.config
 
 		Settings.Server = new ServerSettings();
 
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
+		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "Web.config");
 
 		if (File.Exists(confFile))
 		{
@@ -124,7 +127,7 @@ public abstract partial class Installer
 	public virtual void ConfigureServerNetFX()
 	{
 		var settings = Settings.Server;
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
+		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "Web.config");
 		var configuration = XElement.Load(confFile);
 
 		ConfigureCertificateNetFX(settings, configuration);
@@ -156,11 +159,11 @@ public abstract partial class Installer
 
 		InstallLog("Configured Server.");
 	}
-	public virtual void CopyServer(Func<string, string> filter = null)
+	public virtual void CopyServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
 		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 	public virtual int InstallServerMaxProgress => 100;
 	public virtual int UninstallServerMaxProgress => 100;

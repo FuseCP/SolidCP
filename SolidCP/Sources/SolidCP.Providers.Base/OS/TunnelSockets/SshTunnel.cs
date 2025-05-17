@@ -20,7 +20,7 @@ namespace SolidCP.Providers.OS
     /// </summary>
     public class SshTunnel : IDisposable
     {
-        public string AccessUrl => Uri.AccessUrl(Loopback, Uri.Port);
+        public string AccessUrl => Uri.AccessUrl(Loopback, ForwardedPort.BoundPort);
 
         SshUri uri = new SshUri(null);
         [XmlIgnore, IgnoreDataMember]

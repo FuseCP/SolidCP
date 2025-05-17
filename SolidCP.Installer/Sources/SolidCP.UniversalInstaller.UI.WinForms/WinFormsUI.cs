@@ -153,7 +153,7 @@ namespace SolidCP.UniversalInstaller {
 				!Environment.GetCommandLineArgs().Any(arg => arg.Equals("nockech", StringComparison.OrdinalIgnoreCase)) &&
 				Installer.Current.CheckForInstallerUpdate(out component))
 			{
-				if (MessageBox.Show("There is an update for HostPanelPro Installer available. Do you want to install the update?",
+				if (MessageBox.Show("There is an update for SolidCP Installer available. Do you want to install the update?",
 					"Update for Installer available", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
 					if (Installer.Current.DownloadInstallerUpdate(component))

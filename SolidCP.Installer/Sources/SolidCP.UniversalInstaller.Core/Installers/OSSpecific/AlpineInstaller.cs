@@ -8,21 +8,20 @@ namespace SolidCP.UniversalInstaller
 {
     public class AlpineInstaller : UnixInstaller
     {
-
         public override void InstallNet8Runtime()
         {
             if (CheckNet8RuntimeInstalled()) return;
 
-            throw new NotSupportedException("NET 8 Runtime must be installed.");
-        }
+			OSInstaller.Install("dotnet8-runtime, aspnetcore8-runtime");
+		}
 
 		public override void RemoveNet8AspRuntime()
 		{
-			throw new NotImplementedException();
+			OSInstaller.Remove("aspnetcore8-runtime");
 		}
 		public override void RemoveNet8NetRuntime()
 		{
-			throw new NotImplementedException();
+			OSInstaller.Remove("dotnet8-runtime");
 		}
 	}
 }
