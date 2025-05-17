@@ -16,6 +16,7 @@ public class OpenRCServiceController: ServiceController
 		if (srvc == null) throw new ArgumentException("Service description is not of type OpenRCServiceDescription");
 
 		var body = new StringBuilder();
+		body.AppendLine("#!/sbin/openrc-run");
 
 		if (!string.IsNullOrEmpty(srvc.ServiceId)) body.AppendLine($"name=\"{srvc.ServiceId}\"");
 		if (!string.IsNullOrEmpty(srvc.Description)) body.AppendLine($"description=\"{srvc.Description}\"");
@@ -49,7 +50,7 @@ public class OpenRCServiceController: ServiceController
 		if (!string.IsNullOrEmpty(srvc.CommandArgs)) body.AppendLine($"command_args=\"{srvc.CommandArgs}\"");
 		if (!string.IsNullOrEmpty(srvc.CommandArgsBackground)) body.AppendLine($"command_args_background=\"{srvc.CommandArgsBackground}\"");
 		if (!string.IsNullOrEmpty(srvc.PidFile)) body.AppendLine($"pidfile=\"{srvc.PidFile}\"");
-		if (srvc.CommandBackground != null) body.AppendLine($"command_background={srvc.CommandBackground}");
+		if (srvc.CommandBackground != null) body.AppendLine($"command_background={srvc.CommandBackground.ToString().ToLower()}");
 		if (!string.IsNullOrEmpty(srvc.CommandUser)) body.AppendLine($"command_user=\"{srvc.CommandUser}\"");
 		if (!string.IsNullOrEmpty(srvc.Capabilities)) body.AppendLine($"capabilities=\"{srvc.Capabilities}\"");
 		if (!string.IsNullOrEmpty(srvc.Procname)) body.AppendLine($"procname=\"{srvc.Procname}\"");
@@ -58,7 +59,7 @@ public class OpenRCServiceController: ServiceController
 		if (!string.IsNullOrEmpty(srvc.ExtraStoppedCommands)) body.AppendLine($"extra_stopped_commands=\"{srvc.ExtraStoppedCommands}\"");
 		if (srvc.Environment != null && srvc.Environment.Count > 0)
 		{
-			foreach (var env in srvc.Environment) body.AppendLine($"  export {env.Key}=\"{env.Value}\"");
+			foreach (var env in srvc.Environment) body.AppendLine($"export {env.Key}=\"{env.Value}\"");
 		}
 
 		if (srvc.StopTimeout != null && !string.IsNullOrEmpty(srvc.PidFile))
@@ -104,7 +105,34 @@ public class OpenRCServiceController: ServiceController
 	public override void ChangeStatus(string serviceId, OSServiceStatus status)
 	{
 		var service = Info(serviceId);
-		if (service == null) throw new ArgumentException($"Service {serviceId} not found");
+		if (service == null)
+		{
+			if (Shell.Exec($"rc-service -e {serviceId}").ExitCode().Result == 0)
+			{
+				var output = Shell.Exec($"rc-service -C {serviceId} status").Output().Result;
+				var match = Regex.Match(output, @"^.*status\s*:\s*(?<status>.+?)\s*$", RegexOptions.Multiline);
+				var stat = OSServiceStatus.Stopped;
+				switch (match.Groups["status"].Value)
+				{
+					case "started":
+						stat = OSServiceStatus.Running;
+						break;
+					case "stopped":
+					case "crashed":
+					default:
+						stat = OSServiceStatus.Stopped;
+						break;
+					case "stopping":
+						stat = OSServiceStatus.StopPending;
+						break;
+					case "starting":
+						stat = OSServiceStatus.StartPending;
+						break;
+				}
+				service = new OSService() { Id = serviceId, Name = serviceId, Status = stat };
+			}
+			else throw new ArgumentException($"Service {serviceId} not found");
+		}
 
 		if (service.Status == OSServiceStatus.Running)
 		{
@@ -125,14 +153,14 @@ public class OpenRCServiceController: ServiceController
 	}
 	public override IEnumerable<OSService> All()
 	{
-		var servicesText = Shell.Exec("rc-status -s").Output().Result;
-		var matches = Regex.Matches(servicesText, @"^\s*(?<name>.+?)\s*\[\s*(?<status>.+?)\s*\]\s*$", RegexOptions.Multiline);
+		var servicesText = Shell.Exec("rc-status -f ini -s").Output().Result;
+		var matches = Regex.Matches(servicesText, @"^\s*(?<name>.+?)\s*=\s*(?<status>.+?)\s*$", RegexOptions.Multiline);
 		foreach (Match match in matches)
 		{
 			var name = match.Groups["name"].Value;
 			var status = match.Groups["status"].Value;
-			var script = Path.Combine(ScriptPath, name);
-			bool running = status != "stopped";
+			var script = Shell.Exec($"rc-service -r {name}").Output().Result;
+			bool running = status != "stopped" && status != "crashed";
 			string description = "";
 			if (File.Exists(script))
 			{

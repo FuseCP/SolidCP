@@ -38,6 +38,7 @@ namespace SolidCP.Providers.OS
 		public static bool IsFreeBSD => RuntimeInformation.IsOSPlatform(FreeBSD);
 		public static bool IsNetBSD => RuntimeInformation.IsOSPlatform(NetBSD);
 		public static bool IsSystemd => IsLinux && Directory.Exists("/run/systemd/system");
+		public static bool IsWSL => IsLinux && File.Exists("/proc/version") && File.ReadAllText("/proc/version").ToLower().Contains("microsoft");
 		public static bool IsOpenRC => IsLinux && File.Exists("etc/rc") && Shell.Standard.Find("rc-status") != null;
 
 		static OSFlavor flavor = OSFlavor.Unknown;

@@ -65,7 +65,7 @@ public abstract class UnixInstaller : Installer
 		}
 		else if (IsOpenRC)
 		{
-			service = new OpenRCServiceDescription()
+			var rcservice = new OpenRCServiceDescription()
 			{
 				ServiceId = serviceId,
 				Description = description,
@@ -79,9 +79,10 @@ public abstract class UnixInstaller : Installer
 				WorkingDirectory = Path.GetDirectoryName(dll),
 				CommandBackground = true,
 				PidFile = $"/run/{serviceId}.pid",
-				Need = "net",
 				StopTimeout = 30
 			};
+			if (!OSInfo.IsWSL) rcservice.Need = "net";
+			service = rcservice;
 		}
 		else if (OSInfo.IsMac)
 		{
