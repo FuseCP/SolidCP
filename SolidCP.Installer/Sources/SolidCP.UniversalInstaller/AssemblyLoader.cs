@@ -439,6 +439,11 @@ public class AssemblyLoader
 		{
 			var path = Path.Combine(AssembliesPath, "runtimes", runtimeId, "native");
 			AddEnvironmentPaths(path);
+			if (IsLinux && IsLinuxMusl)
+			{
+				path = Path.Combine(AssembliesPath, "runtimes", runtimeId.Replace("-musl-", "-"), "native");
+				AddEnvironmentPaths(path);
+			}
 		}
 
 		CopyRuntimeLibFiles(runtimeId);
@@ -454,6 +459,18 @@ public class AssemblyLoader
 			foreach (var src in Directory.EnumerateFiles(runtimeLibPath))
 			{
 				File.Copy(src, Path.Combine(AssembliesPath, Path.GetFileName(src)));
+			}
+		}
+		if (IsLinux && IsLinuxMusl && runtimeId.Contains("-musl-"))
+		{
+			runtimeId = runtimeId.Replace("-musl-", "-");
+			runtimeLibPath = Path.Combine(AssembliesPath, "runtimes", runtimeId, "lib", "netstandard2.0");
+			if (Directory.Exists(runtimeLibPath))
+			{
+				foreach (var src in Directory.EnumerateFiles(runtimeLibPath))
+				{
+					File.Copy(src, Path.Combine(AssembliesPath, Path.GetFileName(src)));
+				}
 			}
 		}
 	}
