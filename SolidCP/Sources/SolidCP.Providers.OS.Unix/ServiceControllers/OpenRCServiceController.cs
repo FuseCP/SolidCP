@@ -153,12 +153,13 @@ public class OpenRCServiceController: ServiceController
 	}
 	public override IEnumerable<OSService> All()
 	{
-		var servicesText = Shell.Exec("rc-status -f ini -s").Output().Result;
-		var matches = Regex.Matches(servicesText, @"^\s*(?<name>.+?)\s*=\s*(?<status>.+?)\s*$", RegexOptions.Multiline);
-		foreach (Match match in matches)
+		var servicesText = Shell.Exec("rc-service -l").Output().Result;
+		var services = servicesText.Split('\n').Select(s => s.Trim());
+		foreach (var service in services)
 		{
-			var name = match.Groups["name"].Value;
-			var status = match.Groups["status"].Value;
+			var name = service;
+			var status = Regex.Match(Shell.Exec($"rc-service -C {name} status").Output().Result,
+				@"(?<=^\s*\*\s*status:\s*).*?$").Value.Trim();
 			var script = Shell.Exec($"rc-service -r {name}").Output().Result;
 			bool running = status != "stopped" && status != "crashed";
 			string description = "";
