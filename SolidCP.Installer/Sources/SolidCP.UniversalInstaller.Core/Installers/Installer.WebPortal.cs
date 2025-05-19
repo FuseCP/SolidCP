@@ -143,6 +143,7 @@ public abstract partial class Installer
 	public virtual void CopyWebPortal(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
+		InstallWebRootPath = Settings.WebPortal.InstallFolder;
 		var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
 		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}

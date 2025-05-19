@@ -130,7 +130,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void CopyStandaloneServer(bool clearDestination = false, Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
-			var websitePath = InstallWebRootPath;
+			var websitePath = Settings.Standalone.InstallFolder;
+			InstallWebRootPath = websitePath;
 			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
 	}

@@ -162,6 +162,7 @@ public abstract partial class Installer
 	public virtual void CopyServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
+		InstallWebRootPath = Settings.Server.InstallFolder;
 		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
 		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}

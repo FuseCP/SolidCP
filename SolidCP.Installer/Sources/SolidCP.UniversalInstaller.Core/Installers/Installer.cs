@@ -252,7 +252,7 @@ public abstract partial class Installer
 				//run installer
 				var res = (Result)LoadContext.Execute(path, installerType, method, new object[] { hashtable }) == Result.OK;
 
-				FileUtils.DeleteTempDirectory();
+				Task.Run(() => FileUtils.DeleteTempDirectory());
 
 				LoadSettings();
 

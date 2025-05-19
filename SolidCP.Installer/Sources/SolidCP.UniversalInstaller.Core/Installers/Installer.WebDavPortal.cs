@@ -71,6 +71,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void CopyWebDavPortal(bool clearDestination = false, Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
+			InstallWebRootPath = Settings.WebDavPortal.InstallFolder;
 			var websitePath = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
 			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
