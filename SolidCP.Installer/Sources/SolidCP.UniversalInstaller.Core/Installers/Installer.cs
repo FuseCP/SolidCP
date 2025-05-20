@@ -194,7 +194,7 @@ public abstract partial class Installer
 
 	public virtual void Cleanup()
 	{
-		if (Directory.Exists(BackupPath)) Directory.Delete(BackupPath, true);
+		if (Directory.Exists(BackupPath)) Task.Run(() => Directory.Delete(BackupPath, true));
 		Settings.Installer.Component = null;
 		Error = null;
 		Cancel = new CancellationTokenSource();
