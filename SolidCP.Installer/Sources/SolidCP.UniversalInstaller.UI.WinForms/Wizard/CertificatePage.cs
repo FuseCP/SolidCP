@@ -82,8 +82,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			if (OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support cert file & Let's Encrypt also on Windows
 			{
 				// remove cert file & Let's Encrypt tab pages
-				tabControl.TabPages.RemoveAt(1);
 				tabControl.TabPages.RemoveAt(2);
+				tabControl.TabPages.RemoveAt(1);
 			}
 
 			string[] names, locations;
