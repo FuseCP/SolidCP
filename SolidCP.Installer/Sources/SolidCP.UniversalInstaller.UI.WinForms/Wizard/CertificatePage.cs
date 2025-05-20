@@ -238,7 +238,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 						.Where(host => !System.Net.IPAddress.TryParse(host, out ip))
 						.ToArray());
 				} else if (tabControl.SelectedTab == tabPageManual)
-				{ 
+				{
+					Settings.ConfigureCertificateManually = manualCert.Checked;
+
 					if (!manualCert.Checked)
 					{
 						e.Cancel = true;
