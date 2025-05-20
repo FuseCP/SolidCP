@@ -85,7 +85,7 @@ public class OpenRCServiceController: ServiceController
 
     eend $?
 }}
-");
+".Replace("\r\n", "\n"));
 		}
 		if (!string.IsNullOrEmpty(srvc.Body))
 		{
