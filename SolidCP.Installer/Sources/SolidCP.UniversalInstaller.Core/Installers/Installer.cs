@@ -197,6 +197,7 @@ public abstract partial class Installer
 		if (Directory.Exists(BackupPath)) Task.Run(() => Directory.Delete(BackupPath, true));
 		Settings.Installer.Component = null;
 		Error = null;
+		InstallLogs.Clear();
 		Cancel = new CancellationTokenSource();
 	}
 
