@@ -623,9 +623,6 @@ public class WindowsInstaller : Installer
 	public override void InstallWebsite(string name, string path, CommonSettings settings,
 		string group, string dll, string description, string serviceId)
 	{
-		Transaction(() => CreateWindowsAccount(settings))
-			.WithRollback(() => DeleteUserAccount(settings));
-
 		Transaction(() => CreateApplicationPool(settings))
 			.WithRollback(() => DeleteApplicationPool(settings));
 		
