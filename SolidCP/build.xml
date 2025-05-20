@@ -475,6 +475,7 @@
 		<ItemGroup>
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="$(InstallerProjectBin)\**\Setup2.dll;$(InstallerProjectBin)\**\ref\**" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.Installer.deps.json" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.runtimeconfig.json" />
 			<SetupDll Include="$(InstallerProjectRoot)\SolidCP.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
 			<SetupDll Include="$(InstallerProjectRoot)\SolidCP.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
