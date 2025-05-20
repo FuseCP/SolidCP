@@ -309,7 +309,7 @@ public abstract partial class Installer
 		if (NeedRemoveNet8Runtime || NeedRemoveNet8AspRuntime)
 			InstallLog("Removed .NET 8 Runtime");
 	}
-
+	public virtual string[] UserIsMemeberOf(CommonSettings settings) => new string[0];
 	public virtual void SetFilePermissions(string folder)
 	{
 		if (!Path.IsPathRooted(folder)) folder = Path.Combine(InstallWebRootPath, folder);

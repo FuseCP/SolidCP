@@ -534,7 +534,25 @@ public class WindowsInstaller : Installer
 		//
 		SetFolderPermissionBySid(path, SystemSID.NETWORK_SERVICE, NtfsPermission.Modify);
 	}
-
+	public override string[] UserIsMemeberOf(CommonSettings settings)
+	{
+		if (settings is ServerSettings)
+		{
+			if (OSInfo.Windows.WebServer.Version.Major >= 7)
+			{
+				return new string[] { "AD:Domain Admins", "SID:" + SystemSID.ADMINISTRATORS, "IIS_IUSRS" };
+			}
+			else
+			{
+				return new string[] { "AD:Domain Admins", "SID:" + SystemSID.ADMINISTRATORS, "IIS_WPG" };
+			}
+		}
+		else
+		{
+			if (OSInfo.Windows.WebServer.Version.Major >= 7) return new string[] { "IIS_IUSRS" };
+			else return new string[] { "IIS_WPG" };
+		}
+	}
 	public virtual void CreateWindowsAccount(CommonSettings setting)
 	{
 		Info("Create user...");
@@ -558,7 +576,7 @@ public class WindowsInstaller : Installer
 		Log.WriteStart(String.Format(LogInfoMessage, userName));
 
 		var description = String.Format(UserAccountDescription, setting.ComponentName);
-		var memberOf = new string[0];
+		var memberOf = UserIsMemeberOf(setting);
 		var password = setting.Password;
 
 		// create account

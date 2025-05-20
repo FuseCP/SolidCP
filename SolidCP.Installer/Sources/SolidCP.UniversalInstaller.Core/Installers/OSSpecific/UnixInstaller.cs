@@ -295,4 +295,8 @@ public abstract class UnixInstaller : Installer
 	public override void InstallWebDavPortalWebsite() { }
 	public override void RemoveWebDavPortalWebsite() { }
 	public override void RemoveWebPortalFolder() { }
+	public override string[] UserIsMemeberOf(CommonSettings settings)
+	{
+		return new string[] { SolidCPUnixGroup };
+	}
 }
