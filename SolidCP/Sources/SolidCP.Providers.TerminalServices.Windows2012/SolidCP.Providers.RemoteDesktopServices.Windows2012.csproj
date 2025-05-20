@@ -15,7 +15,7 @@
 		<DebugType>pdbonly</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="System.Security.AccessControl" Version="6.0.2" />
+		<PackageReference Include="System.Security.AccessControl" Version="6.0.1" />
 		<PackageReference Include="System.Security.Principal.Windows" Version="5.0.0" />
 	</ItemGroup>
 	<ItemGroup>
