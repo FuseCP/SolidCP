@@ -570,12 +570,12 @@ public abstract partial class Installer
 	public string Net48Filter(string file)
 	{
 		file = SetupFilter(file);
-		return (file != null && !file.StartsWith("bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
+		return (file != null && !Regex.IsMatch(file, "(?:^|/)bin_dotnet/") && !Regex.IsMatch(file, "(?:^|/)appsettings.json$", RegexOptions.IgnoreCase)) ? file : null;
 	}
 	public virtual string Net8Filter(string file)
 	{
 		file = SetupFilter(file);
-		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/"))) ? file : null;
+		return (file != null && !Regex.IsMatch(file, "(?:^|/)bin/(?!netstandard/)")) ? file : null;
 	}
 	public virtual string ConfigAndSetupFilter(string file)
 	{
