@@ -34,7 +34,7 @@
         <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
         <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
-        <!--<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <!--<PackageReference Include="System.DirectoryServices" Version="9.0.3" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
 
@@ -85,6 +85,10 @@
         <EmbeddedResource Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll">
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
             <Link>DllsNetCore\System.Management.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Win32_Registry)\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll">
+            <LogicalName>Dlls/Microsoft.Win32.Registry.dll</LogicalName>
+            <Link>Dlls\Microsoft.Win32.Registry.dll</Link>
         </EmbeddedResource>
         <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll;$(PkgMono_Posix_NETStandard)\runtimes\**\*.so">
             <LogicalName>Dlls/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>

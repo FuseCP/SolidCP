@@ -2,6 +2,7 @@
     <PortableCostura LoadAtModuleInit="false" DisableCleanup="true">
         <ExcludeAssemblies>
             System.ServiceProcess.ServiceController
+            Microsoft.Win32.Registry
         </ExcludeAssemblies>
     </PortableCostura>
 </Weavers>
