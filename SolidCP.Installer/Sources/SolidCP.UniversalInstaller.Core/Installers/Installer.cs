@@ -575,8 +575,7 @@ public abstract partial class Installer
 	public virtual string Net8Filter(string file)
 	{
 		file = SetupFilter(file);
-		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
+		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/"))) ? file : null;
 	}
 	public virtual string ConfigAndSetupFilter(string file)
 	{
