@@ -124,12 +124,19 @@ public abstract partial class Installer
 		OnInfo?.Invoke(message);
 		Log.WriteLine(message);
 	}
-	public virtual bool IsSetup => !Assembly.GetEntryAssembly().GetName().Name.Contains("Installer");
+	public Assembly GetEntryAssembly()
+	{
+		var asm = Assembly.GetEntryAssembly();
+		if (asm == null) asm = AppDomain.CurrentDomain.GetAssemblies()
+			.FirstOrDefault(a => a.GetName().Name == "Setup2");
+		return asm;
+	}
+	public virtual bool IsSetup => !GetEntryAssembly().GetName().Name.Contains("Installer");
 	public virtual Version Version
 	{
 		get
 		{
-			if (!IsSetup) return Assembly.GetEntryAssembly().GetName().Version;
+			if (!IsSetup) return GetEntryAssembly().GetName().Version;
 			else return Settings.Installer.Version;
 		}
 	}
@@ -948,7 +955,7 @@ public abstract partial class Installer
 	{
 		Transaction(() =>
 		{
-			var assembly = Assembly.GetEntryAssembly();
+			var assembly = GetEntryAssembly();
 			var resourceName = assembly.GetManifestResourceNames()
 				.FirstOrDefault(res => res.EndsWith(resourcePath, StringComparison.OrdinalIgnoreCase));
 
@@ -1141,7 +1148,7 @@ public abstract partial class Installer
 	public bool DownloadInstallerUpdate(ComponentUpdateInfo component)
 	{
 		Log.WriteStart("Starting updater");
-		string entry = Assembly.GetEntryAssembly().Location;
+		string entry = Installer.Current.GetEntryAssembly().Location;
 		string tmpFile = Path.ChangeExtension(Path.GetTempFileName(), Path.GetExtension(entry));
 		
 		File.Copy(entry, tmpFile);

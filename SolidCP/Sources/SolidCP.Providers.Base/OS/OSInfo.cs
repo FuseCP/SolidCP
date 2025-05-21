@@ -141,7 +141,7 @@ namespace SolidCP.Providers.OS
 			{
 				var entryAssemblies = new string[] { "SolidCP.Server", "SolidCP.EnterpriseServer", "SolidCP.WebPortal", "SolidCP.WebDavPortal" };
 				var entryAssembly = AppDomain.CurrentDomain.GetAssemblies()
-					.FirstOrDefault(a => entryAssemblies.Any(name => a.GetName().Name == name)) ?? Assembly.GetEntryAssembly();
+					.FirstOrDefault(a => entryAssemblies.Any(name => a.GetName().Name == name)) ?? Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 				var fileVersion = entryAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
 				if (fileVersion == null) return "";
 				else return fileVersion.Version;

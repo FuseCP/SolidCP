@@ -42,6 +42,12 @@ public class ConsoleUI : UI
 			CurrentPage = int.MinValue / 2;
 			Installer.Current.Cleanup();
 		}
+		protected void Cancel()
+		{
+			Installer.Cancel.Cancel();
+			CurrentPage = int.MinValue / 2;
+			Installer.Current.Cleanup();
+		}
 		protected bool HasExited => CurrentPage < 0 || CurrentPage >= Pages.Count;
 		protected Action Current => CurrentPage >= 0 && CurrentPage < Pages.Count ? Pages[CurrentPage] : () => { };
 
@@ -61,7 +67,7 @@ It is recommended that you close all other applications before starting Setup. "
 
 [  Next  ]  [  Cancel  ]")
 					.ShowDialog();
-				if (form["Cancel"].Clicked) Exit();
+				if (form["Cancel"].Clicked) Cancel();
 				else Next();
 			});
 			return this;
@@ -120,7 +126,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 					if (form["Cancel"].Clicked)
 					{
 						exit = true;
-						Exit();
+						Cancel();
 					}
 					else if (lastPage && form["I Agree"].Clicked)
 					{
@@ -1190,7 +1196,7 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 
 [*  Cancel  ]  [  Uninstall  ]")
 				.ShowDialog();
-				if (form["Cancel"].Clicked) Exit();
+				if (form["Cancel"].Clicked) Cancel();
 				else Next();
 			});
 			return this;

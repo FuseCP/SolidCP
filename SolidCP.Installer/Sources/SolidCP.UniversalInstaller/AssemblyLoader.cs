@@ -512,3 +512,17 @@ public class AssemblyLoader
 #endif
 	}
 }
+
+[Serializable]
+public class RemoteRunner : MarshalByRefObject
+{
+	public object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
+	{
+		AssemblyLoader.Init(this.GetType().Assembly);
+		return RemoteRunOnLoadContext(fileName, typeName, methodName, parameters);
+	}
+	public object RemoteRunOnLoadContext(string fileName, string typeName, string methodName, object[] parameters)
+	{
+		return Installer.Current.LoadContext.RemoteRun(fileName, typeName, methodName, parameters);
+	}
+}

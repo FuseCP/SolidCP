@@ -108,7 +108,9 @@ namespace SolidCP.UniversalInstaller {
 					.FirstOrDefault();
 				UI.EndWaitCursor();
 				IWin32Window owner = UI.MainForm as IWin32Window;
-				var result = Form.ShowModal(owner) == DialogResult.OK;
+				var res = Form.ShowModal(owner);
+				var result = res == DialogResult.OK;
+				if (res == DialogResult.Cancel) Installer.Cancel.Cancel();
 				Installer.Current.UpdateSettings();
 				Installer.Current.Cleanup();
 				return result;

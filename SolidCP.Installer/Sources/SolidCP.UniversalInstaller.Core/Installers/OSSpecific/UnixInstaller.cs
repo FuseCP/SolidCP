@@ -236,7 +236,7 @@ public abstract class UnixInstaller : Installer
 	public override void RestartAsAdmin()
 	{
 		var password = UI.GetRootPassword();
-		var assembly = Assembly.GetEntryAssembly()?.Location;
+		var assembly = GetEntryAssembly()?.Location;
 		string arguments = null;
 		arguments = Environment.CommandLine;
 		Shell shell = null;

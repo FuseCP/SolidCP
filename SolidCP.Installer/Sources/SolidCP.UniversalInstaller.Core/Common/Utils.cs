@@ -913,7 +913,7 @@ namespace SolidCP.UniversalInstaller
 		public static void CreateDefaultAppConfig()
 		{
 			var path = AppDomain.CurrentDomain.BaseDirectory;
-			var assembly = Assembly.GetEntryAssembly();
+			var assembly = Installer.Current.GetEntryAssembly();
 			var file = Path.Combine(Path.GetDirectoryName(assembly.Location), "installer.settings.json");
 			if (!File.Exists(file))
 			{
