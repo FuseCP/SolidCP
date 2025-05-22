@@ -75,9 +75,9 @@
             <DocFilesDebian Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesDebianExclude)" />
         </ItemGroup>
 
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.dll" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.deps.json" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.runtimeconfig.json" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.dll" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp\Installer" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.deps.json" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp\Installer" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.runtimeconfig.json" DestinationFolder="$(PackagesFolder)\Debian\usr\share\solidcp\Installer" />
 		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-installer.1" DestinationFiles="$(PackagesFolder)\Debian\usr\share\man\man1\solidcp-installer.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Debian\usr\share\pixmaps\SolidCP.png" />
 		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-installer.desktop" DestinationFolder="$(PackagesFolder)\Debian\usr\share\applications" />
@@ -120,9 +120,9 @@
             <DocFilesFedora Include="$(PackagesFolder)\src\doc\*.*" Exclude="@(DocFilesFedoraExclude)" /> 
             <BinFilesFedora Include="$(PackagesFolder)\src\bin\*.*" />
         </ItemGroup>
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.dll" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.deps.json" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
-		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.runtimeconfig.json" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.dll" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp\Installer" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.deps.json" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp\Installer" />
+		<Copy SourceFiles="$(SetupTrunkFolder)\Sources\SolidCP.UniversalInstaller\bin\$(Configuration)\net8.0\SolidCP.Installer.runtimeconfig.json" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\solidcp\Installer" />
 		<Copy SourceFiles="$(PackagesFolder)\src\man\solidcp-installer.1" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\man\man1\solidcp-installer.1" />
 		<Copy SourceFiles="$(PackagesFolder)\src\icon\SolidCP.png" DestinationFiles="$(PackagesFolder)\Fedora\usr\share\pixmaps\SolidCP.png" />
 		<Copy SourceFiles="$(PackagesFolder)\src\desktop\solidcp-installer.desktop" DestinationFolder="$(PackagesFolder)\Fedora\usr\share\applications" />
