@@ -24,12 +24,12 @@ public abstract partial class Installer
 	public virtual void RemoveEnterpriseServerPrerequisites() { }
 	public virtual void CreateEnterpriseServerUser() => CreateUser(Settings.EnterpriseServer);
 	public virtual void RemoveEnterpriseServerUser() => RemoveUser(Settings.EnterpriseServer.Username);
-	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(EnterpriseServerFolder);
+	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder));
 	public virtual void SetEnterpriseServerFileOwner()
 	{
 		var user = string.IsNullOrEmpty(Settings.EnterpriseServer.Username) && Settings.WebPortal.EmbedEnterpriseServer ?
 			Settings.WebPortal.Username : Settings.EnterpriseServer.Username;
-		SetFileOwner(EnterpriseServerFolder, user, SolidCPGroup);
+		SetFileOwner(Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder), user, SolidCPGroup);
 	}
 	public virtual void InstallEnterpriseServer()
 	{
@@ -157,7 +157,7 @@ public abstract partial class Installer
 	}
 	public virtual void InstallEnterpriseServerWebsite()
 	{
-		var web = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+		var web = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
 		var dll = Path.Combine(web, "bin_dotnet", "SolidCP.EnterpriseServer.dll");
 		InstallWebsite(EnterpriseServerSiteId,
 			web,
@@ -177,7 +177,7 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveEnterpriseServerFolder()
 	{
-		var dir = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+		var dir = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
 		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed EnterpriseServer files");
 	}
@@ -194,7 +194,7 @@ public abstract partial class Installer
 	public virtual void ReadEnterpriseServerConfigurationNetFX()
 	{
 
-		var confFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin", "Web.config");
+		var confFile = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder, "bin", "Web.config");
 
 		if (!File.Exists(confFile)) return;
 
@@ -238,8 +238,8 @@ public abstract partial class Installer
 	{
 		var settings = Settings.EnterpriseServer;
 
-		var confFile = webPortalEmbedded ? Path.Combine(InstallWebRootPath, WebPortalFolder, "Web.config") :
-			Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "Web.config");
+		var confFile = webPortalEmbedded ? Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, "Web.config") :
+			Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder, "Web.config");
 
 		if (!File.Exists(confFile)) return;
 
@@ -253,7 +253,7 @@ public abstract partial class Installer
 		if (webPortalEmbedded)
 		{
 			// read CryptoKey
-			var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, WebPortalFolder, Settings.WebPortal.EnterpriseServerPath, "Web.config"));
+			var esConfFile = Path.GetFullPath(Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, Settings.WebPortal.EnterpriseServerPath, "Web.config"));
 			if (File.Exists(esConfFile))
 			{
 				var esConf = XElement.Load(esConfFile);
@@ -359,7 +359,7 @@ public abstract partial class Installer
 	{
 		filter ??= SetupFilter;
 		InstallWebRootPath = Settings.EnterpriseServer.InstallFolder;
-		var websitePath = Path.Combine(InstallWebRootPath, EnterpriseServerFolder);
+		var websitePath = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
 		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

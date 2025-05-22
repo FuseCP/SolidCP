@@ -12,8 +12,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemoveWebDavPortalPrerequisites() { }
 		public virtual void CreateWebDavPortalUser() => CreateUser(Settings.WebDavPortal);
 		public virtual void RemoveWebDavPortalUser() => RemoveUser(Settings.WebDavPortal.Username);
-		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(WebDavPortalFolder);
-		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(WebDavPortalFolder, Settings.WebDavPortal.Username, SolidCPGroup);
+		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder));
+		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder), Settings.WebDavPortal.Username, SolidCPGroup);
 		public virtual void InstallWebDavPortal()
 		{
 			InstallWebDavPortalPrerequisites();
@@ -38,7 +38,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void InstallWebDavPortalWebsite()
 		{
-			var web = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
+			var web = Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder);
 			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebDavPortal.dll");
 			InstallWebsite(WebDavPortalSiteId,
 				web,
@@ -60,7 +60,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void RemoveWebDavPortalFolder()
 		{
-			var dir = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
+			var dir = Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder);
 			if (Directory.Exists(dir)) Directory.Delete(dir, true);
 			InstallLog("Removed WebDavPortal files");
 		}
@@ -72,7 +72,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			filter ??= SetupFilter;
 			InstallWebRootPath = Settings.WebDavPortal.InstallFolder;
-			var websitePath = Path.Combine(InstallWebRootPath, WebDavPortalFolder);
+			var websitePath = Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder);
 			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
 	}

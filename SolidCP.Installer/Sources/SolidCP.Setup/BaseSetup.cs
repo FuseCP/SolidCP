@@ -145,7 +145,7 @@ public class BaseSetup
 
 	public void SetEnterpriseServerFolder()
 	{
-		if (IsStandalone) Installer.Current.EnterpriseServerFolder = Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder);
+		if (IsStandalone && OS.OSInfo.IsWindows) Installer.Current.EnterpriseServerFolder = Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder);
 	}
 
 	public virtual UI.SetupWizard Wizard(object args)

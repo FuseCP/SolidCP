@@ -127,6 +127,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 					Log.WriteStart("Created a new folder");
 				}
 				Settings.InstallFolder = installFolder;
+				if (Settings is StandaloneSettings) Installer.Current.Settings.Server.InstallFolder =
+					Installer.Current.Settings.EnterpriseServer.InstallFolder =
+					Installer.Current.Settings.WebDavPortal.InstallFolder =
+					Installer.Current.Settings.WebPortal.InstallFolder = installFolder;
 
 				base.OnBeforeMoveNext(e);
 			}

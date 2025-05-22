@@ -165,6 +165,10 @@ Install Component to:
 				if (form["Next"].Clicked)
 				{
 					form.Save(settings);
+					if (settings is StandaloneSettings) Installer.Current.Settings.Server.InstallFolder =
+						Installer.Current.Settings.EnterpriseServer.InstallFolder =
+						Installer.Current.Settings.WebDavPortal.InstallFolder =
+						Installer.Current.Settings.WebPortal.InstallFolder = settings.InstallFolder;
 					Next();
 				}
 				else Back();

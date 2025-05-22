@@ -22,11 +22,11 @@ public abstract partial class Installer
 	public virtual void RemoveWebPortalPrerequisites() { }
 	public virtual void CreateWebPortalUser() => CreateUser(Settings.WebPortal);
 	public virtual void RemoveWebPortalUser() => RemoveUser(Settings.WebPortal.Username);
-	public virtual void SetWebPortalFilePermissions() => SetFilePermissions(WebPortalFolder);
-	public virtual void SetWebPortalFileOwner() => SetFileOwner(WebPortalFolder, Settings.WebPortal.Username, SolidCPGroup);
+	public virtual void SetWebPortalFilePermissions() => SetFilePermissions(Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder));
+	public virtual void SetWebPortalFileOwner() => SetFileOwner(Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder), Settings.WebPortal.Username, SolidCPGroup);
 	public virtual void InstallWebPortalWebsite()
 	{
-		var web = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		var web = Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder);
 		var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebPortal.dll");
 		InstallWebsite(WebPortalSiteId,
 			web,
@@ -71,13 +71,13 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveWebPortalFolder()
 	{
-		var dir = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		var dir = Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder);
 		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Portal files");
 	}
 	public virtual void ReadWebPortalConfiguration()
 	{
-		var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
+		var confFile = Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, "App_Data", "SiteSettings.config");
 		if (File.Exists(confFile))
 		{
 			var conf = XElement.Load(confFile);
@@ -88,13 +88,13 @@ public abstract partial class Installer
 	public virtual void ConfigureWebPortal()
 	{
 		var settings = Settings.WebPortal;
-		var confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "App_Data", "SiteSettings.config");
+		var confFile = Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, "App_Data", "SiteSettings.config");
 		var conf = XElement.Load(confFile);
 		var enterpriseServer = conf.Element("EnterpriseServer");
 		enterpriseServer.Value = settings.EmbedEnterpriseServer ? "assembly://SolidCP.EnterpriseServer" : settings.EnterpriseServerUrl;
 		conf.Save(confFile);
 
-		confFile = Path.Combine(InstallWebRootPath, WebPortalFolder, "Web.config");
+		confFile = Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, "Web.config");
 		conf = XElement.Load(confFile);
 
 		ConfigureCertificateNetFX(settings, conf);
@@ -144,7 +144,7 @@ public abstract partial class Installer
 	{
 		filter ??= SetupFilter;
 		InstallWebRootPath = Settings.WebPortal.InstallFolder;
-		var websitePath = Path.Combine(InstallWebRootPath, WebPortalFolder);
+		var websitePath = Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder);
 		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

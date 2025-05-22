@@ -87,7 +87,7 @@ namespace SolidCP.UniversalInstaller
 		public virtual void InstallStandaloneServerWebsite() => InstallWebPortalWebsite();
 		public virtual void RemoveSetupFolder()
 		{
-			var dir = Path.Combine(InstallWebRootPath, "Setup");
+			var dir = Path.Combine(Settings.Standalone.InstallFolder, "Setup");
 			if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		}
 		public virtual void RemoveStandaloneServerFolder()

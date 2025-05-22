@@ -26,8 +26,8 @@ public abstract partial class Installer
 	public virtual void RemoveServerPrerequisites() { }
 	public virtual void CreateServerUser() => CreateUser(Settings.Server);
 	public virtual void RemoveServerUser() => RemoveUser(Settings.Server.Username);
-	public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
-	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCPGroup);
+	public virtual void SetServerFilePermissions() => SetFilePermissions(Path.Combine(Settings.Server.InstallFolder, ServerFolder));
+	public virtual void SetServerFileOwner() => SetFileOwner(Path.Combine(Settings.Server.InstallFolder, ServerFolder), Settings.Server.Username, SolidCPGroup);
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
@@ -68,7 +68,7 @@ public abstract partial class Installer
 	public virtual void InstallServerApplicationPool() { }
 	public virtual void InstallServerWebsite()
 	{
-		var web = Path.Combine(InstallWebRootPath, ServerFolder);
+		var web = Path.Combine(Settings.Server.InstallFolder, ServerFolder);
 		var dll = Path.Combine(web, "bin_dotnet", "SolidCP.Server.dll");
 		InstallWebsite(ServerSiteId,
 			web,
@@ -84,7 +84,7 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveServerFolder()
 	{
-		var dir = Path.Combine(InstallWebRootPath, ServerFolder);
+		var dir = Path.Combine(Settings.Server.InstallFolder, ServerFolder);
 		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Server files");
 	}
@@ -95,7 +95,7 @@ public abstract partial class Installer
 
 		Settings.Server = new ServerSettings();
 
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "Web.config");
+		var confFile = Path.Combine(Settings.Server.InstallFolder, ServerFolder, "bin", "Web.config");
 
 		if (File.Exists(confFile))
 		{
@@ -127,7 +127,7 @@ public abstract partial class Installer
 	public virtual void ConfigureServerNetFX()
 	{
 		var settings = Settings.Server;
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "Web.config");
+		var confFile = Path.Combine(Settings.Server.InstallFolder, ServerFolder, "Web.config");
 		var configuration = XElement.Load(confFile);
 
 		ConfigureCertificateNetFX(settings, configuration);
@@ -163,7 +163,7 @@ public abstract partial class Installer
 	{
 		filter ??= SetupFilter;
 		InstallWebRootPath = Settings.Server.InstallFolder;
-		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
+		var websitePath = Path.Combine(Settings.Server.InstallFolder, ServerFolder);
 		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 	public virtual int InstallServerMaxProgress => 100;

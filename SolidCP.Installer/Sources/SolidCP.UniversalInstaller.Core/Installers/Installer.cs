@@ -623,7 +623,46 @@ public abstract partial class Installer
 			Log.ProgressOne();
 		}
 	}
-
+	public string GetFiltered(string file, string root, string destroot, Func<string, string> filter)
+	{
+		if (filter != null && file.StartsWith(root))
+		{
+			int len = root.Length;
+			if (!root.EndsWith(Path.DirectorySeparatorChar.ToString()) && len < file.Length) len++;
+			file = file.Substring(len)
+				.Replace(Path.DirectorySeparatorChar, '/');
+			var dest = filter(file);
+			if (dest == null) return null;
+			return Path.Combine(destroot, dest.Replace('/', Path.DirectorySeparatorChar));
+		}
+		else return file;
+	}
+	public void CopySettings(string source, string destination, bool settings)
+	{
+		if (settings)
+		{ // Copy security settings
+			if (IsUnix)
+			{
+				/* var owner = OSInfo.Unix.GetUnixFileOwner(source);
+				OSInfo.Unix.ChangeUnixFileOwner(destination, owner.Owner, owner.Group);
+				var mode = OSInfo.Unix.GetUnixPermissions(source);
+				OSInfo.Unix.GrantUnixPermissions(destination, mode);*/
+				var srcInfo = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(source);
+				var destInfo = Mono.Unix.UnixFileSystemInfo.GetFileSystemEntry(destination);
+				destInfo.FileAccessPermissions = srcInfo.FileAccessPermissions;
+				destInfo.SetOwner(srcInfo.OwnerUserId, srcInfo.OwnerGroupId);
+				destInfo.Refresh();
+			}
+			else if (IsWindows)
+			{
+				var sourceInfo = new DirectoryInfo(source);
+				var acl = sourceInfo.GetAccessControl();
+				acl.SetAccessRuleProtection(true, true);
+				var destInfo = new DirectoryInfo(destination);
+				destInfo.SetAccessControl(acl);
+			}
+		}
+	}
 	public void CopyFiles(string source, string destination, bool clearDestination = false,
 		Func<string, string> filter = null, string root = null, string destroot = null, bool settings = false)
 	{
@@ -655,61 +694,34 @@ public abstract partial class Installer
 		}
 		else
 		{
-			if (filter != null && source.StartsWith(root))
-			{
-				int len = root.Length;
-				if (!root.EndsWith(Path.DirectorySeparatorChar.ToString()) && len < source.Length) len++;
-				var file = source.Substring(len)
-					.Replace(Path.DirectorySeparatorChar, '/');
-				var dest = filter(file);
-				if (dest == null) return;
-				destination = Path.Combine(destroot, dest.Replace('/', Path.DirectorySeparatorChar));
-			}
 			if (root == null) root = source;
 			if (destroot == null) destroot = destination;
+			destination = GetFiltered(source, root, destroot, filter);
+			if (destination == null) return;
 			if (Directory.Exists(source))
 			{
 				if (!Directory.Exists(destination)) Directory.CreateDirectory(destination);
-				if (settings)
-				{ // Copy security settings
-					if (IsUnix)
-					{
-						var owner = OSInfo.Unix.GetUnixFileOwner(source);
-						OSInfo.Unix.ChangeUnixFileOwner(destination, owner.Owner, owner.Group);
-						var mode = OSInfo.Unix.GetUnixPermissions(source);
-						OSInfo.Unix.GrantUnixPermissions(destination, mode);
-					}
-					else if (IsWindows)
-					{
-						var sourceInfo = new DirectoryInfo(source);
-						var acl = sourceInfo.GetAccessControl();
-						acl.SetAccessRuleProtection(true, true);
-						var destInfo = new DirectoryInfo(destination);
-						destInfo.SetAccessControl(acl);
-					}
-				}
+				CopySettings(source, destination, settings);
 				foreach (var file in Directory.GetFiles(source))
 				{
-					var name = Path.GetFileName(file);
-					File.Copy(file, Path.Combine(destination, name), true);
-					Log.ProgressOne();
+					var dest = GetFiltered(file, root, destroot, filter);
+					if (dest != null)
+					{
+						File.Copy(file, dest, true);
+						CopySettings(file, dest, settings);
+						Log.ProgressOne();
+					}
 				}
 				foreach (var dir in Directory.GetDirectories(source))
 				{
-					CopyFiles(dir, Path.Combine(destination, Path.GetFileName(dir)), clearDestination, filter, root, destroot);
+					var dest = GetFiltered(dir, root, destroot, filter);
+					if (dest != null) CopyFiles(dir, dest, clearDestination, filter, root, destroot);
 				}
 			}
-			else if (File.Exists(source))
+			else if (File.Exists(source) && destination != null)
 			{
 				File.Copy(source, destination, true);
-				if (settings)
-				{
-					if (IsUnix)
-					{
-						var mode = OSInfo.Unix.GetUnixPermissions(source);
-						OSInfo.Unix.GrantUnixPermissions(destination, mode);
-					}
-				}
+				CopySettings(source, destination, settings);
 				Log.ProgressOne();
 			}
 		}
