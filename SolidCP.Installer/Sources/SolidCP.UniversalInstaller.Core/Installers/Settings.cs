@@ -25,7 +25,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			get => installFolder ??= Path.Combine(OSInfo.IsWindows ?
 				Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) :
-				Installer.Current.UnixAppRootPath, Installer.Current.SolidCP);
+				Installer.Current.UnixAppRootPath, Installer.Current.SolidCP.ToLower());
 			set => installFolder = value;
 		}
 

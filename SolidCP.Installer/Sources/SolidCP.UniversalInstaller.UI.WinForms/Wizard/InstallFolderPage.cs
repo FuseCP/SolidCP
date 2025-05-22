@@ -72,7 +72,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 			if (!string.IsNullOrEmpty(Settings.InstallFolder))
 			{
-				txtFolder.Text = Settings.InstallFolder;
+				txtFolder.Text = Settings.InstallFolder ?? Installer.Current.InstallExePath;
 			}
 		}
 

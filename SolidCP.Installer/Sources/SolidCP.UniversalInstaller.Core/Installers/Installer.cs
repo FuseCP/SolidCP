@@ -34,7 +34,7 @@ public abstract partial class Installer
 	public virtual string EnterpriseServerUser => $"{SolidCP}EnterpriseServer";
 	public virtual string WebPortalUser => $"{SolidCP}Portal";
 	public virtual string SolidCPWebUsersGroup => "SCP_IUSRS";
-	public virtual string UnixAppRootPath => "/usr";
+	public virtual string UnixAppRootPath => "/usr/share";
 	public virtual string NewLine => Environment.NewLine;
 	public virtual bool CanInstallServer => true;
 	public virtual bool CanInstallEnterpriseServer => true;
