@@ -74,7 +74,7 @@ namespace SolidCP.WebSite.Services
 			dt.Columns.Add("InstallerType", typeof(string));
             dt.Columns.Add("Platforms", typeof(string));
 
-            var component = release.Parent.Parent;
+            var component = release?.Parent?.Parent;
 			dt.Rows.Add(
 				Int32.Parse(release.Element("releaseFileID").Value),
 				release.Element("fullFilePath").Value,
@@ -253,7 +253,7 @@ namespace SolidCP.WebSite.Services
                           && Boolean.Parse(r.Attribute("available").Value)
                           && (includeBeta || !includeBeta && !Boolean.Parse(r.Attribute("beta").Value))
                           select r).LastOrDefault();
-            var component = update.Parent.Parent;
+            var component = update?.Parent?.Parent;
 
             DataSet ds = new DataSet();
             DataTable dt = ds.Tables.Add();
