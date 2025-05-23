@@ -65,6 +65,12 @@ namespace SolidCP.UniversalInstaller
 			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
 			else RemoveWebDavPortalFolder();
 		}
+		public virtual void UpdateStandaloneServerConfig() {
+			UpdateServerConfig();
+			UpdateEnterpriseServerConfig();
+			UpdateWebPortalConfig();
+			if (OSInfo.IsWindows) UpdateWebDavPortalConfig();
+		}
 		public virtual void UpdateStandaloneServer()
 		{
 			if (OSInfo.IsWindows) EnterpriseServerFolder = PathWithSpaces(EnterpriseServerFolder);
@@ -82,8 +88,17 @@ namespace SolidCP.UniversalInstaller
 			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
 			else RemoveWebDavPortalFolder();
 		}
-		public virtual void UpdateStandaloneServerConfig() { }
 
+		public virtual void SetupStandaloneServer()
+		{
+			RemoveServerWebsite();
+			RemoveWebPortalWebsite();
+			if (OSInfo.IsWindows) RemoveWebDavPortalWebsite();
+			ConfigureStandaloneServer();
+			InstallServerWebsite();
+			InstallWebPortalWebsite();
+			if (OSInfo.IsWindows) InstallWebDavPortalWebsite();
+		}
 		public virtual void InstallStandaloneServerWebsite() => InstallWebPortalWebsite();
 		public virtual void RemoveSetupFolder()
 		{

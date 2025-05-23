@@ -48,6 +48,12 @@ namespace SolidCP.UniversalInstaller
 				"SolidCP.WebDavPortal service, the WebDavPortal for the SolidCP control panel.",
 				UnixWebDavPortalServiceId);
 		}
+		public virtual void SetupWebDavPortal()
+		{
+			RemoveWebDavPortalWebsite();
+			ConfigureWebDavPortal();
+			InstallWebDavPortalWebsite();
+		}
 		public virtual void RemoveWebDavPortalWebsite() {
 			RemoveWebsite(WebDavPortalSiteId, Settings.WebDavPortal);
 		}

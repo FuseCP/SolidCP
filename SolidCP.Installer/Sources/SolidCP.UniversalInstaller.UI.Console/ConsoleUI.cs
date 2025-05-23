@@ -350,9 +350,12 @@ Install Component to:
 							settings.UseActiveDirectory = false;
 						}
 
+						var component = settings.ComponentName;
+						var componentUnderline = new string('=', component.Length);
+
 						form = new ConsoleForm(@$"
-Security Settings:
-==================
+Security Settings {component}:
+=================={componentUnderline}=
 
 Please specify a new user account for the website anonymous access and application pool identity.
 {(OSInfo.IsWindows ? @"
@@ -408,9 +411,12 @@ Passwords must match!
 		{
 			Pages.Add(() =>
 			{
-				var form = new ConsoleForm(@"
-Web Site Settings:
-==================
+				var component = settings.ComponentName;
+				var componentUnderline = new string('=', component.Length);
+
+				var form = new ConsoleForm(@$"
+Web Site Settings {component}:
+=================={componentUnderline}=
 
 Specify the desired url of the website. You can specify multiple urls separated by a semicolon.
 

@@ -53,6 +53,7 @@ public abstract partial class Installer
 	public virtual void RemoveWebPortalWebsite() {
 		RemoveWebsite(WebPortalSiteId, Settings.WebPortal);
 	}
+	public virtual void UpdateWebPortalConfig() { }
 	public virtual void UpdateWebPortal() {
 		InstallWebPortalPrerequisites();
 		ReadWebPortalConfiguration();
@@ -60,6 +61,13 @@ public abstract partial class Installer
 		SetWebPortalFilePermissions();
 		SetWebPortalFileOwner();
 		UpdateWebPortalConfig();
+		ConfigureWebPortal();
+		InstallWebPortalWebsite();
+	}
+
+	public virtual void SetupWebPortal()
+	{
+		RemoveWebPortalWebsite();
 		ConfigureWebPortal();
 		InstallWebPortalWebsite();
 	}
@@ -139,7 +147,6 @@ public abstract partial class Installer
 
 		InstallLog("Configured Web Portal.");
 	}
-	public virtual void UpdateWebPortalConfig() { }
 	public virtual void CopyWebPortal(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;

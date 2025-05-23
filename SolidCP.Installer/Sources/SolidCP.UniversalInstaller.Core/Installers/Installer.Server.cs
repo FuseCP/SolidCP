@@ -31,13 +31,12 @@ public abstract partial class Installer
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(true);//, StandardInstallFilter);
+		CopyServer(true, StandardInstallFilter);
 		CreateServerUser();
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		ConfigureServer();
 		InstallServerWebsite();
-		//UpdateSettings();
 	}
 	public virtual void UpdateServer()
 	{
@@ -48,20 +47,18 @@ public abstract partial class Installer
 		UpdateServerConfig();
 		ConfigureServer();
 		InstallServerWebsite();
-		//UpdateSettings();
 	}
 	public virtual void SetupServer()
 	{
+		RemoveServerWebsite();
 		ConfigureServer();
-		//UpdateSettings();
+		InstallServerWebsite();
 	}
 	public virtual void RemoveServer()
 	{
-		//RemoveServerPrerequisites();
 		RemoveServerWebsite();
 		RemoveServerFolder();
 		RemoveServerUser();
-		//UpdateSettings();
 	}
 
 	public virtual void InstallServerUser() { }
