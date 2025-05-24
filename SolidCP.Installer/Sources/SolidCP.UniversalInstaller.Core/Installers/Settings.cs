@@ -31,7 +31,7 @@ namespace SolidCP.UniversalInstaller
 					{
 						if (string.IsNullOrEmpty(InstallFolder))
 						{
-							installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles), Installer.Current.SolidCP);
+							installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Installer.Current.SolidCP);
 						}
 						else installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Installer.Current.SolidCP, InstallFolder);
 					}
