@@ -195,7 +195,7 @@ public abstract class UnixInstaller : Installer
 
 	public override void ReadServerConfiguration()
 	{
-		var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+		var appsettingsfile = Path.Combine(Settings.Server.InstallPath, "bin_dotnet", "appsettings.json");
 		if (File.Exists(appsettingsfile))
 		{
 			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile),

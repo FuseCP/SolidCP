@@ -24,12 +24,12 @@ public abstract partial class Installer
 	public virtual void RemoveEnterpriseServerPrerequisites() { }
 	public virtual void CreateEnterpriseServerUser() => CreateUser(Settings.EnterpriseServer);
 	public virtual void RemoveEnterpriseServerUser() => RemoveUser(Settings.EnterpriseServer.Username);
-	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder));
+	public virtual void SetEnterpriseServerFilePermissions() => SetFilePermissions(Settings.EnterpriseServer.InstallPath);
 	public virtual void SetEnterpriseServerFileOwner()
 	{
 		var user = string.IsNullOrEmpty(Settings.EnterpriseServer.Username) && Settings.WebPortal.EmbedEnterpriseServer ?
 			Settings.WebPortal.Username : Settings.EnterpriseServer.Username;
-		SetFileOwner(Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder), user, SolidCPGroup);
+		SetFileOwner(Settings.EnterpriseServer.InstallPath, user, SolidCPGroup);
 	}
 	public virtual void InstallEnterpriseServer()
 	{
@@ -68,7 +68,148 @@ public abstract partial class Installer
 		ConfigureEnterpriseServer();
 		InstallEnterpriseServerWebsite();
 	}
-	public virtual void UpdateEnterpriseServerConfig() { }
+	public virtual void UpdateEnterpriseServerConfig()
+	{
+		var configFile = Path.Combine(Settings.EnterpriseServer.InstallPath, "Web.config");
+		var config = XElement.Load(configFile);
+		var sections = config.Element("configSections");
+		// Remove WSE3
+		sections
+			?.Elements("section")
+			.FirstOrDefault(e => e.Attribute("name")?.Value == "microsoft.web.services3")
+			?.Remove();
+		config
+			.Elements("microsoft.web.services3")
+			.FirstOrDefault()
+			?.Remove();
+		// Add SwaggerWCF
+		sections.Add(new XElement("section",
+			new XAttribute("name", "swaggerwcf"),
+			new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf")));
+		var swaggerwcf = XElement.Parse(@"<swaggerwcf>
+		<settings>
+			<setting name=""InfoDescription"" value=""SolidCP EnterpriseServer Service"" />
+			<setting name=""InfoVersion"" value=""2.0.0"" />
+			<setting name=""InfoTermsOfService"" value=""Terms of Service"" />
+			<setting name=""InfoTitle"" value=""SolidCP EnterpriseServer Service"" />
+			<setting name=""InfoContactName"" value=""SolidCP"" />
+			<setting name=""InfoContactUrl"" value=""http://solidcp.com/forum"" />
+			<setting name=""InfoContactEmail"" value=""support@solidcp.com"" />
+			<setting name=""InfoLicenseUrl"" value=""https://github.com/FuseCP/SolidCP/blob/master/LICENSE.txt"" />
+			<setting name=""InfoLicenseName"" value=""Creative Commons Share-alike"" />
+		</settings>
+	</swaggerwcf>");
+		config.Add(swaggerwcf);
+
+		// Update connectionString
+		var connectionStrings = config.Element("connectionStrings");
+		var cstringElement = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
+		var cstringAttr = cstringElement?.Attribute("connectionString");
+		cstringAttr.SetValue($"DbType=SqlServer;{cstringAttr.Value}");
+		cstringElement.Attribute("providerName")?.Remove();
+
+		// Adjust appSettings
+		var appSettings = config.Element("appSettings");
+		appSettings.Add(XElement.Parse(@"<add key=""ExposeWebServices"" value=""true"" />"));
+
+		// Adjust httpRuntime
+		var systemWeb = config.Element("system.web");
+		var httpRuntime = systemWeb?.Element("httpRuntime");
+		if (httpRuntime == null) systemWeb.Add(httpRuntime = new XElement("httpRuntime"));
+		var requestLength = httpRuntime.Attribute("maxRequestLength");
+		if (requestLength == null)
+		{
+			httpRuntime.Add(requestLength = new XAttribute("maxRequestLength", 4194304));
+		}
+		else requestLength.SetValue(4194304);
+		systemWeb?.Element("webServices")?.Remove();
+
+		// Block bin_dotnet
+		var location = XElement.Parse(@"<location path=""bin_dotnet"">
+        <system.webServer>
+            <handlers>
+                <add name=""DisallowServe"" path=""*.*"" verb=""*"" type=""System.Web.HttpNotFoundHandler"" />
+                <!-- Return 404 instead of 403 -->
+            </handlers>
+        </system.webServer>
+    </location>");
+		config.Add(location);
+
+		// Add system.webServers
+		var systemWebServer = XElement.Parse(@"<system.webServer>
+		<modules runAllManagedModulesForAllRequests=""true"" />
+        <!-- hide the bin_dotnet folder -->
+        <security>
+            <requestFiltering>
+                <hiddenSegments>
+                    <add segment=""bin_dotnet"" />
+                </hiddenSegments>
+                <requestLimits maxAllowedContentLength=""4194304"" />
+            </requestFiltering>
+        </security>
+        <httpErrors errorMode=""Detailed"" />
+		<!--
+        To browse web app root directory during debugging, set the value below to true.
+        Set to false before deployment to avoid disclosing web app folder information.
+      -->
+	</system.webServer>");
+		if (config.Element("system.webServer") == null) config.Add(systemWebServer);
+		else config.Element("system.webServer").ReplaceWith(systemWebServer);
+
+		// Add WCF certificate
+		var systemServiceModel = config.Element("system.serviceModel");
+		var environment = XElement.Parse(@"<serviceHostingEnvironment aspNetCompatibilityEnabled=""true"" />");
+		if (systemServiceModel.Element("serviceHostingEnvironment") == null) systemServiceModel.Add(environment);
+		var behaviors = systemServiceModel?.Element("behaviors");
+		if (behaviors == null)
+		{
+			systemServiceModel.Add(behaviors = new XElement("behaviors"));
+		}
+		var serviceBehaviors = XElement.Parse(@"<serviceBehaviors>
+				<behavior>
+					<serviceCredentials>
+						<serviceCertificate storeLocation=""LocalMachine"" storeName=""My"" x509FindType=""FindBySubjectName"" findValue=""localhost"" />
+					</serviceCredentials>
+				</behavior>
+			</serviceBehaviors>");
+		behaviors?.Add(serviceBehaviors);
+
+		// Runtime
+		var runtime = config.Element("runtime");
+		if (runtime == null) config.Add(runtime = new XElement("runtime"));
+
+		runtime.ReplaceWith(XElement.Parse(@"<runtime>
+		<assemblyBinding xmlns=""urn:schemas-microsoft-com:asm.v1"">
+			<probing privatePath=""bin/Code;bin/netstandard"" />
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Runtime.CompilerServices.Unsafe""
+                    publicKeyToken=""b03f5f7f11d50a3a""
+                    culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-6.0.3.0"" newVersion=""6.0.3.0"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""Microsoft.Identity.Client""
+                    publicKeyToken=""0a613f4dd989e8ae""
+                    culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-4.66.1.0"" newVersion=""4.67.2.0"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Collections.Immutable"" publicKeyToken=""b03f5f7f11d50a3a"" culture=""neutral"" />
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Memory"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral"" />
+                <bindingRedirect oldVersion=""0.0.0.0-4.0.5.0"" newVersion=""4.0.5.0"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Buffers"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral"" />
+                <bindingRedirect oldVersion=""0.0.0.0-4.0.5.0"" newVersion=""4.0.5.0"" />
+            </dependentAssembly>
+        </assemblyBinding>
+	</runtime>"));
+
+		File.WriteAllText(configFile, config.ToString());
+	}
 
 	public virtual string DefaultDatabaseUser => SolidCP;
 	public virtual void InstallDatabase()
@@ -107,7 +248,39 @@ public abstract partial class Installer
 	{
 		Info("Update Database");
 		var settings = Settings.EnterpriseServer;
-		var connstr = settings.DbInstallConnectionString;
+		var configFile = Path.Combine(Settings.EnterpriseServer.InstallPath, "Web.config");
+		var config = XElement.Load(configFile);
+		var connectionStrings = config.Element("connectionStrings");
+		var cstringElement = connectionStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
+		var cstringAttr = cstringElement?.Attribute("connectionString");
+		var cstring = cstringAttr?.Value;
+		string databaseName;
+		var dataNewVersion = cstring.IndexOf("DbType=", StringComparison.OrdinalIgnoreCase) >= 0;
+		if (!dataNewVersion)
+		{
+			cstring = $"DbType=SqlServer;{cstring}";
+			cstringAttr.SetValue(cstring);
+			cstringElement.Attribute("providerName")?.Remove();
+			File.WriteAllText(configFile, config.ToString());
+			var csb = new ConnectionStringBuilder(cstring);
+			databaseName = (csb["Initial Catalog"] ?? csb["Database"]) as string;
+			settings.DbInstallConnectionString = cstring;
+			settings.DatabaseName = databaseName;
+			settings.DatabaseUser = (csb["Uid"] ?? csb["User Id"]) as string;
+			settings.DatabasePassword = (csb["Pwd"] ?? csb["Password"]) as string;
+		} else
+		{
+			var csb = new ConnectionStringBuilder(cstring);
+			databaseName = (csb["Initial Catalog"] ?? csb["Database"]) as string;
+			settings.DbInstallConnectionString ??= cstring;
+			settings.DatabaseName ??= databaseName;
+			settings.DatabaseUser ??= (csb["Uid"] ?? csb["User Id"] ?? csb["User"] ?? csb["Username"]) as string;
+			settings.DatabasePassword ??= (csb["Pwd"] ?? csb["Password"]) as string;
+		}
+
+		DatabaseUtils.UpdateDatabase(settings.DbInstallConnectionString, settings.DatabaseName,
+			settings.DatabaseUser, settings.DatabasePassword, dataNewVersion);
+
 		InstallLog("Updated Database");
 	}
 	public virtual void DeleteDatabase()
@@ -146,7 +319,7 @@ public abstract partial class Installer
 		var user = settings.DatabaseUser;
 		var password = settings.DatabasePassword;
 		var db = settings.DatabaseName;
-		DatabaseUtils.UpdateDatabase(connstr, db, user, password, null,
+		DatabaseUtils.UpdateDatabase(connstr, db, user, password, true, null,
 			count => DatabaseStatements = count, null, "", true);
 	}
 	public virtual void ResetEstimatedOutputLines(Func<int> calculateEstimatedOutputLines = null)
@@ -157,7 +330,7 @@ public abstract partial class Installer
 	}
 	public virtual void InstallEnterpriseServerWebsite()
 	{
-		var web = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
+		var web = Settings.EnterpriseServer.InstallPath;
 		var dll = Path.Combine(web, "bin_dotnet", "SolidCP.EnterpriseServer.dll");
 		InstallWebsite(EnterpriseServerSiteId,
 			web,
@@ -177,7 +350,7 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveEnterpriseServerFolder()
 	{
-		var dir = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
+		var dir = Settings.EnterpriseServer.InstallPath;
 		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed EnterpriseServer files");
 	}
@@ -194,7 +367,7 @@ public abstract partial class Installer
 	public virtual void ReadEnterpriseServerConfigurationNetFX()
 	{
 
-		var confFile = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder, "bin", "Web.config");
+		var confFile = Path.Combine(Settings.EnterpriseServer.InstallPath, "Web.config");
 
 		if (!File.Exists(confFile)) return;
 
@@ -238,8 +411,8 @@ public abstract partial class Installer
 	{
 		var settings = Settings.EnterpriseServer;
 
-		var confFile = webPortalEmbedded ? Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, "Web.config") :
-			Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder, "Web.config");
+		var confFile = webPortalEmbedded ? Path.Combine(Settings.WebPortal.InstallPath, "Web.config") :
+			Path.Combine(Settings.EnterpriseServer.InstallPath, "Web.config");
 
 		if (!File.Exists(confFile)) return;
 
@@ -253,7 +426,7 @@ public abstract partial class Installer
 		if (webPortalEmbedded)
 		{
 			// read CryptoKey
-			var esConfFile = Path.GetFullPath(Path.Combine(Settings.WebPortal.InstallFolder, WebPortalFolder, Settings.WebPortal.EnterpriseServerPath, "Web.config"));
+			var esConfFile = Path.GetFullPath(Path.Combine(Settings.WebPortal.InstallPath, Settings.WebPortal.EnterpriseServerPath, "Web.config"));
 			if (File.Exists(esConfFile))
 			{
 				var esConf = XElement.Load(esConfFile);
@@ -358,8 +531,8 @@ public abstract partial class Installer
 	public virtual void CopyEnterpriseServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
-		InstallWebRootPath = Settings.EnterpriseServer.InstallFolder;
-		var websitePath = Path.Combine(Settings.EnterpriseServer.InstallFolder, EnterpriseServerFolder);
+		var websitePath = Settings.EnterpriseServer.InstallPath;
+		InstallWebRootPath = Path.GetDirectoryName(websitePath);
 		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 }

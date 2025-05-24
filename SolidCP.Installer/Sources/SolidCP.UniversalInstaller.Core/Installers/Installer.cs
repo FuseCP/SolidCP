@@ -1,24 +1,26 @@
-using System;
-using System.Reflection;
-using System.IO.Compression;
-using System.Diagnostics;
-using System.Text.RegularExpressions;
-using System.Data;
-using System.Net;
-using System.Collections;
-using System.Security.Cryptography.X509Certificates;
-using System.Xml.Linq;
-using System.Text;
+using Microsoft.Identity.Client;
+using Microsoft.Web.Administration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using Microsoft.Web.Administration;
-using SolidCP.Providers;
-using SolidCP.Providers.Web;
-using SolidCP.Providers.OS;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.Utils;
 using SolidCP.EnterpriseServer.Data;
+using SolidCP.Providers;
+using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
+using SolidCP.Providers.Utils;
+using SolidCP.Providers.Web;
 using SolidCP.UniversalInstaller.Core;
+using System;
+using System.Collections;
+using System.Data;
+using System.Diagnostics;
+using System.IO.Compression;
+using System.Net;
+using System.Reflection;
+using System.Runtime.InteropServices.ComTypes;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -27,7 +29,7 @@ public abstract partial class Installer
 	public const bool RunAsAdmin = true;
 	public virtual string SolidCP => "SolidCP";
 	public virtual string ServerFolder => "Server";
-	public virtual string EnterpriseServerFolder { get; set; } = "EnterpriseServer";
+	public virtual string EnterpriseServerFolder => "EnterpriseServer";
 	public virtual string WebPortalFolder => "Portal";
 	public virtual string WebDavPortalFolder => "WebDavPortal";
 	public virtual string ServerUser => $"{SolidCP}Server";
@@ -140,6 +142,170 @@ public abstract partial class Installer
 			else return Settings.Installer.Version;
 		}
 	}
+
+	public void ImportLegacySettings()
+	{
+		var exe = new Uri(Assembly.GetEntryAssembly().CodeBase).LocalPath;
+		var configFile = exe + ".config";
+		if (Settings.Installer.OldConfigImported || !File.Exists(configFile)) return;
+
+		Settings.Installer.OldConfigImported = true;
+		
+		var doc = XDocument.Load(configFile);
+		var installer = doc.Element("installer");
+		var instSettings = installer?.Element("settings");
+		bool useProxy = false;
+		Settings.Installer.Proxy = new ProxySettings();
+
+		foreach (var setting in instSettings?.Elements("add"))
+		{
+			var key = setting.Attribute("key")?.Value;
+			var value = setting.Attribute("value")?.Value;
+			if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+			{
+				switch (key)
+				{
+					case "Web.AutoCheck":
+						Settings.Installer.CheckForUpdate = bool.Parse(value);
+						break;
+					case "Web.Proxy.UseProxy":
+						useProxy = bool.Parse(value);
+						break;
+					case "Web.Proxy.Server":
+						Settings.Installer.Proxy.Address = value;
+						break;
+					case "Web.Proxy.UserName":
+						Settings.Installer.Proxy.Username = value;
+						break;
+					case "Web.Proxy.Password":
+						Settings.Installer.Proxy.Password = value;
+						break;
+				}
+			}
+		}
+
+		if (!useProxy) Settings.Installer.Proxy = null;
+		
+		var components = installer?.Element("components")?.Elements("component");
+		if (components != null)
+		{
+			foreach (var component in components)
+			{
+				var info = new ComponentInfo();
+				info.ApplicationName = SolidCP;
+
+				var settingsFromCode = new Dictionary<string, ComponentSettings>()
+				{
+					{ Global.Server.ComponentCode, Settings.Server },
+					{ Global.EntServer.ComponentCode, Settings.EnterpriseServer },
+					{ Global.WebPortal.ComponentCode, Settings.WebPortal },
+					{ Global.WebDavPortal.ComponentCode, Settings.WebDavPortal },
+					{ Global.StandaloneServer.ComponentCode, Settings.Standalone }
+				};
+
+				var settings = component.Element("settings")?.Elements("add");
+				if (settings != null)
+				{
+					CommonSettings commonSettings = null;
+					ComponentSettings componentSettings = null;
+
+					foreach (var setting in settings.OrderBy(set => set.Attribute("key").Value))
+					{
+						var key = setting.Attribute("key")?.Value;
+						var value = setting.Attribute("value")?.Value;
+						if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+						{
+							switch (key)
+							{
+								case "ComponentCode":
+									info.ComponentCode = value;
+									componentSettings = settingsFromCode[value];
+									commonSettings = componentSettings as CommonSettings;
+									break;
+								case "ComponentName":
+									info.ComponentName = value;
+									break;
+								case "ComponentDescription":
+									info.ComponentDescription = value;
+									break;
+								case "Release":
+									info.Version = Version.Parse(value);
+									info.VersionName = value;
+									break;
+								case "InstallFolder":
+									componentSettings.InstallPath = value;
+									break;
+								case "InstallerType":
+									info.InstallerType = value;
+									break;
+								case "InstallerPath":
+									info.InstallerPath = value;
+									break;
+								case "WebSiteIP":
+									commonSettings.WebSiteIp = value;
+									break;
+								case "WebSitePort":
+									commonSettings.WebSitePort = int.Parse(value);
+									break;
+								case "WebSiteDomain":
+									commonSettings.WebSiteDomain = value;
+									break;
+								case "UserAccount":
+									commonSettings.Username = value;
+									break;
+								case "UserPassword":
+									commonSettings.Password = value;
+									break;
+								case "Database":
+									Settings.EnterpriseServer.DatabaseName = value;
+									break;
+								case "DatabaseUser":
+									Settings.EnterpriseServer.DatabaseUser = value;
+									break;
+								case "DatabaseServer":
+									Settings.EnterpriseServer.DatabaseServer = value;
+									break;
+								case "InstallConnectionString":
+									Settings.EnterpriseServer.DbInstallConnectionString = value;
+									Settings.EnterpriseServer.DatabaseType = EnterpriseServer.Data.DbType.SqlServer;
+									break;
+								case "ConnectionString":
+									var csb = new ConnectionStringBuilder(value);
+									var pwd = (csb["Password"] ?? csb["Pwd"]) as string;
+									int port = 1433;
+									var server = csb["Server"] as string;
+									if (server.Contains(','))
+									{
+										var tokens = server.Split(',');
+										int.TryParse(tokens.LastOrDefault() ?? "", out port);
+									}
+									Settings.EnterpriseServer.DatabaseWindowsAuthentication =
+										(csb["Integrated Security"] as bool?) == true;
+									Settings.EnterpriseServer.DatabasePort = port;
+									Settings.EnterpriseServer.DatabasePassword = pwd;
+									Settings.EnterpriseServer.DatabaseType = EnterpriseServer.Data.DbType.SqlServer;
+									break;
+								case "CryptoKey":
+									Settings.EnterpriseServer.CryptoKey = value;
+									break;
+								default: break;
+							}
+						}
+					}
+				}
+				var fileInfo = Installer.Current.InstallerWebService.GetReleaseFileInfo(info.ComponentCode, info.VersionName);
+				info.FullFilePath = fileInfo.FullFilePath;
+				info.UpgradeFilePath = fileInfo.UpgradeFilePath;
+				info.ReleaseFileId = fileInfo.ReleaseFileId;
+				info.Platforms = fileInfo.Platforms;
+
+				Settings.Installer.InstalledComponents.Add(info);
+			}
+		}
+
+		SaveSettings();
+	}
+
 	public void LoadSettings()
 	{
 		var path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, InstallerSettingsFile);
@@ -208,6 +374,29 @@ public abstract partial class Installer
 		Cancel = new CancellationTokenSource();
 	}
 
+	public void PassLegacyArguments(Hashtable args, ComponentInfo info)
+	{
+		if (!info.UsesNewInstaller)
+		{
+			var fileName = info.FullFilePath.Replace('\\', Path.DirectorySeparatorChar);
+
+			args[Global.Parameters.ComponentName] = info.ComponentName;
+			args[Global.Parameters.ApplicationName] = SolidCP;
+			args[Global.Parameters.ComponentCode] = info.ComponentCode;
+			args[Global.Parameters.ComponentDescription] = info.ComponentDescription;
+			args[Global.Parameters.Version] = info.Version.ToString();
+			args[Global.Parameters.InstallerFolder] = TempPath;
+			args[Global.Parameters.InstallerPath] = info.InstallerPath.Replace('\\', Path.DirectorySeparatorChar);
+			args[Global.Parameters.InstallerType] = info.InstallerType;
+			args[Global.Parameters.Installer] = Path.GetFileName(fileName);
+			args[Global.Parameters.ShellVersion] = Installer.Current.LoadContext.GetShellVersion();
+			args[Global.Parameters.BaseDirectory] = FileUtils.GetCurrentDirectory();
+			args[Global.Parameters.ShellMode] = Global.VisualInstallerShell;
+			args[Global.Parameters.IISVersion] = Global.IISVersion;
+			args[Global.Parameters.SetupXml] = null; //TODO Pass SetupXml
+			args[Global.Parameters.UIType] = UI.Current.GetType().Name;
+		}
+	}
 	public bool RunSetup(ComponentInfo info, SetupActions action)
 	{
 		Settings.Installer.Component = info;
@@ -256,11 +445,15 @@ public abstract partial class Installer
 				var hashtable = new Hashtable();
 				hashtable["ParametersJson"] = json;
 				UI.PassArguments(hashtable);
+				PassLegacyArguments(hashtable, info);
 
 				//run installer
 				var res = (Result)LoadContext.Execute(path, installerType, method, new object[] { hashtable }) == Result.OK;
 
-				Task.Run(() => FileUtils.DeleteTempDirectory());
+				Task.Run(() =>
+				{
+					FileUtils.DeleteTempDirectory();
+				});
 
 				LoadSettings();
 
@@ -778,7 +971,7 @@ public abstract partial class Installer
 		}
 		else throw new NotSupportedException();
 
-		var appsettingsfile = Path.Combine(InstallWebRootPath, folder, "bin_dotnet", "appsettings.json");
+		var appsettingsfile = Path.Combine(settings.InstallPath, "bin_dotnet", "appsettings.json");
 		if (File.Exists(appsettingsfile))
 		{
 			appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile),
@@ -820,7 +1013,7 @@ public abstract partial class Installer
 		{
 			// create a local copy of the certificate file
 			var certFile = settings.CertificateFile;
-			var certFolder = Path.Combine(InstallWebRootPath, CertificateFolder);
+			var certFolder = Path.Combine(Path.GetDirectoryName(settings.InstallPath), CertificateFolder);
 			if (!Directory.Exists(certFolder)) Directory.CreateDirectory(certFolder);
 			var shadowFileName = $"{Guid.NewGuid()}.{Path.GetFileName(certFile)}";
 			var shadowFile = Path.Combine(certFolder, shadowFileName);
@@ -853,7 +1046,7 @@ public abstract partial class Installer
 				appsettings.probingPaths = @$"..\bin\netstandard;..\{webSettings.EnterpriseServerPath}\bin_dotnet;..\{webSettings.EnterpriseServerPath}\bin\netstandard";
 				appsettings.probingPaths = appsettings.probingPaths.Replace('\\', Path.DirectorySeparatorChar);
 
-				var esJsonFile = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "bin_dotnet", "appsettings.json");
+				var esJsonFile = Path.GetFullPath(Path.Combine(settings.InstallPath, wsettings.EnterpriseServerPath, "bin_dotnet", "appsettings.json"));
 				if (File.Exists(esJsonFile))
 				{
 					var esSettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(esJsonFile),

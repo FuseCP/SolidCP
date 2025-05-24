@@ -20,17 +20,35 @@ namespace SolidCP.UniversalInstaller
 
 	public class ComponentSettings
 	{
-		private string installFolder = null;
-		public string InstallFolder
+		private string installPath = null;
+		public string InstallPath
 		{
-			get => installFolder ??= Path.Combine(OSInfo.IsWindows ?
-				Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles) :
-				Installer.Current.UnixAppRootPath,
-					OSInfo.IsWindows ? Installer.Current.SolidCP :
-					Installer.Current.SolidCP.ToLower());
-			set => installFolder = value;
+			get
+			{
+				if (installPath == null)
+				{
+					if (OSInfo.IsWindows)
+					{
+						if (string.IsNullOrEmpty(InstallFolder))
+						{
+							installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonProgramFiles), Installer.Current.SolidCP);
+						}
+						else installPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Installer.Current.SolidCP, InstallFolder);
+					}
+					else
+					{
+						if (string.IsNullOrEmpty(InstallFolder))
+						{
+							installPath = Path.Combine(Installer.Current.UnixAppRootPath, Installer.Current.SolidCP.ToLower());
+						}
+						else installPath = Path.Combine(Installer.Current.UnixAppRootPath, Installer.Current.SolidCP.ToLower(), InstallFolder);
+					}
+				}
+				return installPath;
+			}
+			set => installPath = value;
 		}
-
+		public virtual string InstallFolder => null;
 		public virtual string ComponentCode => null;
 		public virtual string ComponentName => null;		
 	}
@@ -69,7 +87,8 @@ namespace SolidCP.UniversalInstaller
 		public bool UpdateServerPassword { get; set; }
 		public override string ComponentCode => Global.Server.ComponentCode;
 		public override string ComponentName => Global.Server.ComponentName;
-	}
+		public override string InstallFolder => Installer.Current.ServerFolder;
+}
 
 	public class EnterpriseServerSettings: CommonSettings
 	{
@@ -92,6 +111,7 @@ namespace SolidCP.UniversalInstaller
 		public string CryptoKey { get; set; }
 		public override string ComponentCode => Global.EntServer.ComponentCode;
 		public override string ComponentName => Global.EntServer.ComponentName;
+		public override string InstallFolder => Installer.Current.EnterpriseServerFolder;
 	}
 
 	public class WebPortalSettings: CommonSettings
@@ -107,6 +127,7 @@ namespace SolidCP.UniversalInstaller
 		public bool ExposeEnterpriseServerWebServices { get; set; } = true;
 		public override string ComponentCode => Global.WebPortal.ComponentCode;
 		public override string ComponentName => Global.WebPortal.ComponentName;
+		public override string InstallFolder => Installer.Current.WebPortalFolder;
 	}
 
 	public class WebDavPortalSettings: CommonSettings
@@ -118,6 +139,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public override string ComponentCode => Global.WebDavPortal.ComponentCode;
 		public override string ComponentName => Global.WebDavPortal.ComponentName;
+		public override string InstallFolder => Installer.Current.WebDavPortalFolder;
 	}
 	public class StandaloneSettings: ComponentSettings
 	{
@@ -135,6 +157,7 @@ namespace SolidCP.UniversalInstaller
 	public class InstallerSpecificSettings
 	{
 		public List<ComponentInfo> InstalledComponents { get; set; } = new List<ComponentInfo>();
+		public bool OldConfigImported { get; set; } = false;
 		public string ComponentSettingsXml { get; set; }
 		public ComponentInfo Component { get; set; }
 		public SetupActions Action { get; set; }

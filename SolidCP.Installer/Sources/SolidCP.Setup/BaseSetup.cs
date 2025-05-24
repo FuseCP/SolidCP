@@ -139,15 +139,6 @@ public class BaseSetup
 	public virtual bool IsStandalone => ComponentSettings is StandaloneSettings;
 	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
 	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
-	public virtual bool HasEnterpriseServerInstallation
-		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)) ||
-			Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)));
-
-	public void SetEnterpriseServerFolder()
-	{
-		if (IsStandalone && OS.OSInfo.IsWindows) Installer.Current.EnterpriseServerFolder = Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder);
-	}
-
 	public virtual UI.SetupWizard Wizard(object args, bool setup = false)
 	{
 		if (ParseArgs(args) && CheckInstallerVersion())
@@ -190,7 +181,6 @@ public class BaseSetup
 				Settings.EnterpriseServer.Urls = "http://localhost:9002";
 				Settings.EnterpriseServer.ConfigureCertificateManually = true;
 				Settings.WebPortal.EmbedEnterpriseServer = true;
-				SetEnterpriseServerFolder();
 
 				if (!setup) wizard = wizard.InstallFolder(Settings.Standalone);
 				wizard = wizard
@@ -275,7 +265,6 @@ public class BaseSetup
 		if (ParseArgs(args))
 		{
 			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
-			SetEnterpriseServerFolder();
 
 			if (CheckInstallerVersion())
 			{

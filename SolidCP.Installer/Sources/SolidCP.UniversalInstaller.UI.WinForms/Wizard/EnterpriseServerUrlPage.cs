@@ -58,11 +58,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			get
 			{
-				var installerPath = Settings.InstallFolder;
-				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
-				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "SolidCP.Web.Clients.dll"));
-				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder &&
-					(File.Exists(webClientsPath1) || File.Exists(webClientsPath2));
+				var installerPath = Settings.InstallPath;
+				var webClientsPath = Path.GetFullPath(Path.Combine(installerPath, "..", Installer.Current.EnterpriseServerFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
+				return File.Exists(webClientsPath);
 			}
 		}
 		protected override void InitializePageInternal()
@@ -238,8 +236,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			}
 		}
 		private string AbsolutePath(string relativePath) => Path.IsPathRooted(relativePath) ? relativePath :
-			Path.GetFullPath(Path.Combine(Settings.InstallFolder, Installer.Current.WebPortalFolder, relativePath));
-		private string RelativePath(string absolutePath) => GetRelativePath(Path.Combine(Settings.InstallFolder, Installer.Current.WebPortalFolder), absolutePath);
+			Path.GetFullPath(Path.Combine(Settings.InstallPath, relativePath));
+		private string RelativePath(string absolutePath) => GetRelativePath(Settings.InstallPath, absolutePath);
 
 		/// <summary>
 		/// Creates a relative path from one file or folder to another.

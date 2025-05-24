@@ -647,7 +647,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			string drive = null;
 			try
 			{
-				drive = Path.GetPathRoot(Path.GetFullPath(settings.InstallFolder));
+				drive = Path.GetPathRoot(Path.GetFullPath(settings.InstallPath));
 			}
 			catch
 			{

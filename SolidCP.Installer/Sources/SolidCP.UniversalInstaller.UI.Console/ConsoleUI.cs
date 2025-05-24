@@ -165,10 +165,13 @@ Install Component to:
 				if (form["Next"].Clicked)
 				{
 					form.Save(settings);
-					if (settings is StandaloneSettings) Installer.Current.Settings.Server.InstallFolder =
-						Installer.Current.Settings.EnterpriseServer.InstallFolder =
-						Installer.Current.Settings.WebDavPortal.InstallFolder =
-						Installer.Current.Settings.WebPortal.InstallFolder = settings.InstallFolder;
+					if (settings is StandaloneSettings)
+					{
+						Installer.Current.Settings.Server.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
+						Installer.Current.Settings.EnterpriseServer.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.EnterpriseServer.InstallFolder);
+						Installer.Current.Settings.WebDavPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.WebDavPortal.InstallFolder);
+						Installer.Current.Settings.WebPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
+					}
 					Next();
 				}
 				else Back();
@@ -485,7 +488,7 @@ Path to EnterpriseServer: [?EnterpriseServerPath                                
 						form.Save(settings);
 						settings.EmbedEnterpriseServer = form[0].Checked;
 						settings.ExposeEnterpriseServerWebServices = form[0].Checked;
-						if (Directory.Exists(Path.GetFullPath(Path.Combine(settings.InstallFolder, settings.EnterpriseServerPath))))
+						if (Directory.Exists(Path.GetFullPath(Path.Combine(settings.InstallPath, settings.EnterpriseServerPath))))
 						{
 							exit = true;
 							Next();
@@ -2080,7 +2083,11 @@ SolidCP cannot be installed on this System.
 	private bool CursorVisibleAfterWaitCursor;
 	public override void ShowWaitCursor()
 	{
-		if (!Directory.Exists(Settings.Installer.TempPath)) Directory.CreateDirectory(Settings.Installer.TempPath);
+		if (Settings.Installer.TempPath == null) Settings.Installer.TempPath = FileUtils.GetTempDirectory();
+
+		var dir = Path.GetDirectoryName(CancelFile);
+		if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
 		Console.Clear();
 		var write = async (string txt) =>
 		{
@@ -2115,6 +2122,8 @@ SolidCP cannot be installed on this System.
 
 	public override void EndWaitCursor()
 	{
+		var dir = Path.GetDirectoryName(CancelFile);
+		if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 		File.WriteAllText(CancelFile, "");
 		CancelWaitCursor.Cancel();
 	}

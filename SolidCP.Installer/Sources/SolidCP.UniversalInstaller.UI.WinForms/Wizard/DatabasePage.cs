@@ -374,7 +374,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 						port, txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim());
 				case Data.DbType.Sqlite:
 				case Data.DbType.SqliteFX:
-					return Data.DatabaseUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), Settings.InstallFolder, WebPortalSettings.EnterpriseServerPath, WebPortalSettings.EmbedEnterpriseServer);
+					return Data.DatabaseUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), Settings.InstallPath, WebPortalSettings.EnterpriseServerPath, WebPortalSettings.EmbedEnterpriseServer);
 				default: return "";
 			}
 		}

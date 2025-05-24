@@ -12,8 +12,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void RemoveWebDavPortalPrerequisites() { }
 		public virtual void CreateWebDavPortalUser() => CreateUser(Settings.WebDavPortal);
 		public virtual void RemoveWebDavPortalUser() => RemoveUser(Settings.WebDavPortal.Username);
-		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder));
-		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder), Settings.WebDavPortal.Username, SolidCPGroup);
+		public virtual void SetWebDavPortalFilePermissions() => SetFilePermissions(Settings.WebDavPortal.InstallPath);
+		public virtual void SetWebDavPortalFileOwner() => SetFileOwner(Settings.WebDavPortal.InstallPath, Settings.WebDavPortal.Username, SolidCPGroup);
 		public virtual void InstallWebDavPortal()
 		{
 			InstallWebDavPortalPrerequisites();
@@ -38,7 +38,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void InstallWebDavPortalWebsite()
 		{
-			var web = Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder);
+			var web = Settings.WebDavPortal.InstallPath;
 			var dll = Path.Combine(web, "bin_dotnet", "SolidCP.WebDavPortal.dll");
 			InstallWebsite(WebDavPortalSiteId,
 				web,
@@ -66,7 +66,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void RemoveWebDavPortalFolder()
 		{
-			var dir = Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder);
+			var dir = Settings.WebDavPortal.InstallPath;
 			if (Directory.Exists(dir)) Directory.Delete(dir, true);
 			InstallLog("Removed WebDavPortal files");
 		}
@@ -77,8 +77,8 @@ namespace SolidCP.UniversalInstaller
 		public virtual void CopyWebDavPortal(bool clearDestination = false, Func<string, string> filter = null)
 		{
 			filter ??= SetupFilter;
-			InstallWebRootPath = Settings.WebDavPortal.InstallFolder;
-			var websitePath = Path.Combine(Settings.WebDavPortal.InstallFolder, WebDavPortalFolder);
+			var websitePath = Settings.WebDavPortal.InstallPath;
+			InstallWebRootPath = Path.GetDirectoryName(websitePath);
 			CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 		}
 	}

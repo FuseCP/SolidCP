@@ -25,7 +25,7 @@ namespace SolidCP.UniversalInstaller;
 public class WindowsInstaller : Installer
 {
 	const bool Net8RuntimeNeededOnWindows = true;
-
+	public override string EnterpriseServerFolder => "Enterprise Server";
 	public override string InstallExeRootPath
 	{
 		get => base.InstallExeRootPath ??
@@ -664,7 +664,7 @@ public class WindowsInstaller : Installer
 		var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
 			Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
 				"bin_dotnet" : "bin";
-		var exe = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, binFolder, "HostPanelPro.Scheduler.exe");
+		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.Scheduler.exe");
 
 		var config = exe + ".config";
 		var xml = XElement.Load(config);
@@ -675,7 +675,7 @@ public class WindowsInstaller : Installer
 		if (appSettings == null) xml.Add(appSettings = new XElement("appSettings"));
 
 		var conStrElement = conStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
-		var esConfFile = Path.GetFullPath(Path.Combine(InstallWebRootPath, EnterpriseServerFolder, "Web.config"));
+		var esConfFile = Path.GetFullPath(Path.Combine(Settings.EnterpriseServer.InstallPath, "Web.config"));
 		if (File.Exists(esConfFile))
 		{
 			var esConf = XElement.Load(esConfFile);
@@ -718,7 +718,7 @@ public class WindowsInstaller : Installer
 			{
 				ServiceId = SchedulerServiceId,
 				DisplayName = "SolidCP Scheduler Service",
-				Executable = Path.Combine(InstallWebRootPath, EnterpriseServerFolder, binFolder, "SolidCP.Scheduler.exe"),
+				Executable = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "SolidCP.Scheduler.exe"),
 				Start = WindowsServiceStartMode.DelayedAuto,
 				Type = WindowsServiceType.Own,
 				Error = WindowsServiceErrorHandling.Normal
