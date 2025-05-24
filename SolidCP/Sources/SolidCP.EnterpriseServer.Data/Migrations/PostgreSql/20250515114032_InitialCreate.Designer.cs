@@ -2,96 +2,89 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SolidCP.EnterpriseServer.Data;
 
 #nullable disable
 
-namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
+namespace SolidCP.EnterpriseServer.Data.Migrations.PostgreSql
 {
-    public class MySqlDbContext_2_0_0: MySqlDbContext {
-#if NetCore
-        public MySqlDbContext_2_0_0(string connectionString, bool initSeedData = false): base(connectionString, initSeedData) { }
-	    public MySqlDbContext_2_0_0(DbContext context): base(context) { }
-	    public MySqlDbContext_2_0_0(DbContextOptions<Context.DbContextBase> options): base(options) { }
-#else
-	    public MySqlDbContext_2_0_0(DbContext context): base(context) { }        
-#endif
-	}
-    
-    [DbContext(typeof(MySqlDbContext_2_0_0))]
-    partial class MySqlDbContextModelSnapshot_2_0_0 : ModelSnapshot
-			
+    [DbContext(typeof(PostgreSqlDbContext))]
+    [Migration("20250515114032_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.3")
-                .HasAnnotation("Relational:MaxIdentifierLength", 64);
+                .HasDefaultSchema("public")
+                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("AccessTokenGuid")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SmsResponse")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("TokenType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id")
                         .HasName("PK__AccessTo__3214EC27DEAEF66E");
 
                     b.HasIndex(new[] { "AccountId" }, "AccessTokensIdx_AccountID");
 
-                    b.ToTable("AccessTokens");
+                    b.ToTable("AccessTokens", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AdditionalGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("GroupName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
                         .HasName("PK__Addition__3214EC27E665DDE2");
 
-                    b.ToTable("AdditionalGroups");
+                    b.ToTable("AdditionalGroups", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLog", b =>
@@ -99,58 +92,58 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.Property<string>("RecordId")
                         .HasMaxLength(32)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(32)")
+                        .HasColumnType("character varying(32)")
                         .HasColumnName("RecordID");
 
                     b.Property<string>("ExecutionLog")
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("FinishDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<int>("SeverityId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SeverityID");
 
                     b.Property<string>("SourceName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("TaskName")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("RecordId")
                         .HasName("PK_Log");
 
-                    b.ToTable("AuditLog");
+                    b.ToTable("AuditLog", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AuditLogSource", b =>
@@ -158,11 +151,11 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.Property<string>("SourceName")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("SourceName");
 
-                    b.ToTable("AuditLogSources");
+                    b.ToTable("AuditLogSources", "public");
 
                     b.HasData(
                         new
@@ -324,23 +317,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.Property<string>("SourceName")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnOrder(1);
 
                     b.Property<string>("TaskName")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("TaskDescription")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("SourceName", "TaskName")
                         .HasName("PK_LogActions");
 
-                    b.ToTable("AuditLogTasks");
+                    b.ToTable("AuditLogTasks", "public");
 
                     b.HasData(
                         new
@@ -2177,113 +2170,113 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool?>("Completed")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("EffectiveUserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("EffectiveUserID");
 
                     b.Property<DateTime?>("FinishDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid>("Guid")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("IndicatorCurrent")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("IndicatorMaximum")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("MaximumExecutionTime")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool?>("NotifyOnComplete")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<int>("ScheduleId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ScheduleID");
 
                     b.Property<int>("Severity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Source")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Status")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TaskId")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("TaskID");
 
                     b.Property<string>("TaskName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.HasKey("Id")
                         .HasName("PK__Backgrou__3214EC273A1145AC");
 
-                    b.ToTable("BackgroundTasks");
+                    b.ToTable("BackgroundTasks", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskLog", b =>
                 {
                     b.Property<int>("LogId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("LogID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("LogId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LogId"));
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ExceptionStackTrace")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("InnerTaskStart")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("Severity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TaskID");
 
                     b.Property<string>("Text")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("TextIdent")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("XmlParameters")
                         .HasColumnType("TEXT");
@@ -2293,52 +2286,52 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskLogsIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskLogs");
+                    b.ToTable("BackgroundTaskLogs", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskParameter", b =>
                 {
                     b.Property<int>("ParameterId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ParameterID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ParameterId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ParameterId"));
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("SerializerValue")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TaskID");
 
                     b.Property<string>("TypeName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("ParameterId")
                         .HasName("PK__Backgrou__F80C629777BF580B");
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskParametersIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskParameters");
+                    b.ToTable("BackgroundTaskParameters", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BackgroundTaskStack", b =>
                 {
                     b.Property<int>("TaskStackId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TaskStackID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TaskStackId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TaskStackId"));
 
                     b.Property<int>("TaskId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TaskID");
 
                     b.HasKey("TaskStackId")
@@ -2346,223 +2339,223 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "TaskId" }, "BackgroundTaskStackIdx_TaskID");
 
-                    b.ToTable("BackgroundTaskStack");
+                    b.ToTable("BackgroundTaskStack", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.BlackBerryUser", b =>
                 {
                     b.Property<int>("BlackBerryUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("BlackBerryUserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BlackBerryUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("BlackBerryUserId");
 
                     b.HasIndex(new[] { "AccountId" }, "BlackBerryUsersIdx_AccountId");
 
-                    b.ToTable("BlackBerryUsers");
+                    b.ToTable("BlackBerryUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Cluster", b =>
                 {
                     b.Property<int>("ClusterId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ClusterID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ClusterId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ClusterId"));
 
                     b.Property<string>("ClusterName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("ClusterId");
 
-                    b.ToTable("Clusters");
+                    b.ToTable("Clusters", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Comment", b =>
                 {
                     b.Property<int>("CommentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("CommentID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CommentId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CommentId"));
 
                     b.Property<string>("CommentText")
                         .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("ItemTypeId")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("SeverityId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SeverityID");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.HasKey("CommentId");
 
                     b.HasIndex(new[] { "UserId" }, "CommentsIdx_UserID");
 
-                    b.ToTable("Comments");
+                    b.ToTable("Comments", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.CrmUser", b =>
                 {
                     b.Property<int>("CrmUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("CRMUserID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("CrmUserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CrmUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<Guid?>("BusinessUnitId")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uuid")
                         .HasColumnName("BusinessUnitID");
 
                     b.Property<int?>("CalType")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("CALType");
 
                     b.Property<DateTime>("ChangedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("CrmUserGuid")
-                        .HasColumnType("char(36)")
+                        .HasColumnType("uuid")
                         .HasColumnName("CRMUserGuid");
 
                     b.HasKey("CrmUserId");
 
                     b.HasIndex(new[] { "AccountId" }, "CRMUsersIdx_AccountID");
 
-                    b.ToTable("CRMUsers");
+                    b.ToTable("CRMUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DmzIpAddress", b =>
                 {
                     b.Property<int>("DmzAddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("DmzAddressID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DmzAddressId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DmzAddressId"));
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.HasKey("DmzAddressId");
 
                     b.HasIndex(new[] { "ItemId" }, "DmzIPAddressesIdx_ItemID");
 
-                    b.ToTable("DmzIPAddresses");
+                    b.ToTable("DmzIPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Domain", b =>
                 {
                     b.Property<int>("DomainId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("DomainID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("DomainId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DomainId"));
 
                     b.Property<DateTime?>("CreationDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("DomainItemId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("DomainName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<DateTime?>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("HostingAllowed")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<bool>("IsDomainPointer")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsPreviewDomain")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<bool>("IsSubDomain")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastUpdateDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("MailDomainId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MailDomainID");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("RegistrarName")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int?>("WebSiteId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("WebSiteID");
 
                     b.Property<int?>("ZoneItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ZoneItemID");
 
                     b.HasKey("DomainId");
@@ -2575,107 +2568,107 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ZoneItemId" }, "DomainsIdx_ZoneItemID");
 
-                    b.ToTable("Domains");
+                    b.ToTable("Domains", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.DomainDnsRecord", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("Date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DnsServer")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("DomainId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("RecordType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Value")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id")
                         .HasName("PK__DomainDn__3214EC27A6FC0498");
 
                     b.HasIndex(new[] { "DomainId" }, "DomainDnsRecordsIdx_DomainId");
 
-                    b.ToTable("DomainDnsRecords");
+                    b.ToTable("DomainDnsRecords", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFolder", b =>
                 {
                     b.Property<int>("EnterpriseFolderId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("EnterpriseFolderID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("EnterpriseFolderId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EnterpriseFolderId"));
 
                     b.Property<string>("Domain")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("FolderName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("FolderQuota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0);
 
                     b.Property<string>("HomeFolder")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("LocationDrive")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int?>("StorageSpaceFolderId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("EnterpriseFolderId");
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "EnterpriseFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("EnterpriseFolders");
+                    b.ToTable("EnterpriseFolders", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.EnterpriseFoldersOwaPermission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<int>("FolderId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("FolderID");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.HasKey("Id")
@@ -2685,83 +2678,83 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "FolderId" }, "EnterpriseFoldersOwaPermissionsIdx_FolderID");
 
-                    b.ToTable("EnterpriseFoldersOwaPermissions");
+                    b.ToTable("EnterpriseFoldersOwaPermissions", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccount", b =>
                 {
                     b.Property<int>("AccountId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AccountId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AccountId"));
 
                     b.Property<string>("AccountName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<int>("AccountType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("ArchivingMailboxPlanId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<bool?>("EnableArchiving")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("ExchangeDisclaimerId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsVip")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("IsVIP");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<int?>("LevelId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("LevelID");
 
                     b.Property<bool?>("MailEnabledPublicFolder")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("MailboxManagerActions")
                         .HasMaxLength(200)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int?>("MailboxPlanId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("PrimaryEmailAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("SamAccountName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("SubscriberNumber")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("UserPrincipalName")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("AccountId");
 
@@ -2772,26 +2765,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.HasIndex(new[] { "AccountName" }, "IX_ExchangeAccounts_UniqueAccountName")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccounts");
+                    b.ToTable("ExchangeAccounts", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeAccountEmailAddress", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AddressID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AddressId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AddressId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("AddressId");
 
@@ -2800,182 +2793,182 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.HasIndex(new[] { "EmailAddress" }, "IX_ExchangeAccountEmailAddresses_UniqueEmail")
                         .IsUnique();
 
-                    b.ToTable("ExchangeAccountEmailAddresses");
+                    b.ToTable("ExchangeAccountEmailAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDeletedAccount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FileName")
                         .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("FolderName")
                         .HasMaxLength(128)
-                        .HasColumnType("varchar(128)");
+                        .HasColumnType("character varying(128)");
 
                     b.Property<int>("OriginAt")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("OriginAT");
 
                     b.Property<string>("StoragePath")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC27EF1C22C1");
 
-                    b.ToTable("ExchangeDeletedAccounts");
+                    b.ToTable("ExchangeDeletedAccounts", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeDisclaimer", b =>
                 {
                     b.Property<int>("ExchangeDisclaimerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ExchangeDisclaimerId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ExchangeDisclaimerId"));
 
                     b.Property<string>("DisclaimerName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("DisclaimerText")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.HasKey("ExchangeDisclaimerId");
 
-                    b.ToTable("ExchangeDisclaimers");
+                    b.ToTable("ExchangeDisclaimers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlan", b =>
                 {
                     b.Property<int>("MailboxPlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("MailboxPlanId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MailboxPlanId"));
 
                     b.Property<bool?>("AllowLitigationHold")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("ArchiveSizeMb")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ArchiveSizeMB");
 
                     b.Property<int?>("ArchiveWarningPct")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool?>("Archiving")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("EnableActiveSync")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("EnableArchiving")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("EnableAutoReply")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("EnableForceArchiveDeletion")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("EnableImap")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("EnableIMAP");
 
                     b.Property<bool>("EnableMapi")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("EnableMAPI");
 
                     b.Property<bool>("EnableOwa")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("EnableOWA");
 
                     b.Property<bool>("EnablePop")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("EnablePOP");
 
                     b.Property<bool>("HideFromAddressBook")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("IsForJournaling")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("IssueWarningPct")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<int>("KeepDeletedItemsDays")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("LitigationHoldMsg")
                         .HasMaxLength(512)
-                        .HasColumnType("varchar(512)");
+                        .HasColumnType("character varying(512)");
 
                     b.Property<string>("LitigationHoldUrl")
                         .HasMaxLength(256)
-                        .HasColumnType("varchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("MailboxPlan")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<int?>("MailboxPlanType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("MailboxSizeMb")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MailboxSizeMB");
 
                     b.Property<int>("MaxReceiveMessageSizeKb")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MaxReceiveMessageSizeKB");
 
                     b.Property<int>("MaxRecipients")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("MaxSendMessageSizeKb")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MaxSendMessageSizeKB");
 
                     b.Property<int>("ProhibitSendPct")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ProhibitSendReceivePct")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("RecoverableItemsSpace")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("RecoverableItemsWarningPct")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("MailboxPlanId");
 
@@ -2984,53 +2977,53 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.HasIndex(new[] { "MailboxPlanId" }, "IX_ExchangeMailboxPlans")
                         .IsUnique();
 
-                    b.ToTable("ExchangeMailboxPlans");
+                    b.ToTable("ExchangeMailboxPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeMailboxPlanRetentionPolicyTag", b =>
                 {
                     b.Property<int>("PlanTagId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PlanTagID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PlanTagId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PlanTagId"));
 
                     b.Property<int>("MailboxPlanId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("TagId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TagID");
 
                     b.HasKey("PlanTagId")
                         .HasName("PK__Exchange__E467073C50CD805B");
 
-                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags");
+                    b.ToTable("ExchangeMailboxPlanRetentionPolicyTags", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganization", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<int?>("ExchangeMailboxPlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ExchangeMailboxPlanID");
 
                     b.Property<int?>("LyncUserPlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("LyncUserPlanID");
 
                     b.Property<string>("OrganizationId")
                         .IsRequired()
                         .HasMaxLength(128)
-                        .HasColumnType("varchar(128)")
+                        .HasColumnType("character varying(128)")
                         .HasColumnName("OrganizationID");
 
                     b.Property<int?>("SfBuserPlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SfBUserPlanID");
 
                     b.HasKey("ItemId");
@@ -3038,35 +3031,35 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.HasIndex(new[] { "OrganizationId" }, "IX_ExchangeOrganizations_UniqueOrg")
                         .IsUnique();
 
-                    b.ToTable("ExchangeOrganizations");
+                    b.ToTable("ExchangeOrganizations", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationDomain", b =>
                 {
                     b.Property<int>("OrganizationDomainId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("OrganizationDomainID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OrganizationDomainId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OrganizationDomainId"));
 
                     b.Property<int?>("DomainId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("DomainID");
 
                     b.Property<int>("DomainTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0)
                         .HasColumnName("DomainTypeID");
 
                     b.Property<bool?>("IsHost")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.HasKey("OrganizationDomainId");
@@ -3076,50 +3069,50 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.HasIndex(new[] { "DomainId" }, "IX_ExchangeOrganizationDomains_UniqueDomain")
                         .IsUnique();
 
-                    b.ToTable("ExchangeOrganizationDomains");
+                    b.ToTable("ExchangeOrganizationDomains", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSetting", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("Xml")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("ItemId", "SettingsName");
 
                     b.HasIndex(new[] { "ItemId" }, "ExchangeOrganizationSettingsIdx_ItemId");
 
-                    b.ToTable("ExchangeOrganizationSettings");
+                    b.ToTable("ExchangeOrganizationSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeOrganizationSsFolder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("StorageSpaceFolderId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("Id")
                         .HasName("PK__Exchange__3214EC072DDBA072");
@@ -3128,94 +3121,94 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "StorageSpaceFolderId" }, "ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId");
 
-                    b.ToTable("ExchangeOrganizationSsFolders");
+                    b.ToTable("ExchangeOrganizationSsFolders", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ExchangeRetentionPolicyTag", b =>
                 {
                     b.Property<int>("TagId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("TagID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("TagId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("TagId"));
 
                     b.Property<int>("AgeLimitForRetention")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<int>("RetentionAction")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TagName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("TagType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("TagId")
                         .HasName("PK__Exchange__657CFA4C02667D37");
 
-                    b.ToTable("ExchangeRetentionPolicyTags");
+                    b.ToTable("ExchangeRetentionPolicyTags", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.GlobalDnsRecord", b =>
                 {
                     b.Property<int>("RecordId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RecordID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("RecordId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecordId"));
 
                     b.Property<int?>("IpAddressId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("IPAddressID");
 
                     b.Property<int>("MXPriority")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MXPriority");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("RecordData")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("RecordName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("RecordType")
                         .IsRequired()
                         .HasMaxLength(10)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("character varying(10)");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<int?>("ServiceId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServiceID");
 
                     b.Property<int?>("SrvPort")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("SrvPriority")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("SrvWeight")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("RecordId");
 
@@ -3227,26 +3220,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ServiceId" }, "GlobalDnsRecordsIdx_ServiceID");
 
-                    b.ToTable("GlobalDnsRecords");
+                    b.ToTable("GlobalDnsRecords", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlan", b =>
                 {
                     b.Property<int>("PlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PlanID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PlanId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PlanId"));
 
                     b.Property<bool>("Available")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("IsAddon")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("PlanDescription")
@@ -3255,26 +3248,26 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.Property<string>("PlanName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int?>("RecurrenceLength")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("RecurrenceUnit")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<decimal?>("RecurringPrice")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("numeric");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<decimal?>("SetupPrice")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("numeric");
 
                     b.Property<int?>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.HasKey("PlanId");
@@ -3285,65 +3278,65 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "UserId" }, "HostingPlansIdx_UserID");
 
-                    b.ToTable("HostingPlans");
+                    b.ToTable("HostingPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanQuota", b =>
                 {
                     b.Property<int>("PlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PlanID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("QuotaId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("QuotaID")
                         .HasColumnOrder(2);
 
                     b.Property<int>("QuotaValue")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("PlanId", "QuotaId")
                         .HasName("PK_HostingPlanQuotas_1");
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("HostingPlanQuotas");
+                    b.ToTable("HostingPlanQuotas", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.HostingPlanResource", b =>
                 {
                     b.Property<int>("PlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PlanID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
                     b.Property<bool?>("CalculateBandwidth")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("CalculateDiskSpace")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.HasKey("PlanId", "GroupId");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("HostingPlanResources");
+                    b.ToTable("HostingPlanResources", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.IpAddress", b =>
                 {
                     b.Property<int>("AddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AddressID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("AddressId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("AddressId"));
 
                     b.Property<string>("Comments")
                         .HasColumnType("TEXT");
@@ -3351,159 +3344,159 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.Property<string>("DefaultGateway")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("character varying(15)");
 
                     b.Property<string>("ExternalIp")
                         .IsRequired()
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(24)")
+                        .HasColumnType("character varying(24)")
                         .HasColumnName("ExternalIP");
 
                     b.Property<string>("InternalIp")
                         .HasMaxLength(24)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(24)")
+                        .HasColumnType("character varying(24)")
                         .HasColumnName("InternalIP");
 
                     b.Property<int?>("PoolId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PoolID");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<string>("SubnetMask")
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("character varying(15)");
 
                     b.Property<int?>("Vlan")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("VLAN");
 
                     b.HasKey("AddressId");
 
                     b.HasIndex(new[] { "ServerId" }, "IPAddressesIdx_ServerID");
 
-                    b.ToTable("IPAddresses");
+                    b.ToTable("IPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUser", b =>
                 {
                     b.Property<int>("LyncUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("LyncUserID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("LyncUserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LyncUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("LyncUserPlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("LyncUserPlanID");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("LyncUserId");
 
                     b.HasIndex(new[] { "LyncUserPlanId" }, "LyncUsersIdx_LyncUserPlanID");
 
-                    b.ToTable("LyncUsers");
+                    b.ToTable("LyncUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.LyncUserPlan", b =>
                 {
                     b.Property<int>("LyncUserPlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("LyncUserPlanId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LyncUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<bool>("Conferencing")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("EnterpriseVoice")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Federation")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IM")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("IM");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("LyncUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<int?>("LyncUserPlanType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("Mobility")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("MobilityEnableOutsideVoice")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("PublicIMConnectivity")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("ServerURI");
 
                     b.Property<int?>("Telephony")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("LyncUserPlanId");
 
@@ -3512,59 +3505,59 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ItemId" }, "LyncUserPlansIdx_ItemID");
 
-                    b.ToTable("LyncUserPlans");
+                    b.ToTable("LyncUserPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.OcsUser", b =>
                 {
                     b.Property<int>("OcsuserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("OCSUserID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("OcsuserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("OcsuserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("InstanceId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("InstanceID");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("OcsuserId");
 
-                    b.ToTable("OCSUsers");
+                    b.ToTable("OCSUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Package", b =>
                 {
                     b.Property<int>("PackageId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PackageId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageId"));
 
                     b.Property<DateTime?>("BandwidthUpdated")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool>("DefaultTopPackage")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<bool>("OverrideQuotas")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("PackageComments")
@@ -3572,33 +3565,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.Property<string>("PackageName")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<int?>("ParentPackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ParentPackageID");
 
                     b.Property<int?>("PlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PlanID");
 
                     b.Property<DateTime?>("PurchaseDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("StatusID");
 
                     b.Property<DateTime>("StatusIdChangeDate")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnName("StatusIDchangeDate");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.HasKey("PackageId");
@@ -3611,7 +3604,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "UserId" }, "PackageIndex_UserID");
 
-                    b.ToTable("Packages");
+                    b.ToTable("Packages", "public");
 
                     b.HasData(
                         new
@@ -3631,30 +3624,30 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("PackageAddonId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageAddonID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PackageAddonId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageAddonId"));
 
                     b.Property<string>("Comments")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<int?>("PlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PlanID");
 
                     b.Property<DateTime?>("PurchaseDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("Quantity")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("StatusId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("StatusID");
 
                     b.HasKey("PackageAddonId");
@@ -3663,35 +3656,35 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "PlanId" }, "PackageAddonsIdx_PlanID");
 
-                    b.ToTable("PackageAddons");
+                    b.ToTable("PackageAddons", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageIpAddress", b =>
                 {
                     b.Property<int>("PackageAddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageAddressID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PackageAddressId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageAddressId"));
 
                     b.Property<int>("AddressId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AddressID");
 
                     b.Property<bool?>("IsPrimary")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<int?>("OrgId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("OrgID");
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.HasKey("PackageAddressId");
@@ -3702,66 +3695,66 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "PackageId" }, "PackageIPAddressesIdx_PackageID");
 
-                    b.ToTable("PackageIPAddresses");
+                    b.ToTable("PackageIPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageQuota", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("QuotaId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("QuotaID")
                         .HasColumnOrder(2);
 
                     b.Property<int>("QuotaValue")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("PackageId", "QuotaId");
 
                     b.HasIndex("QuotaId");
 
-                    b.ToTable("PackageQuotas");
+                    b.ToTable("PackageQuotas", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageResource", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
                     b.Property<bool>("CalculateBandwidth")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("CalculateDiskspace")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.HasKey("PackageId", "GroupId")
                         .HasName("PK_PackageResources_1");
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackageResources");
+                    b.ToTable("PackageResources", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageService", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServiceID")
                         .HasColumnOrder(2);
 
@@ -3769,24 +3762,24 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("PackageServices");
+                    b.ToTable("PackageServices", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageSetting", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
@@ -3794,29 +3787,29 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasKey("PackageId", "SettingsName", "PropertyName");
 
-                    b.ToTable("PackageSettings");
+                    b.ToTable("PackageSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackageVlan", b =>
                 {
                     b.Property<int>("PackageVlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageVlanID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PackageVlanId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PackageVlanId"));
 
                     b.Property<bool>("IsDmz")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<int>("VlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("VlanID");
 
                     b.HasKey("PackageVlanId")
@@ -3826,23 +3819,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "VlanId" }, "PackageVLANsIdx_VlanID");
 
-                    b.ToTable("PackageVLANs");
+                    b.ToTable("PackageVLANs", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesBandwidth", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
                     b.Property<DateTime>("LogDate")
-                        .HasColumnType("datetime(6)")
+                        .HasColumnType("timestamp with time zone")
                         .HasColumnOrder(3);
 
                     b.Property<long>("BytesReceived")
@@ -3855,18 +3848,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesBandwidth");
+                    b.ToTable("PackagesBandwidth", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesDiskspace", b =>
                 {
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID")
                         .HasColumnOrder(2);
 
@@ -3877,18 +3870,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("PackagesDiskspace");
+                    b.ToTable("PackagesDiskspace", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PackagesTreeCache", b =>
                 {
                     b.Property<int>("ParentPackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ParentPackageID")
                         .HasColumnOrder(1);
 
                     b.Property<int>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID")
                         .HasColumnOrder(2);
 
@@ -3896,7 +3889,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex("PackageId");
 
-                    b.ToTable("PackagesTreeCache");
+                    b.ToTable("PackagesTreeCache", "public");
 
                     b.HasData(
                         new
@@ -3910,95 +3903,95 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("PrivateAddressId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PrivateAddressID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("PrivateAddressId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("PrivateAddressId"));
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
                         .HasMaxLength(15)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(15)")
+                        .HasColumnType("character varying(15)")
                         .HasColumnName("IPAddress");
 
                     b.Property<bool>("IsPrimary")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.HasKey("PrivateAddressId");
 
                     b.HasIndex(new[] { "ItemId" }, "PrivateIPAddressesIdx_ItemID");
 
-                    b.ToTable("PrivateIPAddresses");
+                    b.ToTable("PrivateIPAddresses", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.PrivateNetworkVlan", b =>
                 {
                     b.Property<int>("VlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("VlanID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("VlanId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VlanId"));
 
                     b.Property<string>("Comments")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<int>("Vlan")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("VlanId")
                         .HasName("PK__PrivateN__8348135581B53618");
 
                     b.HasIndex(new[] { "ServerId" }, "PrivateNetworkVLANsIdx_ServerID");
 
-                    b.ToTable("PrivateNetworkVLANs");
+                    b.ToTable("PrivateNetworkVLANs", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Provider", b =>
                 {
                     b.Property<int>("ProviderId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProviderID");
 
                     b.Property<bool?>("DisableAutoDiscovery")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("EditorControl")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID");
 
                     b.Property<string>("ProviderName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ProviderType")
                         .HasMaxLength(400)
-                        .HasColumnType("varchar(400)");
+                        .HasColumnType("character varying(400)");
 
                     b.HasKey("ProviderId")
                         .HasName("PK_ServiceTypes");
 
                     b.HasIndex(new[] { "GroupId" }, "ProvidersIdx_GroupID");
 
-                    b.ToTable("Providers");
+                    b.ToTable("Providers", "public");
 
                     b.HasData(
                         new
@@ -5327,46 +5320,46 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Quota", b =>
                 {
                     b.Property<int>("QuotaId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("QuotaID");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID");
 
                     b.Property<bool?>("HideQuota")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("ItemTypeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("PerOrganization")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("QuotaDescription")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("QuotaName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("QuotaOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(1);
 
                     b.Property<int>("QuotaTypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(2)
                         .HasColumnName("QuotaTypeID");
 
                     b.Property<bool?>("ServiceQuota")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.HasKey("QuotaId");
@@ -5375,7 +5368,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ItemTypeId" }, "QuotasIdx_ItemTypeID");
 
-                    b.ToTable("Quotas");
+                    b.ToTable("Quotas", "public");
 
                     b.HasData(
                         new
@@ -8844,156 +8837,156 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Hash")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("RDSCertificates");
+                    b.ToTable("RDSCertificates", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollection", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.HasKey("Id")
                         .HasName("PK__RDSColle__3214EC27346D361D");
 
-                    b.ToTable("RDSCollections");
+                    b.ToTable("RDSCollections", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("ActiveSessionLimitMin")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool?>("AuthenticateUsingNla")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("AuthenticateUsingNLA");
 
                     b.Property<bool?>("AutomaticReconnectionEnabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("BrokenConnectionAction")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("ClientDeviceRedirectionOptions")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("character varying(250)");
 
                     b.Property<bool?>("ClientPrinterAsDefault")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("ClientPrinterRedirected")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("DisconnectedSessionLimitMin")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("EncryptionLevel")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<int?>("IdleSessionLimitMin")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("MaxRedirectedMonitors")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool?>("RdEasyPrintDriverEnabled")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("RDEasyPrintDriverEnabled");
 
                     b.Property<int>("RdsCollectionId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RDSCollectionId");
 
                     b.Property<string>("SecurityLayer")
                         .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<bool?>("TemporaryFoldersDeletedOnExit")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("TemporaryFoldersPerSession")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionSettingsIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionSettings");
+                    b.ToTable("RDSCollectionSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsCollectionUser", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<int>("RdsCollectionId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RDSCollectionId");
 
                     b.HasKey("Id")
@@ -9003,76 +8996,76 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSCollectionUsersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSCollectionUsers");
+                    b.ToTable("RDSCollectionUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsMessage", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("MessageText")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("RdsCollectionId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RDSCollectionId");
 
                     b.Property<string>("UserName")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .HasColumnType("char(250)")
+                        .HasColumnType("character(250)")
                         .IsFixedLength();
 
                     b.HasKey("Id");
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSMessagesIdx_RDSCollectionId");
 
-                    b.ToTable("RDSMessages");
+                    b.ToTable("RDSMessages", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("ConnectionEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<int?>("Controller")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Description")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("FqdName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int?>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<string>("Name")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int?>("RdsCollectionId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RDSCollectionId");
 
                     b.HasKey("Id")
@@ -9080,65 +9073,65 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "RdsCollectionId" }, "RDSServersIdx_RDSCollectionId");
 
-                    b.ToTable("RDSServers");
+                    b.ToTable("RDSServers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.RdsServerSetting", b =>
                 {
                     b.Property<int>("RdsServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(3);
 
                     b.Property<bool>("ApplyAdministrators")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("ApplyUsers")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("PropertyValue")
                         .HasColumnType("TEXT");
 
                     b.HasKey("RdsServerId", "SettingsName", "PropertyName");
 
-                    b.ToTable("RDSServerSettings");
+                    b.ToTable("RDSServerSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ResourceGroup", b =>
                 {
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID");
 
                     b.Property<string>("GroupController")
                         .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<string>("GroupName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("GroupOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(1);
 
                     b.Property<bool?>("ShowGroup")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("ResourceGroups");
+                    b.ToTable("ResourceGroups", "public");
 
                     b.HasData(
                         new
@@ -9460,45 +9453,45 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("RecordId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RecordID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("RecordId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RecordId"));
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID");
 
                     b.Property<int?>("MXPriority")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("MXPriority");
 
                     b.Property<string>("RecordData")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("RecordName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("RecordOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(1);
 
                     b.Property<string>("RecordType")
                         .IsRequired()
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.HasKey("RecordId");
 
                     b.HasIndex(new[] { "GroupId" }, "ResourceGroupDnsRecordsIdx_GroupID");
 
-                    b.ToTable("ResourceGroupDnsRecords");
+                    b.ToTable("ResourceGroupDnsRecords", "public");
 
                     b.HasData(
                         new
@@ -9667,64 +9660,64 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("ScheduleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ScheduleID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ScheduleId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ScheduleId"));
 
                     b.Property<bool>("Enabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("FromTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("HistoriesNumber")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("Interval")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("LastRun")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("MaxExecutionTime")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("NextRun")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<string>("PriorityId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("PriorityID");
 
                     b.Property<string>("ScheduleName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ScheduleTypeId")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("ScheduleTypeID");
 
                     b.Property<DateTime?>("StartTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("TaskId")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("TaskID");
 
                     b.Property<DateTime?>("ToTime")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int?>("WeekMonthDay")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("ScheduleId");
 
@@ -9732,7 +9725,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "TaskId" }, "ScheduleIdx_TaskID");
 
-                    b.ToTable("Schedule");
+                    b.ToTable("Schedule", "public");
 
                     b.HasData(
                         new
@@ -9776,23 +9769,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ScheduleParameter", b =>
                 {
                     b.Property<int>("ScheduleId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ScheduleID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
                     b.Property<string>("ParameterValue")
                         .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("ScheduleId", "ParameterId");
 
-                    b.ToTable("ScheduleParameters");
+                    b.ToTable("ScheduleParameters", "public");
 
                     b.HasData(
                         new
@@ -9813,21 +9806,21 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<string>("TaskId")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("TaskID");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RoleID");
 
                     b.Property<string>("TaskType")
                         .IsRequired()
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.HasKey("TaskId");
 
-                    b.ToTable("ScheduleTasks");
+                    b.ToTable("ScheduleTasks", "public");
 
                     b.HasData(
                         new
@@ -9967,6 +9960,12 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             TaskId = "SCHEDULE_TASK_ZIP_FILES",
                             RoleId = 3,
                             TaskType = "SolidCP.EnterpriseServer.ZipFilesTask, SolidCP.EnterpriseServer.Code"
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            RoleId = 3,
+                            TaskType = "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code"
                         });
                 });
 
@@ -9974,33 +9973,33 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<string>("TaskId")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("TaskID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("ParameterId")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("ParameterID")
                         .HasColumnOrder(2);
 
                     b.Property<string>("DataTypeId")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("DataTypeID");
 
                     b.Property<string>("DefaultValue")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("ParameterOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0);
 
                     b.HasKey("TaskId", "ParameterId");
 
-                    b.ToTable("ScheduleTaskParameters");
+                    b.ToTable("ScheduleTaskParameters", "public");
 
                     b.HasData(
                         new
@@ -10686,6 +10685,94 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             DataTypeId = "String",
                             DefaultValue = "\\archive.zip",
                             ParameterOrder = 2
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_MAIL_TO_CUSTOMER",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 1
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_BCC",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "false",
+                            ParameterOrder = 2
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "BCC_MAIL",
+                            DataTypeId = "String",
+                            DefaultValue = "admin@mydomain.com",
+                            ParameterOrder = 3
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "EXPIRATION_MAIL_SUBJECT",
+                            DataTypeId = "String",
+                            DefaultValue = "Website certificate expiration notice",
+                            ParameterOrder = 4
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "EXPIRATION_MAIL_BODY",
+                            DataTypeId = "MultiString",
+                            DefaultValue = "Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).",
+                            ParameterOrder = 5
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_30_DAYS_BEFORE_EXPIRATION",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 6
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_14_DAYS_BEFORE_EXPIRATION",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 7
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_TODAY_EXPIRED",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "true",
+                            ParameterOrder = 8
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "SEND_SSL_ERROR",
+                            DataTypeId = "Boolean",
+                            DefaultValue = "false",
+                            ParameterOrder = 9
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "ERROR_MAIL_SUBJECT",
+                            DataTypeId = "String",
+                            DefaultValue = "Certificate error or website is unavailable",
+                            ParameterOrder = 10
+                        },
+                        new
+                        {
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            ParameterId = "ERROR_MAIL_BODY",
+                            DataTypeId = "MultiString",
+                            DefaultValue = "Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.",
+                            ParameterOrder = 11
                         });
                 });
 
@@ -10693,31 +10780,31 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<string>("ConfigurationId")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("ConfigurationID")
                         .HasColumnOrder(2);
 
                     b.Property<string>("TaskId")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("TaskID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Environment")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("ConfigurationId", "TaskId");
 
                     b.HasIndex("TaskId");
 
-                    b.ToTable("ScheduleTaskViewConfiguration");
+                    b.ToTable("ScheduleTaskViewConfiguration", "public");
 
                     b.HasData(
                         new
@@ -10873,6 +10960,13 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             TaskId = "SCHEDULE_TASK_ZIP_FILES",
                             Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/ZipFiles.ascx",
                             Environment = "ASP.NET"
+                        },
+                        new
+                        {
+                            ConfigurationId = "ASP_NET",
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            Description = "~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx",
+                            Environment = "ASP.NET"
                         });
                 });
 
@@ -10880,44 +10974,44 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("ServerId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ServerId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServerId"));
 
                     b.Property<string>("ADAuthenticationType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("ADAuthenticationType");
 
                     b.Property<bool?>("ADEnabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("ADEnabled");
 
                     b.Property<string>("ADParentDomain")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("ADParentDomainController")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("ADPassword")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("ADPassword");
 
                     b.Property<string>("ADRootDomain")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("character varying(200)")
                         .HasColumnName("ADRootDomain");
 
                     b.Property<string>("ADUsername")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)")
+                        .HasColumnType("character varying(100)")
                         .HasColumnName("ADUsername");
 
                     b.Property<string>("Comments")
@@ -10925,85 +11019,85 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.Property<string>("InstantDomainAlias")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<bool?>("IsCore")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("OSPlatform")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0)
                         .HasColumnName("OSPlatform");
 
                     b.Property<string>("Password")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<bool>("PasswordIsSHA256")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("PasswordIsSHA256");
 
                     b.Property<int?>("PrimaryGroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PrimaryGroupID");
 
                     b.Property<string>("ServerName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("ServerUrl")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasDefaultValue("");
 
                     b.Property<bool>("VirtualServer")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.HasKey("ServerId");
 
                     b.HasIndex(new[] { "PrimaryGroupId" }, "ServersIdx_PrimaryGroupID");
 
-                    b.ToTable("Servers");
+                    b.ToTable("Servers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Service", b =>
                 {
                     b.Property<int>("ServiceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServiceID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ServiceId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ServiceId"));
 
                     b.Property<int?>("ClusterId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ClusterID");
 
                     b.Property<string>("Comments")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ProviderId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProviderID");
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<string>("ServiceName")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int?>("ServiceQuotaValue")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("ServiceId");
 
@@ -11013,29 +11107,29 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ServerId" }, "ServicesIdx_ServerID");
 
-                    b.ToTable("Services");
+                    b.ToTable("Services", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceDefaultProperty", b =>
                 {
                     b.Property<int>("ProviderId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ProviderID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
                         .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("character varying(1000)");
 
                     b.HasKey("ProviderId", "PropertyName")
                         .HasName("PK_ServiceDefaultProperties_1");
 
-                    b.ToTable("ServiceDefaultProperties");
+                    b.ToTable("ServiceDefaultProperties", "public");
 
                     b.HasData(
                         new
@@ -13978,28 +14072,28 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("ItemId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ItemId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ItemId"));
 
                     b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("ItemName")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<int?>("ItemTypeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<int?>("PackageId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("PackageID");
 
                     b.Property<int?>("ServiceId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServiceID");
 
                     b.HasKey("ItemId");
@@ -14010,82 +14104,82 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ServiceId" }, "ServiceItemsIdx_ServiceID");
 
-                    b.ToTable("ServiceItems");
+                    b.ToTable("ServiceItems", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemProperty", b =>
                 {
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("ItemId", "PropertyName");
 
-                    b.ToTable("ServiceItemProperties");
+                    b.ToTable("ServiceItemProperties", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceItemType", b =>
                 {
                     b.Property<int>("ItemTypeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemTypeID");
 
                     b.Property<bool>("Backupable")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool?>("CalculateBandwidth")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("CalculateDiskspace")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool?>("Disposable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID");
 
                     b.Property<bool>("Importable")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<bool?>("Searchable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("Suspendable")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("TypeName")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<int>("TypeOrder")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(1);
 
                     b.HasKey("ItemTypeId");
 
                     b.HasIndex(new[] { "GroupId" }, "ServiceItemTypesIdx_GroupID");
 
-                    b.ToTable("ServiceItemTypes");
+                    b.ToTable("ServiceItemTypes", "public");
 
                     b.HasData(
                         new
@@ -14928,153 +15022,153 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.ServiceProperty", b =>
                 {
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServiceID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("ServiceId", "PropertyName")
                         .HasName("PK_ServiceProperties_1");
 
-                    b.ToTable("ServiceProperties");
+                    b.ToTable("ServiceProperties", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUser", b =>
                 {
                     b.Property<int>("SfBUserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SfBUserID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SfBUserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SfBUserId"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("ModifiedDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("SfBUserPlanId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SfBUserPlanID");
 
                     b.Property<string>("SipAddress")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("SfBUserId");
 
-                    b.ToTable("SfBUsers");
+                    b.ToTable("SfBUsers", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SfBUserPlan", b =>
                 {
                     b.Property<int>("SfBUserPlanId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SfBUserPlanId");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("SfBUserPlanId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("SfBUserPlanId"));
 
                     b.Property<bool>("AllowOrganizeMeetingsWithExternalAnonymous")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("ArchivePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<bool>("Conferencing")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("EnterpriseVoice")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("Federation")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IM")
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasColumnName("IM");
 
                     b.Property<bool>("IsDefault")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ItemID");
 
                     b.Property<bool>("Mobility")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("MobilityEnableOutsideVoice")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("PublicIMConnectivity")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false)
                         .HasColumnName("PublicIMConnectivity");
 
                     b.Property<bool>("RemoteUserAccess")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("ServerUri")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("ServerURI");
 
                     b.Property<string>("SfBUserPlanName")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)")
+                        .HasColumnType("character varying(300)")
                         .HasColumnName("SfBUserPlanName");
 
                     b.Property<int?>("SfBUserPlanType")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SfBUserPlanType");
 
                     b.Property<int?>("Telephony")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("TelephonyDialPlanPolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("TelephonyVoicePolicy")
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<int>("VoicePolicy")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("SfBUserPlanId");
 
-                    b.ToTable("SfBUserPlans");
+                    b.ToTable("SfBUserPlans", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SslCertificate", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Certificate")
                         .HasColumnType("TEXT");
@@ -15084,104 +15178,104 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         .HasColumnName("CSR");
 
                     b.Property<int?>("CsrLength")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("CSRLength");
 
                     b.Property<string>("DistinguishedName")
                         .HasMaxLength(500)
-                        .HasColumnType("varchar(500)");
+                        .HasColumnType("character varying(500)");
 
                     b.Property<DateTime?>("ExpiryDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FriendlyName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("Hash")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Hostname")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<bool?>("Installed")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<bool?>("IsRenewal")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Pfx")
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("PreviousId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("SerialNumber")
                         .HasMaxLength(250)
-                        .HasColumnType("varchar(250)");
+                        .HasColumnType("character varying(250)");
 
                     b.Property<int>("SiteId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("SiteID");
 
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
                     b.Property<DateTime?>("ValidFrom")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
 
-                    b.ToTable("SSLCertificates");
+                    b.ToTable("SSLCertificates", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpace", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<long>("FsrmQuotaSizeBytes")
                         .HasColumnType("bigint");
 
                     b.Property<int>("FsrmQuotaType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsDisabled")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<bool>("IsShared")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("LevelId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("Path")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UncPath")
                         .IsUnicode(false)
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07B8B9A6D1");
@@ -15190,88 +15284,88 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ServiceId" }, "StorageSpacesIdx_ServiceId");
 
-                    b.ToTable("StorageSpaces");
+                    b.ToTable("StorageSpaces", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceFolder", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<long>("FsrmQuotaSizeBytes")
                         .HasColumnType("bigint");
 
                     b.Property<int>("FsrmQuotaType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsShared")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.Property<string>("Path")
                         .IsRequired()
                         .IsUnicode(false)
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("StorageSpaceId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UncPath")
                         .IsUnicode(false)
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07AC0C9EB6");
 
                     b.HasIndex(new[] { "StorageSpaceId" }, "StorageSpaceFoldersIdx_StorageSpaceId");
 
-                    b.ToTable("StorageSpaceFolders");
+                    b.ToTable("StorageSpaceFolders", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasColumnType("character varying(300)");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07B8D82363");
 
-                    b.ToTable("StorageSpaceLevels");
+                    b.ToTable("StorageSpaceLevels", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.StorageSpaceLevelResourceGroup", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("LevelId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id")
                         .HasName("PK__StorageS__3214EC07EBEBED98");
@@ -15280,43 +15374,43 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "LevelId" }, "StorageSpaceLevelResourceGroupsIdx_LevelId");
 
-                    b.ToTable("StorageSpaceLevelResourceGroups");
+                    b.ToTable("StorageSpaceLevelResourceGroups", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SupportServiceLevel", b =>
                 {
                     b.Property<int>("LevelId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("LevelID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("LevelId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LevelId"));
 
                     b.Property<string>("LevelDescription")
                         .HasMaxLength(1000)
-                        .HasColumnType("varchar(1000)");
+                        .HasColumnType("character varying(1000)");
 
                     b.Property<string>("LevelName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.HasKey("LevelId")
                         .HasName("PK__SupportS__09F03C065BA08AFB");
 
-                    b.ToTable("SupportServiceLevels");
+                    b.ToTable("SupportServiceLevels", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.SystemSetting", b =>
                 {
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(1);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyValue")
@@ -15324,7 +15418,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasKey("SettingsName", "PropertyName");
 
-                    b.ToTable("SystemSettings");
+                    b.ToTable("SystemSettings", "public");
 
                     b.HasData(
                         new
@@ -15381,64 +15475,64 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("Key")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Key"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Key"));
 
                     b.Property<DateTime>("Created")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime>("Date")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Id")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Level")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<Guid>("Scope")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uuid");
 
                     b.HasKey("Key");
 
                     b.HasIndex("Created", "Scope", "Level");
 
-                    b.ToTable("TempIds");
+                    b.ToTable("TempIds", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.Theme", b =>
                 {
                     b.Property<int>("ThemeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ThemeID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ThemeId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ThemeId"));
 
                     b.Property<string>("DisplayName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("Enabled")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("LTRName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("LTRName");
 
                     b.Property<string>("RTLName")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)")
+                        .HasColumnType("character varying(255)")
                         .HasColumnName("RTLName");
 
                     b.HasKey("ThemeId");
 
-                    b.ToTable("Themes");
+                    b.ToTable("Themes", "public");
 
                     b.HasData(
                         new
@@ -15456,35 +15550,35 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("ThemeSettingId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ThemeSettingID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("ThemeSettingId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ThemeSettingId"));
 
                     b.Property<string>("PropertyName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("PropertyValue")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("SettingsName")
                         .IsRequired()
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int>("ThemeId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ThemeID");
 
                     b.HasKey("ThemeSettingId");
 
                     b.HasIndex(new[] { "ThemeId" }, "ThemeSettingsIdx_ThemeID");
 
-                    b.ToTable("ThemeSettings");
+                    b.ToTable("ThemeSettings", "public");
 
                     b.HasData(
                         new
@@ -15653,143 +15747,143 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("UserId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("AdditionalParams")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<string>("Address")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime?>("Changed")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("City")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Comments")
-                        .HasColumnType("longtext");
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("CompanyName")
                         .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Country")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("Created")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<bool?>("EcommerceEnabled")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Email")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<int?>("FailedLogins")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Fax")
                         .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("FirstName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<bool?>("HtmlMail")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(true);
 
                     b.Property<string>("InstantMessenger")
                         .HasMaxLength(100)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<bool>("IsDemo")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<bool>("IsPeer")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
+                        .HasColumnType("boolean")
                         .HasDefaultValue(false);
 
                     b.Property<string>("LastName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int?>("LoginStatusId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("MfaMode")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasDefaultValue(0);
 
                     b.Property<int?>("OneTimePasswordState")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int?>("OwnerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("OwnerID");
 
                     b.Property<string>("Password")
                         .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("PinSecret")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("PrimaryPhone")
                         .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<int>("RoleId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("RoleID");
 
                     b.Property<string>("SecondaryEmail")
                         .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("character varying(255)");
 
                     b.Property<string>("SecondaryPhone")
                         .HasMaxLength(30)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("character varying(30)");
 
                     b.Property<string>("State")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<int>("StatusId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("StatusID");
 
                     b.Property<string>("SubscriberNumber")
                         .HasMaxLength(32)
-                        .HasColumnType("varchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Username")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("Zip")
                         .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.HasKey("UserId");
 
@@ -15798,7 +15892,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "OwnerId" }, "UsersIdx_OwnerID");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", "public");
 
                     b.HasData(
                         new
@@ -15835,18 +15929,18 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.UserSetting", b =>
                 {
                     b.Property<int>("UserId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("UserID")
                         .HasColumnOrder(1);
 
                     b.Property<string>("SettingsName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(2);
 
                     b.Property<string>("PropertyName")
                         .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("character varying(50)")
                         .HasColumnOrder(3);
 
                     b.Property<string>("PropertyValue")
@@ -15854,7 +15948,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasKey("UserId", "SettingsName", "PropertyName");
 
-                    b.ToTable("UserSettings");
+                    b.ToTable("UserSettings", "public");
 
                     b.HasData(
                         new
@@ -16809,14 +16903,14 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                     b.Property<string>("DatabaseVersion")
                         .HasMaxLength(50)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime>("BuildDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.HasKey("DatabaseVersion");
 
-                    b.ToTable("Versions");
+                    b.ToTable("Versions", "public");
 
                     b.HasData(
                         new
@@ -16865,23 +16959,23 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                 {
                     b.Property<int>("VirtualGroupId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("VirtualGroupID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("VirtualGroupId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VirtualGroupId"));
 
                     b.Property<bool?>("BindDistributionToPrimary")
-                        .HasColumnType("tinyint(1)");
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("DistributionType")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("GroupId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("GroupID");
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.HasKey("VirtualGroupId");
@@ -16890,24 +16984,24 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ServerId" }, "VirtualGroupsIdx_ServerID");
 
-                    b.ToTable("VirtualGroups");
+                    b.ToTable("VirtualGroups", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.VirtualService", b =>
                 {
                     b.Property<int>("VirtualServiceId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("VirtualServiceID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("VirtualServiceId"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("VirtualServiceId"));
 
                     b.Property<int>("ServerId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServerID");
 
                     b.Property<int>("ServiceId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ServiceID");
 
                     b.HasKey("VirtualServiceId");
@@ -16916,68 +17010,68 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
 
                     b.HasIndex(new[] { "ServiceId" }, "VirtualServicesIdx_ServiceID");
 
-                    b.ToTable("VirtualServices");
+                    b.ToTable("VirtualServices", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavAccessToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<Guid>("AccessToken")
-                        .HasColumnType("char(36)");
+                        .HasColumnType("uuid");
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("AccountID");
 
                     b.Property<string>("AuthData")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("ExpirationDate")
-                        .HasColumnType("datetime(6)");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("FilePath")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.Property<int>("ItemId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id")
                         .HasName("PK__WebDavAc__3214EC2708781F08");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavAccessTokensIdx_AccountID");
 
-                    b.ToTable("WebDavAccessTokens");
+                    b.ToTable("WebDavAccessTokens", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.WebDavPortalUsersSetting", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
+                        .HasColumnType("integer")
                         .HasColumnName("ID");
 
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<int>("AccountId")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Settings")
-                        .HasColumnType("longtext");
+                        .HasColumnType("text");
 
                     b.HasKey("Id")
                         .HasName("PK__WebDavPo__3214EC278AF5195E");
 
                     b.HasIndex(new[] { "AccountId" }, "WebDavPortalUsersSettingsIdx_AccountId");
 
-                    b.ToTable("WebDavPortalUsersSettings");
+                    b.ToTable("WebDavPortalUsersSettings", "public");
                 });
 
             modelBuilder.Entity("SolidCP.EnterpriseServer.Data.Entities.AccessToken", b =>

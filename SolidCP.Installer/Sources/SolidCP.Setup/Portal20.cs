@@ -52,7 +52,7 @@ namespace SolidCP.Setup
 			Installer.Current.UpdateWebPortal);
 
 		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebPortal",
-			Installer.Current.ConfigureWebPortal, true);
+			Installer.Current.SetupWebPortal, true);
 
 		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebPortal",
 			Installer.Current.RemoveWebPortal);

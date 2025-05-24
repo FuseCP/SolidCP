@@ -47,7 +47,7 @@
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
         <PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.80" Condition="$(SupportOracle) == 'True'" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="9.103.7" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.4" />
         <!-- .NET 9 -->
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.4" />
@@ -75,7 +75,7 @@
         <PackageReference Include="EntityFramework" Version="6.5.1" />
         <PackageReference Include="Z.EntityFramework.Plus.EF6" Version="9.103.7" />
         <PackageReference Include="Microsoft.EntityFramework.SqlServer" Version="6.5.1" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="MySql.Data.EntityFramework" Version="9.3.0" />
         <PackageReference Include="BouncyCastle.Cryptography" Version="2.5.1" />

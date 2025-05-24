@@ -63,7 +63,8 @@ namespace SolidCP.Providers.OS
 					if (m != null) {
 						try
 						{
-							return m.Invoke(null, new object[] { procexe, true }) as string;
+							var info = m.Invoke(null, new object[] { procexe, true }) as FileSystemInfo;
+							return info.FullName;
 						}
 						catch { }
 					}

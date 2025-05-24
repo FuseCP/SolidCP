@@ -27,7 +27,7 @@
 
     <ItemGroup>
         <PackageReference Include="EntityFramework" Version="6.5.1" />
-        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
         <PackageReference Include="Azure.Identity" Version="1.13.2" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.2" />
         <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.2" Condition="'$(TargetFramework)' == 'net48'" />

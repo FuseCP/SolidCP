@@ -2166,6 +2166,9 @@
   <data name="SchedulerTask.SCHEDULE_TASK_AUDIT_LOG_REPORT" xml:space="preserve">
     <value>Auditprotokoll-Bericht senden</value>
   </data>
+  <data name="SchedulerTask.SCHEDULE_TASK_CHECK_WEBSITES_SSL" xml:space="preserve">
+    <value>Webseite-SSL-Zertifikate prüfen</value>
+  </data>
   <data name="SchedulerTask.SCHEDULE_TASK_SUSPEND_PACKAGES" xml:space="preserve">
     <value>Überschrittene Hosting-Bereiche sperren</value>
   </data>

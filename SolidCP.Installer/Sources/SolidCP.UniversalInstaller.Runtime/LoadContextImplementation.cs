@@ -59,8 +59,8 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 	{
 		Assembly assembly = null;
 
-		var exe = Assembly.GetEntryAssembly();
-		var localSetup = Path.Combine(Path.GetDirectoryName(exe.Location), Path.GetFileName(fileName));
+		var basePath = AppDomain.CurrentDomain.BaseDirectory;
+		var localSetup = Path.Combine(basePath, Path.GetFileName(fileName));
 		if (File.Exists(localSetup)) fileName = localSetup;
 
 #if NETCOREAPP
@@ -84,7 +84,8 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 	{
 #if NETFRAMEWORK
 		AppDomain domain = null;
-		LoadContextImplementation loader;
+		//LoadContextImplementation loader;
+		object loader;
 		try
 		{
 			/* Evidence securityInfo = AppDomain.CurrentDomain.Evidence;
@@ -112,21 +113,26 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 					typeof(AssemblyLoader).Assembly.FullName,
 					typeof(AssemblyLoader).FullName); */
 				var createInstanceAndUnwrapMethod = typeof(AppDomain).GetMethod("CreateInstanceAndUnwrap", new Type[] { typeof(string), typeof(string) });
-				loader = (LoadContextImplementation)createInstanceAndUnwrapMethod.Invoke(domain, new object[] {
+				/*loader = (LoadContextImplementation)createInstanceAndUnwrapMethod.Invoke(domain, new object[] {
 					typeof(LoadContextImplementation).Assembly.FullName,
 					typeof(LoadContextImplementation).FullName
+				});*/
+				loader = createInstanceAndUnwrapMethod.Invoke(domain, new object[] {
+					"Setup2",
+					"HostPanelPro.UniversalInstaller.RemoteRunner"
 				});
 
-				foreach (TraceListener listener in Trace.Listeners)
+				/*foreach (TraceListener listener in Trace.Listeners)
 				{
 					loader.AddTraceListener(listener);
-				}
+				}*/
 			}
 			else  // don't call in separate AppDomain when debugging
 			{
-				loader = new LoadContextImplementation();
+				loader = Activator.CreateInstance(Type.GetType("HostPanelPro.UniversalInstaller.RemoteRunner, Setup2"));
 			}
-			object ret = loader.RemoteRun(fileName, typeName, methodName, parameters);
+			var remoteRun = loader.GetType().GetMethod("RemoteRun", new Type[] { typeof(string), typeof(string), typeof(string), typeof(object[]) });
+			object ret = remoteRun.Invoke(loader, new object[] { fileName, typeName, methodName, parameters });
 			AppDomain.Unload(domain);
 			
 			Installer.Current.LoadSettings();
@@ -165,6 +171,6 @@ public class LoadContextImplementation : MarshalByRefObject, ILoadContext
 
 	public string GetShellVersion()
 	{
-		return Assembly.GetEntryAssembly().GetName().Version.ToString();
+		return Installer.Current.GetEntryAssembly().GetName().Version.ToString();
 	}
 }

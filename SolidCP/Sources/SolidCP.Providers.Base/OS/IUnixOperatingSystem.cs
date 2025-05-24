@@ -78,5 +78,6 @@ namespace SolidCP.Providers.OS
 		Installer Yum { get; }
 		Installer Brew { get; }
 		bool IsSystemd { get; }
+		bool IsOpenRC { get; }
 	}
 }

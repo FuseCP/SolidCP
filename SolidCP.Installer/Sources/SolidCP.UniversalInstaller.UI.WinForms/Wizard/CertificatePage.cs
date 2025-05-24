@@ -82,8 +82,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			if (OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support cert file & Let's Encrypt also on Windows
 			{
 				// remove cert file & Let's Encrypt tab pages
-				tabControl.TabPages.RemoveAt(1);
 				tabControl.TabPages.RemoveAt(2);
+				tabControl.TabPages.RemoveAt(1);
 			}
 
 			string[] names, locations;
@@ -238,7 +238,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 						.Where(host => !System.Net.IPAddress.TryParse(host, out ip))
 						.ToArray());
 				} else if (tabControl.SelectedTab == tabPageManual)
-				{ 
+				{
+					Settings.ConfigureCertificateManually = manualCert.Checked;
+
 					if (!manualCert.Checked)
 					{
 						e.Cancel = true;

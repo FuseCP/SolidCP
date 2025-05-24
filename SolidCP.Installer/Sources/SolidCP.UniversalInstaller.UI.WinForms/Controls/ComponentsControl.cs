@@ -88,7 +88,7 @@ namespace SolidCP.UniversalInstaller.Controls
 
         public static string GetShellVersion()
         {
-            return Assembly.GetEntryAssembly().GetName().Version.ToString();
+            return Installer.Current.GetEntryAssembly().GetName().Version.ToString();
         }
 
 		private void StartInstaller(ComponentInfo component)

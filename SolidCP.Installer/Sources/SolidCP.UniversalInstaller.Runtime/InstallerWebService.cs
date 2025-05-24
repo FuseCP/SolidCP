@@ -81,8 +81,18 @@ namespace SolidCP.UniversalInstaller
 			=> FromResult<ComponentUpdateInfo>(base.GetComponentUpdate(componentCode, release));
 		public new async Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string release)
 			=> FromResult<ComponentUpdateInfo>(await base.GetComponentUpdateAsync(componentCode, release));
-		public new List<ComponentInfo> GetAvailableComponents() => FromResultCollection<ComponentInfo>(base.GetAvailableComponents());
-		public new async Task<List<ComponentInfo>> GetAvailableComponentsAsync() => FromResultCollection<ComponentInfo>(await base.GetAvailableComponentsAsync());
+		public new List<ComponentInfo> GetAvailableComponents()
+		{
+			var result = FromResultCollection<ComponentInfo>(base.GetAvailableComponents());
+			foreach (var component in result) component.VersionName = component.Version.ToString(3);
+			return result;
+		}
+		public new async Task<List<ComponentInfo>> GetAvailableComponentsAsync()
+		{
+			var result = FromResultCollection<ComponentInfo>(await base.GetAvailableComponentsAsync());
+			foreach (var component in result) component.VersionName = component.Version.ToString(3);
+			return result;
+		}
 		public new ComponentUpdateInfo GetLatestComponentUpdate(string componentCode) => FromResult<ComponentUpdateInfo>(base.GetLatestComponentUpdate(componentCode));
 		public new async Task<ComponentUpdateInfo> GetLatestComponentUpdateAsync(string componentCode) => FromResult<ComponentUpdateInfo>(await base.GetLatestComponentUpdateAsync(componentCode));
 		public new ReleaseFileInfo GetReleaseFileInfo(string componentCode, string version) => FromResultCollection<ReleaseFileInfo>(base.GetReleaseFileInfo(componentCode, version)).Single();

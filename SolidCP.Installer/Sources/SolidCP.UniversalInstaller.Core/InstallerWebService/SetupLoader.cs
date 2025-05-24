@@ -279,7 +279,7 @@ public class SetupLoader
 			CancellationToken token = cts.Token;
 
 			var fileToDownload = Path.GetFileName(remoteFile.File);
-			var exeFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+			var exeFolder = Path.GetDirectoryName(Installer.Current.GetEntryAssembly().Location);
 			var installerPath = remoteFile.Release.InstallerPath.Replace('/', Path.DirectorySeparatorChar);
 			var setupFileName = Path.Combine(exeFolder,
 				Path.GetFileName(installerPath));
@@ -300,7 +300,11 @@ public class SetupLoader
 					RaiseOnOperationCompletedEvent();
 
 					if (!SetupOnly) StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
-
+					else
+					{
+						var progressFile = Path.Combine(Path.GetDirectoryName(tmpFolder), DownloadProgressFile);
+						File.Delete(progressFile);
+					}
 					return;
 				}
 			}
@@ -315,16 +319,18 @@ public class SetupLoader
 
 					Task downloadSetupTask = GetDownloadFileTask(new RemoteFile(info, true), setupFileName, token);
 					
-					if (!SetupOnly)
+					var downloadComponentTask = downloadSetupTask.ContinueWith(async task =>
 					{
-						var downloadComponentTask = downloadSetupTask.ContinueWith(async task =>
+						RaiseDownloadCompleteEvent();
+						RaiseOnOperationCompletedEvent();
+						
+						if (!SetupOnly) StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
+						else
 						{
-							RaiseDownloadCompleteEvent();
-							RaiseOnOperationCompletedEvent();
-
-							StartDownloadAsyncRelease(remoteFile, tmpFile, destinationFile, tmpFolder, installerPath, token);
-						}, token);
-					}
+							var progressFile = Path.Combine(Path.GetDirectoryName(tmpFolder), DownloadProgressFile);
+							File.Delete(progressFile);
+						}
+					}, token);
 					downloadSetupTask.Start();
 				}
 				catch (Exception ex) { }
@@ -374,6 +380,9 @@ public class SetupLoader
 				var notifyCompletionTask = unzipFileTask.ContinueWith((t) =>
 				{
 					RaiseOnOperationCompletedEvent();
+
+					var progressFile = Path.Combine(Path.GetDirectoryName(tmpFolder), DownloadProgressFile);
+					File.Delete(progressFile);
 				}, token);
 
 				downloadFileTask.Start();
@@ -526,7 +535,7 @@ public class SetupLoader
 
 				long downloadedSize = 0;
 
-				await Installer.Current.Releases.GetFileAsync(remoteFile, tmpFile,
+				await Installer.Current.Releases.GetFileAsync(sourceFile, tmpFile,
 					(downloaded, fileSize) =>
 					{
 						downloadedSize = downloaded;

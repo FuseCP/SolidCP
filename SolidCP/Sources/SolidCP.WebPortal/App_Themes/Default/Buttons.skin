@@ -11,7 +11,7 @@ Default skin template. The following skins are provided as examples only.
 2. Default skin. The SkinId is not defined. Only one default 
    control skin per control type is allowed in the same theme.
 
-<asp:Image runat="server" ImageUrl="~/images/image1.jpg" />
+<asp:Image runat="server" ImageUrl="~/Images/image1.jpg" />
 --%>
 <asp:ImageButton SkinID="SearchButton" runat="server" ImageUrl="Images/search_button.png" ImageAlign="AbsMiddle" Width="21" Height="22"></asp:ImageButton>
 
@@ -43,6 +43,6 @@ Default skin template. The following skins are provided as examples only.
 <asp:ImageButton SkinID="VpsDelete" runat="server" ImageUrl="Images/VPS/delete.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
 <asp:ImageButton SkinID="VpsDelete2012" runat="server" ImageUrl="Images/VPS2012/delete.png" ImageAlign="AbsMiddle"  Width="16" Height="16"/>
 
-<asp:ImageButton SkinID="PveRdc32" runat="server" ImageUrl="images/Proxmox/remote-desktop.svg" ImageAlign="AbsMiddle" Width="32" Height="32" />
+<asp:ImageButton SkinID="PveRdc32" runat="server" ImageUrl="Images/Proxmox/remote-desktop.svg" ImageAlign="AbsMiddle" Width="32" Height="32" />
 
 <asp:ImageButton SkinID="RenameButton" runat="server" ImageUrl="Images/rename.gif" hspace="1" ImageAlign="AbsMiddle"></asp:ImageButton>

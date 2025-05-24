@@ -155,6 +155,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 				string database;
 				string dbuser;
 				string dbpassword;
+				bool windowsAuthentication = false;
 				int? dbport = null;
 				switch (tabControl.SelectedIndex)
 				{
@@ -162,7 +163,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 						dbtype = Data.DbType.SqlServer;
 						server = txtSqlServerServer.Text.Trim();
 						database = txtSqlServerDatabase.Text.Trim();
-						if (cbSqlServerAuthentication.SelectedIndex != 0)
+						windowsAuthentication = cbSqlServerAuthentication.SelectedIndex == 0;
+						if (!windowsAuthentication)
 						{
 							dbuser = txtSqlServerLogin.Text.Trim();
 							dbpassword = txtSqlServerPassword.Text.Trim();
@@ -247,8 +249,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 				Settings.DatabaseServer = server;
 				Settings.DatabaseType = dbtype;
 				Settings.DatabasePort = dbport ?? 0;
-				//Settings.DatabaseUser = dbuser;
-				//Settings.DatabasePassword = dbpassword;
+				Settings.DatabaseUser = dbuser;
+				Settings.DatabasePassword = dbpassword;
+				Settings.DatabaseWindowsAuthentication = windowsAuthentication;
 				Settings.DbInstallConnectionString = connectionString;
 			}
 			catch
@@ -371,7 +374,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 						port, txtMySqlUser.Text.Trim(), txtMySqlPassword.Text.Trim());
 				case Data.DbType.Sqlite:
 				case Data.DbType.SqliteFX:
-					return Data.DatabaseUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), Settings.InstallFolder, WebPortalSettings.EnterpriseServerPath, WebPortalSettings.EmbedEnterpriseServer);
+					return Data.DatabaseUtils.BuildSqliteMasterConnectionString(txtSqliteDatabase.Text.Trim(), Settings.InstallPath, WebPortalSettings.EnterpriseServerPath, WebPortalSettings.EmbedEnterpriseServer);
 				default: return "";
 			}
 		}

@@ -139,16 +139,7 @@ public class BaseSetup
 	public virtual bool IsStandalone => ComponentSettings is StandaloneSettings;
 	public virtual bool IsWebPortal => ComponentSettings is WebPortalSettings;
 	public virtual bool IsWebDavPortal => ComponentSettings is WebDavPortalSettings;
-	public virtual bool HasEnterpriseServerInstallation
-		=> Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)) ||
-			Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)));
-
-	public void SetEnterpriseServerFolder()
-	{
-		if (IsStandalone) Installer.Current.EnterpriseServerFolder = Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder);
-	}
-
-	public virtual UI.SetupWizard Wizard(object args)
+	public virtual UI.SetupWizard Wizard(object args, bool setup = false)
 	{
 		if (ParseArgs(args) && CheckInstallerVersion())
 		{
@@ -158,19 +149,22 @@ public class BaseSetup
 				.LicenseAgreement();
 			if (!IsStandalone)
 			{
+				if (!setup) wizard = wizard.InstallFolder(CommonSettings);
 				wizard = wizard
-					.InstallFolder(CommonSettings)
 					.Web(CommonSettings)
 					.InsecureHttpWarning(CommonSettings)
-					.Certificate(CommonSettings)
-					.UserAccount(CommonSettings);
+					.Certificate(CommonSettings);
+				if (!setup) wizard = wizard.UserAccount(CommonSettings);
 
 				if (IsServer) wizard = wizard
 					.ServerPassword();
 
-				if (IsEnterpriseServer) wizard = wizard
-					.ServerAdminPassword();
-
+				if (IsEnterpriseServer)
+				{
+					if (!setup) wizard = wizard.Database();
+					wizard = wizard
+						.ServerAdminPassword();
+				}
 				if (IsWebPortal)
 				{
 					wizard = wizard.EnterpriseServerUrl();
@@ -186,34 +180,40 @@ public class BaseSetup
 				Settings.EnterpriseServer.Password = "";
 				Settings.EnterpriseServer.Urls = "http://localhost:9002";
 				Settings.EnterpriseServer.ConfigureCertificateManually = true;
-				SetEnterpriseServerFolder();
+				Settings.WebPortal.EmbedEnterpriseServer = true;
 
+				if (!setup) wizard = wizard.InstallFolder(Settings.Standalone);
 				wizard = wizard
-					.InstallFolder(Settings.Standalone)
 					.Web(Settings.WebPortal)
 					.InsecureHttpWarning(Settings.WebPortal)
-					.Certificate(Settings.WebPortal)
-					.UserAccount(Settings.WebPortal)
-					.ServerAdminPassword()
-					.Database()
+					.Certificate(Settings.WebPortal);
+				if (!setup) wizard = wizard.UserAccount(Settings.WebPortal);
+				wizard = wizard
+					.ServerAdminPassword();
+				if (!setup) wizard = wizard.Database();
+				wizard = wizard
 					.Web(Settings.Server)
 					.InsecureHttpWarning(Settings.Server)
-					.Certificate(Settings.Server)
-					.UserAccount(Settings.Server)
-					.ServerPassword()
-					.Web(Settings.WebDavPortal)
-					.InsecureHttpWarning(Settings.WebDavPortal)
-					.Certificate(Settings.WebDavPortal)
-					.UserAccount(Settings.WebDavPortal);
+					.Certificate(Settings.Server);
+				if (!setup) wizard = wizard.UserAccount(Settings.Server);
+				wizard = wizard
+					.ServerPassword();
+				if (OS.OSInfo.IsWindows)
+				{
+					wizard = wizard
+						.Web(Settings.WebDavPortal)
+						.InsecureHttpWarning(Settings.WebDavPortal)
+						.Certificate(Settings.WebDavPortal);
+					if (!setup) wizard = wizard.UserAccount(Settings.WebDavPortal);
+				}
 			}
 			return wizard;
 		}
 		return null;
 	}
 	public virtual Result InstallOrSetup(object args, string title, Action installer, bool setup = false) {
-		var wizard = Wizard(args);
+		var wizard = Wizard(args, setup);
 		if (wizard == null) return Result.Abort;
-		if (IsEnterpriseServer) wizard = wizard.Database();
 		if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
 		else Installer.Current.Settings.Installer.Action = SetupActions.Install;
 		var res = wizard
@@ -265,7 +265,6 @@ public class BaseSetup
 		if (ParseArgs(args))
 		{
 			Installer.Current.Settings.Installer.Action = SetupActions.Uninstall;
-			SetEnterpriseServerFolder();
 
 			if (CheckInstallerVersion())
 			{

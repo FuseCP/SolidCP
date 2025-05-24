@@ -38,6 +38,8 @@ namespace SolidCP.Web.Clients
 
 		protected T Invoke<T>(Assembly assembly, Type type, MethodInfo method, string methodName, params object[] parameters)
 		{
+			var principal = Thread.CurrentPrincipal;
+
 			// authentication
 			if (Client.IsAuthenticated)
 			{
@@ -110,6 +112,8 @@ namespace SolidCP.Web.Clients
 			finally
 			{
 				if (service is IDisposable disposableService) disposableService.Dispose();
+
+				Thread.CurrentPrincipal = principal;
 			}
 		}
 		protected void Invoke(string typeName, string methodName, params object[] parameters)

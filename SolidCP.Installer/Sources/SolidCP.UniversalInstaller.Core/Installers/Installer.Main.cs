@@ -77,6 +77,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			SetAppDomainUnhandledException();
 
+			ImportLegacySettings();
 			LoadSettings();
 			UI.Current.CheckForInstallerUpdate(true);
 			//

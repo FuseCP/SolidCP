@@ -52,7 +52,7 @@ namespace SolidCP.Setup
 			Installer.Current.UpdateServer);
 
 		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Server",
-			() => Installer.Current.ConfigureServer(), true);
+			Installer.Current.SetupServer, true);
 
 		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Server",
 			Installer.Current.RemoveServer);

@@ -1,5 +1,5 @@
-set /P migration="Please enter a name for the migration: "
 set DOTNET_HOST_FACTORY_RESOLVER_DEFAULT_TIMEOUT_IN_SECONDS=0
+set /P migration="Please enter a name for the migration: "
 
 echo "Build"
 dotnet build

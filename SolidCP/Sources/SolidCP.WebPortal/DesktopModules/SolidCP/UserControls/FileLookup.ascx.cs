@@ -120,14 +120,14 @@ namespace SolidCP.Portal
             pnlLookup.Width = Width;
 
             // prepare tree
-            DNNTree.CollapseImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/images/min.gif"));
-            DNNTree.ExpandImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/images/max.gif"));
-            DNNTree.NoExpandImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/images/empty.gif"));
+            DNNTree.CollapseImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/Images/min.gif"));
+            DNNTree.ExpandImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/Images/max.gif"));
+            DNNTree.NoExpandImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/Images/empty.gif"));
 
             DNNTree.Nodes.Clear();
 
             TreeNode node = new TreeNode();
-            node.ImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/images/folder.png"));
+            node.ImageUrl = ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/Images/folder.png"));
             node.Value = PackageId.ToString() + "," + RootFolder + "\\";
             node.Text = GetLocalizedString("Text.Root");
             node.PopulateOnDemand = true;
@@ -194,8 +194,8 @@ namespace SolidCP.Portal
 				node.Text = file.Name;
 				node.PopulateOnDemand = (file.IsDirectory && !file.IsEmpty);
 				
-				node.ImageUrl = file.IsDirectory? ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/images/folder.png")) : 
-					ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/images/file.png"));
+				node.ImageUrl = file.IsDirectory? ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/Images/folder.png")) : 
+					ResolveUrl(String.Concat("~/App_Themes/", Page.Theme, "/Images/file.png"));
 
 				e.Node.ChildNodes.Add(node);
 			}

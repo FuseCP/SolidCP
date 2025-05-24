@@ -272,7 +272,7 @@ namespace SolidCP.Portal
         {
             if (string.IsNullOrEmpty(url))
             {
-                return "/App_Themes/Default/icons/sphere_128.png";
+                return "/App_Themes/Default/Icons/sphere_128.png";
             }
 
             return "~/DesktopModules/SolidCP/ResizeImage.ashx?width=120&height=120&url=" + Server.UrlEncode(url);

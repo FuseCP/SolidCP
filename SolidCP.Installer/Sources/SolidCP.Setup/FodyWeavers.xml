@@ -1,6 +1,8 @@
 ﻿<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
     <PortableCostura LoadAtModuleInit="false" DisableCleanup="true">
         <ExcludeAssemblies>
+            System.ServiceProcess.ServiceController
+            Microsoft.Win32.Registry
         </ExcludeAssemblies>
     </PortableCostura>
 </Weavers>

@@ -70,9 +70,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 			//UpdateSpaceRequiredInformation();
 			lblSpaceRequired.Visible = lblSpaceRequiredValue.Visible = false;
 
-			if (!string.IsNullOrEmpty(Settings.InstallFolder))
+			if (!string.IsNullOrEmpty(Settings.InstallPath))
 			{
-				txtFolder.Text = Settings.InstallFolder;
+				txtFolder.Text = Settings is StandaloneSettings ?
+					Settings.InstallPath : Path.GetDirectoryName(Settings.InstallPath);
 			}
 		}
 
@@ -117,7 +118,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			try
 			{
-				string installFolder = this.txtFolder.Text;
+				string installFolder = Settings is StandaloneSettings ?
+					txtFolder.Text : Path.Combine(this.txtFolder.Text, Settings.InstallFolder);
 				Log.WriteInfo(string.Format("Destination folder \"{0}\" selected", installFolder));
 
 				if (!Directory.Exists(installFolder))
@@ -126,8 +128,14 @@ namespace SolidCP.UniversalInstaller.WinForms
 					Directory.CreateDirectory(installFolder);
 					Log.WriteStart("Created a new folder");
 				}
-				Settings.InstallFolder = installFolder;
-
+				Settings.InstallPath = installFolder;
+				if (Settings is StandaloneSettings)
+				{
+					Installer.Current.Settings.Server.InstallPath = Path.Combine(installFolder, Installer.Current.ServerFolder);
+					Installer.Current.Settings.EnterpriseServer.InstallPath = Path.Combine(installFolder, Installer.Current.EnterpriseServerFolder);
+					Installer.Current.Settings.WebDavPortal.InstallPath = Path.Combine(installFolder, Installer.Current.WebDavPortalFolder);
+					Installer.Current.Settings.WebPortal.InstallPath = Path.Combine(installFolder, Installer.Current.WebPortalFolder);
+				}
 				base.OnBeforeMoveNext(e);
 			}
 			catch (Exception ex)

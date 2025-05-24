@@ -42,7 +42,7 @@ public enum CheckTypes
 	OperatingSystem,
 	WindowsOperatingSystem,
 	IISVersion,
-	Systemd,
+	InitSystem,
 	ApacheVersion,
 	Net8Runtime,
 	ASPNET,

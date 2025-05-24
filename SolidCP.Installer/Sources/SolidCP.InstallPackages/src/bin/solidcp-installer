@@ -1,2 +1,2 @@
 #!/bin/sh
-exec dotnet /usr/share/solidcp/SolidCP.Installer.dll
+exec dotnet /usr/share/solidcp/Installer/SolidCP.Installer.dll
