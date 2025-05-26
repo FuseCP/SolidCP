@@ -35,6 +35,7 @@
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
         <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <!--<PackageReference Include="System.DirectoryServices" Version="9.0.3" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
 
@@ -102,10 +103,23 @@
             <LogicalName>DllsNetCore/System.DirectoryServices.dll</LogicalName>
             <Link>DllsNetCore\System.DirectoryServices.dll</Link>
         </EmbeddedResource>-->
-        <!--<EmbeddedResource Include="$(PkgMicrosoft_Win32_Registry)\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll">
-            <LogicalName>DllsNetCore/Microsoft.Win32.Registry.dll</LogicalName>
-            <Link>DllsNetCore\Microsoft.Win32.Registry.dll</Link>
-        </EmbeddedResource>-->
+        <EmbeddedResource Include="$(PkgMicrosoft_Win32_Registry)\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll">
+            <LogicalName>Dlls/Microsoft.Win32.Registry.dll</LogicalName>
+            <Link>Dlls\Microsoft.Win32.Registry.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll">
+            <LogicalName>DllsNetCoreWin/Microsoft.Data.SqlClient.dll</LogicalName>
+            <Link>DllsNetCoreWin\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll">
+            <LogicalName>DllsNetCoreUnix/Microsoft.Data.SqlClient.dll</LogicalName>
+            <Link>DllsNetCoreUnix\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\win\lib\net462\Microsoft.Data.SqlClient.dll">
+            <LogicalName>DllsNetFXWin/Microsoft.Data.SqlClient.dll</LogicalName>
+            <Link>DllsNetFXWin\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+
 
         <EmbeddedResource Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\bin\$(Configuration)\net8.0\runtimes\**\*.*">
             <LogicalName>DllsNetCore/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
