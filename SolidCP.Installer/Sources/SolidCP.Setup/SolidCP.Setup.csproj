@@ -103,10 +103,6 @@
             <LogicalName>DllsNetCore/System.DirectoryServices.dll</LogicalName>
             <Link>DllsNetCore\System.DirectoryServices.dll</Link>
         </EmbeddedResource>-->
-        <EmbeddedResource Include="$(PkgMicrosoft_Win32_Registry)\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll">
-            <LogicalName>Dlls/Microsoft.Win32.Registry.dll</LogicalName>
-            <Link>Dlls\Microsoft.Win32.Registry.dll</Link>
-        </EmbeddedResource>
         <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll">
             <LogicalName>DllsNetCoreWin/Microsoft.Data.SqlClient.dll</LogicalName>
             <Link>DllsNetCoreWin\Microsoft.Data.SqlClient.dll</Link>
