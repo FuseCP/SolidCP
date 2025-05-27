@@ -664,7 +664,7 @@ public class WindowsInstaller : Installer
 		var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
 			Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
 				"bin_dotnet" : "bin\\Code";
-		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.Scheduler.exe");
+		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.SchedulerService.exe");
 
 		var config = exe + ".config";
 		var xml = XElement.Load(config);
@@ -718,7 +718,7 @@ public class WindowsInstaller : Installer
 			{
 				ServiceId = SchedulerServiceId,
 				DisplayName = "SolidCP Scheduler Service",
-				Executable = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "SolidCP.Scheduler.exe"),
+				Executable = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "SolidCP.SchedulerService.exe"),
 				Start = WindowsServiceStartMode.DelayedAuto,
 				Type = WindowsServiceType.Own,
 				Error = WindowsServiceErrorHandling.Normal
