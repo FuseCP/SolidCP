@@ -157,20 +157,24 @@ Install Folder:
 ===============
 
 Install Component to:
-[?InstallFolder                                                          ]
+[?InstallPath                                                          ]
 
-[  Next  ]  [  Back  ]")
-				.Load(settings)
-				.ShowDialog();
+[  Next  ]  [  Back  ]");
+				form["InstallPath"].Text = Path.GetDirectoryName(settings.InstallPath);
+				form.ShowDialog();
 				if (form["Next"].Clicked)
 				{
-					form.Save(settings);
 					if (settings is StandaloneSettings)
 					{
+						settings.InstallPath = form["InstallPath"].Text;
 						Installer.Current.Settings.Server.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
 						Installer.Current.Settings.EnterpriseServer.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.EnterpriseServer.InstallFolder);
 						Installer.Current.Settings.WebDavPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.WebDavPortal.InstallFolder);
 						Installer.Current.Settings.WebPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
+					}
+					else
+					{
+						settings.InstallPath = Path.Combine(form["InstallPath"].Text, settings.InstallFolder);
 					}
 					Next();
 				}
