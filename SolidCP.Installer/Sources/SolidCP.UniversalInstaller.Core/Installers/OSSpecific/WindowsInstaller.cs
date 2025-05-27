@@ -663,7 +663,7 @@ public class WindowsInstaller : Installer
 	{
 		var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
 			Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
-				"bin_dotnet" : "bin";
+				"bin_dotnet" : "bin\\Code";
 		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.Scheduler.exe");
 
 		var config = exe + ".config";
@@ -713,7 +713,7 @@ public class WindowsInstaller : Installer
 		{
 			var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
 				Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
-					"bin_dotnet" : "bin";
+					"bin_dotnet" : "bin\\Code";
 			var service = new WindowsServiceDescription()
 			{
 				ServiceId = SchedulerServiceId,
