@@ -392,11 +392,18 @@ public class AssemblyLoader
 				var name = resname.Substring(slash + 1)
 					.Replace('/', Path.DirectorySeparatorChar)
 					.Replace('\\', Path.DirectorySeparatorChar);
-				if (/*(name.StartsWith($"{arch}/") || !name.Contains("/")) && */
+				if ((name.StartsWith($"{arch}{Path.DirectorySeparatorChar}") ||
+					name.StartsWith($"runtimes{Path.DirectorySeparatorChar}") ||
+					!name.Contains(Path.DirectorySeparatorChar)) &&
 					IsWindows && name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
 					IsMac && name.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase) ||
 					IsLinux && name.EndsWith(".so", StringComparison.OrdinalIgnoreCase))
 				{
+					if (name.StartsWith($"{arch}{Path.DirectorySeparatorChar}"))
+					{
+						slash = name.IndexOf(Path.DirectorySeparatorChar);
+						name = name.Substring(slash + 1);
+					}
 					var filename = Path.Combine(AssembliesPath, name);
 					using (var src = asm.GetManifestResourceStream(resname))
 						SaveToFile(src, filename);

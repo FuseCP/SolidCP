@@ -36,6 +36,8 @@
         <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Data.SqlClient.SNI" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Data.SqlClient.SNI.Runtime" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <!--<PackageReference Include="System.DirectoryServices" Version="9.0.3" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
 
@@ -114,6 +116,30 @@
         <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\win\lib\net462\Microsoft.Data.SqlClient.dll">
             <LogicalName>DllsNetFXWin/Microsoft.Data.SqlClient.dll</LogicalName>
             <Link>DllsNetFXWin\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI)\build\net462\Microsoft.Data.SqlClient.SNI.arm64.dll">
+            <LogicalName>NativeDlls/arm64/Microsoft.Data.SqlClient.SNI.arm64.dll</LogicalName>
+            <Link>NativeDlls\arm64\Microsoft.Data.SqlClient.SNI.arm64.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI)\build\net462\Microsoft.Data.SqlClient.SNI.x64.dll">
+            <LogicalName>NativeDlls/x64/Microsoft.Data.SqlClient.SNI.x64.dll</LogicalName>
+            <Link>NativeDlls\x64\Microsoft.Data.SqlClient.SNI.x64.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI)\build\net462\Microsoft.Data.SqlClient.SNI.x86.dll">
+            <LogicalName>NativeDlls/x86/Microsoft.Data.SqlClient.SNI.x86.dll</LogicalName>
+            <Link>NativeDlls\x86\Microsoft.Data.SqlClient.SNI.x86.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI_Runtime)\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll">
+            <LogicalName>NativeDlls/arm64/Microsoft.Data.SqlClient.SNI.dll</LogicalName>
+            <Link>NativeDlls\arm64\Microsoft.Data.SqlClient.SNI.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI_Runtime)\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll">
+            <LogicalName>NativeDlls/x64/Microsoft.Data.SqlClient.SNI.dll</LogicalName>
+            <Link>NativeDlls\x64\Microsoft.Data.SqlClient.SNI.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI_Runtime)\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll">
+            <LogicalName>NativeDlls/x86/Microsoft.Data.SqlClient.SNI.dll</LogicalName>
+            <Link>NativeDlls\x86\Microsoft.Data.SqlClient.SNI.dll</Link>
         </EmbeddedResource>
 
 
