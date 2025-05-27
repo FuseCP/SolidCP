@@ -374,6 +374,8 @@ public class SetupLoader
 						UnzipFile(destinationFile, tmpFolder);
 						//
 						RaiseOnProgressChangedEvent(100);
+
+						File.Delete(destinationFile);
 					}
 				}, token);
 				//
@@ -479,6 +481,7 @@ public class SetupLoader
 
 				progressStream.Close();
 				File.WriteAllText(nofFilesFile, Installer.Current.Files.ToString());
+				File.Delete(destinationFile);
 				File.Delete(progressFile);
 			}, token, TaskContinuationOptions.NotOnCanceled | TaskContinuationOptions.NotOnFaulted, TaskScheduler.Current);
 			var faultUnzipFile = unzipFileTask.ContinueWith(t =>
