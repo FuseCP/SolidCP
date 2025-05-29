@@ -152,8 +152,8 @@ namespace SolidCP.Providers.Web
 			var conf = Config(site.SiteId);
 			var bindings = site.Bindings.Select(b => new
 			{
-				Address = $"{((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "::" || b.IP == "*") ? "*" : b.IP)}:{b.Port}",
-				Listen = ((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "::" || b.IP == "*") ? b.Port : $"{b.IP}:{b.Port}") +
+				Address = $"{((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "[::]" || b.IP == "::" || b.IP == "*") ? "*" : b.IP)}:{b.Port}",
+				Listen = ((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "[::]" || b.IP == "::" || b.IP == "*") ? b.Port : $"{b.IP}:{b.Port}") +
 					((b.Protocol == "https" && b.Port != "443") ? " https" : ""),
 				Host = (!string.IsNullOrEmpty(b.Host) && b.Host != "*") ? b.Host : null
 			});
@@ -162,10 +162,10 @@ namespace SolidCP.Providers.Web
 			var globalConfig = new ConfigFile[] { GlobalConfig }
 				.Concat(GlobalConfig.Descendants.OfType<IncludeFile>());
 			var globalNameVirtualHosts = globalConfig
-				.SelectMany(file => file.GetAll("NameVirtualHosts"));
+				.SelectMany(file => file.All("NameVirtualHosts"));
 			var allNameVirtualHosts = globalNameVirtualHosts.Any(vhost => vhost == "*");
 			var globalListen = globalConfig
-				.SelectMany(file => file.GetAll("Listen"));
+				.SelectMany(file => file.All("Listen"));
 			var nameVirtualHosts = bindingsByAddress
 				.Select(b => b.Key)
 				.Except(globalNameVirtualHosts);
@@ -203,7 +203,7 @@ namespace SolidCP.Providers.Web
 				}
 				
 				site.CreatedDate = conf.Created;
-				site.Apache = true;
+				site.WebServerType = WebServerType.Apache;
 
 				if (site.EnableDynamicCompression)
 				{
@@ -542,7 +542,8 @@ namespace SolidCP.Providers.Web
 				SharePointInstalled = false,
 				SiteState = enabled ? ServerState.Started : ServerState.Stopped,
 				WebDeployPublishingAvailable = false,
-				WebDeploySitePublishingEnabled = false
+				WebDeploySitePublishingEnabled = false,
+				WebServerType = WebServerType.Apache
 			};
 
 		}
@@ -553,7 +554,7 @@ namespace SolidCP.Providers.Web
 			var vhosts = conf.Sections.OfType<VirtualHost>();
 			var listens = new ConfigFile[] { GlobalConfig }
 				.Concat(GlobalConfig.Descendants.OfType<IncludeFile>())
-				.SelectMany(file => file.GetAll("Listen"))
+				.SelectMany(file => file.All("Listen"))
 				.ToArray();
 
 			return vhosts
@@ -567,7 +568,7 @@ namespace SolidCP.Providers.Web
 				{
 					var match = Regex.Match(vhost.Address, @"(?:(?<adr>[0-9.]+|\[[0-9a-fA-F:]+\]|\*)|(?<domain>[0-9a-zA-Z_\-.´]+)):(?<port>[0-9]+)");
 					var ip = match.Groups["adr"].Success ? match.Groups["adr"].Value : "";
-					if (ip == "*" || ip == "0.0.0.0" || ip == "::") ip = "";
+					if (ip == "*" || ip == "0.0.0.0" || ip == "[::]" || ip == "::") ip = "";
 					var port = match.Groups["port"].Value;
 					var domain = match.Groups["domain"].Success ? match.Groups["domain"].Value : "";
 					var listen = $"{(ip == "" ? port : $"{ip}:{port}")} https";
@@ -647,7 +648,7 @@ namespace SolidCP.Providers.Web
 				CreatedDate = loc.Root.Created,
 				ContentPath = loc.DocumentRoot,
 				IIs7 = false,
-				Apache = true
+				WebServerType = WebServerType.Apache
 			};
 			return dir;
 		}

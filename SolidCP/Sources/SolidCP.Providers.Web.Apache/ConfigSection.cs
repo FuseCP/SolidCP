@@ -16,6 +16,7 @@ namespace SolidCP.Providers.Web.Apache
 			public string Name;
 			public int NameIndex;
 			public string Value;
+			public Setting Next;
 			public bool IsComment;
 			public bool IsSection => Section != null;
 			public ConfigSection Section = null;
@@ -70,69 +71,83 @@ namespace SolidCP.Providers.Web.Apache
 			if (setting.IsComment || setting.IsSection) index = IndexOf(setting);
 			if (index == -1) index = Count;
 			return setting.IsComment ? $"_comment{index}" :
-				setting.IsSection ? $"_section{index}" : 
-				setting.NameIndex == 0 ? setting.Name : $"{setting.Name}{setting.NameIndex}";
+				setting.IsSection ? $"_section{index}" :
+				setting.NameIndex == 0 ? setting.Name : $"{setting.Name}.{setting.NameIndex}";
 		}
 		public new string this[string key]
 		{
 			get
 			{
-				if (Contains(key)) return base[key].Value;
-				else return string.Empty;
+				if (Contains(key))
+				{
+					var next = base[key];
+					while (next.Next != null) next = next.Next;
+					return next.Value;
+				}
+				else return null;
 			}
 			set
 			{
-				int nameIndex = 0;
 				if (string.IsNullOrEmpty(value))
 				{
 					if (Contains(key))
 					{
-						string indexedKey = key;
-						do
+						var next = base[key];
+						Remove(next);
+						while (next.Next != null)
 						{
-							Remove(indexedKey);
-							indexedKey = $"{key}{++nameIndex}";
-						} while (Contains(indexedKey));
+							next = next.Next;
+							Remove(next);
+						}
 					}
 				}
 				else
 				{
-					if (Contains(key)) base[key].Value = value.Trim();
-					else Add(new Setting { Name = key, NameIndex = nameIndex, Value = value.Trim(), Parent = this, IsComment = false });
+					if (Contains(key))
+					{
+						var next = base[key];
+						while (next.Next != null) next = next.Next;
+						var setting = new Setting { Name = key, NameIndex = next.NameIndex + 1, Value = value.Trim(), Parent = this, IsComment = false };
+						next.Next = setting;
+						Add(setting);
+					}
+					else Add(new Setting { Name = key, NameIndex = 0, Value = value.Trim(), Parent = this, IsComment = false });
 				}
 			}
 		}
 
 		public void Add(string key, string value)
 		{
-			int nameIndex = 0;
 			if (Contains(key))
 			{
-				string indexedKey;
-				do
-				{
-					indexedKey = $"{key}{++nameIndex}";
-				} while (Contains(indexedKey));
-				key = indexedKey;
+				var next = base[key];
+				while (next.Next != null) next = next.Next;
+				var setting = new Setting { Name = key, NameIndex = next.NameIndex + 1, Value = value.Trim(), Parent = this, IsComment = false };
+				next.Next = setting;
+				Add(setting);
 			}
-			Add(new Setting { Name = key, NameIndex = nameIndex, Value = value.Trim(), Parent = this, IsComment = false });
+			Add(new Setting { Name = key, NameIndex = 0, Value = value.Trim(), Parent = this, IsComment = false });
 		}
-		public IEnumerable<string> GetAll(string key)
+		public IEnumerable<string> All(string key)
 		{
-			int nameIndex = 0;
-			string indexedKey = key;
-			while (Contains(indexedKey))
+			if (Contains(key))
 			{
-				yield return base[indexedKey].Value;
-				indexedKey = $"{key}{++nameIndex}";
+				var setting = base[key];
+				yield return setting.Value;
+				while (setting.Next != null)
+				{
+					setting = setting.Next;
+					yield return setting.Value;
+				}
 			}
+			else yield break;
 		}
 		struct LineInfo
 		{
 			public string Text;
 			public int LineNumber;
 			public Match Match;
-		} 
+		}
 		IEnumerable<LineInfo> ParseLines(string configuration)
 		{
 			var reader = new StringReader(configuration);
@@ -144,9 +159,11 @@ namespace SolidCP.Providers.Web.Apache
 				if (line.EndsWith("\\"))
 				{
 					sb.Append(line.Substring(0, line.Length - 1));
-				} else
+				}
+				else
 				{
-					if (sb.Length > 0) {
+					if (sb.Length > 0)
+					{
 						sb.Append(line);
 						line = sb.ToString();
 						sb.Clear();
@@ -279,7 +296,8 @@ namespace SolidCP.Providers.Web.Apache
 			if (Parent != null) Parent.Save();
 		}
 
-		public virtual void Remove() {
+		public virtual void Remove()
+		{
 			if (Parent != null) Parent.Remove(this);
 		}
 		public ConfigFile Root => Parent == null ? (this as ConfigFile) : Parent.Root;
@@ -313,10 +331,11 @@ namespace SolidCP.Providers.Web.Apache
 		}
 	}
 
-	public class Comment: ConfigSection.Setting {
-	
-		public Comment(): base() { }
-		public Comment(string text): this()
+	public class Comment : ConfigSection.Setting
+	{
+
+		public Comment() : base() { }
+		public Comment(string text) : this()
 		{
 			Value = text; IsComment = true;
 		}
@@ -326,7 +345,8 @@ namespace SolidCP.Providers.Web.Apache
 
 	// Enclose a group of directives that represent an extension of a base authentication provider and referenced by the specified alias
 	// <AuthnProviderAlias baseProvider Alias> ... </AuthnProviderAlias>
-	public class AuthnProviderAlias: ConfigSection {
+	public class AuthnProviderAlias : ConfigSection
+	{
 		public AuthnProviderAlias() { Name = nameof(AuthnProviderAlias); }
 	}
 	// Enclose a group of directives that represent an extension of a base authorization provider and referenced by the specified alias
@@ -530,7 +550,7 @@ namespace SolidCP.Providers.Web.Apache
 		public VirtualHost() { Name = nameof(VirtualHost); }
 	}
 
-	public class ConfigFile: ConfigSection
+	public class ConfigFile : ConfigSection
 	{
 		public string FullName { get; set; }
 		public ConfigFile(string path)
@@ -555,8 +575,8 @@ namespace SolidCP.Providers.Web.Apache
 
 		public new void Include()
 		{
-			var files = GetAll("Include")
-				.Concat(GetAll("IncludeOptional"))
+			var files = All("Include")
+				.Concat(All("IncludeOptional"))
 				.SelectMany(filepattern =>
 				{
 					if (!Path.IsPathRooted(filepattern)) filepattern = Path.Combine(Path.GetDirectoryName(FullName), filepattern);
@@ -584,7 +604,7 @@ namespace SolidCP.Providers.Web.Apache
 		public static ConfigFile Load(string path) => new ConfigFile(path);
 	}
 
-	public class IncludeFile: ConfigFile
+	public class IncludeFile : ConfigFile
 	{
 		public IncludeFile(string path) : base(path) { }
 	}

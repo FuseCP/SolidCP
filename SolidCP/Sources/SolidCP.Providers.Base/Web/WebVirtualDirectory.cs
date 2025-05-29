@@ -38,6 +38,8 @@ using System.Runtime.Serialization;
 
 namespace SolidCP.Providers.Web
 {
+	public enum WebServerType { Iis, Apache, Nginx };
+
 	public class WebVirtualDirectory : ServiceProviderItem
 	{
 		#region Web Management Service Constants
@@ -65,7 +67,6 @@ namespace SolidCP.Providers.Web
 		private bool enableStaticCompression;
 		private string parentSiteName;
 		private bool iis7;
-		private bool apache;
 
 		[Persistent]
 		public string SiteId
@@ -150,11 +151,6 @@ namespace SolidCP.Providers.Web
 			get { return this.iis7; }
 			set { this.iis7 = value; }
 		}
-		public bool Apache
-		{
-			get { return this.apache; }
-			set { this.apache = value; }
-		}
 
 		/// <summary>
 		/// Gets fully qualified name which consists of parent website name if present and virtual directory name.
@@ -184,5 +180,8 @@ namespace SolidCP.Providers.Web
 					return ParentSiteName + "/" + Name;
 			}
 		}
+
+		[DataMember]
+		public WebServerType WebServerType { get; set; } = WebServerType.Iis;
 	}
 }

@@ -1326,7 +1326,7 @@ public abstract partial class Installer
 		//
 		UI.ShowWaitCursor();
 		var webService = Installer.Current.InstallerWebService;
-		component = webService.GetLatestComponentUpdate(Global.InstallerProductCode);
+		component = webService.GetLatestComponentUpdate(OSInfo.IsWindows ? Global.InstallerProductCode : Global.InstallerProductUnixCode);
 		UI.EndWaitCursor();
 		//
 		Log.WriteEnd("Checked for a new version");

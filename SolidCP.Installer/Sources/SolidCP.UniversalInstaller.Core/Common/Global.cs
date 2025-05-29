@@ -46,6 +46,7 @@ namespace SolidCP.UniversalInstaller
 		public const string DefaultInstallPathRoot = @"C:\SolidCP";
 		public const string LoopbackIPv4 = "127.0.0.1";
 		public const string InstallerProductCode = "cfg core";
+		public const string InstallerProductUnixCode = "cfg core unix";
 		public const string DefaultProductName = "SolidCP";
 
 		public abstract class Parameters
