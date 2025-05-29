@@ -301,6 +301,7 @@ namespace SolidCP.Providers.Web.Apache
 			if (Parent != null) Parent.Remove(this);
 		}
 		public ConfigFile Root => Parent == null ? (this as ConfigFile) : Parent.Root;
+		public ConfigFile ConfigFile => (this is ConfigFile file) ? file : Parent.ConfigFile;
 		public override string ToString()
 		{
 			var w = new StringWriter();

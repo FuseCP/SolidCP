@@ -60,7 +60,6 @@ namespace SolidCP.Providers.Web
 		{
 			var output = Shell.Exec($"{apachectl} start");
 			Shell.Exec($"{apachectl} graceful");
-
 		}
 
 		public bool AppVirtualDirectoryExists(string siteId, string directoryName)
@@ -125,26 +124,91 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		public void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+		public void CreateAppVirtualDirectory(string siteId, WebVirtualDirectory directory)
 		{
 			var conf = Config(siteId);
-			var dir = new Location()
-			{
-				Url = directory.VirtualPath,
-				DocumentRoot = directory.ContentPath
-				//TODO config location
-			};
+			var dir = new Location();
+			ConfigureDirectory(dir, directory);
 			var vhosts = conf.Sections.OfType<VirtualHost>();
 			foreach (var vhost in vhosts) vhost.Add(dir);
 			conf.Save();
 			ReloadApache();
 		}
 
-		public void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+		public void CreateEnterpriseStorageVirtualDirectory(string siteId, WebVirtualDirectory directory)
 		{
 			throw new NotImplementedException();
 		}
 
+		private void ConfigureDirectory(ConfigSection config, WebVirtualDirectory dir)
+		{
+			if (config is Location loc)
+			{
+				loc.Url = dir.VirtualPath;
+			}
+			config.DocumentRoot = dir.ContentPath;
+
+			if (dir.EnableDirectoryBrowsing) config.Options = "Indexes";
+			if (!string.IsNullOrEmpty(dir.DefaultDocs))
+			{
+				config.DirectoryIndex = Regex.Replace(dir.DefaultDocs, @"\s*(?:[,;]|\r?\n)\s*", " ", RegexOptions.Multiline);
+			}
+			if (dir.EnableDynamicCompression)
+			{
+				//TODO enable dynamic compression
+			}
+			if (dir.EnableStaticCompression)
+			{
+				//TODO enable static compression
+			}
+			if (dir.EnableWritePermissions)
+			{
+				//TODO enable write permissions
+			}
+			if (dir.EnableAnonymousAccess)
+			{
+				//TODO enable anonymous access
+			}
+			if (dir.EnableBasicAuthentication)
+			{
+				//TODO enable basic authentication
+			}
+		}
+		public void ReadDirectory(ConfigSection config, WebVirtualDirectory dir)
+		{
+			dir.ContentPath = config.DocumentRoot;
+			dir.EnableDirectoryBrowsing = config.Options.Contains("Indexes");
+			dir.DefaultDocs = config.DirectoryIndex.Replace(" ", Environment.NewLine);
+			dir.EnableDynamicCompression = false; //TODO read dynamic compression
+			dir.EnableStaticCompression = false; //TODO read static compression
+			dir.EnableWritePermissions = false; //TODO read write permissions
+			dir.EnableAnonymousAccess = false; //TODO read anonymous access
+			dir.EnableBasicAuthentication = false; //TODO read basic authentication
+			dir.AnonymousUsername = "www-data"; //TODO read anonymous username
+			dir.AnonymousUserPassword = ""; //TODO read anonymous user password
+			dir.ApplicationPool = ""; //TODO read application pool
+			dir.AspInstalled = false; //TODO read ASP installed
+			dir.AspNetInstalled = ""; //TODO read ASP.NET installed
+			dir.CgiBinInstalled = false; //TODO read CGI bin installed
+			dir.ColdFusionInstalled = false; //TODO read ColdFusion installed
+			dir.ConsoleUrl = ""; //TODO read console URL
+			dir.CreatedDate = config.ConfigFile.Created;
+			dir.DedicatedApplicationPool = false; //TODO read dedicated application pool
+			dir.EnableParentPaths = false; //TODO read parent paths enabled
+			dir.EnableWindowsAuthentication = false; //TODO read Windows authentication enabled
+			dir.EnableWritePermissions = false; //TODO read write permissions enabled
+			dir.PerlInstalled = false; //TODO read Perl installed
+			dir.PhpInstalled = ""; //TODO read PHP installed
+			dir.PythonInstalled = false; //TODO read Python installed
+			dir.Php5VersionsInstalled = ""; //TODO read PHP 5 versions installed
+			dir.RedirectDirectoryBelow = false; //TODO read redirect directory below
+			dir.RedirectExactUrl = false; //TODO read redirect exact URL
+			dir.RedirectPermanent = false; //TODO read redirect permanent
+			dir.SharePointInstalled = false; //TODO read SharePoint installed
+			dir.WebDeployPublishingAvailable = false; //TODO read Web Deploy publishing available
+			dir.WebDeploySitePublishingEnabled = false; //TODO read Web Deploy site publishing enabled
+			dir.WebServerType = WebServerType.Apache; //TODO read web server type
+		}
 		public string CreateSite(WebSite site)
 		{
 			site.SiteId = site.Name;
@@ -192,40 +256,10 @@ namespace SolidCP.Providers.Web
 					Hosts = b.Key,
 					ServerName = name,
 					ServerAlias = alias,
-					DocumentRoot = site.ContentPath
 					//TODO config site
 				};
 				// config site
-				if (site.EnableDirectoryBrowsing) vhost.Options = "Indexes";
-				if (!string.IsNullOrEmpty(site.DefaultDocs))
-				{
-					vhost.DirectoryIndex = Regex.Replace(site.DefaultDocs, @"\s*(?:[,;]|\r?\n)\s*", " ", RegexOptions.Multiline);
-				}
-				
-				site.CreatedDate = conf.Created;
-				site.WebServerType = WebServerType.Apache;
-
-				if (site.EnableDynamicCompression)
-				{
-					//TODO enable dynamic compression
-				}
-				if (site.EnableStaticCompression)
-				{
-					//TODO enable static compression
-				}
-				if (site.EnableWritePermissions)
-				{
-					//TODO enable write permissions
-				}
-				if (site.EnableAnonymousAccess)
-				{
-					//TODO enable anonymous access
-				}
-				if (site.EnableBasicAuthentication)
-				{
-					//TODO enable basic authentication
-				}
-				//TODO configure php, perl, phyton & mono
+				ConfigureDirectory(vhost, site);
 				return vhost;
 			});
 
@@ -255,7 +289,10 @@ namespace SolidCP.Providers.Web
 		public void DeleteAppVirtualDirectory(string siteId, string directoryName)
 		{
 			var conf = Config(siteId);
-			var locations = conf.Descendants.OfType<Location>().Where(loc => loc.Url == directoryName);
+			var url = "/" + directoryName.TrimStart('/');
+			var locations = conf.Descendants
+				.OfType<Location>()
+				.Where(loc => loc.Url == url);
 			foreach (var location in locations) location.Remove();
 			conf.Save();
 			ReloadApache();
@@ -296,6 +333,7 @@ namespace SolidCP.Providers.Web
 			ChangeSiteState(siteId, ServerState.Stopped);
 			var conf = Config(siteId);
 			conf.Remove();
+			ReloadApache();
 		}
 
 		public void DeleteUser(string siteId, string userName)
@@ -355,16 +393,17 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		WebAppVirtualDirectory GetAppVirtualDirectory(Location loc)
+		WebVirtualDirectory GetAppVirtualDirectory(Location loc)
 		{
-			return new WebAppVirtualDirectory()
+			var dir = new WebVirtualDirectory()
 			{
 				Name = loc.Url.TrimStart('/'),
 				ContentPath = loc.DocumentRoot,
-				//TODO read virtual directory
 			};
+			ReadDirectory(loc, dir);
+			return dir;
 		}
-		public WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
+		public WebVirtualDirectory[] GetAppVirtualDirectories(string siteId)
 		{
 			var conf = Config(siteId);
 			var locations = conf.Descendants.OfType<Location>();
@@ -373,7 +412,7 @@ namespace SolidCP.Providers.Web
 				.ToArray();
 		}
 
-		public WebAppVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
+		public WebVirtualDirectory GetAppVirtualDirectory(string siteId, string directoryName)
 		{
 			var conf = Config(siteId);
 			var url = "/" + directoryName.TrimStart('/');
@@ -645,14 +684,15 @@ namespace SolidCP.Providers.Web
 			var dir = new WebVirtualDirectory()
 			{
 				Name = loc.Url,
-				CreatedDate = loc.Root.Created,
+				CreatedDate = loc.ConfigFile.Created,
 				ContentPath = loc.DocumentRoot,
 				IIs7 = false,
 				WebServerType = WebServerType.Apache
 			};
+			ReadDirectory(loc, dir);
 			return dir;
 		}
-		public WebAppVirtualDirectory[] GetZooApplications(string siteId)
+		public WebVirtualDirectory[] GetZooApplications(string siteId)
 		{
 			throw new NotImplementedException();
 		}
@@ -717,20 +757,11 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		public bool IsFrontPageInstalled(string siteId)
-		{
-			throw new NotImplementedException();
-		}
+		public bool IsFrontPageInstalled(string siteId) => false;
 
-		public bool IsFrontPageSystemInstalled()
-		{
-			throw new NotImplementedException();
-		}
+		public bool IsFrontPageSystemInstalled() => false;
 
-		public bool IsMsDeployInstalled()
-		{
-			throw new NotImplementedException();
-		}
+		public bool IsMsDeployInstalled() => false;
 
 		public string LEInstallCertificate(WebSite website, string email)
 		{
@@ -800,13 +831,13 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		public void UpdateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
+		public void UpdateAppVirtualDirectory(string siteId, WebVirtualDirectory directory)
 		{
 			var conf = Config(siteId);
 			var location = conf.Descendants.OfType<Location>().FirstOrDefault(loc => loc.Url == directory.VirtualPath);
 			if (location != null)
 			{
-
+				ConfigureDirectory(location, directory);
 			}
 			conf.Save();
 			ReloadApache();
@@ -845,11 +876,15 @@ namespace SolidCP.Providers.Web
 		public void UpdateSite(WebSite site)
 		{
 			var conf = Config(site.Name);
+			conf.Remove();
+			CreateSite(site);
 		}
 
 		public void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
 		{
-			throw new NotImplementedException();
+			var site = GetSite(siteId);
+			site.Bindings = bindings;
+			UpdateSite(site);
 		}
 
 		public void UpdateUser(string siteId, WebUser user)
