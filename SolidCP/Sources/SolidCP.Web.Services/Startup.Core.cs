@@ -139,6 +139,7 @@ namespace SolidCP.Web.Services
 		public static void Init(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
+
 			Configuration.Read(builder.Configuration, args);
 
 			HttpPort = Configuration.HttpPort;
@@ -183,7 +184,9 @@ namespace SolidCP.Web.Services
 
 			builder.Services.AddRazorPages();
 			builder.Services.AddHttpContextAccessor();
-			builder.Services.AddHostedService<IdleShutdownService>();
+			if (IdleShutdownTime != default && OSInfo.IsSystemd &&
+				(HttpFile.HasValue || HttpsFile.HasValue || NetTcpFile.HasValue))
+				builder.Services.AddHostedService<IdleShutdownService>();
 
 			if (OSInfo.IsSystemd)
 			{
@@ -279,7 +282,7 @@ namespace SolidCP.Web.Services
 			tunnelHandler.Init(app);
 
 			if (IdleShutdownTime != default && OSInfo.IsSystemd &&
-				(HttpFile.HasValue || HttpsFile.HasValue)) app.UseIdleTimeout(IdleShutdownTime);
+				(HttpFile.HasValue || HttpsFile.HasValue || NetTcpFile.HasValue)) app.UseIdleTimeout(IdleShutdownTime);
 
 			Server.ConfigureApp?.Invoke(app);
 
