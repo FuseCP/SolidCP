@@ -471,9 +471,10 @@ namespace SolidCP.Providers.OS
                                     }
                                     else if (currentBuild >= 20348 && info.wProductType != (byte)WinPlatform.VER_NT_WORKSTATION)
                                     {
-                                        ret = WindowsVersion.WindowsServer2022;
-                                    }
-                                }
+										if (currentBuild >= 26000) ret = WindowsVersion.WindowsServer2025;
+										else ret = WindowsVersion.WindowsServer2022;
+									}
+								}
                             }
                             break;
                     }
