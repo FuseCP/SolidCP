@@ -271,8 +271,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 				//check OS version
 				WindowsVersion version = OSInfo.WindowsVersion;
 				details = OSInfo.Description;
-				if (Utils.IsWin64())
-					details += " x64";
+				//if (Utils.IsWin64())
+				//	details += " x64";
 				Log.WriteInfo(string.Format("OS check: {0}", details));
 
 				if (!(/*version == WindowsVersion.WindowsServer2008 ||*/
@@ -318,8 +318,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 				//check OS version
 				WindowsVersion version = OSInfo.WindowsVersion;
 				details = OSInfo.Description;
-				if (Utils.IsWin64())
-					details += " x64";
+				//if (Utils.IsWin64())
+				//	details += " x64";
 				Log.WriteInfo(string.Format("OS check: {0}", details));
 
 				if (!(/*version == WindowsVersion.WindowsServer2008 || */

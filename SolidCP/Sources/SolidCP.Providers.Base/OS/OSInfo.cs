@@ -175,9 +175,9 @@ namespace SolidCP.Providers.OS
 					return name;
 
 				}
-				else if (OSInfo.IsWindows)
+				else if (IsWindows)
 				{
-					switch (OSInfo.WindowsVersion)
+					switch (WindowsVersion)
 					{
 						case WindowsVersion.WindowsServer2025:
 							return "Windows Server 2025";
