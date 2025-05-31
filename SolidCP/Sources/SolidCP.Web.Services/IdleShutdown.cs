@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Systemd;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,10 +15,13 @@ public class IdleShutdownService : BackgroundService
 	private static DateTime LastRequestTime = DateTime.UtcNow;
 	public static readonly TimeSpan DefaultIdleTimeout = TimeSpan.FromMinutes(5); // Set your idle timeout
 	public static TimeSpan IdleTimeout = DefaultIdleTimeout; // Set your idle timeout
+	public ISystemdNotifier SystemdNotifier { get; set; }
 
-	public IdleShutdownService(IHostApplicationLifetime lifetime)
+	public IdleShutdownService(IHostApplicationLifetime lifetime, ISystemdNotifier notifier)
 	{
 		Lifetime = lifetime;
+		SystemdNotifier = notifier;
+		Lifetime.ApplicationStarted.Register(() => SystemdNotifier.Notify(ServiceState.Ready));
 	}
 
 	public static void UpdateLastRequestTime()
@@ -33,6 +37,7 @@ public class IdleShutdownService : BackgroundService
 			if (idleTime > IdleTimeout)
 			{
 				Console.WriteLine("Idle timeout reached. Shutting down.");
+				SystemdNotifier.Notify(ServiceState.Stopping);
 				Lifetime.StopApplication();
 				break;
 			}
@@ -55,6 +60,7 @@ public class ActivityTrackingMiddleware
 	{
 		IdleShutdownService.UpdateLastRequestTime();
 		await Next(context);
+		IdleShutdownService.UpdateLastRequestTime();
 	}
 }
 

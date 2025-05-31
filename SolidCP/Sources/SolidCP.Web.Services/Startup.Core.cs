@@ -186,7 +186,11 @@ namespace SolidCP.Web.Services
 			builder.Services.AddHttpContextAccessor();
 			if (IdleShutdownTime != default && OSInfo.IsSystemd &&
 				(HttpFile.HasValue || HttpsFile.HasValue || NetTcpFile.HasValue))
+			{
+				Console.WriteLine($"Idle shutdown time set to {IdleShutdownTime}");
+				builder.Services.AddSingleton<ISystemdNotifier, SystemdNotifier>();
 				builder.Services.AddHostedService<IdleShutdownService>();
+			}
 
 			if (OSInfo.IsSystemd)
 			{
