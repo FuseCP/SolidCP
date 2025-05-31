@@ -31,7 +31,10 @@ public class Configuration
 
 	public static int? HttpPort = null;
 	public static int? HttpsPort = null;
+	public static ulong? HttpFile = null;
+	public static ulong? HttpsFile = null;
 	public static int? NetTcpPort = null;
+	public static ulong? NetTcpFile = null;
 	public static string HttpHost = null;
 	public static string HttpsHost = null;
 	public static string NetTcpHost = null;
@@ -57,7 +60,7 @@ public class Configuration
 	public static bool? EncryptionEnabled = null;
 	public static string ExposeWebServices = null;
 	public static bool IsPortal = false;
-
+	public static TimeSpan IdleShutdownTime = default;
 	public static void Log(string msg)
 	{
 		Console.WriteLine(msg);
@@ -76,23 +79,42 @@ public class Configuration
 		urls = urls ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ??
 			Environment.GetEnvironmentVariable("DOTNET_URLS") ??
 			configuration["applicationUrls"];
-		foreach (var url in urls.Split(';'))
+		if (urls != null)
 		{
-			var uri = new Uri(url);
-			if (uri.Scheme == "http")
+			Console.WriteLine($"Listening on URLs: {urls}");
+			foreach (var url in urls.Split(';'))
 			{
-				HttpPort = uri.Port;
-				HttpHost = uri.Host;
-			}
-			else if (uri.Scheme == "https")
-			{
-				HttpsPort = uri.Port;
-				HttpsHost = uri.Host;
-			}
-			else if (uri.Scheme == "net.tcp")
-			{
-				NetTcpPort = uri.Port;
-				NetTcpHost = uri.Host;
+				var uri = new Uri(url);
+				if (uri.Scheme == "http")
+				{
+					ulong file = 0;
+					if (ulong.TryParse(uri.UserInfo, out file))
+					{
+						HttpFile = file;
+					}
+					HttpPort = uri.Port;
+					HttpHost = uri.Host;
+				}
+				else if (uri.Scheme == "https")
+				{
+					ulong file = 0;
+					if (ulong.TryParse(uri.UserInfo, out file))
+					{
+						HttpsFile = file;
+					}
+					HttpsPort = uri.Port;
+					HttpsHost = uri.Host;
+				}
+				else if (uri.Scheme == "net.tcp")
+				{
+					ulong file = 0;
+					if (ulong.TryParse(uri.UserInfo, out file))
+					{
+						NetTcpFile = file;
+					}
+					NetTcpPort = uri.Port;
+					NetTcpHost = uri.Host;
+				}
 			}
 		}
 		StoreLocation = configuration.GetValue<StoreLocation?>("ServerCertificate:StoreLocation") ?? StoreLocation.LocalMachine;
@@ -115,6 +137,7 @@ public class Configuration
 		EncryptionEnabled = configuration.GetValue<bool?>("EnterpriseServer:EncryptionEnabled");
 		IsLocalService = AllowedHosts.Split(';')
 			.All(host => host != "*" && DnsService.IsHostLAN(host)); // local network ip
+		IdleShutdownTime = configuration.GetValue<TimeSpan?>("IdleShutdownTime") ?? default;
 	}
 #endif
 }

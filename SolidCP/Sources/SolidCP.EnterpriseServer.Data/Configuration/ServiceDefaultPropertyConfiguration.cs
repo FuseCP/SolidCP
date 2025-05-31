@@ -542,7 +542,6 @@ Protocol=dbmssocn"
 			new ServiceDefaultProperty() { ProviderId = 1903, PropertyName = "RetryDelay", PropertyValue = "600" },
 			new ServiceDefaultProperty() { ProviderId = 1903, PropertyName = "SimpleDnsUrl", PropertyValue = "http://127.0.0.1:8053" },
 			new ServiceDefaultProperty() { ProviderId = 1910, PropertyName = "ConfigFile", PropertyValue = "/etc/vsftpd.conf" },
-			new ServiceDefaultProperty() { ProviderId = 1911, PropertyName = "BinPath", PropertyValue = "" },
 			new ServiceDefaultProperty() { ProviderId = 1911, PropertyName = "ConfigFile", PropertyValue = "/etc/apache2/apache2.conf" },
 			new ServiceDefaultProperty() { ProviderId = 1911, PropertyName = "ConfigPath", PropertyValue = "/etc/apache2" }
 		});

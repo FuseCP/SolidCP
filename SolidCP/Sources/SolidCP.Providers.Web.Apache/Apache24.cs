@@ -24,15 +24,12 @@ namespace SolidCP.Providers.Web
 
 		public string ApacheConfigFile => ProviderSettings["ConfigFile"]; // /etc/apache2/apache2.conf
 
-		public string ApacheBinPath => ProviderSettings["BinPath"];
-
 		string ApacheCmd(string cmd)
 		{
-			var exe = Path.Combine(ApacheBinPath, cmd);
-			if (OSInfo.IsWindows) exe += ".exe";
-			if (string.IsNullOrEmpty(ApacheBinPath) || !File.Exists(exe)) exe = Shell.Default.Find(cmd);
-			if (exe.Contains(' ')) exe = $"\"{exe}\"";
-			return exe;
+			if (OSInfo.IsWindows) cmd = Path.ChangeExtension(cmd, ".exe");
+			if (!File.Exists(cmd)) cmd = Shell.Default.Find(cmd);
+			if (cmd.Contains(' ')) cmd = $"\"{cmd}\"";
+			return cmd;
 		}
 
 		string apachectl => ApacheCmd(nameof(apachectl));
