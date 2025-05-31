@@ -19,12 +19,16 @@ namespace SolidCP.UniversalInstaller
 			if (OSInfo.Architecture == Architecture.X64) tmp = DownloadFile("https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.408/dotnet-sdk-8.0.408-osx-x64.pkg");
 			else if (OSInfo.Architecture == Architecture.Arm64) tmp = DownloadFile("https://builds.dotnet.microsoft.com/dotnet/Sdk/8.0.408/dotnet-sdk-8.0.408-osx-arm64.pkg");
 			else throw new PlatformNotSupportedException("Only x64 and Arm64 architectures supported.");
+		
+			Info("Installing .NET 8 Runtime...");
 
 			Shell.Exec($"installer -pkg \"{tmp}\" -target /");
 			Shell.Exec("brew update");
 			Shell.Exec("brew install mono-libgdiplus");
 
 			Net8RuntimeInstalled = true;
+
+			InstallLog("Installed .NET 8 Runtime.");
 
 			ResetHasDotnet();
 		}

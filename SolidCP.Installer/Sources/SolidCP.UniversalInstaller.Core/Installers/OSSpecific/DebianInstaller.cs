@@ -28,6 +28,8 @@ namespace SolidCP.UniversalInstaller
 
 			if (OSInfo.OSVersion.Major < 11) throw new PlatformNotSupportedException("Cannot install NET 8 on Debian below version 11.");
 
+			Info("Installing .NET 8 Runtime...");
+
 			if (!HasDotnet)
 			{
 				// install dotnet from microsoft
@@ -40,6 +42,8 @@ namespace SolidCP.UniversalInstaller
 			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
 
 			Net8RuntimeInstalled = true;
+
+			InstallLog("Installed .NET 8 Runtime.");
 
 			ResetHasDotnet();
 		}

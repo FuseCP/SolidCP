@@ -47,6 +47,8 @@ public class WindowsInstaller : Installer
 				!OSInfo.IsWindowsServer && ver >= WindowsVersion.Windows10))
 				throw new PlatformNotSupportedException("NET 8 is not supported on this OS.");
 
+			Info("Installing .NET 8 Runtime...");
+
 			WinGet.Install("Microsoft.DotNet.AspNetCore.8;Microsoft.DotNet.Runtime.8");
 
 			InstallLog("Installed .NET 8 Runtime.");

@@ -36,6 +36,8 @@ namespace SolidCP.UniversalInstaller
 			}
 			else installFromMicrosoftFeed = false;
 
+			Info("Installing .NET 8 Runtime...");
+
 			if (installFromMicrosoftFeed)
 			{
 				// install dotnet from microsoft
@@ -64,6 +66,8 @@ rm packages-microsoft-prod.deb
 			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
 
 			Net8RuntimeInstalled = true;
+
+			InstallLog("Installed .NET 8 Runtime.");
 
 			ResetHasDotnet();
 		}
