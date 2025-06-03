@@ -482,7 +482,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
-                List<VirtualSwitch> result = VirtualizationProvider.GetExternalSwitches(computerName);
+                List<VirtualSwitch> result = VirtualizationProvider.GetExternalSwitchesWMI(computerName);
                 Log.WriteEnd("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
                 return result;
             }

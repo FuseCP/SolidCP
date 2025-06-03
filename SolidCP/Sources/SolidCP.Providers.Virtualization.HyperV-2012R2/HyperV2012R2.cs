@@ -60,6 +60,7 @@ using SolidCP.Providers.Virtualization.Extensions;
 using SolidCP.Providers.OS;
 using Microsoft.Management.Infrastructure;
 using Microsoft.Management.Infrastructure.Generic;
+using System.Linq.Expressions;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -1577,53 +1578,46 @@ namespace SolidCP.Providers.Virtualization
             return ReturnCode.OK;
         }
 
-        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName) //TODO: rework.
+        public List<VirtualSwitch> GetExternalSwitchesWMI(string computerName)
         {
-            // "\\\\.\\ROOT\\virtualization\\v2" @"root\virtualization\v2"
-            Wmi cwmi = new Wmi(computerName, @"root\virtualization\v2");
+            List<VirtualSwitch> externalSwitches = new List<VirtualSwitch>();
 
-            Dictionary<string, string> switches = new Dictionary<string, string>();
-            List<VirtualSwitch> list = new List<VirtualSwitch>();
-            Dictionary<string, string> adapters = new Dictionary<string, string>();
-
-            // load external adapters
-            ManagementObjectCollection objAdapters = cwmi.GetWmiObjects("Msvm_EthernetSwitchPort");
-            foreach (ManagementObject objAdapter in objAdapters)
+            using (MiManager mi = new MiManager(computerName, this.CimSessionMode, Constants.WMI_VIRTUALIZATION_NAMESPACE))
             {
-                if (objAdapter["ElementName"].ToString().EndsWith("_External"))
-                    adapters.Add((string)objAdapter["SystemName"], "1");
-            }
+                CimInstance[] allSwitches = mi.EnumerateCimInstances("Msvm_VirtualEthernetSwitch");
 
-            // get Ethernet Switch Info
-            ManagementObjectCollection objConnections = cwmi.GetWmiObjects("Msvm_EthernetSwitchInfo");
-            foreach (ManagementObject objConnection in objConnections)
-            {
-                ManagementObject objswitchId = new ManagementObject(new ManagementPath((string)objConnection["Antecedent"]));
-                string switchId = (string)objswitchId["Name"];
-
-                if (adapters.ContainsKey(switchId))
+                foreach (CimInstance vswitch in allSwitches)
                 {
-                    // get switch port
-                    ManagementObject objPort = new ManagementObject(new ManagementPath((string)objConnection["Dependent"]));
-                    if (switches.ContainsKey(switchId))
-                        continue;
+                    string switchId = vswitch.CimInstanceProperties["Name"]?.Value?.ToString();
+                    string switchName = vswitch.CimInstanceProperties["ElementName"]?.Value?.ToString();
 
-                    //add info about switch
-                    ManagementObject objSwitch = cwmi.GetRelatedWmiObject(objPort, "Msvm_VirtualEthernetSwitch");
-                    switches.Add(switchId, (string)objSwitch["ElementName"]);
+                    CimInstance[] switchPorts = mi.EnumerateAssociatedInstances(vswitch, "Msvm_SystemDevice", "Msvm_EthernetSwitchPort");
+
+                    bool hasExternalPort = false;
+
+                    foreach (CimInstance port in switchPorts)
+                    {
+                        string portName = port.CimInstanceProperties["ElementName"]?.Value?.ToString();
+                        if (!string.IsNullOrEmpty(portName) && portName.EndsWith("_External", StringComparison.OrdinalIgnoreCase))
+                        {
+                            hasExternalPort = true;
+                            break;
+                        }
+                    }
+
+                    if (hasExternalPort)
+                    {
+                        VirtualSwitch sw = new VirtualSwitch();
+                        //sw.SwitchId = switchId;
+                        sw.SwitchId = sw.Name = switchName;
+                        sw.SwitchType = "External";
+                        externalSwitches.Add(sw);
+                        HostedSolutionLog.LogWarning(string.Format("SwtichName {0}", switchName));
+                    }
                 }
             }
 
-            foreach (string switchId in switches.Keys)
-            {
-                VirtualSwitch sw = new VirtualSwitch();
-                //sw.SwitchId = switchId;
-                sw.SwitchId = sw.Name = switches[switchId];
-                sw.SwitchType = "External";
-                list.Add(sw);
-            }
-
-            return list;
+            return externalSwitches;
         }
 
 
