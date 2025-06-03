@@ -1612,7 +1612,6 @@ namespace SolidCP.Providers.Virtualization
                         sw.SwitchId = sw.Name = switchName;
                         sw.SwitchType = "External";
                         externalSwitches.Add(sw);
-                        HostedSolutionLog.LogWarning(string.Format("SwtichName {0}", switchName));
                     }
                 }
             }
