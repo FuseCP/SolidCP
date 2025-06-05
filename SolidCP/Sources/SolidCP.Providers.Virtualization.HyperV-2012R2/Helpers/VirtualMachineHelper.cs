@@ -22,7 +22,7 @@ namespace SolidCP.Providers.Virtualization
             _mi = mi;
         }
 
-        public static VirtualMachine CreateVirtualMachineFromCimInstance(CimInstance cimInsVm)
+        public VirtualMachine CreateVirtualMachineFromCimInstance(CimInstance cimInsVm)
         {
             if (cimInsVm == null || cimInsVm.CimInstanceProperties.Count == 0)
                 return null;
@@ -245,7 +245,7 @@ namespace SolidCP.Providers.Virtualization
                 "Msvm_ComputerSystem",
                 "Name, ElementName, EnabledState, Status, OnTimeInMilliseconds",
                 "Name = '{0}'", vmId); //Name = "GUID"
-            VirtualMachine vm = VirtualMachineHelper.CreateVirtualMachineFromCimInstance(cimVm);
+            VirtualMachine vm = this.CreateVirtualMachineFromCimInstance(cimVm);
 
             if (vm != null)
             {

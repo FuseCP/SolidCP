@@ -171,12 +171,24 @@ namespace SolidCP.Providers.Virtualization
         private readonly Lazy<VirtualMachineHelper> _virtualMachineHelper;
         public VirtualMachineHelper VirtualMachineHelper => _virtualMachineHelper.Value;
 
+        private readonly Lazy<DvdDriveHelper> _dvdDriveHelper;
+        public DvdDriveHelper DvdDriveHelper => _dvdDriveHelper.Value;
+
+        private readonly Lazy<HardDriveHelper> _hardDriveHelper;
+        public HardDriveHelper HardDriveHelper => _hardDriveHelper.Value;
+
+        private readonly Lazy<BiosHelper> _biosHelper;
+        public BiosHelper BiosHelper => _biosHelper.Value;
+
         #endregion
 
         #region Constructors
         public HyperV2012R2()
         {
             _virtualMachineHelper = new Lazy<VirtualMachineHelper>(() => new VirtualMachineHelper(PowerShell, mi));
+            _dvdDriveHelper = new Lazy<DvdDriveHelper>(() => new DvdDriveHelper(PowerShell, mi));
+            _hardDriveHelper = new Lazy<HardDriveHelper>(() => new HardDriveHelper(PowerShell, mi));
+            _biosHelper = new Lazy<BiosHelper>(() => new BiosHelper(PowerShell, mi, DvdDriveHelper, HardDriveHelper));
         }
         #endregion
 
@@ -272,18 +284,18 @@ namespace SolidCP.Providers.Virtualization
                         vm.CpuCores = VirtualMachineHelper.GetVMProcessors(vm.Name);
 
                         // BIOS 
-                        BiosInfo biosInfo = BiosHelper.Get(PowerShell, vm.Name, vm.Generation);
+                        BiosInfo biosInfo = BiosHelper.Get(vm.Name, vm.Generation);
                         vm.NumLockEnabled = biosInfo.NumLockEnabled;
                         vm.BootFromCD = biosInfo.BootFromCD;
                         vm.EnableSecureBoot = biosInfo.SecureBootEnabled;
                         vm.SecureBootTemplate = biosInfo.SecureBootTemplate;                     
 
                         // DVD drive
-                        var dvdInfo = DvdDriveHelper.Get(PowerShell, vm.Name);
+                        var dvdInfo = DvdDriveHelper.Get(vm.Name);
                         vm.DvdDriveInstalled = dvdInfo != null;
 
                         // HDD
-                        vm.Disks = HardDriveHelper.Get(PowerShell, vm.Name);
+                        vm.Disks = HardDriveHelper.Get(vm.Name);
 
                         if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                         {
@@ -688,13 +700,13 @@ namespace SolidCP.Providers.Virtualization
             {     
                 var realVm = GetVirtualMachineEx(vm.VirtualMachineId);
 
-                DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
-                BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
+                DvdDriveHelper.Update(realVm, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
+                BiosHelper.Update(realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
                 VirtualMachineHelper.UpdateProcessors(realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, mi, realVm, vm, ServerNameSettings);
-                HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
+                HardDriveHelper.Update(realVm, vm);
+                HardDriveHelper.SetIOPS(realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
             {
@@ -753,7 +765,7 @@ namespace SolidCP.Providers.Virtualization
 
                 if (version >= 5.0 && canChangeValueWihoutReboot)
                 {
-                    HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
+                    HardDriveHelper.SetIOPS(realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
                     isSuccess = true;
 
                     bool canNotUpdateForGeneration1 = realVm.DvdDriveInstalled != vm.DvdDriveInstalled //Generation 1 doesnt support those things without reboot
@@ -763,8 +775,8 @@ namespace SolidCP.Providers.Virtualization
 
                     if (realVm.Generation != 1)
                     {
-                        DvdDriveHelper.Update(PowerShell, realVm, vm.DvdDriveInstalled);
-                        BiosHelper.Update(PowerShell, realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
+                        DvdDriveHelper.Update(realVm, vm.DvdDriveInstalled);
+                        BiosHelper.Update(realVm, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
                         NetworkAdapterHelper.Update(PowerShell, vm);
                         if (version >= 6.2) 
                         {
@@ -1152,7 +1164,7 @@ namespace SolidCP.Providers.Virtualization
             if (withExternalData)
             {
                 try {
-                    HardDriveHelper.Delete(PowerShell, vm.Disks, ServerNameSettings);
+                    HardDriveHelper.Delete(vm.Disks);
                 } catch (Exception ex) {
                     return JobHelper.CreateUnsuccessResult(ReturnCode.Failed, ex.Message);
                 }
@@ -1349,7 +1361,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 var vm = GetVirtualMachineEx(vmId);
-                dvdInfo = DvdDriveHelper.Get(PowerShell, vm.Name);
+                dvdInfo = DvdDriveHelper.Get(vm.Name);
             }
             catch (Exception ex)
             {
@@ -1373,7 +1385,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 var vm = GetVirtualMachineEx(vmId);
-                DvdDriveHelper.Set(PowerShell, vm.Name, isoPath);
+                DvdDriveHelper.Set(vm.Name, isoPath);
             }
             catch (Exception ex)
             {
@@ -1393,7 +1405,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 var vm = GetVirtualMachineEx(vmId);
-                DvdDriveHelper.Set(PowerShell, vm.Name, null);
+                DvdDriveHelper.Set(vm.Name, null);
             }
             catch (Exception ex)
             {
@@ -1901,7 +1913,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 VirtualHardDiskInfo hardDiskInfo = new VirtualHardDiskInfo();
-                HardDriveHelper.GetVirtualHardDiskDetail(PowerShell, vhdPath, ref hardDiskInfo);
+                HardDriveHelper.GetVirtualHardDiskDetail(vhdPath, ref hardDiskInfo);
                 return hardDiskInfo;
             }
             catch (Exception ex)
@@ -2054,7 +2066,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                var result = HardDriveHelper.CreateVirtualHardDisk(mi, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
+                var result = HardDriveHelper.CreateVirtualHardDisk(destinationPath, diskType, blockSizeBytes, sizeGB);
 
                 return JobHelper.CreateJobResultFromCimResults(mi, result);
             }
@@ -2668,7 +2680,7 @@ namespace SolidCP.Providers.Virtualization
         {
             if (!isGetHddData)
             {
-                vm.Disks = HardDriveHelper.Get(PowerShell, vm.Name);
+                vm.Disks = HardDriveHelper.Get(vm.Name);
                 if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
                 {
                     short numOfDisks = (short)vm.Disks.GetLength(0);

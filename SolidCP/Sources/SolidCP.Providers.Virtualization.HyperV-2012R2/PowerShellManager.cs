@@ -16,6 +16,7 @@ namespace SolidCP.Providers.Virtualization
         object psLocker = new object();
         private bool isStatic = false;
         public bool IsStaticObj { get => isStatic; }
+        public string RemoteComputerName { get => _remoteComputerName; }
 
         protected Runspace RunSpace { get; set; }
 

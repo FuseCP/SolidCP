@@ -10,9 +10,22 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class BiosHelper
+    public class BiosHelper
     {
-        public static BiosInfo Get(PowerShellManager powerShell, string name, int generation)
+        private PowerShellManager _powerShell;
+        private MiManager _mi;
+        private DvdDriveHelper _dvdDriveHelper;
+        private HardDriveHelper _hardDriveHelper;
+
+        public BiosHelper(PowerShellManager powerShellManager, MiManager mi, DvdDriveHelper dvdDriveHelper, HardDriveHelper hardDriveHelper)
+        {
+            _powerShell = powerShellManager;
+            _mi = mi;
+            _dvdDriveHelper = dvdDriveHelper;
+            _hardDriveHelper = hardDriveHelper;
+        }
+
+        public BiosInfo Get(string name, int generation)
         {
             BiosInfo info = new BiosInfo();
 
@@ -23,7 +36,7 @@ namespace SolidCP.Providers.Virtualization
 
                 cmd.Parameters.Add("VMName", name);
 
-                Collection<PSObject> result = powerShell.Execute(cmd, true);
+                Collection<PSObject> result = _powerShell.Execute(cmd, true);
                 if (result != null && result.Count > 0)
                 {
                     info.NumLockEnabled = true;
@@ -65,7 +78,7 @@ namespace SolidCP.Providers.Virtualization
 
                 cmd.Parameters.Add("VMName", name);
 
-                Collection<PSObject> result = powerShell.Execute(cmd, true);
+                Collection<PSObject> result = _powerShell.Execute(cmd, true);
                 if (result != null && result.Count > 0)
                 {
                     info.NumLockEnabled = Convert.ToBoolean(result[0].GetProperty("NumLockEnabled"));
@@ -87,7 +100,7 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot, string secureBootTemplate)
+        public void Update(VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot, string secureBootTemplate)
         {
             // for Win2012R2+ and Win8.1+
             if (vm.Generation == 2)
@@ -107,11 +120,11 @@ namespace SolidCP.Providers.Virtualization
                 }
 
                 if (bootFromCD)
-                    cmd.Parameters.Add("FirstBootDevice", DvdDriveHelper.GetPS(powerShell, vm.Name));
+                    cmd.Parameters.Add("FirstBootDevice", _dvdDriveHelper.GetPS(vm.Name));
                 else
-                    cmd.Parameters.Add("FirstBootDevice", HardDriveHelper.GetPS(powerShell, vm.Name).FirstOrDefault());
+                    cmd.Parameters.Add("FirstBootDevice", _hardDriveHelper.GetPS(vm.Name).FirstOrDefault());
 
-                powerShell.Execute(cmd, true);
+                _powerShell.Execute(cmd, true);
             }
             // for others win and linux
             else
@@ -124,7 +137,7 @@ namespace SolidCP.Providers.Virtualization
                     : new[] { "IDE", "CD", "LegacyNetworkAdapter", "Floppy" };
                 cmd.Parameters.Add("StartupOrder", bootOrder);
 
-                powerShell.Execute(cmd, true);
+                _powerShell.Execute(cmd, true);
             }
         }
     }
