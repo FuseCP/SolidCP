@@ -1,4 +1,5 @@
-﻿using SolidCP.Providers.Utils;
+﻿using Microsoft.Management.Infrastructure;
+using SolidCP.Providers.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -89,7 +90,7 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public static void Update(PowerShellManager powerShell, Wmi wmi, VirtualMachine realVm, VirtualMachine vmSettings, string serverNameSettings)
+        public static void Update(PowerShellManager powerShell, MiManager mi, VirtualMachine realVm, VirtualMachine vmSettings, string serverNameSettings)
         {
             if (realVm.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
                 realVm.Disks = Get(powerShell, realVm.Name);
@@ -169,7 +170,7 @@ namespace SolidCP.Providers.Virtualization
                     if (add)
                     {
                         VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[0], powerShell);
-                        CreateVirtualHardDisk(wmi, vmSettings.VirtualHardDrivePath[i], disk.DiskType, disk.BlockSizeBytes, (ulong)vmSettings.HddSize[i], serverNameSettings);
+                        CreateVirtualHardDisk(mi, vmSettings.VirtualHardDrivePath[i], disk.DiskType, disk.BlockSizeBytes, (ulong)vmSettings.HddSize[i], serverNameSettings);
                         Command cmd = new Command("Add-VMHardDiskDrive");
                         cmd.Parameters.Add("VMName", realVm.Name);
                         cmd.Parameters.Add("Path", vmSettings.VirtualHardDrivePath[i]);
@@ -228,7 +229,7 @@ namespace SolidCP.Providers.Virtualization
             return resDisk;
         }
 
-        public static ManagementBaseObject CreateVirtualHardDisk(Wmi wmi, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, string serverNameSettings)
+        public static CimMethodResult CreateVirtualHardDisk(MiManager mi, string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB, string serverNameSettings)
         {
             string destFolder = Path.GetDirectoryName(destinationPath);
             if (!DirectoryExists(destFolder, serverNameSettings)) CreateFolder(destFolder, serverNameSettings);
@@ -238,20 +239,26 @@ namespace SolidCP.Providers.Virtualization
             string fileExtension = Path.GetExtension(destinationPath);
             VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
 
-            ManagementObject imageService = wmi.GetWmiObject("msvm_ImageManagementService");
-            ManagementClass settingsClass = wmi.GetWmiClass("Msvm_VirtualHardDiskSettingData");
+            CimInstance imageService = mi.GetCimInstance("Msvm_ImageManagementService");
+            CimClass settingsClass = mi.GetCimClass("Msvm_VirtualHardDiskSettingData");
 
-            ManagementObject settingsInstance = settingsClass.CreateInstance();
-            settingsInstance["MaxInternalSize"] = sizeGB * Constants.Size1G;
-            settingsInstance["Path"] = destinationPath;
-            settingsInstance["Type"] = diskType;
-            settingsInstance["Format"] = format;
-            settingsInstance["BlockSize"] = (blockSizeBytes > 0) ? blockSizeBytes : 0;
+            CimInstance settingsInstance = new CimInstance(settingsClass);
+            settingsInstance.CimInstanceProperties["MaxInternalSize"].Value = sizeGB * Constants.Size1G;
+            settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
+            settingsInstance.CimInstanceProperties["Type"].Value = diskType;
+            settingsInstance.CimInstanceProperties["Format"].Value = format;
+            settingsInstance.CimInstanceProperties["BlockSize"].Value = (blockSizeBytes > 0) ? blockSizeBytes : 0;
 
-            ManagementBaseObject inParams = imageService.GetMethodParameters("CreateVirtualHardDisk");
-            inParams["VirtualDiskSettingData"] = settingsInstance.GetText(TextFormat.WmiDtd20);
+            var inParams = new CimMethodParametersCollection
+                {
+                    CimMethodParameter.Create(
+                        "VirtualDiskSettingData",
+                        mi.SerializeToCimDtd20(settingsInstance),
+                        Microsoft.Management.Infrastructure.CimType.String,
+                        CimFlags.None)
+                };
 
-            return imageService.InvokeMethod("CreateVirtualHardDisk", inParams, null);
+            return mi.InvokeMethod(imageService, "CreateVirtualHardDisk", inParams);
 
 
             //Command cmd = new Command("New-VHD");

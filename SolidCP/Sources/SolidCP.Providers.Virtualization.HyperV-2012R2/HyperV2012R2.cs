@@ -693,7 +693,7 @@ namespace SolidCP.Providers.Virtualization
                 VirtualMachineHelper.UpdateProcessors(realVm, vm.CpuCores, CpuLimitSettings, CpuReserveSettings, CpuWeightSettings);
                 MemoryHelper.Update(PowerShell, realVm, vm.RamSize, vm.DynamicMemory);
                 NetworkAdapterHelper.Update(PowerShell, vm);
-                HardDriveHelper.Update(PowerShell, wmi, realVm, vm, ServerNameSettings);
+                HardDriveHelper.Update(PowerShell, mi, realVm, vm, ServerNameSettings);
                 HardDriveHelper.SetIOPS(PowerShell, realVm, vm.HddMinimumIOPS, vm.HddMaximumIOPS);
             }
             catch (Exception ex)
@@ -1768,12 +1768,9 @@ namespace SolidCP.Providers.Virtualization
                 "Name = '{0}'", vmId); //Name = "GUID"
 
             CimKeyedCollection<CimProperty> objKvpExchange = null;
-            //ManagementObject objVm = GetVirtualMachineObject(vmId);
-            //ManagementObject objKvpExchange = null;
 
             try
             {
-                //objKvpExchange = wmi.GetRelatedWmiObject(objVm, "msvm_KvpExchangeComponent");
                 CimInstance cimInstKvpExchange = mi.GetAssociatedCimInstance(cimVm, "Msvm_KvpExchangeComponent", "Msvm_SystemDevice");
                 objKvpExchange = cimInstKvpExchange.CimInstanceProperties;
             }
@@ -2010,71 +2007,56 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                ManagementObject imageService = wmi.GetWmiObject("msvm_ImageManagementService");
-                ManagementClass settingsClass = wmi.GetWmiClass("Msvm_VirtualHardDiskSettingData");
+                CimInstance imageService = mi.GetCimInstance("Msvm_ImageManagementService");
+                CimClass settingsClass = mi.GetCimClass("Msvm_VirtualHardDiskSettingData");
 
-                //TODO: remove this commented code if Remote Hyper-V works fine.
-                //ManagementPath path = new ManagementPath()
-                //{
-                //    Server = ServerNameSettings,
-                //    NamespacePath = imageService.Path.Path,
-                //    ClassName = "Msvm_VirtualHardDiskSettingData"
-                //};
-                //ManagementClass settingsClass = new ManagementClass(path);
+                CimInstance settingsInstance = new CimInstance(settingsClass);
+                settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
+                settingsInstance.CimInstanceProperties["Type"].Value = diskType;
+                settingsInstance.CimInstanceProperties["Format"].Value = format;
+                settingsInstance.CimInstanceProperties["BlockSize"].Value = (blockSizeBytes > 0) ? blockSizeBytes : 0;
+                //settingsInstance.CimInstanceProperties["ParentPath"].Value = null;
+                //settingsInstance.CimInstanceProperties["MaxInternalSize"].Value = 0;
+                //settingsInstance.CimInstanceProperties["LogicalSectorSize"].Value = 0;
+                //settingsInstance.CimInstanceProperties["PhysicalSectorSize"].Value = 0;
 
-                ManagementObject settingsInstance = settingsClass.CreateInstance();
-                settingsInstance["Path"] = destinationPath;
-                settingsInstance["Type"] = diskType;
-                settingsInstance["Format"] = format;
-                settingsInstance["BlockSize"] = (blockSizeBytes > 0) ? blockSizeBytes : 0;
-                //settingsInstance["ParentPath"] = null;
-                //settingsInstance["MaxInternalSize"] = 0;
-                //settingsInstance["LogicalSectorSize"] = 0;
-                //settingsInstance["PhysicalSectorSize"] = 0;
+                var inParams = new CimMethodParametersCollection
+                {
+                    CimMethodParameter.Create(
+                        "SourcePath",
+                        sourcePath,
+                        Microsoft.Management.Infrastructure.CimType.String,
+                        CimFlags.None),
+                    CimMethodParameter.Create(
+                        "VirtualDiskSettingData",
+                        mi.SerializeToCimDtd20(settingsInstance),
+                        Microsoft.Management.Infrastructure.CimType.String,
+                        CimFlags.None)
+                };
+                //can be checked docs via powershell command:
+                //Get-CimClass -ClassName Msvm_ImageManagementService -Namespace root/virtualization/v2 | Select -Object -ExpandProperty CimClassMethods
+                //or
+                //$svcClass = Get - CimClass - ClassName Msvm_ImageManagementService - Namespace root/virtualization/v2
+                //$method = $svcClass.CimClassMethods["ConvertVirtualHardDisk"]
+                //$method.Parameters | Select-Object Name, CimType, Qualifiers, IsIn, IsOut
+                CimMethodResult outParams = mi.InvokeMethod(imageService, "ConvertVirtualHardDisk", inParams);
 
-                ManagementBaseObject inParams = imageService.GetMethodParameters("ConvertVirtualHardDisk");
-                inParams["SourcePath"] = sourcePath;
-                inParams["VirtualDiskSettingData"] = settingsInstance.GetText(TextFormat.WmiDtd20);
-
-                ManagementBaseObject outParams = imageService.InvokeMethod("ConvertVirtualHardDisk", inParams, null);                
-
-                return JobHelper.CreateJobResultFromWmiResults(wmi, outParams);
+                return JobHelper.CreateJobResultFromCimResults(mi, outParams);
             }
             catch (Exception ex)
             {
                 HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
                 throw;
             }           
-
-            //try
-            //{
-            //    Command cmd = new Command("Convert-VHD");
-
-            //    cmd.Parameters.Add("Path", sourcePath);
-            //    cmd.Parameters.Add("DestinationPath", destinationPath);
-            //    cmd.Parameters.Add("VHDType", diskType.ToString());
-            //    if (blockSizeBytes > 0)
-            //        cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
-
-            //    //PowerShell.Execute(cmd, true, true);
-            //    //return JobHelper.CreateSuccessResult(ReturnCode.JobStarted);
-
-            //    return JobHelper.CreateResultFromPSResults(PowerShellWithJobs.TryExecuteAsJob(cmd, true));
-            //}
-            //catch (Exception ex)
-            //{
-            //    HostedSolutionLog.LogError("ConvertVirtualHardDisk", ex);
-            //    throw;
-            //}
         }
 
         public JobResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
         {
             try
             {
-                var result = HardDriveHelper.CreateVirtualHardDisk(wmi, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
+                var result = HardDriveHelper.CreateVirtualHardDisk(mi, destinationPath, diskType, blockSizeBytes, sizeGB, ServerNameSettings);
 
-                return JobHelper.CreateJobResultFromWmiResults(wmi, result);
+                return JobHelper.CreateJobResultFromCimResults(mi, result);
             }
             catch (Exception ex)
             {

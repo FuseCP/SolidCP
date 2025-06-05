@@ -1,5 +1,6 @@
 ﻿using Microsoft.Management.Infrastructure;
 using Microsoft.Management.Infrastructure.Options;
+using Microsoft.Management.Infrastructure.Serialization;
 using System;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,13 @@ namespace SolidCP.Providers.Virtualization
             string target = string.IsNullOrWhiteSpace(targetComputer) ? null : targetComputer;
             _session = CimSession.Create(target, options);
             _namespacePath = namespacePath;
+        }
+
+        public string SerializeToCimDtd20(CimInstance cimInstance)
+        {
+            CimSerializer serializer = CimSerializer.Create();
+            byte[] serializedBytes = serializer.Serialize(cimInstance, InstanceSerializationOptions.None);
+            return Encoding.Unicode.GetString(serializedBytes);
         }
 
         public CimInstance GetCimInstance(string className)
@@ -98,6 +106,14 @@ namespace SolidCP.Providers.Virtualization
         public CimClass GetCimClass(string className)
         {
             return _session.GetClass(_namespacePath, className, null);
+        }
+
+        /// <summary>
+        /// Get a CIM instance based on the provided light/proxy/empty instance object.
+        /// </summary>
+        public CimInstance GetInstance(CimInstance notInitInstance)
+        {
+            return _session.GetInstance(_namespacePath, notInitInstance);
         }
 
         /// <summary>

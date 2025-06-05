@@ -47,6 +47,18 @@ namespace SolidCP.Providers.Virtualization
             return result;
         }
 
+        public static JobResult CreateJobResultFromCimResults(MiManager mi, CimMethodResult outParams)
+        {
+            JobResult result = new JobResult();
+
+            result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams.OutParameters["ReturnValue"].Value);
+            CimInstance objJob = outParams.OutParameters["Job"].Value as CimInstance;
+
+            result.Job = CreateFromCimObject(mi.GetInstance(objJob));
+
+            return result;
+        }
+
         public static JobResult CreateResultFromPSResults(Collection<PSObject> objJob)
         {
             if (objJob == null || objJob.Count == 0)
@@ -99,8 +111,9 @@ namespace SolidCP.Providers.Virtualization
             job.Caption = (string)objJob["Caption"].Value;
             job.Description = (string)objJob["Description"].Value;
             job.StartTime = (System.DateTime)objJob["StartTime"].Value;
-            // TODO proper parsing of WMI time spans, e.g. 00000000000001.325247:000
-            job.ElapsedTime = DateTime.Now; //wmi.ToDateTime((string)objJob["ElapsedTime"]);
+            // TODO CIM correcly provide ElapsedTime, e.g. 00000000000001.325247:000 so we can just use as it is.
+            //we can use after remove all WMIv1 stuff depencies. Need to change job.ElapsedTime type to TimeSpan.
+            job.ElapsedTime = DateTime.Now; //(System.TimeSpan)objJob["ElapsedTime"].Value;
             job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"].Value);
             job.ErrorDescription = (string)objJob["ErrorDescription"].Value;
             job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"].Value);
