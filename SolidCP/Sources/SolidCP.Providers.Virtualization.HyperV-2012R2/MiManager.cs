@@ -12,6 +12,7 @@ namespace SolidCP.Providers.Virtualization
         private CimSession _session;
         private readonly object _disposeThreadSafetyLock = new object();
         private readonly string _namespacePath;
+        private readonly bool _ownsSession;
 
         public bool IsDisposed { get; private set; } = false;
 
@@ -36,6 +37,15 @@ namespace SolidCP.Providers.Virtualization
             string target = string.IsNullOrWhiteSpace(targetComputer) ? null : targetComputer;
             _session = CimSession.Create(target, options);
             _namespacePath = namespacePath;
+            _ownsSession = true;
+        }
+
+        public MiManager(MiManager source, string namespacePath)
+        {
+            source.AssertNotDisposed();
+            _session = source._session;
+            _namespacePath = namespacePath;
+            _ownsSession = false; //only owner/source can dispose session
         }
 
         public string SerializeToCimDtd20(CimInstance cimInstance)
@@ -218,10 +228,16 @@ namespace SolidCP.Providers.Virtualization
 
         public void Dispose()
         {
-            if (!IsDisposed)
+            lock (_disposeThreadSafetyLock)
             {
-                _session?.Dispose();
-                _session = null;
+                if (IsDisposed)
+                    return;
+
+                if (_ownsSession)
+                {
+                    _session?.Dispose();
+                    _session = null;
+                }
                 IsDisposed = true;
             }
         }        

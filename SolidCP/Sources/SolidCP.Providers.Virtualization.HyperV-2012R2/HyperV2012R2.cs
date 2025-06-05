@@ -2756,12 +2756,16 @@ namespace SolidCP.Providers.Virtualization
         public bool DirectoryExists(string path)
         {
             if (path.StartsWith(@"\\")) // network share
+                                        // TODO: That won't work with remote HyperV, unless network share added into domain.
+                                        // Need to check remotly
                 return Directory.Exists(path);
             else
             {
-                Wmi cimv2 = new Wmi(ServerNameSettings, Constants.WMI_CIMV2_NAMESPACE);
-                ManagementObject objDir = cimv2.GetWmiObject("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-                return (objDir != null);
+                using (var cim = new MiManager(mi, Constants.WMI_CIMV2_NAMESPACE)) //because change namespace
+                {
+                    CimInstance objDir = cim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
+                    return (objDir != null);
+                }
             }
         }
 

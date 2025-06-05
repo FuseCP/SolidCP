@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
@@ -288,13 +287,16 @@ namespace SolidCP.Providers.Virtualization
         private bool DirectoryExists(string path)
         {
             if (path.StartsWith(@"\\")) // network share
+                                        // TODO: That won't work with remote HyperV, unless network share added into domain.
+                                        // Need to check remotly
                 return Directory.Exists(path);
             else
             {
-                string serverNameSettings = _powerShell.RemoteComputerName; //TODO: remove
-                Wmi cimv2 = new Wmi(serverNameSettings, Constants.WMI_CIMV2_NAMESPACE);
-                ManagementObject objDir = cimv2.GetWmiObject("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-                return (objDir != null);
+                using (var mi = new MiManager(_mi, Constants.WMI_CIMV2_NAMESPACE)) //because change namespace
+                {
+                    CimInstance objDir = mi.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
+                    return (objDir != null);
+                }
             }
         }
 
