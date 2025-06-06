@@ -129,7 +129,7 @@ namespace SolidCP.Providers.DNS
             StringBuilder sb = new StringBuilder();
             sb.Append("\r\nzone \"").Append(zoneName).Append("\" in {\r\n");
             sb.Append("\ttype master;\r\n");
-            sb.Append("\tfile \"").Append(GetZoneFileName(zoneName)).Append("\";\r\n");
+            sb.Append("\tfile \"").Append(GetZoneFilePath(zoneName)).Append("\";\r\n");
             sb.Append("\tallow-transfer {");
             if (secondaryServers == null || secondaryServers.Length == 0)
             {
@@ -169,7 +169,7 @@ namespace SolidCP.Providers.DNS
             StringBuilder sb = new StringBuilder();
             sb.Append("\r\nzone \"").Append(zoneName).Append("\" in {\r\n");
             sb.Append("\ttype slave;\r\n");
-            sb.Append("\tfile \"").Append(GetZoneFileName(zoneName)).Append("\";\r\n");
+            sb.Append("\tfile \"").Append(GetZoneFilePath(zoneName)).Append("\";\r\n");
             sb.Append("\tmasters {");
             if (masterServers == null || masterServers.Length == 0)
             {
@@ -1006,11 +1006,6 @@ namespace SolidCP.Providers.DNS
                 throw ex;
             }
 
-            if (cmd.Contains(' ') && !cmd.StartsWith("\""))
-            {
-                cmd = $"\"{cmd}\"";
-            }
-
             string rndcArguments = Args;
             if (!string.IsNullOrEmpty(zoneName))
             {
@@ -1033,9 +1028,11 @@ namespace SolidCP.Providers.DNS
 				var bat = File.ReadAllText(cmd);
 				shell = OSInfo.Unix.DefaultShell.ExecScript(bat, rndcArguments);
 			}
+			else if (cmd.Contains(' ') && !cmd.StartsWith("\"")) shell = Shell.Default.Exec($"\"{cmd}\" {rndcArguments}");
+			else if (string.IsNullOrWhiteSpace(cmd)) shell = Shell.Default.Exec($"rndc {rndcArguments}");
 			else shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
 
-            var output = shell.Output().Result;
+			var output = shell.Output().Result;
             if (shell.ExitCode().Result != 0 || Regex.IsMatch(output, "error", RegexOptions.IgnoreCase))
             {
                 Log.WriteError(output, null);
