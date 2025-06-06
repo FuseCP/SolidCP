@@ -1193,7 +1193,7 @@ namespace SolidCP.EnterpriseServer
             int bindingsCount = bindings.Count;
             foreach (GlobalDnsRecord dnsRecord in dnsRecords)
             {
-				if ((dnsRecord.RecordType == "A" || dnsRecord.RecordType == "AAAA" || dnsRecord.RecordType == "CNAME") &&
+				if ((dnsRecord.RecordType == "A" || dnsRecord.RecordType == "AAAA" || dnsRecord.RecordType == "CNAME" || dnsRecord.RecordType == "PTR") &&
                     dnsRecord.RecordName != "*")
                 {
                     string recordData = Utils.ReplaceStringVariable(dnsRecord.RecordName, "host_name", hostName, true);

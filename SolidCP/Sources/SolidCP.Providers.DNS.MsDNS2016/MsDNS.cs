@@ -82,6 +82,8 @@ namespace SolidCP.Providers.DNS
                     ps.Add_DnsServerResourceRecordSRV(zoneName, name, record.RecordData, (ushort)record.SrvPort, (ushort)record.SrvPriority, (ushort)record.SrvWeight, TimeSpan.FromSeconds(record.RecordTTL));
                 else if (record.RecordType == DnsRecordType.CAA)
                     ps.Add_DnsServerResourceRecordCAA(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
+                else if (record.RecordType == DnsRecordType.PTR)
+                    ps.Add_DnsServerResourceRecordPTR(zoneName, name, record.RecordData, TimeSpan.FromSeconds(record.RecordTTL));
                 else
                     throw new Exception("Unknown record type");
             }
