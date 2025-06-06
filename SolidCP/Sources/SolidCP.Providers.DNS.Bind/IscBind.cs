@@ -30,17 +30,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.ServiceProcess;
+using SolidCP.Providers;
 using SolidCP.Providers.OS;
-using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
+using SolidCP.Server.Utils;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.ServiceProcess;
+using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace SolidCP.Providers.DNS
@@ -87,10 +88,45 @@ namespace SolidCP.Providers.DNS
         {
             get { return ProviderSettings["BindReloadBatch"]; }
         }
-        #endregion
 
-        #region Zones
-        public virtual bool ZoneExists(string zoneName)
+		public override SettingPair[] GetProviderDefaultSettings()
+		{
+            return OSInfo.IsWindows ?
+                new SettingPair[]
+                {
+				    new SettingPair("BindConfigPath", "c:\\BIND\\dns\\etc\\named.conf"),
+                    new SettingPair("BindReloadBatch", "c:\\BIND\\bin\\rndc.exe"),
+		        	new SettingPair("ExpireLimit", "1209600"),
+			        new SettingPair("MinimumTTL", "86400"),
+			        new SettingPair("NameServers", "ns1.yourdomain.com;ns2.yourdomain.com"),
+			        new SettingPair("RecordDefaultTTL", "86400"),
+			        new SettingPair("RecordMinimumTTL", "3600"),
+			        new SettingPair("RefreshInterval", "3600"),
+			        new SettingPair("ResponsiblePerson", "hostmaster.[DOMAIN_NAME]"),
+			        new SettingPair("RetryDelay", "600"),
+			        new SettingPair("ZoneFileNameTemplate","db.[domain_name].txt"),
+			        new SettingPair("ZonesFolderPath", "c:\\BIND\\dns\\zones"),
+                } :
+                new SettingPair[]
+                {
+					new SettingPair("BindConfigPath", "/etc/bind/named.conf"),
+					new SettingPair("BindReloadBatch", "rndc"),
+					new SettingPair("ExpireLimit", "1209600"),
+					new SettingPair("MinimumTTL", "86400"),
+					new SettingPair("NameServers", "ns1.yourdomain.com;ns2.yourdomain.com"),
+					new SettingPair("RecordDefaultTTL", "86400"),
+					new SettingPair("RecordMinimumTTL", "3600"),
+					new SettingPair("RefreshInterval", "3600"),
+					new SettingPair("ResponsiblePerson", "hostmaster.[DOMAIN_NAME]"),
+					new SettingPair("RetryDelay", "600"),
+					new SettingPair("ZoneFileNameTemplate","db.[domain_name].txt"),
+					new SettingPair("ZonesFolderPath", "/etc/bind/zones"),
+                };
+		}
+		#endregion
+
+		#region Zones
+		public virtual bool ZoneExists(string zoneName)
         {
             foreach (string name in GetZones())
             {
