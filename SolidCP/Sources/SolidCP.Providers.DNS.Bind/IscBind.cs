@@ -123,6 +123,22 @@ namespace SolidCP.Providers.DNS
 					new SettingPair("ZonesFolderPath", "/etc/bind/zones"),
                 };
 		}
+
+		public override string[] Install()
+		{
+			if (!Directory.Exists(ZonesFolderPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(ZonesFolderPath);
+                }
+                catch (Exception ex)
+                {
+                    return new string[] { String.Format("Failed to create BIND zones folder: {0}", ZonesFolderPath) };
+                }
+			}
+            return new string[0];
+		}
 		#endregion
 
 		#region Zones
