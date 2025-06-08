@@ -338,14 +338,21 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
-        public List<VirtualMachine> GetVirtualMachineByID(string vmId)
+        public VirtualMachine GetVirtualMachineByID(string vmId)
         {
-            List<VirtualMachine> vmachines;
+            VirtualMachine vm = null;
             try
             {
-                Command command = new Command("Get-VM");
-                command.Parameters.Add("Id", vmId);
-                vmachines = GetVirtualMachinesInternal(command);
+                CimInstance cimObj = mi.GetCimInstanceWithSelect(
+                    "Msvm_ComputerSystem",
+                    "Name, ElementName, EnabledState",
+                    "Name = '{0}'", vmId
+                    );
+
+                vm = new VirtualMachine();
+                vm.VirtualMachineId = (string)cimObj.CimInstanceProperties["Name"].Value;
+                vm.Name = (string)cimObj.CimInstanceProperties["ElementName"].Value;
+                vm.State = (VirtualMachineState)Convert.ToInt32(cimObj.CimInstanceProperties["EnabledState"].Value);
             }
             catch (Exception ex)
             {
@@ -353,48 +360,7 @@ namespace SolidCP.Providers.Virtualization
                 throw;
             }
 
-            return vmachines;
-        }
-
-        public List<VirtualMachine> GetVirtualMachinesByName(string vmName)
-        {
-            List<VirtualMachine> vmachines;
-            try
-            {
-                Command command = new Command("Get-VM");
-                command.Parameters.Add("Name", vmName);
-                vmachines = GetVirtualMachinesInternal(command);
-            }
-            catch (Exception ex)
-            {
-                HostedSolutionLog.LogError("GetVirtualMachinesByName", ex);
-                throw;
-            }
-
-            return vmachines;
-        }
-
-        protected List<VirtualMachine> GetVirtualMachinesInternal(Command cmd)
-        {
-            List<VirtualMachine> vmachines = new List<VirtualMachine>();
-            try
-            {
-                Collection<PSObject> result = PowerShell.Execute(cmd, true, true);
-                foreach (PSObject current in result)
-                {
-                    var vm = new VirtualMachine();
-                    vm.VirtualMachineId = current.GetProperty("Id").ToString();
-                    vm.Name = current.GetString("Name");
-                    vm.State = current.GetEnum<VirtualMachineState>("State");
-                    vmachines.Add(vm);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-
-            return vmachines;
+            return vm;
         }
 
         public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
@@ -838,7 +804,8 @@ namespace SolidCP.Providers.Virtualization
                 bool isExist = false;
                 try
                 {
-                    if (GetVirtualMachineByID(vmId).Count > 0)
+                    VirtualMachine vm = GetVirtualMachineByID(vmId);
+                    if (vm != null)
                         isExist = true;
                 }
                 catch { }    
@@ -1360,7 +1327,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vm = GetVirtualMachineEx(vmId);
+                var vm = GetVirtualMachineByID(vmId);
                 dvdInfo = DvdDriveHelper.Get(vm.Name);
             }
             catch (Exception ex)
@@ -1384,7 +1351,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vm = GetVirtualMachineEx(vmId);
+                var vm = GetVirtualMachineByID(vmId);
                 DvdDriveHelper.Set(vm.Name, isoPath);
             }
             catch (Exception ex)
@@ -1404,7 +1371,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vm = GetVirtualMachineEx(vmId);
+                var vm = GetVirtualMachineByID(vmId);
                 DvdDriveHelper.Set(vm.Name, null);
             }
             catch (Exception ex)
