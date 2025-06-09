@@ -13,7 +13,9 @@ namespace SolidCP.Providers.Virtualization
         private readonly object _disposeThreadSafetyLock = new object();
         private readonly string _namespacePath;
         private readonly bool _ownsSession;
+        private readonly string _targetComputer;
 
+        public string TargetComputer { get => _targetComputer; }
         public bool IsDisposed { get; private set; } = false;
 
         public MiManager(string targetComputer, CimSessionMode cimSessionMode, string namespacePath)
@@ -38,6 +40,7 @@ namespace SolidCP.Providers.Virtualization
             _session = CimSession.Create(target, options);
             _namespacePath = namespacePath;
             _ownsSession = true;
+            _targetComputer = targetComputer;
         }
 
         public MiManager(MiManager source, string namespacePath)
@@ -215,6 +218,25 @@ namespace SolidCP.Providers.Virtualization
             return _session.InvokeMethod(instance, methodName, parameters);
         }
 
+        /// <summary>
+        /// Invokes a static method on the specified CIM class.
+        /// </summary>
+        /// <param name="className">The CIM className.</param>
+        /// <param name="methodName">The method name to invoke.</param>
+        /// <param name="parameters">Optional method parameters.</param>
+        /// <returns>The result of the method invocation.</returns>
+        public CimMethodResult InvokeStaticMethod(string className, string methodName, CimMethodParametersCollection parameters = null)
+        {
+            AssertNotDisposed();
+
+            if (string.IsNullOrWhiteSpace(className))
+                throw new ArgumentException("Class name cannot be empty.", nameof(className));
+            if (string.IsNullOrWhiteSpace(methodName))
+                throw new ArgumentException("Method name cannot be empty.", nameof(methodName));
+
+            return _session.InvokeMethod(_namespacePath, className, methodName, parameters);
+        }
+
         internal void AssertNotDisposed()
         {
             lock (_disposeThreadSafetyLock)
@@ -228,10 +250,28 @@ namespace SolidCP.Providers.Virtualization
 
         public void Dispose()
         {
+            Dispose(true);
+            GC.SuppressFinalize(this); //prevent finalizer from being called, if we call manually Dispose()
+        }
+
+        /// <summary>
+        /// Protected virtual method to dispose managed and unmanaged resources.
+        /// </summary>
+        /// <param name="disposing">
+        /// True if called from Dispose() (deterministic disposal);
+        /// False if called from the finalizer (non-deterministic disposal).
+        /// </param>
+        protected virtual void Dispose(bool disposing)
+        {
             lock (_disposeThreadSafetyLock)
             {
                 if (IsDisposed)
                     return;
+
+                if (disposing)
+                {
+                    // Dispose managed resources here if any
+                }
 
                 if (_ownsSession)
                 {
@@ -240,6 +280,12 @@ namespace SolidCP.Providers.Virtualization
                 }
                 IsDisposed = true;
             }
-        }        
+        }
+
+        ~MiManager()
+        {
+            // Becuase HyperV class is not disposable, we need to call Dispose() here.
+            Dispose(false);
+        }
     }
 }
