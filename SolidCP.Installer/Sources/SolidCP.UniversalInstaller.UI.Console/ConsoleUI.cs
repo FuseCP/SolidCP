@@ -8,8 +8,10 @@ using System.Threading.Tasks;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
 using System.Text;
+using System.Runtime.ExceptionServices;
 using SolidCP.Providers.OS;
 using SolidCP.EnterpriseServer.Data;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -35,7 +37,17 @@ public class ConsoleUI : UI
 		{
 			if (CurrentPage > 0) CurrentPage--;
 		}
-		protected void Exit() => CurrentPage = -1;
+		protected void Exit()
+		{
+			CurrentPage = int.MinValue / 2;
+			Installer.Current.Cleanup();
+		}
+		protected void Cancel()
+		{
+			Installer.Cancel.Cancel();
+			CurrentPage = int.MinValue / 2;
+			Installer.Current.Cleanup();
+		}
 		protected bool HasExited => CurrentPage < 0 || CurrentPage >= Pages.Count;
 		protected Action Current => CurrentPage >= 0 && CurrentPage < Pages.Count ? Pages[CurrentPage] : () => { };
 
@@ -55,12 +67,8 @@ It is recommended that you close all other applications before starting Setup. "
 
 [  Next  ]  [  Cancel  ]")
 					.ShowDialog();
-				if (form["Cancel"].Clicked)
-				{
-					UI.RunMainUI();
-					Exit();
-				}
-				Next();
+				if (form["Cancel"].Clicked) Cancel();
+				else Next();
 			});
 			return this;
 		}
@@ -117,8 +125,8 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 					form.ShowDialog();
 					if (form["Cancel"].Clicked)
 					{
-						UI.RunMainUI();
-						Exit();
+						exit = true;
+						Cancel();
 					}
 					else if (lastPage && form["I Agree"].Clicked)
 					{
@@ -149,31 +157,212 @@ Install Folder:
 ===============
 
 Install Component to:
-[?InstallFolder                                                          ]
+[?InstallPath                                                          ]
 
-[  Next  ]  [  Back  ]")
-				.Load(settings)
-				.ShowDialog();
+[  Next  ]  [  Back  ]");
+				form["InstallPath"].Text = Path.GetDirectoryName(settings.InstallPath);
+				form.ShowDialog();
 				if (form["Next"].Clicked)
 				{
-					form.Save(settings);
+					if (settings is StandaloneSettings)
+					{
+						settings.InstallPath = form["InstallPath"].Text;
+						Installer.Current.Settings.Server.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
+						Installer.Current.Settings.EnterpriseServer.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.EnterpriseServer.InstallFolder);
+						Installer.Current.Settings.WebDavPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.WebDavPortal.InstallFolder);
+						Installer.Current.Settings.WebPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
+					}
+					else
+					{
+						settings.InstallPath = Path.Combine(form["InstallPath"].Text, settings.InstallFolder);
+					}
 					Next();
 				}
 				else Back();
 			});
 			return this;
 		}
+
+		string warning = "";
+		private bool CheckSettings(CommonSettings settings, string confirm)
+		{
+			string name = settings.Username;
+			string password = settings.Password;
+			var tokens = name.Split('\\');
+			string domain = "";
+			if (tokens.Length == 2) domain = tokens[0];
+
+			if (OSInfo.IsWindows && settings.UseActiveDirectory)
+			{
+				if (domain.Trim().Length == 0)
+				{
+					warning = "Please enter domain name!";
+					return false;
+				}
+
+				string users = Installer.Current.SecurityUtils.GetDomainUsersContainer(domain);
+				if (string.IsNullOrEmpty(users))
+				{
+					warning = "Domain not found or access denied!";
+					return false;
+				}
+
+				if (!Installer.Current.SecurityUtils.ADObjectExists(users))
+				{
+					warning = "Domain not found or access denied!";
+					return false;
+				}
+			}
+
+			if (name.Trim().Length == 0)
+			{
+				warning = "Please enter user name!";
+				return false;
+			}
+
+			if (password.Trim().Length == 0)
+			{
+				warning = "Please enter password!";
+				return false;
+			}
+
+			if (password != confirm)
+			{
+				warning = "The password was not correctly confirmed. Please ensure that the password and confirmation match exactly.";
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool ProcessSettings(CommonSettings settings, string confirm)
+		{
+			if (!CheckSettings(settings, confirm))
+			{
+				return false;
+			}
+
+			if (!CheckUserAccount(settings))
+			{
+				return false;
+			}
+			return true;
+		}
+		private bool CheckUserAccount(CommonSettings settings)
+		{
+			if (!OSInfo.IsWindows) return true;
+			
+			string userName = settings.Username;
+			string password = settings.Password;
+			var tokens = userName.Split('\\');
+			string domain = "";
+			if (tokens.Length == 2) domain = tokens[0];
+			domain = settings.UseActiveDirectory ? domain : null;
+
+			if (Installer.Current.SecurityUtils.UserExists(domain, userName))
+			{
+				warning = $"{userName} user account already exists!";
+				return false;
+			}
+
+			bool created = false;
+			try
+			{
+				// create account
+				Log.WriteStart($"Creating temp user account \"{userName}\"");
+				SystemUserItem user = new SystemUserItem();
+				user.Name = userName;
+				user.FullName = userName;
+				user.Description = string.Empty;
+				user.MemberOf = null;
+				user.Password = password;
+				user.PasswordCantChange = true;
+				user.PasswordNeverExpires = true;
+				user.AccountDisabled = false;
+				user.System = true;
+				user.Domain = domain;
+				Installer.Current.SecurityUtils.CreateUser(user);
+				//update log
+				Log.WriteEnd("Created temp local user account");
+				created = true;
+			}
+			catch (Exception ex)
+			{
+				System.Runtime.InteropServices.COMException e = ex.InnerException as System.Runtime.InteropServices.COMException;
+				Log.WriteError("Create temp local user account error", ex);
+				string errorMessage = "Unable to create Windows user account";
+				if (e != null)
+				{
+					string errorCode = string.Format("{0:x}", e.ErrorCode);
+					switch (errorCode)
+					{
+						case "8007089a":
+							errorMessage = "Invalid username!";
+							break;
+						case "800708c5":
+							errorMessage = "The password does not meet the password policy requirements. Check the minimum password length, password complexity and password history requirements!";
+							break;
+						case "800708b0":
+							errorMessage = "The account already exists!";
+							break;
+					}
+				}
+				warning = errorMessage;
+				return false;
+			}
+
+			if (created)
+			{
+				Log.WriteStart(string.Format("Deleting temp local user account \"{0}\"", userName));
+				try
+				{
+					Installer.Current.SecurityUtils.DeleteUser(domain, userName);
+				}
+				catch (Exception ex)
+				{
+					Log.WriteError("Delete temp local user account error", ex);
+				}
+				Log.WriteEnd("Deleted temp local user account");
+			}
+			return true;
+		}
 		public override UI.SetupWizard UserAccount(CommonSettings settings)
 		{
-			Pages.Add(() =>
+			if (OSInfo.IsWindows || !(settings is ServerSettings))
 			{
-				bool passwordMatch = true;
-				ConsoleForm form;
-				do
+				Pages.Add(() =>
 				{
-					form = new ConsoleForm(@$"
-Security Settings:
-==================
+					bool passwordMatch = true, settingsValid = false;
+					ConsoleForm form;
+					do
+					{
+						//creating user account
+						string userName = settings.ComponentName.Replace(" ", string.Empty);
+						userName = userName.Replace("HostPanelPro", "HPP");
+
+						var domain = "mydomain.com";
+
+						if (OSInfo.IsWindows && Environment.UserDomainName != Environment.MachineName)
+						{
+
+							string domainName = Installer.Current.SecurityUtils.GetFullDomainName(Environment.UserDomainName);
+							if (!string.IsNullOrEmpty(domainName))
+							{
+								settings.Username = $"{domainName}\\{userName}";
+								settings.UseActiveDirectory = true;
+							}
+						}
+						else
+						{
+							settings.UseActiveDirectory = false;
+						}
+
+						var component = settings.ComponentName;
+						var componentUnderline = new string('=', component.Length);
+
+						form = new ConsoleForm(@$"
+Security Settings {component}:
+=================={componentUnderline}=
 
 Please specify a new user account for the website anonymous access and application pool identity.
 {(OSInfo.IsWindows ? @"
@@ -182,45 +371,59 @@ Please specify a new user account for the website anonymous access and applicati
 Username:        [?Username                                     ]
 Password:        [!Password                                     ]
 Repeat Password: [!RepeatPassword                                     ]
-{(passwordMatch ? "" : @"
+{(!passwordMatch ? @"
 Passwords must match!
-")}
+" : !settingsValid ? @$"
+{warning}
+" : "")}
 [  Next  ]  [  Back  ]
 ")
-						.Load(settings)
-						.Apply(f =>
-						{
-							if (OSInfo.IsWindows)
+							.Load(settings)
+							.Apply(f =>
 							{
-								f[0].Checked = settings.UseActiveDirectory;
-							}
-						})
-						.ShowDialog();
-					if (form["Back"].Clicked)
-					{
-						Back();
-						break;
-					} else
-					{
-						passwordMatch = form["Password"].Text == form["RepeatPassword"].Text;
-						if (passwordMatch)
+								if (OSInfo.IsWindows)
+								{
+									f[0].Checked = settings.UseActiveDirectory;
+								}
+							})
+							.ShowDialog();
+						if (form["Back"].Clicked)
 						{
-							form.Save(settings);
-							settings.UseActiveDirectory = OSInfo.IsWindows && form[0].Checked;
-							Next();
+							Back();
+							break;
 						}
-					}
-				} while (!passwordMatch);
-			});
+						else
+						{
+							passwordMatch = form["Password"].Text == form["RepeatPassword"].Text;
+							if (passwordMatch)
+							{
+								form.Save(settings);
+								settings.UseActiveDirectory = OSInfo.IsWindows && form[0].Checked;
+
+								settingsValid = ProcessSettings(settings, form["RepeatPassword"].Text);
+
+								if (settingsValid) Next();
+							}
+						}
+					} while (!passwordMatch || !settingsValid);
+				});
+			}
+			else
+			{
+				settings.Username = settings.Password = null;
+			}
 			return this;
 		}
 		public override UI.SetupWizard Web(CommonSettings settings)
 		{
 			Pages.Add(() =>
 			{
-				var form = new ConsoleForm(@"
-Web Site Settings:
-==================
+				var component = settings.ComponentName;
+				var componentUnderline = new string('=', component.Length);
+
+				var form = new ConsoleForm(@$"
+Web Site Settings {component}:
+=================={componentUnderline}=
 
 Specify the desired url of the website. You can specify multiple urls separated by a semicolon.
 
@@ -230,10 +433,14 @@ Urls: [?Urls                                                                    
 ")
 					.Load(settings)
 					.ShowDialog();
+				settings.WebSiteDomain = null;
+				settings.WebSiteIp = null;
+				settings.WebSitePort = default;
 				if (form["Back"].Clicked)
 				{
 					Back();
-				} else
+				}
+				else
 				{
 					form.Save(settings);
 					Next();
@@ -247,7 +454,12 @@ Urls: [?Urls                                                                    
 
 			Pages.Add(() =>
 			{
-				var form = new ConsoleForm(@"
+				var exit = false;
+				var message = "";
+
+				do
+				{
+					var form = new ConsoleForm(@"
 EnterpriseServer Settings:
 ==========================
 
@@ -259,25 +471,39 @@ EnterpriseServer URL: [?EnterpriseServerUrl                                     
 
 Path to EnterpriseServer: [?EnterpriseServerPath                                      ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]
 ")
-					.Load(settings)
-					.Apply(f =>
+						.Load(settings)
+						.Apply(f =>
+						{
+							f[0].Checked = settings.EmbedEnterpriseServer;
+							f[2].Checked = settings.ExposeEnterpriseServerWebServices;
+						})
+						.ShowDialog();
+					if (form["Back"].Clicked)
 					{
-						f[0].Checked = settings.EmbedEnterpriseServer;
-						f[2].Checked = settings.ExposeEnterpriseServerWebServices;
-					})
-					.ShowDialog();
-				if (form["Back"].Clicked)
-				{
-					Back();
-				} else
-				{
-					form.Save(settings);
-					settings.EmbedEnterpriseServer = form[0].Checked;
-					settings.ExposeEnterpriseServerWebServices = form[0].Checked;
-					Next();
-				}
+						exit = true;
+						Back();
+					}
+					else
+					{
+						form.Save(settings);
+						settings.EmbedEnterpriseServer = form[0].Checked;
+						settings.ExposeEnterpriseServerWebServices = form[0].Checked;
+						if (Directory.Exists(Path.GetFullPath(Path.Combine(settings.InstallPath, settings.EnterpriseServerPath))))
+						{
+							exit = true;
+							Next();
+						}
+						else
+						{
+							message = "EnterpriseServer path does not exist!";
+							exit = false;
+						}
+					}
+				} while (!exit);
 			});
 			return this;
 		}
@@ -380,40 +606,53 @@ Database Settings:
 				}
 
 				settings.DatabaseType = dbType;
+				var exit = false;
+				string message = "";
 
 				switch (dbType)
 				{
 					default:
 					case DbType.SqlServer:
-						form = new ConsoleForm(@"
+						do
+						{
+							form = new ConsoleForm(@"
 SQL Server Settings:
 ====================
 
 Server:   [?DatabaseServer                               ]
 Database: [?DatabaseName                               ]
+          [x DatabaseWindowsAuthentication] Windows Authentication
 User:     [?DatabaseUser                               ]
 Password: [?DatabasePassword                               ]
-Always Trust Server Certificate: [x]
+
+" + message + @"
 
 [  Next  ]  [  Back  ]")
-							.Load(settings)
-							.Apply(f => f[3].Checked = settings.DatabaseTrustServerCertificate)
-							.ShowDialog();
-						if (form["Next"].Clicked)
-						{
-							form.Save(settings);
-							settings.DatabaseTrustServerCertificate = form[3].Checked;
-							Next();
-						}
-						else
-						{
-							settings.DatabaseType = DbType.Unknown;
-							Back();
-						}
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								exit = CheckDbConnection(settings, ref message);
+								if (exit)
+								{
+									settings.DatabasePassword = settings.DatabaseUser = null;
+									Next();
+								}
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								exit = true;
+								Back();
+							}
+						} while (!exit);
 						break;
 					case DbType.MySql:
 					case DbType.MariaDb:
-						form = new ConsoleForm(@"
+						do
+						{
+							form = new ConsoleForm(@"
 MySQL/MariaDB Settings:
 =======================
 
@@ -425,23 +664,34 @@ Port:     [?DatabasePort                               ]
 User:     [?DatabaseUser                               ]
 Password: [?DatabasePassword                               ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]")
-							.Load(settings)
-							.ShowDialog();
-						if (form["Next"].Clicked)
-						{
-							form.Save(settings);
-							Next();
-						}
-						else
-						{
-							settings.DatabaseType = DbType.Unknown;
-							Back();
-						}
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								exit = CheckDbConnection(settings, ref message);
+								if (exit)
+								{
+									settings.DatabasePassword = settings.DatabaseUser = null;
+									Next();
+								}
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								exit = true;
+								Back();
+							}
+						} while (!exit);
 						break;
 					case DbType.Sqlite:
 					case DbType.SqliteFX:
-						form = new ConsoleForm(@"
+						do
+						{
+							form = new ConsoleForm(@"
 SQLite Settings:
 ================
 
@@ -450,22 +700,127 @@ SQLite Settings:
 Database: [?DatabaseName                               ]
 
 [  Next  ]  [  Back  ]")
-							.Load(settings)
-							.ShowDialog();
-						if (form["Next"].Clicked)
-						{
-							form.Save(settings);
-							Next();
-						}
-						else
-						{
-							settings.DatabaseType = DbType.Unknown;
-							Back();
-						}
+								.Load(settings)
+								.ShowDialog();
+							if (form["Next"].Clicked)
+							{
+								form.Save(settings);
+								exit = CheckDbConnection(settings, ref message);
+								if (exit) Next();
+							}
+							else
+							{
+								settings.DatabaseType = DbType.Unknown;
+								exit = true;
+								Back();
+							}
+						} while (!exit);
 						break;
 				}
 			});
 			return this;
+		}
+
+		public bool CheckDbConnection(EnterpriseServerSettings settings, ref string warning)
+		{
+			int port = 0;
+			if (string.IsNullOrWhiteSpace(settings.DatabaseName) || !DatabaseUtils.IsValidDatabaseName(settings.DatabaseName))
+			{
+				warning = "Invalid Database name!";
+				return false;
+			}
+			if (string.IsNullOrWhiteSpace(settings.DatabaseServer) &&
+				settings.DatabaseType != DbType.Sqlite && settings.DatabaseType != DbType.SqliteFX)
+			{
+				warning = "No server specified!";
+				return false;
+			}
+			if (settings.DatabaseType != DbType.Sqlite && settings.DatabaseType != DbType.SqliteFX &&
+				(settings.DatabaseType != DbType.SqlServer || !settings.DatabaseWindowsAuthentication) &&
+				(string.IsNullOrWhiteSpace(settings.DatabaseUser) || string.IsNullOrWhiteSpace(settings.DatabasePassword)))
+			{
+				warning = string.IsNullOrWhiteSpace(settings.DatabaseUser) ?
+					"No user specified!" : "No password specified!";
+				return false;
+			}
+			if (settings.DatabaseType == DbType.MariaDb || settings.DatabaseType == DbType.MySql)
+			{
+				settings.DatabasePort = 3306;
+
+				var tokens = settings.DatabaseServer.Split(':', ',');
+				if (tokens.Length > 1)
+				{
+					settings.DatabaseServer = tokens[0];
+					if (!int.TryParse(tokens[1], out port))
+					{
+						warning = "Invalid port number!";
+						return false;
+					}
+					else
+					{
+						settings.DatabasePort = port;
+					}
+				}
+			}
+			if (settings.DatabaseType == DbType.SqlServer && settings.DatabaseWindowsAuthentication)
+			{
+				settings.DatabaseUser = null;
+				settings.DatabasePassword = null;
+			}
+			else if (settings.DatabaseType == DbType.Sqlite || settings.DatabaseType == DbType.SqliteFX)
+			{
+				settings.DatabaseServer = null;
+				settings.DatabasePort = 0;
+				settings.DatabaseUser = null;
+				settings.DatabasePassword = null;
+			}
+
+			if (settings.DatabaseType == DbType.SqlServer)
+			{
+				settings.DbInstallConnectionString = DatabaseUtils.BuildSqlServerMasterConnectionString(settings.DatabaseServer, settings.DatabaseUser, settings.DatabasePassword);
+			}
+			else
+			{
+				settings.DbInstallConnectionString = DatabaseUtils.BuildConnectionString(settings.DatabaseType, settings.DatabaseServer, settings.DatabasePort,
+					settings.DatabaseName, settings.DatabaseUser, settings.DatabasePassword);
+			}
+			if (!DatabaseUtils.CheckSqlConnection(settings.DbInstallConnectionString))
+			{
+				warning = "Unable to connect to the database server!";
+				return false;
+			}
+
+			if (settings.DatabaseType == DbType.SqlServer)
+			{
+				var version = DatabaseUtils.GetSqlServerVersion(settings.DbInstallConnectionString);
+				string major = Regex.Match(version, "^[0-9]+(?=\\.)").Value;
+				if (major.Length < 2) major = "0" + major;
+				if (string.Compare(major, "12") <= 0)
+				{
+					// SQL Server 2014 engine required
+					warning = "This program can be installed on SQL Server 2014/2016/2017/2016/2017/2019/2022/2025 only!";
+					return false;
+				}
+				int securityMode = DatabaseUtils.GetSqlServerSecurityMode(settings.DbInstallConnectionString);
+				if (securityMode != 0)
+				{
+					// mixed mode required
+					warning = "Please switch SQL Server authentication to mixed SQL Server and Windows Authentication mode!";
+					return false;
+				}
+				var csb = new ConnectionStringBuilder(settings.DbInstallConnectionString);
+				csb["TrustServerCertificate"] = "false";
+				settings.DatabaseTrustServerCertificate = !DatabaseUtils.CheckSqlConnection(csb.ToString());
+			}
+
+			if (DatabaseUtils.DatabaseExists(settings.DbInstallConnectionString, settings.DatabaseName))
+			{
+				warning = $"Database {settings.DatabaseName} already exists!";
+				return false;
+			}
+
+			warning = "";
+			return true;
 		}
 
 		public override UI.SetupWizard ServerPassword()
@@ -510,7 +865,7 @@ Passwords must match!
 				{
 					var form = new ConsoleForm(@$"
 ServerAdmin Password:
-================
+=====================
 
 Choose a password for the serveradmin user to log into WebPortal.
 
@@ -520,15 +875,19 @@ Repeat Password: [!RepeatPassword                             ]
 Passwords must match!
 ")}
 [  Next  ]  [  Back  ]")
-					.Load(Settings.Server)
+					.Load(Settings.EnterpriseServer)
 					.ShowDialog();
 					passwordMatch = form["ServerAdminPassword"].Text == form["RepeatPassword"].Text;
 					if (form["Next"].Clicked && passwordMatch)
 					{
-						form.Save(Settings.Server);
+						form.Save(Settings.EnterpriseServer);
 						Next();
 					}
-					else if (form["Back"].Clicked) Back();
+					else if (form["Back"].Clicked)
+					{
+						passwordMatch = true;
+						Back();
+					}
 				} while (!passwordMatch);
 
 			});
@@ -539,21 +898,32 @@ Passwords must match!
 		{
 			Pages.Add(() =>
 			{
+				bool exit = false;
+				string message = "";
+
 				var form = new ConsoleForm(@"
 Certificate Settings:
 =====================
 
 [  Use a certificate from the store  ]
-[  Use a certificate from a file  ]
-[  Use a Let's Encrypt certificate  ]
-[  Configure the certificate manually  ]
+" + (!OSInfo.IsWindows ?
+@"[   Use a certificate from a file    ]
+[  Use a Let's Encrypt certificate   ]
+" : "") +
+@"[ Configure the certificate manually ]
 
 [  Back  ]")
-					.ShowDialog();
-				if (form["Back"].Clicked) Back();
+				.ShowDialog();
+				if (form["Back"].Clicked)
+				{
+					Back();
+					if (IsSecure(settings.Urls)) Back(); // Go also back in InsecureHttpWarnings
+				}
 				else if (form[0].Clicked)
 				{
-					form = new ConsoleForm(@"
+					do
+					{
+						form = new ConsoleForm(@"
 Certificate from Store:
 =======================
 
@@ -562,36 +932,58 @@ Store Name:      [?CertificateStoreName                                     ]
 Find Type:       [?CertificateFindType                                     ]
 Find Value:      [?CertificateFindValue                                     ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]")
-						.Load(settings)
-						.ShowDialog();
-					if (form["Next"].Clicked)
-					{
-						form.Save(settings);
-						Next();
-					}
-					else Back();
-				} else if (form[1].Clicked)
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							exit = CheckCertificate(settings, ref message);
+							if (exit) Next();
+						}
+						else
+						{
+							exit = true;
+							Back();
+						}
+					} while (!exit);
+				}
+				else if (form[1].Clicked && !OSInfo.IsWindows)
 				{
-					form = new ConsoleForm(@"
+					do
+					{
+						form = new ConsoleForm(@"
 Certificate from File:
 ======================
 
 File:     [?CertificateFile                                     ]
 Password: [?CertificatePassword                                     ]
 
+" + message + @"
+
 [  Next  ]  [  Back  ]")
-						.Load(settings)
-						.ShowDialog();
-					if (form["Next"].Clicked)
-					{
-						form.Save(settings);
-						Next();
-					}
-					else Back();
-				} else if (form[2].Clicked)
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							exit = CheckCertificate(settings, ref message);
+							if (exit) Next();
+						}
+						else
+						{
+							exit = true;
+							Back();
+						}
+					} while (!exit);
+				}
+				else if (form[2].Clicked && !OSInfo.IsWindows)
 				{
-					form = new ConsoleForm(@"
+					do
+					{
+						form = new ConsoleForm(@"
 Let's Encrypt Certificate:
 ==========================
 
@@ -599,15 +991,22 @@ Email:   [?LetsEncryptCertificateEmail                                     ]
 Domains: [?LetsEncryptCertificateDomains                                     ]
 
 [  Next  ]  [  Back  ]")
-.Load(settings)
-.ShowDialog();
-					if (form["Next"].Clicked)
-					{
-						form.Save(settings);
-						Next();
-					}
-					else Back();
-				} else
+							.Load(settings)
+							.ShowDialog();
+						if (form["Next"].Clicked)
+						{
+							form.Save(settings);
+							exit = CheckCertificate(settings, ref message);
+							if (exit) Next();
+						}
+						else
+						{
+							exit = true;
+							Back();
+						}
+					} while (!exit);
+				}
+				else
 				{
 					form = new ConsoleForm(@"
 Configure Certificate Manually:
@@ -628,6 +1027,96 @@ Configure Certificate Manually:
 			});
 			return this;
 		}
+		public bool CheckCertificate(CommonSettings settings, ref string warning)
+		{
+			warning = "";
+			if (settings.ConfigureCertificateManually) return true;
+			if (!string.IsNullOrEmpty(settings.LetsEncryptCertificateEmail))
+			{
+				if (settings.LetsEncryptCertificateEmail.Contains('@')) return true;
+				else
+				{
+					warning = "Invaid Email!";
+					return false;
+				}
+			}
+			if (!string.IsNullOrEmpty(settings.CertificateFile))
+			{
+				if (File.Exists(settings.CertificateFile))
+				{
+					try
+					{
+						var cert = new X509Certificate2(settings.CertificateFile, settings.Password);
+						if (cert != null) return true;
+						else
+						{
+							warning = "Invalid Password!";
+							return false;
+						}
+					}
+					catch
+					{
+						warning = "Invalid Password!";
+						return false;
+					}
+				}
+				else
+				{
+					warning = "Certificate file not found!";
+					return false;
+				}
+			}
+			if (!string.IsNullOrEmpty(settings.CertificateStoreLocation) &&
+				!string.IsNullOrEmpty(settings.CertificateStoreName) &&
+				!string.IsNullOrEmpty(settings.CertificateFindType) &&
+				!string.IsNullOrEmpty(settings.CertificateFindValue))
+			{
+				try
+				{
+					StoreLocation location;
+					StoreName name;
+					X509FindType findType;
+					if (!Enum.TryParse(settings.CertificateStoreLocation, out location))
+					{
+						warning = "Invalid Store Location, valid values are 'LocalMachine' or 'CurrentUser'!";
+						return false;
+					}
+					if (!Enum.TryParse(settings.CertificateStoreName, out name))
+					{
+						warning = "Invalid Store Name!";
+						return false;
+
+					}
+					if (!Enum.TryParse(settings.CertificateFindType, out findType))
+					{
+						warning = "Invalid FindType!";
+						return false;
+					}
+
+					var store = new X509Store(name, location);
+					store.Open(OpenFlags.ReadOnly);
+					var cert = store.Certificates.Find(findType, settings.CertificateFindValue, true);
+					if (cert != null && cert.Count > 0) return true;
+					else
+					{
+						warning = "Certificate not foud!";
+						return false;	
+					}
+				}
+				catch
+				{
+					warning = "Certificate not found!";
+					return false;
+				}
+			}
+			else
+			{
+				warning = "Certificate not found!";
+				return false;
+			}
+			warning = "Certificate not found!";
+			return false;
+		}
 		public override UI.SetupWizard Finish()
 		{
 			Pages.Add(() =>
@@ -644,7 +1133,8 @@ SolidCP Installer successfully has:
 
 [  Finish  ]")
 					.ShowDialog();
-				} else
+				}
+				else
 				{
 					var form = new ConsoleForm($@"
 Installation Failed
@@ -659,27 +1149,29 @@ Exception Message: {Installer.Error.SourceException.Message}
 				Installer.Current.UpdateSettings();
 				Installer.Current.Cleanup();
 
-				UI.RunMainUI();
-				UI.Exit();
+				Exit();
 			});
 			return this;
 		}
 
 		private void SetProgressValue(int value)
 		{
+			float fvalue = 0;
 			if (value > 0)
 			{
-				if (value < 100) value = (ProgressMaximum * value / (5 * 100));
-				else value = (ProgressMaximum / 5) + (int)(ProgressMaximum * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
+				if (value < 100) fvalue = (ProgressMaximum * (float)value / (5f * 100f));
+				else fvalue = (ProgressMaximum / 5f) + (float)(((float)ProgressMaximum - (float)ProgressMaximum / 5f) * (1 - Math.Exp(-2 * (double)(value - 100) / Installer.Current.EstimatedOutputLines)));
 			}
 			var ui = UI as ConsoleUI;
-			if (ui.InstallationProgress.Progress.Value != value)
+			fvalue = fvalue / ProgressMaximum;
+			if (ui.InstallationProgress.Progress.Value != fvalue)
 			{
-				ui.InstallationProgress.Progress.Value = value;
+				ui.InstallationProgress.Progress.Value = fvalue;
 			}
 		}
 
-		private void SetProgressText(string text) {
+		private void SetProgressText(string text)
+		{
 			var ui = UI as ConsoleUI;
 			ui.ShowInstallationProgress(null, text);
 		}
@@ -694,7 +1186,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 				var reportProgress = () => SetProgressValue(n++);
 				Installer.Current.Log.OnWrite += reportProgress;
 				Installer.Current.OnInfo += SetProgressText;
-				Installer.Current.OnError += UI.ShowError;
+				//Installer.Current.OnError += UI.ShowError;
 
 				Installer.Current.WaitForDownloadToComplete();
 
@@ -702,7 +1194,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 
 				Installer.Current.Log.OnWrite -= reportProgress;
 				Installer.Current.OnInfo -= SetProgressText;
-				Installer.Current.OnError -= UI.ShowError;
+				//Installer.Current.OnError -= UI.ShowError;
 
 				Next();
 			});
@@ -721,10 +1213,7 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 
 [*  Cancel  ]  [  Uninstall  ]")
 				.ShowDialog();
-				if (form["Cancel"].Clicked)
-				{
-					UI.RunMainUI();
-				}
+				if (form["Cancel"].Clicked) Cancel();
 				else Next();
 			});
 			return this;
@@ -734,14 +1223,22 @@ If you proceed, the installer will completely uninstall {settings.ComponentName}
 		{
 			try
 			{
+				UI.EndWaitCursor();
+
 				while (!HasExited) Current();
 
 				Installer.Current.UpdateSettings();
 
 				return true;
-			} catch (Exception ex)
+			}
+			catch (Exception ex)
 			{
+				UI.ShowError(ex);
 				return false;
+			}
+			finally
+			{
+				Installer.Current.Cleanup();
 			}
 		}
 	}
@@ -789,7 +1286,8 @@ Password: [!ProxyPassword                           ]
 					f["ProxyAddress"].Text = Settings.Installer.Proxy.Address;
 					f["ProxyUsername"].Text = Settings.Installer.Proxy.Username;
 					f["ProxyPassword"].Text = Settings.Installer.Proxy.Password;
-				} else
+				}
+				else
 				{
 					f[2].Checked = false;
 					f["ProxyAddress"].Text = f["ProxyUsername"].Text = f["ProxyPassword"].Text = "";
@@ -818,7 +1316,7 @@ Password: [!ProxyPassword                           ]
 		{
 			CheckForInstallerUpdate();
 		}
-		
+
 		RunMainUI();
 	}
 
@@ -830,7 +1328,7 @@ Password: [!ProxyPassword                           ]
 		str.AppendLine();
 		//load components via web service
 		var releases = Installer.Current.Releases;
-		
+
 		ShowWaitCursor();
 		var components = releases.GetAvailableComponents();
 		EndWaitCursor();
@@ -878,6 +1376,7 @@ Password: [!ProxyPassword                           ]
 		else
 		{
 			Installer.Current.Install(component);
+			RunMainUI();
 		}
 	}
 	public void InstalledComponents()
@@ -924,22 +1423,22 @@ Password: [!ProxyPassword                           ]
 		str.AppendLine("[  Back  ]  [  Check for Updates  ]  [  Uninstall  ]  [  Settings  ]");
 		var form = new ConsoleForm(str.ToString())
 			.ShowDialog();
-		if (form["Back"].Clicked) AvailableComponents();
+		if (form["Back"].Clicked) InstalledComponents();
 		else if (form["Check for Updates"].Clicked)
 		{
 			CheckForUpdate(component);
-		} else if (form["Unintsall"].Clicked)
+		}
+		else if (form["Uninstall"].Clicked)
 		{
 			Installer.Current.Uninstall(component);
-		} else if (form["Settings"].Clicked)
+			RunMainUI();
+		}
+		else if (form["Settings"].Clicked)
 		{
 			Installer.Current.Setup(component);
-		}
-		{
-			Installer.Current.Install(component);
+			RunMainUI();
 		}
 	}
-
 
 	public void CheckForUpdate(ComponentInfo component)
 	{
@@ -1174,9 +1673,20 @@ Enterprise Server Url: [?EnterpriseServerUrl http://localhost:9002              
 
 	public override void ShowError(Exception ex)
 	{
-		Console.Clear();
-		Console.WriteLine("Error:");
-		Console.WriteLine(ex.ToString());
+		var form = new ConsoleForm(@$"Error:
+======
+
+An error occurred during installation: {ex.Message}. Please consult the log file.
+
+[  Show Error Details  ]  [  Cancel  ]");
+		form.ShowDialog();
+		if (form[0].Clicked)
+		{
+			Console.Clear();
+			Console.WriteLine("Error:");
+			Console.WriteLine(ex.ToString());
+			Console.ReadKey();
+		}
 	}
 
 	const int ProgressMaximum = 1000;
@@ -1384,33 +1894,36 @@ Checking System Requirements
 				form[0].Text = "!";
 				ok = false;
 			}
-			form["OS"].Text = " "+Regex.Replace(OSInfo.Description, @"(?<=[0-9]+)\.[0-9.]*", "");
+			form["OS"].Text = " " + Regex.Replace(OSInfo.Description, @"(?<=[0-9]+)\.[0-9.]*", "");
 			form.Show();
 			if (Installer.CheckNetVersionSupported()) form[2].Text = "x";
-			else {
+			else
+			{
 				form[2].Text = "!";
 				ok = false;
 			}
-			form["NET"].Text = " "+OSInfo.NetDescription;
+			form["NET"].Text = " " + OSInfo.NetDescription;
 			form.Show();
 			if (Installer.CheckIISVersionSupported()) form[4].Text = "x";
-			else {
+			else
+			{
 				form[4].Text = "!";
 				ok = false;
 			}
 			form["IIS"].Text = $" IIS {OSInfo.Current.WebServer.Version}";
 			form.Show();
-		} else
+		}
+		else
 		{
 			var form = new ConsoleForm(@"
 Checking System Requirements
 ============================
 
-[x] Operating System:  [?OS                                ]
-[x] .NET 8 Runtime:    [?NET                                ]
-[x] SystemD:           [?SysD                                ]
+  [x] Operating System: [?OS                                ]
+  [x] .NET 8 Runtime:   [?NET                                ]
+  [x] Init System:      [?SysD                                ]
 
-[    OK    ]
+  [    OK    ]
 ");
 			form["OK"].HasFocus = true;
 			form.Show();
@@ -1420,7 +1933,7 @@ Checking System Requirements
 				form[0].Text = "!";
 				ok = false;
 			}
-			form["OS"].Text = " "+OSInfo.Description;
+			form["OS"].Text = " " + OSInfo.Description;
 			form.Show();
 			if (Installer.CheckNet8RuntimeInstalled())
 			{
@@ -1433,22 +1946,28 @@ Checking System Requirements
 				form["NET"].Text = " Not Installed";
 			}
 			form.Show();
-			if (Installer.CheckSystemdSupported())
+			if (Installer.CheckInitSystemSupported())
 			{
+				string system = "";
+				if (Installer.IsSystemd) system = "SystemD";
+				else if (Installer.IsOpenRC) system = "OpenRC";
+				else if (Installer.IsMac) system = "LaunchD";
+				else throw new NotSupportedException("Only SystemD, OpenRC & LaunchD are supported.");
 				form[4].Text = "x";
-				form["SysD"].Text = " SystemD Supported";
+				form["SysD"].Text = $" {system} Supported";
 			}
 			else
 			{
 				form[4].Text = "!";
-				form["SysD"].Text = " SystemD not Supported";
+				form["SysD"].Text = " Init System not supported";
 				ok = false;
 			}
 
 			form.Show();
 		}
 		ConsoleKeyInfo key;
-		do {
+		do
+		{
 			key = Console.ReadKey();
 		} while (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Spacebar);
 
@@ -1508,7 +2027,7 @@ SolidCP cannot be installed on this System.
 
 			if (form["Up"].Clicked) Y = Math.Max(0, Y - height);
 			else if (form["Down"].Clicked) Y = Math.Min(lines.Count, Y + height);
-		} while (!form["Exit"].Clicked); 
+		} while (!form["Exit"].Clicked);
 	}
 
 	public override void ShowWarning(string msg)
@@ -1521,6 +2040,7 @@ SolidCP cannot be installed on this System.
 	}
 
 	bool downloadComplete = false;
+	int maxProgress = 200;
 	public override bool DownloadSetup(RemoteFile file, bool setupOnly = false)
 	{
 		var loader = Core.SetupLoaderFactory.CreateFileLoader(file);
@@ -1528,6 +2048,7 @@ SolidCP cannot be installed on this System.
 		ShowInstallationProgress("Download and Extract Component");
 		loader.OperationCompleted += DownloadAndUnzipCompleted;
 		loader.DownloadComplete += DownloadCompleted;
+		loader.NoUnzipStatus += (sender, args) => maxProgress = 100;
 		loader.SetupOnly = setupOnly;
 		loader.LoadAppDistributive();
 
@@ -1543,7 +2064,7 @@ SolidCP cannot be installed on this System.
 	}
 	void DownloadProgressChanged(object sender, Core.LoaderEventArgs<int> args)
 	{
-		InstallationProgress.Progress.Value = (float)args.EventData / 200 + delta;
+		InstallationProgress.Progress.Value = (float)args.EventData / maxProgress + delta;
 	}
 
 	void DownloadAndUnzipCompleted(object sender, EventArgs args)
@@ -1566,31 +2087,37 @@ SolidCP cannot be installed on this System.
 	private bool CursorVisibleAfterWaitCursor;
 	public override void ShowWaitCursor()
 	{
-		if (!Directory.Exists(Settings.Installer.TempPath)) Directory.CreateDirectory(Settings.Installer.TempPath);
+		if (Settings.Installer.TempPath == null) Settings.Installer.TempPath = FileUtils.GetTempDirectory();
+
+		var dir = Path.GetDirectoryName(CancelFile);
+		if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
 		Console.Clear();
-		var write = (string txt) =>
+		var write = async (string txt) =>
 		{
 			if (CancelWaitCursor.Token.IsCancellationRequested || File.Exists(CancelFile)) throw new Exception();
 			Console.SetCursorPosition(Console.WindowWidth / 2, Console.WindowHeight / 2);
 			Console.Write(txt);
-			Thread.Sleep(333);
+			await Task.Delay(333);
 		};
-		write("|");
+		CancelWaitCursor = new CancellationTokenSource();
+		if (File.Exists(CancelFile)) File.Delete(CancelFile);
 		CursorVisibleAfterWaitCursor = false; // Console.CursorVisible;
 		Console.CursorVisible = false;
-		Task.Run(() =>
+		Task.Run(async () =>
 		{
 			try
 			{
 				while (true)
 				{
-					write("/");
-					write("-");
-					write("\\");
-					write("|");
+					await write("/");
+					await write("-");
+					await write("\\");
+					await write("|");
 				}
 			}
-			catch {
+			catch
+			{
 				CancelWaitCursor = new CancellationTokenSource();
 				if (File.Exists(CancelFile)) File.Delete(CancelFile);
 			}
@@ -1599,6 +2126,8 @@ SolidCP cannot be installed on this System.
 
 	public override void EndWaitCursor()
 	{
+		var dir = Path.GetDirectoryName(CancelFile);
+		if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
 		File.WriteAllText(CancelFile, "");
 		CancelWaitCursor.Cancel();
 	}

@@ -8,7 +8,7 @@
     <description>Express setup for standalone server configuration. It installs Portal, Enterprise, and Server components on the same server and configures SolidCP using sample settings.</description>
     <releases>
       <release version="1.5.1" date="17/12/2024" available="true" beta="false">
-        <releaseFileID>150</releaseFileID>
+        <releaseFileID>151</releaseFileID>
         <fullFilePath>~/Files/1.5.1/SolidCP-StandaloneServerSetup.zip</fullFilePath>
         <upgradeFilePath></upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -22,28 +22,28 @@
         <installerType>SolidCP.Setup.StandaloneServerSetup150</installerType>
       </release>
        <release version="1.4.9" date="31/01/2023" available="true" beta="false">
-        <releaseFileID>145</releaseFileID>
+        <releaseFileID>149</releaseFileID>
         <fullFilePath>~/Files/1.4.9/SolidCP-StandaloneServerSetup.zip</fullFilePath>
         <upgradeFilePath></upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.StandaloneServerSetup145</installerType>
       </release>
        <release version="1.4.8" date="23/05/2021" available="true" beta="false">
-        <releaseFileID>145</releaseFileID>
+        <releaseFileID>148</releaseFileID>
         <fullFilePath>~/Files/1.4.8/SolidCP-StandaloneServerSetup.zip</fullFilePath>
         <upgradeFilePath></upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.StandaloneServerSetup145</installerType>
       </release>
       <release version="1.4.7" date="08/11/2020" available="true" beta="false">
-        <releaseFileID>145</releaseFileID>
+        <releaseFileID>147</releaseFileID>
         <fullFilePath>~/Files/1.4.7/SolidCP-StandaloneServerSetup.zip</fullFilePath>
         <upgradeFilePath></upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.StandaloneServerSetup145</installerType>
       </release>
       <release version="1.4.6" date="02/03/2020" available="true" beta="false">
-        <releaseFileID>145</releaseFileID>
+        <releaseFileID>146</releaseFileID>
         <fullFilePath>~/Files/1.4.6/SolidCP-StandaloneServerSetup.zip</fullFilePath>
         <upgradeFilePath></upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -162,7 +162,7 @@
     <description>SolidCP Portal is a user interface to the control panel which allows managing user accounts, hosting spaces, web sites, FTP accounts, files, etc.</description>
     <releases>
       <release version="1.5.1" date="17/12/2024" available="true" beta="false">
-        <releaseFileID>250</releaseFileID>
+        <releaseFileID>251</releaseFileID>
         <fullFilePath>~/Files/1.5.1/SolidCP-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.5.1/SolidCP-Portal-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -176,28 +176,28 @@
         <installerType>SolidCP.Setup.Portal150</installerType>
       </release>
       <release version="1.4.9" date="31/01/2023" available="true" beta="false">
-        <releaseFileID>245</releaseFileID>
+        <releaseFileID>249</releaseFileID>
         <fullFilePath>~/Files/1.4.9/SolidCP-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.9/SolidCP-Portal-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Portal145</installerType>
       </release>
       <release version="1.4.8" date="23/05/2021" available="true" beta="false">
-        <releaseFileID>245</releaseFileID>
+        <releaseFileID>248</releaseFileID>
         <fullFilePath>~/Files/1.4.8/SolidCP-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.8/SolidCP-Portal-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Portal145</installerType>
       </release>
       <release version="1.4.7" date="08/11/2020" available="true" beta="false">
-        <releaseFileID>245</releaseFileID>
+        <releaseFileID>247</releaseFileID>
         <fullFilePath>~/Files/1.4.7/SolidCP-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.7/SolidCP-Portal-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Portal145</installerType>
       </release>
       <release version="1.4.6" date="02/03/2020" available="true" beta="false">
-        <releaseFileID>245</releaseFileID>
+        <releaseFileID>246</releaseFileID>
         <fullFilePath>~/Files/1.4.6/SolidCP-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.6/SolidCP-Portal-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -316,7 +316,7 @@
     <description>Enterprise Server is the core of SolidCP system. It includes all business logic of the application. Enterprise Server should have access to Server and be accessible from Portal applications.</description>
     <releases>
       <release version="1.5.1" date="17/12/2024" available="true" beta="false">
-        <releaseFileID>350</releaseFileID>
+        <releaseFileID>351</releaseFileID>
         <fullFilePath>~/Files/1.5.1/SolidCP-EnterpriseServer.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.5.1/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -330,28 +330,28 @@
         <installerType>SolidCP.Setup.EnterpriseServer150</installerType>
       </release>
     <release version="1.4.9" date="31/01/2023" available="true" beta="false">
-        <releaseFileID>345</releaseFileID>
+        <releaseFileID>349</releaseFileID>
         <fullFilePath>~/Files/1.4.9/SolidCP-EnterpriseServer.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.9/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.EnterpriseServer145</installerType>
       </release>
       <release version="1.4.8" date="23/05/2021" available="true" beta="false">
-        <releaseFileID>345</releaseFileID>
+        <releaseFileID>348</releaseFileID>
         <fullFilePath>~/Files/1.4.8/SolidCP-EnterpriseServer.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.8/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.EnterpriseServer145</installerType>
       </release>
       <release version="1.4.7" date="08/11/2020" available="true" beta="false">
-        <releaseFileID>345</releaseFileID>
+        <releaseFileID>347</releaseFileID>
         <fullFilePath>~/Files/1.4.7/SolidCP-EnterpriseServer.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.7/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.EnterpriseServer145</installerType>
       </release>
       <release version="1.4.6" date="02/03/2020" available="true" beta="false">
-        <releaseFileID>345</releaseFileID>
+        <releaseFileID>346</releaseFileID>
         <fullFilePath>~/Files/1.4.6/SolidCP-EnterpriseServer.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.6/SolidCP-EnterpriseServer-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -470,7 +470,7 @@
     <description>SolidCP Server is a set of services running on the remote server to be controlled. Server application should be reachable from Enterprise Server one.</description>
     <releases>
       <release version="1.5.1" date="17/12/2024" available="true" beta="false">
-        <releaseFileID>450</releaseFileID>
+        <releaseFileID>451</releaseFileID>
         <fullFilePath>~/Files/1.5.1/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.5.1/SolidCP-Server-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -484,28 +484,28 @@
         <installerType>SolidCP.Setup.Server150</installerType>
       </release>
     <release version="1.4.9" date="31/01/2023" available="true" beta="false">
-        <releaseFileID>445</releaseFileID>
+        <releaseFileID>449</releaseFileID>
         <fullFilePath>~/Files/1.4.9/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.9/SolidCP-Server-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Server145</installerType>
       </release>
       <release version="1.4.8" date="23/05/2021" available="true" beta="false">
-        <releaseFileID>445</releaseFileID>
+        <releaseFileID>448</releaseFileID>
         <fullFilePath>~/Files/1.4.8/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.8/SolidCP-Server-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Server145</installerType>
       </release>
       <release version="1.4.7" date="08/11/2020" available="true" beta="false">
-        <releaseFileID>445</releaseFileID>
+        <releaseFileID>447</releaseFileID>
         <fullFilePath>~/Files/1.4.7/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.7/SolidCP-Server-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Server145</installerType>
       </release>
       <release version="1.4.6" date="02/03/2020" available="true" beta="false">
-        <releaseFileID>445</releaseFileID>
+        <releaseFileID>446</releaseFileID>
         <fullFilePath>~/Files/1.4.6/SolidCP-Server.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.6/SolidCP-Server-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -624,7 +624,7 @@
     <description>SolidCP Server asp.net 2.0 is a SolidCP Server module for Exchange 2010. It has limited functionality mainly aimed to support software that can not run on asp.net 4.5 (like exchange 2010).</description>
     <releases>
       <release version="1.5.1" date="17/12/2024" available="true" beta="false">
-        <releaseFileID>650</releaseFileID>
+        <releaseFileID>651</releaseFileID>
         <fullFilePath>~/Files/1.5.1/SolidCP-Server-asp-v2.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.5.1/SolidCP-Server-asp-v2-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -638,28 +638,28 @@
         <installerType>SolidCP.Setup.Serveraspv2150</installerType>
       </release>
     <release version="1.4.9" date="31/01/2023" available="true" beta="false">
-        <releaseFileID>645</releaseFileID>
+        <releaseFileID>649</releaseFileID>
         <fullFilePath>~/Files/1.4.9/SolidCP-Server-asp-v2.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.9/SolidCP-Server-asp-v2-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Serveraspv2145</installerType>
       </release>
       <release version="1.4.8" date="23/05/2021" available="true" beta="false">
-        <releaseFileID>645</releaseFileID>
+        <releaseFileID>648</releaseFileID>
         <fullFilePath>~/Files/1.4.8/SolidCP-Server-asp-v2.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.8/SolidCP-Server-asp-v2-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Serveraspv2145</installerType>
       </release>
       <release version="1.4.7" date="08/11/2020" available="true" beta="false">
-        <releaseFileID>645</releaseFileID>
+        <releaseFileID>647</releaseFileID>
         <fullFilePath>~/Files/1.4.7/SolidCP-Server-asp-v2.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.7/SolidCP-Server-asp-v2-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.Serveraspv2145</installerType>
       </release>
       <release version="1.4.6" date="02/03/2020" available="true" beta="false">
-        <releaseFileID>645</releaseFileID>
+        <releaseFileID>646</releaseFileID>
         <fullFilePath>~/Files/1.4.6/SolidCP-Server-asp-v2.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.6/SolidCP-Server-asp-v2-Update.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -735,7 +735,7 @@
     <description>SolidCP Cloud Storage Portal is a client frontend for viewing and editing their Cloud (WebDav) storage files.</description>
     <releases>
       <release version="1.5.1" date="17/12/2024" available="true" beta="false">
-        <releaseFileID>550</releaseFileID>
+        <releaseFileID>551</releaseFileID>
         <fullFilePath>~/Files/1.5.1/SolidCP-Web-Dav-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.5.1/SolidCP-Web-Dav-Portal.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -749,28 +749,28 @@
         <installerType>SolidCP.Setup.WebDavPortal150</installerType>
       </release>
     <release version="1.4.9" date="31/01/2023" available="true" beta="false">
-        <releaseFileID>545</releaseFileID>
+        <releaseFileID>549</releaseFileID>
         <fullFilePath>~/Files/1.4.9/SolidCP-Web-Dav-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.9/SolidCP-Web-Dav-Portal.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.WebDavPortal145</installerType>
       </release>
        <release version="1.4.8" date="23/05/2021" available="true" beta="false">
-        <releaseFileID>545</releaseFileID>
+        <releaseFileID>548</releaseFileID>
         <fullFilePath>~/Files/1.4.8/SolidCP-Web-Dav-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.8/SolidCP-Web-Dav-Portal.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.WebDavPortal145</installerType>
       </release>
       <release version="1.4.7" date="08/11/2020" available="true" beta="false">
-        <releaseFileID>545</releaseFileID>
+        <releaseFileID>547</releaseFileID>
         <fullFilePath>~/Files/1.4.7/SolidCP-Web-Dav-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.7/SolidCP-Web-Dav-Portal.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
         <installerType>SolidCP.Setup.WebDavPortal145</installerType>
       </release>
       <release version="1.4.6" date="02/03/2020" available="true" beta="false">
-        <releaseFileID>545</releaseFileID>
+        <releaseFileID>546</releaseFileID>
         <fullFilePath>~/Files/1.4.6/SolidCP-Web-Dav-Portal.zip</fullFilePath>
         <upgradeFilePath>~/Files/1.4.6/SolidCP-Web-Dav-Portal.zip</upgradeFilePath>
         <installerPath>setup\setup.dll</installerPath>
@@ -884,17 +884,54 @@
     </releases>
   </component>
 
-  <!-- SolidCP Installer -->
-  <component application="SolidCP Installer" name="Installer Core Files" code="cfg core">
-    <description>Installer Core Files</description>
-    <releases>
-      <release version="1.0.1" date="06/03/2016" available="false" beta="false">
-        <releaseFileID>501</releaseFileID>
-        <fullFilePath></fullFilePath>
-        <upgradeFilePath></upgradeFilePath>
-        <installerPath></installerPath>
-        <installerType></installerType>
-      </release>
-    </releases>
-  </component>
+    <!-- SolidCP Installer -->
+    <component application="SolidCP Installer" name="Installer Core Files" code="cfg core">
+        <description>Installer Core Files</description>
+        <platforms>Windows</platforms>
+        <releases>
+            <release version="2.0.0" date="05/26/2025" available="false" beta="false">
+                <releaseFileID>803</releaseFileID>
+                <fullFilePath></fullFilePath>
+                <upgradeFilePath>~/Files/2.0.0/SolidCP-Installer-2.0.0.zip</upgradeFilePath>
+                <installerPath></installerPath>
+                <installerType></installerType>
+            </release>
+            <release version="1.0.1" date="06/03/2016" available="false" beta="false">
+                <releaseFileID>801</releaseFileID>
+                <fullFilePath></fullFilePath>
+                <upgradeFilePath></upgradeFilePath>
+                <installerPath></installerPath>
+                <installerType></installerType>
+            </release>
+        </releases>
+    </component>
+
+    <component application="SolidCP Installer" name="Installer Core Files" code="cfg core unix">
+        <description>Installer Core Files</description>
+        <platforms>Unix</platforms>
+        <releases>
+            <release version="2.0.0" date="05/26/2025" available="false" beta="false">
+                <releaseFileID>802</releaseFileID>
+                <fullFilePath></fullFilePath>
+                <upgradeFilePath>~/Files/2.0.0/SolidCP-Installer-Unix-2.0.0.zip</upgradeFilePath>
+                <installerPath></installerPath>
+                <installerType></installerType>
+            </release>
+        </releases>
+    </component>
+
+    <!-- Setup2.dll -->
+    <component application="setup2.dll" name="setup2.dll" code="setup2">
+        <description>Setup2.dll</description>
+        <releases>
+            <release version="2.0.0" date="05/06/2025" available="false" beta="false">
+                <releaseFileID>700</releaseFileID>
+                <fullFilePath>~/Files/2.0.0/Setup2.dll</fullFilePath>
+                <upgradeFilePath></upgradeFilePath>
+                <installerPath></installerPath>
+                <installerType></installerType>
+            </release>
+        </releases>
+    </component>
+
 </components>

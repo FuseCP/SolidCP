@@ -94,55 +94,84 @@ namespace SolidCP.Web.Services
 		static string AltCryptoKey = null;
 		static bool? EncryptionEnabled = null;
 		static string ExposeWebServices = null;
+		static ulong? HttpFile = null;
+		static ulong? HttpsFile = null;
+		static ulong? NetTcpFile = null;
+		static TimeSpan IdleShutdownTime = default;
+
+		static X509Certificate2 GetCertificate()
+		{
+			if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
+			{
+				if (!string.IsNullOrEmpty(CertificateName))
+				{
+					X509Store store = new X509Store(StoreName, StoreLocation);
+					store.Open(OpenFlags.ReadOnly);
+					Certificate = store.Certificates.Find(FindType, CertificateName, false).FirstOrDefault();
+					if (Certificate != null) Log($"Use certificate {Certificate.GetNameInfo(X509NameType.SimpleName, false)} {Certificate.FriendlyName} found in {StoreName} at {StoreLocation}");
+					else Error($"Certificate for {CertificateName} not found in {StoreName} at {StoreLocation}");
+					return Certificate;
+				}
+			}
+			else
+			{
+				var file = new FileInfo(CertificateFile).FullName;
+				if (File.Exists(file))
+				{
+					if (!string.IsNullOrEmpty(KeyFile))
+					{
+						var keyFile = new FileInfo(KeyFile).FullName;
+						if (File.Exists(keyFile)) CertificatePassword = File.ReadAllText(keyFile);
+					}
+					var certs = new X509Certificate2Collection();
+
+					certs.Import(file, CertificatePassword, X509KeyStorageFlags.DefaultKeySet);
+					Certificate = certs.FirstOrDefault();
+					if (Certificate != null) Log($"Use certificate {Certificate.SubjectName} from {file}.");
+					else Error($"The certificate {file} was not found.");
+					return Certificate;
+				}
+			}
+			Error("No certificate specified.");
+			return null;
+		}
 
 		public static void Init(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-			Configuration.ProbingPaths = builder.Configuration["probingPaths"];
-			AssemblyLoaderNetCore.Init();
-			string urls = null;
-			var urlsParPos = Array.IndexOf(args, "--urls");
-			if (urlsParPos >= 0 && urlsParPos < args.Length - 1) urls = args[urlsParPos + 1];
-			urls = urls ?? Environment.GetEnvironmentVariable("ASPNETCORE_URLS") ??
-				Environment.GetEnvironmentVariable("DOTNET_URLS") ??
-				builder.Configuration["applicationUrls"];
-			foreach (var url in urls.Split(';'))
-			{
-				var uri = new Uri(url);
-				if (uri.Scheme == "http")
-				{
-					Configuration.HttpPort = HttpPort = uri.Port;
-					Configuration.HttpHost = HttpHost = uri.Host;
-				}
-				else if (uri.Scheme == "https")
-				{
-					Configuration.HttpsPort = HttpsPort = uri.Port;
-					Configuration.HttpsHost = HttpsHost = uri.Host;
-				}
-				else if (uri.Scheme == "net.tcp")
-				{
-					Configuration.NetTcpPort = uri.Port;
-					Configuration.NetTcpHost = uri.Host;
-				}
-			}
-			Configuration.StoreLocation = StoreLocation = builder.Configuration.GetValue<StoreLocation?>("ServerCertificate:StoreLocation") ?? StoreLocation.LocalMachine;
-			Configuration.StoreName = StoreName = builder.Configuration.GetValue<StoreName?>("ServerCertificate:StoreName") ?? StoreName.My;
-			Configuration.FindType = FindType = builder.Configuration.GetValue<X509FindType?>("ServerCertificate:FindType") ?? X509FindType.FindBySubjectName;
-			Configuration.CertificateName = CertificateName = builder.Configuration.GetValue<string>("ServerCertificate:Name") ?? null;
-			Configuration.CertificateFile = CertificateFile = builder.Configuration.GetValue<string>("ServerCertificate:File");
-			Configuration.CertificatePassword = CertificatePassword = builder.Configuration.GetValue<string>("ServerCertificate:Password");
-			Configuration.Password = Password = builder.Configuration.GetValue<string>("Server:Password") ?? String.Empty;
-			Configuration.AllowedHosts = AllowedHosts = builder.Configuration.GetValue<string>("AllowedHosts") ?? "*";
-			Configuration.TraceLevel = TraceLevel = builder.Configuration.GetValue<TraceLevel?>("TraceLevel") ?? TraceLevel.Off;
-			Configuration.KeyFile = KeyFile = builder.Configuration.GetValue<string>("ServerCertificate:KeyFile");
-			Configuration.ExposeWebServices = ExposeWebServices = builder.Configuration.GetValue<string>("exposeWebServices") ?? "";
-			Configuration.WebApplicationsPath = WebApplicationsPath = builder.Configuration.GetValue<string>("EnterpriseServer:WebApplicationPath");
-			Configuration.ServerRequestTimeout = ServerRequestTimeout = builder.Configuration.GetValue<int?>("EnterpriseServer:ServerRequestTimeout") ?? -1;
-			Configuration.ConnectionString = ConnectionString = builder.Configuration.GetValue<string>("EnterpriseServer:ConnectionString");
-			Configuration.AltConnectionString = AltConnectionString = builder.Configuration.GetValue<string>("EnterpriseServer:AltConnectionString");
-			Configuration.CryptoKey = CryptoKey = builder.Configuration.GetValue<string>("EnterpriseServer:CryptoKey");
-			Configuration.AltCryptoKey = AltCryptoKey = builder.Configuration.GetValue<string>("EnterpriseServer:AltCryptoKey");
-			Configuration.EncryptionEnabled = EncryptionEnabled = builder.Configuration.GetValue<bool?>("EnterpriseServer:EncryptionEnabled");
+
+			Configuration.Read(builder.Configuration, args);
+
+			HttpPort = Configuration.HttpPort;
+			HttpHost = Configuration.HttpHost;
+			HttpFile = Configuration.HttpFile;
+			HttpsPort = Configuration.HttpsPort;
+			HttpsHost = Configuration.HttpsHost;
+			HttpsFile = Configuration.HttpsFile;
+			NetTcpPort = Configuration.NetTcpPort;
+			NetTcpHost = Configuration.NetTcpHost;
+			NetTcpFile = Configuration.NetTcpFile;
+			StoreLocation = Configuration.StoreLocation;
+			StoreName = Configuration.StoreName;
+			FindType = Configuration.FindType;
+			CertificateName = Configuration.CertificateName;
+			CertificateFile = Configuration.CertificateFile;
+			CertificatePassword = Configuration.CertificatePassword;
+			Password = Configuration.Password;
+			AllowedHosts = Configuration.AllowedHosts;
+			TraceLevel = Configuration.TraceLevel;
+			KeyFile = Configuration.KeyFile;
+			ExposeWebServices = Configuration.ExposeWebServices;
+			WebApplicationsPath = Configuration.WebApplicationsPath;
+			ServerRequestTimeout = Configuration.ServerRequestTimeout;
+			ConnectionString = Configuration.ConnectionString;
+			AltConnectionString = Configuration.AltConnectionString;
+			CryptoKey = Configuration.CryptoKey;
+			AltCryptoKey = Configuration.AltCryptoKey;
+			EncryptionEnabled = Configuration.EncryptionEnabled;
+			TraceLevel = Configuration.TraceLevel;
+			IsLocalService = Configuration.IsLocalService;
+			IdleShutdownTime = Configuration.IdleShutdownTime;
 
 			if (TraceLevel != TraceLevel.Off)
 			{
@@ -150,13 +179,19 @@ namespace SolidCP.Web.Services
 				Trace.Listeners.Add(listener);
 				Log($"Trace level set to {TraceLevel}");
 			}
-			Configuration.IsLocalService = Configuration.AllowedHosts.Split(';')
-				.All(host => host != "*" && host != "0.0.0.0" && DnsService.IsHostLAN(host)); // local network ip
 
 			Server.ConfigurationComplete?.Invoke();
 
 			builder.Services.AddRazorPages();
 			builder.Services.AddHttpContextAccessor();
+			if (IdleShutdownTime != default && OSInfo.IsSystemd &&
+				(HttpFile.HasValue || HttpsFile.HasValue || NetTcpFile.HasValue))
+			{
+				Console.WriteLine($"Idle shutdown time set to {IdleShutdownTime}");
+				builder.Services.AddSingleton<ISystemdNotifier, SystemdNotifier>();
+				builder.Services.AddHostedService<IdleShutdownService>();
+			}
+
 			if (OSInfo.IsSystemd)
 			{
 				builder.Host.UseSystemd();
@@ -183,65 +218,55 @@ namespace SolidCP.Web.Services
 			}
 			else
 			{
+				if (NetTcpPort.HasValue) builder.WebHost.UseNetTcp(NetTcpPort.Value);
+
 				builder.WebHost.UseKestrel(options =>
 				{
 					options.AllowSynchronousIO = true;
-					if (OSInfo.IsSystemd)
+
+					if (OSInfo.IsSystemd && !HttpFile.HasValue && !HttpsFile.HasValue && !NetTcpFile.HasValue)
 					{
 						options.UseSystemd();
 					}
 
-					if (HttpPort.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
+					if (HttpPort.HasValue && !HttpFile.HasValue) options.ListenAnyIP(HttpPort.Value, listenOptions =>
+					{
+						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+					});
+					if (HttpsPort.HasValue && !HttpsFile.HasValue) options.ListenAnyIP(HttpsPort.Value, listenOptions =>
+					{
+						listenOptions.UseHttps(listenOptions =>
 						{
-							if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+							// if (Certificate == null) return;
+							Certificate = GetCertificate();
+							listenOptions.ServerCertificate = Certificate;
+
 						});
-					if (HttpsPort.HasValue) options.ListenAnyIP(HttpsPort.Value, listenOptions =>
+
+						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+					});
+					if (HttpFile.HasValue) options.ListenHandle(HttpFile.Value, listenOptions =>
+					{
+						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+					});
+					if (HttpsFile.HasValue) options.ListenHandle(HttpsFile.Value, listenOptions =>
+					{
+						listenOptions.UseHttps(listenOptions =>
 						{
-							listenOptions.UseHttps(listenOptions =>
-								{
-									if (string.IsNullOrEmpty(CertificateFile) || string.IsNullOrEmpty(CertificatePassword))
-									{
-										if (!string.IsNullOrEmpty(CertificateName))
-										{
-											X509Store store = new X509Store(StoreName, StoreLocation);
-											store.Open(OpenFlags.ReadOnly);
-											Certificate = store.Certificates.Find(FindType, CertificateName, false).FirstOrDefault();
-											if (Certificate != null) Log($"Use certificate {Certificate.GetNameInfo(X509NameType.SimpleName, false)} {Certificate.FriendlyName} found in {StoreName} at {StoreLocation}");
-											else Error($"Certificate for {CertificateName} not found in {StoreName} at {StoreLocation}");
-										}
-									}
-									else
-									{
-										var file = new FileInfo(CertificateFile).FullName;
-										if (File.Exists(file))
-										{
-											if (!string.IsNullOrEmpty(KeyFile))
-											{
-												var keyFile = new FileInfo(KeyFile).FullName;
-												if (File.Exists(keyFile)) CertificatePassword = File.ReadAllText(keyFile);
-											}
-											var certs = new X509Certificate2Collection();
+							Certificate = GetCertificate();
+							listenOptions.ServerCertificate = Certificate;
 
-											certs.Import(file, CertificatePassword, X509KeyStorageFlags.DefaultKeySet);
-											Certificate = certs.FirstOrDefault();
-											if (Certificate != null) Log($"Use certificate {Certificate.SubjectName} from {file}.");
-											else Error($"The certificate {file} was not found.");
-										}
-									}
-
-									// if (Certificate == null) return;
-
-									listenOptions.ServerCertificate = Certificate;
-								});
-
-							if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
 						});
+
+						if (Debugger.IsAttached) listenOptions.UseConnectionLogging();
+					});
 				});
 			}
 
 			Server.ContentRoot = builder.Environment.ContentRootPath;
 			Server.WebRoot = builder.Environment.WebRootPath;
-
+			if (Server.ContentRoot.EndsWith($"{Path.DirectorySeparatorChar}bin_dotnet")) Server.ContentRoot = Path.GetDirectoryName(Server.ContentRoot);
+			
 			var app = builder.Build();
 
 			if (app.Environment.IsDevelopment())
@@ -259,6 +284,9 @@ namespace SolidCP.Web.Services
 
 			var tunnelHandler = new TunnelHandlerCore();
 			tunnelHandler.Init(app);
+
+			if (IdleShutdownTime != default && OSInfo.IsSystemd &&
+				(HttpFile.HasValue || HttpsFile.HasValue || NetTcpFile.HasValue)) app.UseIdleTimeout(IdleShutdownTime);
 
 			Server.ConfigureApp?.Invoke(app);
 

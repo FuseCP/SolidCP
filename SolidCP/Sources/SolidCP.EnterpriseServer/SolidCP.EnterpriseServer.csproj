@@ -137,8 +137,24 @@
         <!-- move lazy loaded assemblies to bin\Code and delete unused assemblies in bin -->
         <Message Text="Delete unused dll files" Importance="high" />
         <ItemGroup>
+            <FilesToMove Include="bin\Azure.*" />
             <FilesToMove Include="bin\Google.Authenticator.*" />
-            <FilesToMove Include="bin\Microsoft.Bcl.AsyncInterfaces.*" />
+            <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToMove Include="bin\EntityFramework.*" />
+            <FilesToMove Include="bin\EntityFramework6.*" />
+            <FilesToMove Include="bin\Google.Authenticator.*" />
+            <FilesToMove Include="bin\Google.Protobuf.*" />
+            <FilesToMove Include="bin\SolidCP.EnterpriseServer.Data.*" />
+            <FilesToMove Include="bin\K4os.*" />
+            <FilesToMove Include="bin\Microsoft.EntityFramework.SqlServer.*" />
+            <FilesToMove Include="bin\Microsoft.Extensions.*" />
+            <FilesToMove Include="bin\Microsoft.Identity.Client.*" />
+            <FilesToMove Include="bin\MySql.Data.*" />
+            <FilesToMove Include="bin\Npgsql.*" />
+            <FilesToMove Include="bin\Standard.*" />
+            <FilesToMove Include="bin\Z.*" />
+            <FilesToMove Include="bin\ZstdSharp.*" />
+            <FilesToMove Include="bin\Microsoft.Bcl.*" />
             <FilesToMove Include="bin\Microsoft.Win32.Registry.*" />
             <FilesToMove Include="bin\Newtonsoft.Json.*" />
             <FilesToMove Include="bin\QRCoder.*" />

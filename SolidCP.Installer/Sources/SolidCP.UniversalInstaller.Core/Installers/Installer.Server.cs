@@ -14,6 +14,8 @@ using System.Xml.Linq;
 using Newtonsoft.Json;
 using System.Security.Cryptography.X509Certificates;
 using Newtonsoft.Json.Converters;
+using static Azure.Core.HttpHeader;
+using static System.Collections.Specialized.BitVector32;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -24,53 +26,53 @@ public abstract partial class Installer
 
 	public virtual void InstallServerPrerequisites() { }
 	public virtual void RemoveServerPrerequisites() { }
-
-	public virtual void SetServerFilePermissions() => SetFilePermissions(ServerFolder);
-	public virtual void SetServerFileOwner() => SetFileOwner(ServerFolder, Settings.Server.Username, SolidCP.ToLower());
+	public virtual void CreateServerUser() => CreateUser(Settings.Server);
+	public virtual void RemoveServerUser() => RemoveUser(Settings.Server.Username);
+	public virtual void SetServerFilePermissions() => SetFilePermissions(Settings.Server.InstallPath);
+	public virtual void SetServerFileOwner() => SetFileOwner(Settings.Server.InstallPath, Settings.Server.Username, SolidCPGroup);
 	public virtual void InstallServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardInstallFilter);
+		CopyServer(true, StandardInstallFilter);
+		CreateServerUser();
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		ConfigureServer();
 		InstallServerWebsite();
-		//UpdateSettings();
 	}
 	public virtual void UpdateServer()
 	{
 		InstallServerPrerequisites();
-		CopyServer(StandardUpdateFilter);
+		CopyServer(true, StandardUpdateFilter);
 		SetServerFilePermissions();
 		SetServerFileOwner();
 		UpdateServerConfig();
 		ConfigureServer();
 		InstallServerWebsite();
-		//UpdateSettings();
 	}
 	public virtual void SetupServer()
 	{
+		RemoveServerWebsite();
 		ConfigureServer();
-		//UpdateSettings();
+		InstallServerWebsite();
 	}
 	public virtual void RemoveServer()
 	{
-		//RemoveServerPrerequisites();
 		RemoveServerWebsite();
 		RemoveServerFolder();
-		//UpdateSettings();
+		RemoveServerUser();
 	}
 
 	public virtual void InstallServerUser() { }
 	public virtual void InstallServerApplicationPool() { }
 	public virtual void InstallServerWebsite()
 	{
-		var web = Path.Combine(InstallWebRootPath, ServerFolder);
+		var web = Settings.Server.InstallPath;
 		var dll = Path.Combine(web, "bin_dotnet", "SolidCP.Server.dll");
 		InstallWebsite(ServerSiteId,
 			web,
 			Settings.Server,
-			UnixServerServiceId,
+			SolidCPUnixGroup,
 			dll,
 			"SolidCP.Server service, the server management service for the SolidCP control panel.",
 			UnixServerServiceId);
@@ -81,18 +83,18 @@ public abstract partial class Installer
 	}
 	public virtual void RemoveServerFolder()
 	{
-		Directory.Delete(Path.Combine(InstallWebRootPath, ServerFolder), true);
+		var dir = Settings.Server.InstallPath;
+		if (Directory.Exists(dir)) Directory.Delete(dir, true);
 		InstallLog("Removed Server files");
 	}
-	public virtual void RemoveServerUser() { }
 	public virtual void RemoveServerApplicationPool() { }
 	public virtual void ReadServerConfigurationNetFX()
 	{
-		// Read Server configuration from Server web.config
+		// Read Server configuration from Server Web.config
 
 		Settings.Server = new ServerSettings();
 
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "bin", "web.config");
+		var confFile = Path.Combine(Settings.Server.InstallPath, "Web.config");
 
 		if (File.Exists(confFile))
 		{
@@ -119,12 +121,158 @@ public abstract partial class Installer
 		}
 	}
 	public virtual void ReadServerConfiguration() => ReadEnterpriseServerConfigurationNetFX();
-	public virtual void UpdateServerConfig() { }
+	public virtual void UpdateServerConfig() {
+		var configFile = Path.Combine(Settings.Server.InstallPath, "Web.config");
+		var config = XElement.Load(configFile);
+		var sections = config.Element("configSections");
+		// Remove WSE3
+		sections
+			?.Elements("section")
+			.FirstOrDefault(e => e.Attribute("name")?.Value == "microsoft.web.services3")
+			?.Remove();
+		config
+			.Elements("microsoft.web.services3")
+			.FirstOrDefault()
+			?.Remove();
+		// Add SwaggerWCF
+		sections.Add(new XElement("section",
+			new XAttribute("name", "swaggerwcf"),
+			new XAttribute("type", "SwaggerWcf.Configuration.SwaggerWcfSection, SwaggerWcf")));
+		var swaggerwcf = XElement.Parse(@"<swaggerwcf>
+		<settings>
+			<setting name=""InfoDescription"" value=""SolidCP Server Service"" />
+			<setting name=""InfoVersion"" value=""2.0.0"" />
+			<setting name=""InfoTermsOfService"" value=""Terms of Service"" />
+			<setting name=""InfoTitle"" value=""SolidCP Server Service"" />
+			<setting name=""InfoContactName"" value=""SolidCP"" />
+			<setting name=""InfoContactUrl"" value=""http://solidcp.com/forum"" />
+			<setting name=""InfoContactEmail"" value=""support@solidcp.com"" />
+			<setting name=""InfoLicenseUrl"" value=""https://github.com/FuseCP/SolidCP/blob/master/LICENSE.txt"" />
+			<setting name=""InfoLicenseName"" value=""Creative Commons Share-alike"" />
+		</settings>
+	</swaggerwcf>");
+		config.Add(swaggerwcf);
 
+		// Adjust httpRuntime
+		var systemWeb = config.Element("system.web");
+		var httpRuntime = systemWeb?.Element("httpRuntime");
+		if (httpRuntime == null) systemWeb.Add(httpRuntime = new XElement("httpRuntime"));
+		var requestLength = httpRuntime.Attribute("maxRequestLength");
+		if (requestLength == null)
+		{
+			httpRuntime.Add(requestLength = new XAttribute("maxRequestLength", 4194304));
+		}
+		else requestLength.SetValue(4194304);
+		var targetFramework = httpRuntime.Attribute("targetFramework");
+		if (targetFramework == null)
+		{
+			httpRuntime.Add(targetFramework = new XAttribute("targetFramework", "4.8"));
+		}
+		else targetFramework.SetValue("4.8");
+		var allowDynamicModuleRegistration = httpRuntime.Attribute("allowDynamicModuleRegistration");
+		if (allowDynamicModuleRegistration == null)
+		{
+			httpRuntime.Add(allowDynamicModuleRegistration = new XAttribute("allowDynamicModuleRegistration", "true"));
+		}
+		else allowDynamicModuleRegistration.SetValue("true");
+		systemWeb?.Element("webServices")?.Remove();
+
+		// Block bin_dotnet
+		var location = XElement.Parse(@"<location path=""bin_dotnet"">
+        <system.webServer>
+            <handlers>
+                <add name=""DisallowServe"" path=""*.*"" verb=""*"" type=""System.Web.HttpNotFoundHandler"" />
+                <!-- Return 404 instead of 403 -->
+            </handlers>
+        </system.webServer>
+    </location>");
+		config.Add(location);
+
+		// Add system.webServers
+		var systemWebServer = XElement.Parse(@"<system.webServer>
+		<modules runAllManagedModulesForAllRequests=""true"" />
+        <!-- hide the bin_dotnet folder -->
+        <security>
+            <requestFiltering>
+                <hiddenSegments>
+                    <add segment=""bin_dotnet"" />
+                </hiddenSegments>
+                <requestLimits maxAllowedContentLength=""4194304"" />
+            </requestFiltering>
+        </security>
+        <httpErrors errorMode=""Detailed"" />
+		<!--
+        To browse web app root directory during debugging, set the value below to true.
+        Set to false before deployment to avoid disclosing web app folder information.
+      -->
+	</system.webServer>");
+		if (config.Element("system.webServer") == null) config.Add(systemWebServer);
+		else config.Element("system.webServer").ReplaceWith(systemWebServer);
+
+		// Add WCF certificate
+		var systemServiceModel = config.Element("system.serviceModel");
+		var behaviors = systemServiceModel?.Element("behaviors");
+		if (behaviors == null)
+		{
+			systemServiceModel.Add(behaviors = new XElement("behaviors"));
+		}
+		var serviceBehaviors = XElement.Parse(@"<serviceBehaviors>
+				<behavior>
+					<serviceCredentials>
+						<serviceCertificate storeLocation=""LocalMachine"" storeName=""My"" x509FindType=""FindBySubjectName"" findValue=""localhost"" />
+					</serviceCredentials>
+				</behavior>
+			</serviceBehaviors>");
+		behaviors?.Add(serviceBehaviors);
+
+		// Runtime
+		var runtime = config.Element("runtime");
+		if (runtime == null) config.Add(runtime = new XElement("runtime"));
+
+		runtime.ReplaceWith(XElement.Parse(@"<runtime>
+		<assemblyBinding xmlns=""urn:schemas-microsoft-com:asm.v1"">
+			<probing privatePath=""bin/Crm2011;bin/Crm2013;bin/Exchange2013;bin/Exchange2016;bin/Exchange2019;bin/Sharepoint2013;bin/Sharepoint2016;bin/Sharepoint2019;bin/Lync2013;bin/SfB2015;bin/SfB2019;bin/Lync2013HP;bin/IceWarp;bin/IIs80;bin/IIs100;bin/HyperV2012R2;bin/HyperVvmm;bin/Crm2015;bin/Crm2016;bin/Filters;bin/Database;bin/DNS;bin/Providers;bin/Server;bin/EnterpriseServer;bin/netstandard"" />
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Memory""
+                    publicKeyToken=""cc7b13ffcd2ddd51""
+                    culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-4.0.5.0"" newVersion=""4.0.5.0"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Buffers"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-4.0.5.0"" newVersion=""4.0.5.0"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Collections.Immutable"" publicKeyToken=""b03f5f7f11d50a3a"" culture=""neutral""/>
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4""/>
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Runtime.CompilerServices.Unsafe""
+                    publicKeyToken=""b03f5f7f11d50a3a""
+                    culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-6.0.3.0"" newVersion=""6.0.3.0"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Text.Encoding.CodePages""
+                    publicKeyToken=""b03f5f7f11d50a3a""
+                    culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-9.0.0.3"" newVersion=""9.0.0.4"" />
+            </dependentAssembly>
+            <dependentAssembly>
+                <assemblyIdentity name=""System.Diagnostics.EventLog""
+                    publicKeyToken=""cc7b13ffcd2ddd51""
+                    culture=""neutral"" />
+                <bindingRedirect oldVersion=""4.0.0.0-9.0.0.3"" newVersion=""9.0.0.4"" />
+            </dependentAssembly>
+        </assemblyBinding>
+	</runtime>"));
+
+		File.WriteAllText(configFile, config.ToString());
+	}
 	public virtual void ConfigureServerNetFX()
 	{
 		var settings = Settings.Server;
-		var confFile = Path.Combine(InstallWebRootPath, ServerFolder, "web.config");
+		var confFile = Path.Combine(Settings.Server.InstallPath, "Web.config");
 		var configuration = XElement.Load(confFile);
 
 		ConfigureCertificateNetFX(settings, configuration);
@@ -156,11 +304,12 @@ public abstract partial class Installer
 
 		InstallLog("Configured Server.");
 	}
-	public virtual void CopyServer(Func<string, string> filter = null)
+	public virtual void CopyServer(bool clearDestination = false, Func<string, string> filter = null)
 	{
 		filter ??= SetupFilter;
-		var websitePath = Path.Combine(InstallWebRootPath, ServerFolder);
-		CopyFiles(ComponentTempPath, websitePath, filter);
+		var websitePath = Settings.Server.InstallPath;
+		InstallWebRootPath = Path.GetDirectoryName(websitePath);
+		CopyFiles(ComponentTempPath, websitePath, clearDestination, filter);
 	}
 	public virtual int InstallServerMaxProgress => 100;
 	public virtual int UninstallServerMaxProgress => 100;

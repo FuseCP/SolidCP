@@ -72,7 +72,7 @@ namespace SolidCP.Providers.OS
                     {
                         var uri = new Uri(url);
 
-                        var match = Regex.Match(uri.PathAndQuery, @"^/?(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?:/(?<path>.*?))?(?:?(?<query>.*?))?$");
+                        var match = Regex.Match(uri.PathAndQuery, @"^/?(?:(?<localport>[0-9]+):)?(?:(?<host>\[[0-9a-fA-F:]+\]|[0-9a-zA-Z_.-]+):)?(?<remoteport>[0-9]+)(?:/(?<path>.*?))?(?:\?(?<query>.*?))?$");
                         if (match.Success)
                         {
                             if (match.Groups["localport"].Success)
@@ -126,8 +126,9 @@ namespace SolidCP.Providers.OS
 
         public string AccessUrl(IPAddress loopback, int port, string scheme = null)
         {
-            // Replace authority and remote port path
-            var accessUrl = Regex.Replace(RawUrl, @"(?<=^[0-9a-zA-Z.-]+://)[^/?$]*", $"{loopback}:{port}");
+			if (port == -1) port = 22;
+			// Replace authority and remote port path
+			var accessUrl = Regex.Replace(RawUrl, @"(?<=^[0-9a-zA-Z.-]+://)[^/?$]*(?:/[^/?$]*)?", $"{loopback}:{port}");
             scheme = scheme ?? Protocol ?? "http";
             // Replace scheme
             accessUrl = Regex.Replace(accessUrl, @"^[a-zA-Z.-0-9]+(?=://)", scheme);

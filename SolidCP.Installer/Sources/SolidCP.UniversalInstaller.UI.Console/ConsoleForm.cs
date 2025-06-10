@@ -609,6 +609,10 @@ namespace SolidCP.UniversalInstaller
 						double x = 0;
 						if (double.TryParse(text, out x)) p.SetValue(result, x);
 					}
+					else if (p.PropertyType == typeof(bool))
+					{
+						p.SetValue(result, Fields[p.Name].Checked);
+					}
 				}
 			}
 			foreach (var f in type.GetFields())
@@ -640,6 +644,10 @@ namespace SolidCP.UniversalInstaller
 						double x = 0;
 						if (double.TryParse(text, out x)) f.SetValue(result, x);
 					}
+					else if (f.FieldType == typeof(bool))
+					{
+						f.SetValue(result, Fields[f.Name].Checked);
+					}
 				}
 			}
 			return this;
@@ -655,8 +663,12 @@ namespace SolidCP.UniversalInstaller
 				if (Fields.Contains(p.Name))
 				{
 					var field = Fields[p.Name];
-					var text = p.GetValue(source)?.ToString();
-					if (!string.IsNullOrEmpty(text)) field.Text = text!;
+					if (p.PropertyType == typeof(bool)) field.Checked = (bool)p.GetValue(source);
+					else
+					{
+						var text = p.GetValue(source)?.ToString();
+						if (!string.IsNullOrEmpty(text)) field.Text = text!;
+					}
 				}
 			}
 			foreach (var f in type.GetFields())
@@ -664,8 +676,12 @@ namespace SolidCP.UniversalInstaller
 				if (Fields.Contains(f.Name))
 				{
 					var field = Fields[f.Name];
-					var text = f.GetValue(source)?.ToString();
-					if (!string.IsNullOrEmpty(text)) field.Text = text!;
+					if (f.FieldType == typeof(bool)) field.Checked = (bool)f.GetValue(source);
+					else
+					{
+						var text = f.GetValue(source)?.ToString();
+						if (!string.IsNullOrEmpty(text)) field.Text = text!;
+					}
 				}
 			}
 			return this;

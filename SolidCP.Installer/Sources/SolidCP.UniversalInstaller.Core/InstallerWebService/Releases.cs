@@ -33,6 +33,7 @@ public class Releases
 			GitHub.GetAvailableComponentsAsync(),
 			WebService.GetAvailableComponentsAsync()
 		};
+		await Task.WhenAll(components);
 		var ghcomponents = await components[0];
 		var wscomponents = await components[1];
 		if (ghcomponents != null && ghcomponents.Count > 0 &&

@@ -6551,7 +6551,7 @@ RETURN
 
 		public void UpdateServiceProperties(int serviceId, string xml)
 		{
-			if (UseEntityFramework)
+			if (true || UseEntityFramework) // always use EF since StoredProcedure is very slow
 			{
 				var properties = XElement.Parse(xml)
 					.Elements()
@@ -6562,15 +6562,12 @@ RETURN
 						PropertyValue = (string)e.Attribute("value")
 					})
 					.ToList();
-				var propertyNames = properties
-					.Select(p => p.PropertyName)
-					.ToList();
 
 				// delete old properties (case insensitive, as strings are case insensitve in SQL Server)
 				var serviceProperties = ServiceProperties
 					.Where(s => s.ServiceId == serviceId)
 					.AsEnumerable()
-					.Where(s => propertyNames.Contains(s.PropertyName, StringComparer.InvariantCultureIgnoreCase));
+					.Join(properties, sp => sp.PropertyName, p => p.PropertyName, (sp, p) => sp, StringComparer.InvariantCultureIgnoreCase);
 				ServiceProperties.RemoveRange(serviceProperties);
 
 				ServiceProperties.AddRange(properties);

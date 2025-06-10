@@ -43,7 +43,6 @@ namespace SolidCP.Web.Clients
 		public const bool UseMessageSecurityOverHttp = true;
 		public static readonly TimeSpan ReceiveTimeout = TimeSpan.FromSeconds(120);
 		public static readonly TimeSpan SendTimeout = TimeSpan.FromSeconds(120);
-
 		public static bool TrustAllCertificates = false;
 
 		Protocols protocol = Protocols.NetHttp;
@@ -382,13 +381,17 @@ namespace SolidCP.Web.Clients
 			Thread.Sleep(0);
 			// block until ssh tunnel is ready
             bool wait;
-            lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-            while (wait)
-            {
-                Thread.Sleep(1);
-                lock (tunnel) wait = !tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting && tunnel.ConnectException == null;
-            }
-        }
+			lock (tunnel) wait = (tunnel.Client == null || tunnel.ForwardedPort == null ||
+					!tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting) &&
+					tunnel.ConnectException == null;
+			while (wait)
+			{
+				Thread.Sleep(1);
+				lock (tunnel) wait = (tunnel.Client == null || tunnel.ForwardedPort == null ||
+						!tunnel.Client.IsConnected && !tunnel.ForwardedPort.IsStarted && tunnel.IsConnecting) &&
+						tunnel.ConnectException == null;
+			}
+		}
 
         public static new void StartAllSshTunnels(IEnumerable<string> urls)
 		{
@@ -590,19 +593,20 @@ namespace SolidCP.Web.Clients
 						if (!FactoryPool.TryGetValue(serviceurl, out factory))
 						{
 							factory = new ChannelFactory<T>(binding, endpoint);
-							if (TrustAllCertificates)
-							{
-								factory.Credentials.ServiceCertificate.SslCertificateAuthentication =
-									new System.ServiceModel.Security.X509ServiceCertificateAuthentication()
-									{
-										CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
-									};
-							}
 						}
 						else
 						{
 							FactoryPool[url] = null;
 						}
+					}
+
+					if (TrustAllCertificates)
+					{
+						factory.Credentials.ServiceCertificate.SslCertificateAuthentication =
+							new System.ServiceModel.Security.X509ServiceCertificateAuthentication()
+							{
+								CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None
+							};
 					}
 
 					if (SoapHeader != null || Credentials != null && Credentials.Password != null && (IsSecureProtocol || IsLocal))

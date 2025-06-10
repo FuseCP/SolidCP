@@ -475,9 +475,10 @@
 		<ItemGroup>
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.dll" Exclude="$(InstallerProjectBin)\**\Setup2.dll;$(InstallerProjectBin)\**\ref\**" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.exe" />
+			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.Installer.deps.json" />
 			<InstallerBinaries Include="$(InstallerProjectBin)\**\*.runtimeconfig.json" />
-			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
-			<SetupDll Include="$(InstallerProjectRoot)\HostPanelPro.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
+			<SetupDll Include="$(InstallerProjectRoot)\SolidCP.Setup\bin\$(BuildConfiguration)\**\Setup2.dll" />
+			<SetupDll Include="$(InstallerProjectRoot)\SolidCP.Setup\bin\$(BuildConfiguration)\**\Setup2.pdb" />
 			<InstallerExe Include="$(InstallerProjectBin)\net48\SolidCP.Installer.exe" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerBinaries)" DestinationFolder="$(InstallerBuild)\%(RecursiveDir)" />
@@ -566,7 +567,7 @@
 		<MSBuild Projects="$(RootFolder)\SolidCP.Installer\Sources\SolidCP.SchedulerServiceInstaller\SolidCP.SchedulerServiceInstaller.csproj" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);DefineSolutionProperties=false"/>
 
 		<Copy SourceFiles="@(SolidCPInstallerMsi)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />
-		</Target>
+	</Target>
 
     <Target Name="Build" DependsOnTargets="WiXCreateRedistFileListBuild">
 		<!-- Do nothing -->
@@ -910,37 +911,39 @@
 		<!-- Copy Setup.dll -->
 		<MakeDir Directories="$(ServerInstall)\Setup" />
 		<MakeDir Directories="$(ServerUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(ServerInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(ServerUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(ServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(ServerInstall)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(ServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(ServerUpdate)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(ServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
 
 		<MakeDir Directories="$(EnterpriseServerInstall)\Setup" />
 		<MakeDir Directories="$(EnterpriseServerUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(EnterpriseServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(EnterpriseServerInstall)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(EnterpriseServerInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(EnterpriseServerUpdate)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(EnterpriseServerUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
 
 		<MakeDir Directories="$(PortalInstall)\Setup"/>
 		<MakeDir Directories="$(PortalUpdate)\Setup"/>
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(PortalInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(PortalUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(PortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(PortalInstall)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(PortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(PortalUpdate)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(PortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
 
 		<MakeDir Directories="$(WebDavPortalInstall)\Setup"/>
 		<MakeDir Directories="$(WebDavPortalUpdate)\Setup"/>
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(WebDavPortalInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(WebDavPortalUpdate)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(WebDavPortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(WebDavPortalInstall)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(WebDavPortalInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(WebDavPortalUpdate)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(WebDavPortalUpdate)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
 
 		<RemoveDir Directories="$(StandaloneInstall)"/>
 		<MakeDir Directories="$(StandaloneInstall)"/>
 		<MakeDir Directories="$(StandaloneInstall)\Setup"/>
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.dll" DestinationFolder="$(StandaloneInstall)\Setup" />
-		<Copy SourceFiles="$(SetupBuildFolder)\setup.pdb" DestinationFolder="$(StandaloneInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />
+		<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(StandaloneInstall)\Setup" />
+		<!--<Copy SourceFiles="$(SetupBuildFolder)\Setup2.pdb" DestinationFolder="$(StandaloneInstall)\Setup" Condition=" '$(BuildConfiguration)' == 'Debug' Or $(IncludeReleasePdbs) " />-->
+	
+			<Copy SourceFiles="$(SetupBuildFolder)\Setup2.dll" DestinationFolder="$(DeployFolder)" />
 	</Target>
 
 	<Target Name="DeploySqlScripts" DependsOnTargets="CopySetupDLL">
@@ -1021,7 +1024,12 @@
 			<StandaloneInstallFiles Include="$(StandaloneInstall)\**\*.*" />
 		</ItemGroup>
 		-->
-
+		<ItemGroup>
+			<ZipFilesToDelete Include="$(DeployFolder)\*.zip" />
+			<ZipFilesToDelete Include="$(ToolsFolder)\*.zip" />
+		</ItemGroup>
+		
+		<Delete Files="@(ZipFilesToDelete)" />
 		<!--
 		<Zip Files="@(PortalInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Portal-$(Version).zip" WorkingDirectory="$(PortalInstall)" />
 		<Zip Files="@(WebDavPortalInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-Web-Dav-Portal-$(Version).zip" WorkingDirectory="$(WebDavPortalInstall)" />
@@ -1059,8 +1067,9 @@
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip&quot; &quot;$(EnterpriseServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
-		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update.zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
-		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Update-Linux.zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-$(Version).zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-$(Version)-Update.zip&quot; &quot;$(InstallerBuild)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Unix-$(Version).zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
 
 		<!-- zip tools
 		<Zip Files="@(ImportCsvInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-CsvBulk-$(Version).zip" WorkingDirectory="$(ImportCsvInstall)" />
@@ -1153,34 +1162,34 @@
     <TemplateFile Template="$(TrunkFolder)\SolidCPFeedTemplate.xml" OutputFilename="$(DeployFolder)\SolidCPFeed.xml" Tokens="@(Tokens)" />
   </Target>
 
-<Target Name="upload-sp-update">
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update-sp.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />
-</Target>
+  <Target Name="upload-sp-update">
+    <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update-sp.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />
+  </Target>
+
   <Target Name="uploadtoftp">
-
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Portal.zip" LocalFile="$(DeployFolder)\SolidCP-Portal.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Web-Dav-Portal.zip" LocalFile="$(DeployFolder)\SolidCP-Web-Dav-Portal.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-EnterpriseServer.zip" LocalFile="$(DeployFolder)\SolidCP-EnterpriseServer.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server.zip" LocalFile="$(DeployFolder)\SolidCP-Server.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-StandaloneServerSetup.zip" LocalFile="$(DeployFolder)\SolidCP-StandaloneServerSetup.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Portal-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Portal-Update.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-EnterpriseServer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Server-Update.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Installer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Installer-Update.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-CsvBulk.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-CsvBulk.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-AWStatsViewer.zip" LocalFile="$(ToolsFolder)\SolidCP-AWStatsViewer.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPUniversalInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.UniversalInstaller.exe" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.Installer.exe" />
-          <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />
-		  <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />
-      <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-FixDefaultPublicFolderMailbox.zip" LocalFile="$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip" />
-
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Portal.zip" LocalFile="$(DeployFolder)\SolidCP-Portal.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Web-Dav-Portal.zip" LocalFile="$(DeployFolder)\SolidCP-Web-Dav-Portal.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-EnterpriseServer.zip" LocalFile="$(DeployFolder)\SolidCP-EnterpriseServer.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server.zip" LocalFile="$(DeployFolder)\SolidCP-Server.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-StandaloneServerSetup.zip" LocalFile="$(DeployFolder)\SolidCP-StandaloneServerSetup.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Portal-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Portal-Update.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-EnterpriseServer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Server-Update.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Installer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Installer-Update.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-CsvBulk.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-CsvBulk.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-AWStatsViewer.zip" LocalFile="$(ToolsFolder)\SolidCP-AWStatsViewer.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPUniversalInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.UniversalInstaller.exe" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.Installer.exe" />
+    <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />
+    <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-FixDefaultPublicFolderMailbox.zip" LocalFile="$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip" />
+    <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Setup2.dll" LocalFile="$(DeployFolder)\Setup2.dll" />
   </Target>
 
   <Import Project="$(RootFolder)\tools\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets"/>

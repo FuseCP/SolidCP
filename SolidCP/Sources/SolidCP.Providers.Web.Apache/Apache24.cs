@@ -24,15 +24,12 @@ namespace SolidCP.Providers.Web
 
 		public string ApacheConfigFile => ProviderSettings["ConfigFile"]; // /etc/apache2/apache2.conf
 
-		public string ApacheBinPath => ProviderSettings["BinPath"];
-
 		string ApacheCmd(string cmd)
 		{
-			var exe = Path.Combine(ApacheBinPath, cmd);
-			if (OSInfo.IsWindows) exe += ".exe";
-			if (string.IsNullOrEmpty(ApacheBinPath) || !File.Exists(exe)) exe = Shell.Default.Find(cmd);
-			if (exe.Contains(' ')) exe = $"\"{exe}\"";
-			return exe;
+			if (OSInfo.IsWindows) cmd = Path.ChangeExtension(cmd, ".exe");
+			if (!File.Exists(cmd)) cmd = Shell.Default.Find(cmd);
+			if (cmd.Contains(' ')) cmd = $"\"{cmd}\"";
+			return cmd;
 		}
 
 		string apachectl => ApacheCmd(nameof(apachectl));
@@ -60,7 +57,6 @@ namespace SolidCP.Providers.Web
 		{
 			var output = Shell.Exec($"{apachectl} start");
 			Shell.Exec($"{apachectl} graceful");
-
 		}
 
 		public bool AppVirtualDirectoryExists(string siteId, string directoryName)
@@ -128,23 +124,139 @@ namespace SolidCP.Providers.Web
 		public void CreateAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
 		{
 			var conf = Config(siteId);
-			var dir = new Location()
-			{
-				Url = directory.VirtualPath,
-				DocumentRoot = directory.ContentPath
-				//TODO config location
-			};
+			var dir = new Location();
+			ConfigureAppDirectory(dir, directory);
 			var vhosts = conf.Sections.OfType<VirtualHost>();
 			foreach (var vhost in vhosts) vhost.Add(dir);
 			conf.Save();
 			ReloadApache();
 		}
 
+		public void CreateEnterpriseStorageVirtualDirectory(string siteId, WebVirtualDirectory directory)
+		{
+			throw new NotImplementedException();
+		}
 		public void CreateEnterpriseStorageAppVirtualDirectory(string siteId, WebAppVirtualDirectory directory)
 		{
 			throw new NotImplementedException();
 		}
 
+		private void ConfigureDirectory(ConfigSection config, WebVirtualDirectory dir)
+		{
+			if (config is Location loc)
+			{
+				loc.Url = dir.VirtualPath;
+			}
+			config.DocumentRoot = dir.ContentPath;
+
+			if (dir.EnableDirectoryBrowsing) config.Options = "Indexes";
+			if (dir.EnableDynamicCompression)
+			{
+				//TODO enable dynamic compression
+			}
+			if (dir.EnableStaticCompression)
+			{
+				//TODO enable static compression
+			}
+			if (dir.EnableWritePermissions)
+			{
+				//TODO enable write permissions
+			}
+			if (dir.EnableAnonymousAccess)
+			{
+				//TODO enable anonymous access
+			}
+			if (dir.EnableBasicAuthentication)
+			{
+				//TODO enable basic authentication
+			}
+		}
+		private void ConfigureAppDirectory(ConfigSection config, WebAppVirtualDirectory dir)
+		{
+			if (config is Location loc)
+			{
+				loc.Url = dir.VirtualPath;
+			}
+			config.DocumentRoot = dir.ContentPath;
+
+			if (dir.EnableDirectoryBrowsing) config.Options = "Indexes";
+			if (!string.IsNullOrEmpty(dir.DefaultDocs))
+			{
+				config.DirectoryIndex = Regex.Replace(dir.DefaultDocs, @"\s*(?:[,;]|\r?\n)\s*", " ", RegexOptions.Multiline);
+			}
+			if (dir.EnableDynamicCompression)
+			{
+				//TODO enable dynamic compression
+			}
+			if (dir.EnableStaticCompression)
+			{
+				//TODO enable static compression
+			}
+			if (dir.EnableWritePermissions)
+			{
+				//TODO enable write permissions
+			}
+			if (dir.EnableAnonymousAccess)
+			{
+				//TODO enable anonymous access
+			}
+			if (dir.EnableBasicAuthentication)
+			{
+				//TODO enable basic authentication
+			}
+		}
+		public void ReadAppDirectory(ConfigSection config, WebAppVirtualDirectory dir)
+		{
+			dir.ContentPath = config.DocumentRoot;
+			dir.EnableDirectoryBrowsing = config.Options.Contains("Indexes");
+			dir.DefaultDocs = config.DirectoryIndex.Replace(" ", Environment.NewLine);
+			dir.EnableDynamicCompression = false; //TODO read dynamic compression
+			dir.EnableStaticCompression = false; //TODO read static compression
+			dir.EnableWritePermissions = false; //TODO read write permissions
+			dir.EnableAnonymousAccess = false; //TODO read anonymous access
+			dir.EnableBasicAuthentication = false; //TODO read basic authentication
+			dir.AnonymousUsername = "www-data"; //TODO read anonymous username
+			dir.AnonymousUserPassword = ""; //TODO read anonymous user password
+			dir.ApplicationPool = ""; //TODO read application pool
+			dir.AspInstalled = false; //TODO read ASP installed
+			dir.AspNetInstalled = ""; //TODO read ASP.NET installed
+			dir.CgiBinInstalled = false; //TODO read CGI bin installed
+			dir.ColdFusionInstalled = false; //TODO read ColdFusion installed
+			dir.ConsoleUrl = ""; //TODO read console URL
+			dir.CreatedDate = config.ConfigFile.Created;
+			dir.DedicatedApplicationPool = false; //TODO read dedicated application pool
+			dir.EnableParentPaths = false; //TODO read parent paths enabled
+			dir.EnableWindowsAuthentication = false; //TODO read Windows authentication enabled
+			dir.EnableWritePermissions = false; //TODO read write permissions enabled
+			dir.PerlInstalled = false; //TODO read Perl installed
+			dir.PhpInstalled = ""; //TODO read PHP installed
+			dir.PythonInstalled = false; //TODO read Python installed
+			dir.Php5VersionsInstalled = ""; //TODO read PHP 5 versions installed
+			dir.RedirectDirectoryBelow = false; //TODO read redirect directory below
+			dir.RedirectExactUrl = false; //TODO read redirect exact URL
+			dir.RedirectPermanent = false; //TODO read redirect permanent
+			dir.SharePointInstalled = false; //TODO read SharePoint installed
+			dir.WebDeployPublishingAvailable = false; //TODO read Web Deploy publishing available
+			dir.WebDeploySitePublishingEnabled = false; //TODO read Web Deploy site publishing enabled
+			dir.WebServerType = WebServerType.Apache; //TODO read web server type
+		}
+		public void ReadDirectory(ConfigSection config, WebVirtualDirectory dir)
+		{
+			dir.ContentPath = config.DocumentRoot;
+			dir.EnableDirectoryBrowsing = config.Options.Contains("Indexes");
+			dir.EnableDynamicCompression = false; //TODO read dynamic compression
+			dir.EnableStaticCompression = false; //TODO read static compression
+			dir.EnableWritePermissions = false; //TODO read write permissions
+			dir.EnableAnonymousAccess = false; //TODO read anonymous access
+			dir.EnableBasicAuthentication = false; //TODO read basic authentication
+			dir.AnonymousUsername = "www-data"; //TODO read anonymous username
+			dir.AnonymousUserPassword = ""; //TODO read anonymous user password
+			dir.CreatedDate = config.ConfigFile.Created;
+			dir.EnableParentPaths = false; //TODO read parent paths enabled
+			dir.EnableWindowsAuthentication = false; //TODO read Windows authentication enabled
+			dir.EnableWritePermissions = false; //TODO read write permissions enabled
+			dir.WebServerType = WebServerType.Apache; //TODO read web server type
+		}
 		public string CreateSite(WebSite site)
 		{
 			site.SiteId = site.Name;
@@ -152,8 +264,8 @@ namespace SolidCP.Providers.Web
 			var conf = Config(site.SiteId);
 			var bindings = site.Bindings.Select(b => new
 			{
-				Address = $"{((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "::" || b.IP == "*") ? "*" : b.IP)}:{b.Port}",
-				Listen = ((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "::" || b.IP == "*") ? b.Port : $"{b.IP}:{b.Port}") +
+				Address = $"{((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "[::]" || b.IP == "::" || b.IP == "*") ? "*" : b.IP)}:{b.Port}",
+				Listen = ((string.IsNullOrEmpty(b.IP) || b.IP == "0.0.0.0" || b.IP == "[::]" || b.IP == "::" || b.IP == "*") ? b.Port : $"{b.IP}:{b.Port}") +
 					((b.Protocol == "https" && b.Port != "443") ? " https" : ""),
 				Host = (!string.IsNullOrEmpty(b.Host) && b.Host != "*") ? b.Host : null
 			});
@@ -162,10 +274,10 @@ namespace SolidCP.Providers.Web
 			var globalConfig = new ConfigFile[] { GlobalConfig }
 				.Concat(GlobalConfig.Descendants.OfType<IncludeFile>());
 			var globalNameVirtualHosts = globalConfig
-				.SelectMany(file => file.GetAll("NameVirtualHosts"));
+				.SelectMany(file => file.All("NameVirtualHosts"));
 			var allNameVirtualHosts = globalNameVirtualHosts.Any(vhost => vhost == "*");
 			var globalListen = globalConfig
-				.SelectMany(file => file.GetAll("Listen"));
+				.SelectMany(file => file.All("Listen"));
 			var nameVirtualHosts = bindingsByAddress
 				.Select(b => b.Key)
 				.Except(globalNameVirtualHosts);
@@ -192,40 +304,10 @@ namespace SolidCP.Providers.Web
 					Hosts = b.Key,
 					ServerName = name,
 					ServerAlias = alias,
-					DocumentRoot = site.ContentPath
 					//TODO config site
 				};
 				// config site
-				if (site.EnableDirectoryBrowsing) vhost.Options = "Indexes";
-				if (!string.IsNullOrEmpty(site.DefaultDocs))
-				{
-					vhost.DirectoryIndex = Regex.Replace(site.DefaultDocs, @"\s*(?:[,;]|\r?\n)\s*", " ", RegexOptions.Multiline);
-				}
-				
-				site.CreatedDate = conf.Created;
-				site.Apache = true;
-
-				if (site.EnableDynamicCompression)
-				{
-					//TODO enable dynamic compression
-				}
-				if (site.EnableStaticCompression)
-				{
-					//TODO enable static compression
-				}
-				if (site.EnableWritePermissions)
-				{
-					//TODO enable write permissions
-				}
-				if (site.EnableAnonymousAccess)
-				{
-					//TODO enable anonymous access
-				}
-				if (site.EnableBasicAuthentication)
-				{
-					//TODO enable basic authentication
-				}
-				//TODO configure php, perl, phyton & mono
+				ConfigureAppDirectory(vhost, site);
 				return vhost;
 			});
 
@@ -255,7 +337,10 @@ namespace SolidCP.Providers.Web
 		public void DeleteAppVirtualDirectory(string siteId, string directoryName)
 		{
 			var conf = Config(siteId);
-			var locations = conf.Descendants.OfType<Location>().Where(loc => loc.Url == directoryName);
+			var url = "/" + directoryName.TrimStart('/');
+			var locations = conf.Descendants
+				.OfType<Location>()
+				.Where(loc => loc.Url == url);
 			foreach (var location in locations) location.Remove();
 			conf.Save();
 			ReloadApache();
@@ -296,6 +381,7 @@ namespace SolidCP.Providers.Web
 			ChangeSiteState(siteId, ServerState.Stopped);
 			var conf = Config(siteId);
 			conf.Remove();
+			ReloadApache();
 		}
 
 		public void DeleteUser(string siteId, string userName)
@@ -357,12 +443,13 @@ namespace SolidCP.Providers.Web
 
 		WebAppVirtualDirectory GetAppVirtualDirectory(Location loc)
 		{
-			return new WebAppVirtualDirectory()
+			var dir = new WebAppVirtualDirectory()
 			{
 				Name = loc.Url.TrimStart('/'),
 				ContentPath = loc.DocumentRoot,
-				//TODO read virtual directory
 			};
+			ReadAppDirectory(loc, dir);
+			return dir;
 		}
 		public WebAppVirtualDirectory[] GetAppVirtualDirectories(string siteId)
 		{
@@ -542,7 +629,8 @@ namespace SolidCP.Providers.Web
 				SharePointInstalled = false,
 				SiteState = enabled ? ServerState.Started : ServerState.Stopped,
 				WebDeployPublishingAvailable = false,
-				WebDeploySitePublishingEnabled = false
+				WebDeploySitePublishingEnabled = false,
+				WebServerType = WebServerType.Apache
 			};
 
 		}
@@ -553,7 +641,7 @@ namespace SolidCP.Providers.Web
 			var vhosts = conf.Sections.OfType<VirtualHost>();
 			var listens = new ConfigFile[] { GlobalConfig }
 				.Concat(GlobalConfig.Descendants.OfType<IncludeFile>())
-				.SelectMany(file => file.GetAll("Listen"))
+				.SelectMany(file => file.All("Listen"))
 				.ToArray();
 
 			return vhosts
@@ -567,7 +655,7 @@ namespace SolidCP.Providers.Web
 				{
 					var match = Regex.Match(vhost.Address, @"(?:(?<adr>[0-9.]+|\[[0-9a-fA-F:]+\]|\*)|(?<domain>[0-9a-zA-Z_\-.´]+)):(?<port>[0-9]+)");
 					var ip = match.Groups["adr"].Success ? match.Groups["adr"].Value : "";
-					if (ip == "*" || ip == "0.0.0.0" || ip == "::") ip = "";
+					if (ip == "*" || ip == "0.0.0.0" || ip == "[::]" || ip == "::") ip = "";
 					var port = match.Groups["port"].Value;
 					var domain = match.Groups["domain"].Success ? match.Groups["domain"].Value : "";
 					var listen = $"{(ip == "" ? port : $"{ip}:{port}")} https";
@@ -644,11 +732,12 @@ namespace SolidCP.Providers.Web
 			var dir = new WebVirtualDirectory()
 			{
 				Name = loc.Url,
-				CreatedDate = loc.Root.Created,
+				CreatedDate = loc.ConfigFile.Created,
 				ContentPath = loc.DocumentRoot,
 				IIs7 = false,
-				Apache = true
+				WebServerType = WebServerType.Apache
 			};
+			ReadDirectory(loc, dir);
 			return dir;
 		}
 		public WebAppVirtualDirectory[] GetZooApplications(string siteId)
@@ -716,20 +805,11 @@ namespace SolidCP.Providers.Web
 			throw new NotImplementedException();
 		}
 
-		public bool IsFrontPageInstalled(string siteId)
-		{
-			throw new NotImplementedException();
-		}
+		public bool IsFrontPageInstalled(string siteId) => false;
 
-		public bool IsFrontPageSystemInstalled()
-		{
-			throw new NotImplementedException();
-		}
+		public bool IsFrontPageSystemInstalled() => false;
 
-		public bool IsMsDeployInstalled()
-		{
-			throw new NotImplementedException();
-		}
+		public bool IsMsDeployInstalled() => false;
 
 		public string LEInstallCertificate(WebSite website, string email)
 		{
@@ -805,7 +885,7 @@ namespace SolidCP.Providers.Web
 			var location = conf.Descendants.OfType<Location>().FirstOrDefault(loc => loc.Url == directory.VirtualPath);
 			if (location != null)
 			{
-
+				ConfigureAppDirectory(location, directory);
 			}
 			conf.Save();
 			ReloadApache();
@@ -844,11 +924,15 @@ namespace SolidCP.Providers.Web
 		public void UpdateSite(WebSite site)
 		{
 			var conf = Config(site.Name);
+			conf.Remove();
+			CreateSite(site);
 		}
 
 		public void UpdateSiteBindings(string siteId, ServerBinding[] bindings, bool emptyBindingsAllowed)
 		{
-			throw new NotImplementedException();
+			var site = GetSite(siteId);
+			site.Bindings = bindings;
+			UpdateSite(site);
 		}
 
 		public void UpdateUser(string siteId, WebUser user)

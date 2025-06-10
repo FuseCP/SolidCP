@@ -44,6 +44,30 @@ namespace SolidCP.Tests
 			store.Close();
 		}
 
+		public static void InstallLocalhostIntoMy()
+		{
+			var store = new X509Store(StoreName.My, StoreLocation.LocalMachine);
+			var mystore = new X509Store(StoreName.My, StoreLocation.CurrentUser);
+			store.Open(OpenFlags.ReadWrite);
+			mystore.Open(OpenFlags.ReadWrite);
+			var certs = store.Certificates.Find(X509FindType.FindBySubjectName, "localhost", true);
+			foreach (var cert in certs)
+			{
+				if (!mystore.Certificates.OfType<X509Certificate2>()
+					.Any(c => c.Thumbprint == cert.Thumbprint))
+				{
+					try
+					{
+						mystore.Add(cert);
+					}
+					catch { }
+				}
+			}
+
+			mystore.Close();
+			store.Close();
+		}
+
 		public static void Remove(string certfile, string password)
 		{
 			X509Store store = new X509Store(StoreName.My, StoreLocation.CurrentUser);
@@ -64,6 +88,7 @@ namespace SolidCP.Tests
 			// Always trust certificates
 			ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 			Web.Clients.ClientBase.TrustAllCertificates = true;
+			InstallLocalhostIntoMy();
 		}
 	}
 }

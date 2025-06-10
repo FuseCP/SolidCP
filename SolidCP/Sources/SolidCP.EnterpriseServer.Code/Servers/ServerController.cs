@@ -3293,6 +3293,7 @@ namespace SolidCP.EnterpriseServer
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2017, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2019, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2022, domain, "");
+								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MsSql2025, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql4, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql5, domain, "");
 								ServerController.AddServiceDNSRecords(domain.PackageId, ResourceGroups.MySql8, domain, "");

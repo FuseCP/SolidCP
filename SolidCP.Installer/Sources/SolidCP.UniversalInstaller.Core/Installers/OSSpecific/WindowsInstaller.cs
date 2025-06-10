@@ -25,7 +25,7 @@ namespace SolidCP.UniversalInstaller;
 public class WindowsInstaller : Installer
 {
 	const bool Net8RuntimeNeededOnWindows = true;
-
+	public override string EnterpriseServerFolder => "Enterprise Server";
 	public override string InstallExeRootPath
 	{
 		get => base.InstallExeRootPath ??
@@ -35,13 +35,6 @@ public class WindowsInstaller : Installer
 	public override string InstallWebRootPath { get => base.InstallWebRootPath ?? InstallExeRootPath; set => base.InstallWebRootPath = value; }
 	public override string WebsiteLogsPath => InstallExeRootPath ?? "";
 	WinGet WinGet => (WinGet)((IWindowsOperatingSystem)OSInfo.Current).WinGet;
-	public override string Net8Filter(string file)
-	{
-		file = SetupFilter(file);
-		return (file != null && (!file.StartsWith("bin/") || file.StartsWith("bin/netstandard/")) &&
-			!Regex.IsMatch(file, "(?:^|/)(?<!(?:^|/)bin_dotnet/)web.config", RegexOptions.IgnoreCase) &&
-			!file.EndsWith(".aspx") && !file.EndsWith(".asax") && !file.EndsWith(".asmx")) ? file : null;
-	}
 
 	public override void InstallNet8Runtime()
 	{
@@ -53,6 +46,8 @@ public class WindowsInstaller : Installer
 			if (!(OSInfo.IsWindowsServer && ver >= WindowsVersion.WindowsServer2012 ||
 				!OSInfo.IsWindowsServer && ver >= WindowsVersion.Windows10))
 				throw new PlatformNotSupportedException("NET 8 is not supported on this OS.");
+
+			Info("Installing .NET 8 Runtime...");
 
 			WinGet.Install("Microsoft.DotNet.AspNetCore.8;Microsoft.DotNet.Runtime.8");
 
@@ -415,6 +410,8 @@ public class WindowsInstaller : Installer
 			throw new Exception($"'{oldSiteName}' web site already has server binding ( IP: {ip}, Port: {port}, Domain: {domain} )");
 		}
 
+		if (setting.RunOnNetCore) contentPath = Path.Combine(contentPath, "bin_dotnet");
+
 		//TODO certificate
 
 		// create site
@@ -539,7 +536,25 @@ public class WindowsInstaller : Installer
 		//
 		SetFolderPermissionBySid(path, SystemSID.NETWORK_SERVICE, NtfsPermission.Modify);
 	}
-
+	public override string[] UserIsMemeberOf(CommonSettings settings)
+	{
+		if (settings is ServerSettings)
+		{
+			if (OSInfo.Windows.WebServer.Version.Major >= 7)
+			{
+				return new string[] { "AD:Domain Admins", "SID:" + SystemSID.ADMINISTRATORS, "IIS_IUSRS" };
+			}
+			else
+			{
+				return new string[] { "AD:Domain Admins", "SID:" + SystemSID.ADMINISTRATORS, "IIS_WPG" };
+			}
+		}
+		else
+		{
+			if (OSInfo.Windows.WebServer.Version.Major >= 7) return new string[] { "IIS_IUSRS" };
+			else return new string[] { "IIS_WPG" };
+		}
+	}
 	public virtual void CreateWindowsAccount(CommonSettings setting)
 	{
 		Info("Create user...");
@@ -563,7 +578,7 @@ public class WindowsInstaller : Installer
 		Log.WriteStart(String.Format(LogInfoMessage, userName));
 
 		var description = String.Format(UserAccountDescription, setting.ComponentName);
-		var memberOf = new string[0];
+		var memberOf = UserIsMemeberOf(setting);
 		var password = setting.Password;
 
 		// create account
@@ -628,9 +643,6 @@ public class WindowsInstaller : Installer
 	public override void InstallWebsite(string name, string path, CommonSettings settings,
 		string group, string dll, string description, string serviceId)
 	{
-		Transaction(() => CreateWindowsAccount(settings))
-			.WithRollback(() => DeleteUserAccount(settings));
-
 		Transaction(() => CreateApplicationPool(settings))
 			.WithRollback(() => DeleteApplicationPool(settings));
 		
@@ -649,14 +661,94 @@ public class WindowsInstaller : Installer
 		DeleteApplicationPool(setting);
 		RemoveUser(setting.Username);
 	}
+	public virtual void ConfigureSchedulerService()
+	{
+		var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
+			Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
+				"bin_dotnet" : "bin\\Code";
+		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.SchedulerService.exe");
 
+		var config = exe + ".config";
+		var xml = XElement.Load(config);
+
+		var conStrings = xml.Element("connectionStrings");
+		if (conStrings == null) xml.Add(conStrings = new XElement("connectionStrings"));
+		var appSettings = xml.Element("appSettings");
+		if (appSettings == null) xml.Add(appSettings = new XElement("appSettings"));
+
+		var conStrElement = conStrings.Elements("add").FirstOrDefault(e => e.Attribute("name")?.Value == "EnterpriseServer");
+		var esConfFile = Path.GetFullPath(Path.Combine(Settings.EnterpriseServer.InstallPath, "Web.config"));
+		if (File.Exists(esConfFile))
+		{
+			var esConf = XElement.Load(esConfFile);
+			var esAppSettings = esConf.Element("appSettings");
+
+			foreach (var esSetting in esAppSettings.Elements("add"))
+			{
+				var key = esSetting.Attribute("key")?.Value;
+				var setting = appSettings.Elements("add").FirstOrDefault(s => s.Attribute("key")?.Value == key);
+				if (setting == null)
+				{
+					appSettings.Add(esSetting);
+				}
+				else
+				{
+					setting.Attribute("value").SetValue(esSetting.Attribute("value")?.Value);
+				}
+			}
+
+			var esConStrings = esConf.Element("connectionStrings");
+			conStrings.ReplaceWith(esConStrings);
+
+			File.WriteAllText(config, xml.ToString());
+		}
+	}
+	public virtual string SchedulerServiceId => "SolidCP.SchedulerService";
+	public override void InstallSchedulerService()
+	{
+		var services = OSInfo.Current.ServiceController;
+		if (services.Info(SchedulerServiceId) != null) services.Remove(SchedulerServiceId);
+
+		ConfigureSchedulerService();
+
+		Transaction(() =>
+		{
+			var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
+				Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
+					"bin_dotnet" : "bin\\Code";
+			var service = new WindowsServiceDescription()
+			{
+				ServiceId = SchedulerServiceId,
+				DisplayName = "SolidCP Scheduler Service",
+				Executable = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "SolidCP.SchedulerService.exe"),
+				Start = WindowsServiceStartMode.DelayedAuto,
+				Type = WindowsServiceType.Own,
+				Error = WindowsServiceErrorHandling.Normal
+			};
+
+			InstallService(service);
+
+		}).WithRollback(() =>
+		{
+			try
+			{
+				RemoveSchedulerService();
+			}
+			catch { }
+		});
+	}
+	public override void RemoveSchedulerService() => RemoveService(SchedulerServiceId);
 	public override bool CheckOSSupported() => OSInfo.WindowsVersion >= WindowsVersion.Windows7;
-
 	public override bool CheckIISVersionSupported() => CheckOSSupported();
-
-	public override bool CheckSystemdSupported() => false;
-
-	public override bool CheckNetVersionSupported() => OSInfo.IsNet48 || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
+	public override bool CheckInitSystemSupported() => true;
+	public override bool CheckNetVersionSupported()
+	{
+		if (OSInfo.IsNet48) return true;
+		var fxver = new Version(OSInfo.NetFXVersion);
+		return OSInfo.IsCore &&
+			int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8 &&
+			(fxver.Major > 4 || fxver.Major == 4 && fxver.Minor >= 8);
+	}
 
 	public override void RestartAsAdmin()
 	{
@@ -665,7 +757,7 @@ public class WindowsInstaller : Installer
 			//var currentp = Process.GetCurrentProcess();
 			ProcessStartInfo procInfo = new ProcessStartInfo();
 			procInfo.UseShellExecute = true;
-			var assemblyFile = Assembly.GetEntryAssembly().Location;
+			var assemblyFile = GetEntryAssembly().Location;
 			if (OSInfo.IsMono) procInfo.FileName = "mono";
 			else if (assemblyFile.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)) procInfo.FileName = assemblyFile;
 			else if (OSInfo.IsCore) procInfo.FileName = "dotnet";
@@ -719,6 +811,32 @@ public class WindowsInstaller : Installer
 - Delete SolidCP WebPortal, EnterpriseServer & Server folder.
 - Remove firewall rule.";
 			default: throw new NotSupportedException();
+		}
+	}
+
+	public override void CreateUser(CommonSettings settings) => CreateWindowsAccount(settings);
+	public override void RemoveUser(string username)
+	{
+		if (!string.IsNullOrEmpty(username))
+		{
+			var bslash = username.IndexOf('\\');
+			string machine, user;
+			if (bslash >= 0)
+			{
+				machine = username.Substring(0, bslash);
+				if (bslash < username.Length - 1) user = username.Substring(bslash, username.Length - bslash - 1);
+				else user = "";
+			}
+			else
+			{
+				machine = "";
+				user = username;
+			}
+			if (SecurityUtils.UserExists(machine, user))
+			{
+				SecurityUtils.DeleteUser(machine, user);
+				InstallLog($"Removed user {username}");
+			}
 		}
 	}
 }

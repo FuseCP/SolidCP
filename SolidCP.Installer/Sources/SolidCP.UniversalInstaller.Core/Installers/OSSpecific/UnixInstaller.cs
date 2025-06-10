@@ -15,13 +15,14 @@ namespace SolidCP.UniversalInstaller;
 
 public abstract class UnixInstaller : Installer
 {
-	public override string InstallExeRootPath { get => base.InstallExeRootPath ?? $"/usr/local/{SolidCP}"; set => base.InstallExeRootPath = value; }
-	public override string InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP}"; set => base.InstallWebRootPath = value; }
-	public override string WebsiteLogsPath => $"/var/log/{SolidCP}";
-	public virtual string UnixServerServiceId => "solidcp-server";
-	public virtual string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
-	public virtual string UnixPortalServiceId => "solidcp-portal";
-	public virtual string SolidCPUnixGroup => "solidcp";
+	public override string InstallExeRootPath { get => base.InstallExeRootPath ?? $"/usr/share/{SolidCP.ToLower()}"; set => base.InstallExeRootPath = value; }
+	public override string InstallWebRootPath { get => base.InstallWebRootPath ?? $"/var/www/{SolidCP.ToLower()}"; set => base.InstallWebRootPath = value; }
+	public override string WebsiteLogsPath => $"/var/log/{SolidCP.ToLower()}";
+	public override string UnixServerServiceId => "solidcp-server";
+	public override string UnixEnterpriseServerServiceId => "solidcp-enterpriseserver";
+	public override string UnixPortalServiceId => "solidcp-portal";
+	public override string SolidCPGroup => SolidCP.ToLower();
+	public override string SolidCPUnixGroup => SolidCPGroup;
 	public UnixInstaller() : base() { }
 
 	public override void InstallWebsite(string name, string path, CommonSettings settings,
@@ -32,36 +33,111 @@ public abstract class UnixInstaller : Installer
 			throw new FileNotFoundException($"The service executable {dll} was not found.");
 		}
 
-		AddUnixUser(serviceId, SolidCPUnixGroup);
+		//AddUnixGroup(SolidCPUnixGroup);
 
-		var service = new SystemdServiceDescription()
+		//if (!string.IsNullOrEmpty(settings.Username))
+		//	AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
+
+		var dotnet = Shell.Find("dotnet");
+
+		ServiceDescription service;
+		if (IsSystemd)
 		{
-			ServiceId = serviceId,
-			Directory = Path.GetDirectoryName(dll),
-			Description = description,
-			Executable = $"dotnet {dll}",
-			DependsOn = new List<string>() { "network-online.target" },
-			EnvironmentVariables = new Dictionary<string, string>(),
-			Restart = "on-failure",
-			RestartSec = "1s",
-			StartLimitBurst = "5",
-			StartLimitIntervalSec = "500",
-			User = settings.Username ?? "",
-			Group = group,
-			SyslogIdentifier = serviceId
-		};
-		service.EnvironmentVariables.Add("ASPNETCORE_ENVIRONMENT", "Production");
+			service = new SystemdServiceDescription()
+			{
+				ServiceId = serviceId,
+				Directory = Path.GetDirectoryName(dll),
+				Description = description,
+				Executable = $"{dotnet} {dll}",
+				DependsOn = new List<string>() { "network-online.target" },
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				Restart = "on-failure",
+				RestartSec = "1s",
+				StartLimitBurst = "5",
+				StartLimitIntervalSec = "500",
+				User = settings.Username ?? "",
+				Group = group,
+				SyslogIdentifier = serviceId
+			};
+		}
+		else if (IsOpenRC)
+		{
+			var rcservice = new OpenRCServiceDescription()
+			{
+				ServiceId = serviceId,
+				Description = description,
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				CommandUser = settings.Username ?? "",
+				Command = dotnet,
+				CommandArgs = dll,
+				WorkingDirectory = Path.GetDirectoryName(dll),
+				CommandBackground = true,
+				PidFile = $"/run/{serviceId}.pid",
+				StopTimeout = 30
+			};
+			if (!OSInfo.IsWSL) rcservice.Need = "net";
+			service = rcservice;
+		}
+		else if (OSInfo.IsMac)
+		{
+			var log = Path.Combine(WebsiteLogsPath, $"{serviceId}.log");
+			service = new LaunchdServiceDescription()
+			{
+				Label = serviceId,
+				Executable = dotnet,
+				Arguments = dll,
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				WorkingDirectory = Path.GetDirectoryName(dll),
+				ExitTimeout = 30,
+				KeepAlive = true,
+				RunAtLoad = true,
+				StandardOutPath = log,
+				StandardErrorPath = log,
+				StartOnMount = true
+			};
+		}
+		else throw new NotSupportedException("Only SystemD, OpenRC & Launchd are supported.");
 
 		InstallService(service);
 
 		OpenFirewall(settings.Urls ?? "");
 	}
-	public virtual void AddUnixUser(string user, string group)
+
+	public virtual void AddUnixGroup(string group) => Shell.Exec($"groupadd {group}");
+	public virtual void AddUnixUser(string user, string group, string password)
 	{
+		if (string.IsNullOrEmpty(user) || string.IsNullOrEmpty(password)) return;
+
 		Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
 
+		var shell = Shell.ExecAsync($"passwd {user}");
+		shell.Input.WriteLine(password);
+		shell.Input.WriteLine(password);
+		var output = shell.Output().Result;
+		Log.WriteLine(output);
+		
 		InstallLog($"Added System User {user}.");
 	}
+	public override void CreateUser(CommonSettings settings)
+	{
+		Transaction(() =>
+		{
+			AddUnixGroup(SolidCPUnixGroup);
+			AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
+		}).WithRollback(() => RemoveUser(settings.Username));
+	}
+	public override void RemoveUser(string username) => Shell.Standard.Exec($"userdel {username}");
+
+
 	public override void RemoveWebsite(string serviceId, CommonSettings settings)
 	{
 		var service = ServiceController[serviceId];
@@ -119,7 +195,7 @@ public abstract class UnixInstaller : Installer
 
 	public override void ReadServerConfiguration()
 	{
-		var appsettingsfile = Path.Combine(InstallWebRootPath, ServerFolder, "bin_dotnet", "appsettings.json");
+		var appsettingsfile = Path.Combine(Settings.Server.InstallPath, "bin_dotnet", "appsettings.json");
 		if (File.Exists(appsettingsfile))
 		{
 			var appsettings = JsonConvert.DeserializeObject<AppSettings>(File.ReadAllText(appsettingsfile),
@@ -153,19 +229,14 @@ public abstract class UnixInstaller : Installer
 			return euid == 0;
 		}
 	}
-
-	public override bool CheckOSSupported() => CheckSystemdSupported();
-
+	public override bool CheckOSSupported() => CheckInitSystemSupported();
 	public override bool CheckIISVersionSupported() => false;
-
-	public override bool CheckSystemdSupported() => new SystemdServiceController().IsInstalled;
-
+	public override bool CheckInitSystemSupported() => IsSystemd || IsOpenRC || IsMac;
 	public override bool CheckNetVersionSupported() => OSInfo.IsMono || OSInfo.IsCore && int.Parse(Regex.Match(OSInfo.FrameworkDescription, "[0-9]+").Value) >= 8;
-
 	public override void RestartAsAdmin()
 	{
 		var password = UI.GetRootPassword();
-		var assembly = Assembly.GetEntryAssembly()?.Location;
+		var assembly = GetEntryAssembly()?.Location;
 		string arguments = null;
 		arguments = Environment.CommandLine;
 		Shell shell = null;
@@ -186,10 +257,6 @@ public abstract class UnixInstaller : Installer
 		}
 		catch { }
 	}
-
-	public override string StandardInstallFilter(string file) => Net8Filter(base.StandardInstallFilter(file));
-	public override string StandardUpdateFilter(string file) => Net8Filter(base.StandardUpdateFilter(file));
-
 	public override string GetUninstallLog(ComponentSettings settings)
 	{
 		switch (settings.ComponentCode)
@@ -221,5 +288,15 @@ public abstract class UnixInstaller : Installer
 - Remove firewall rule.";
 			default: throw new NotSupportedException();
 		}
+	}
+
+	public override void CreateWebDavPortalUser() { }
+	public override void RemoveWebDavPortalUser() { }
+	public override void InstallWebDavPortalWebsite() { }
+	public override void RemoveWebDavPortalWebsite() { }
+	public override void RemoveWebPortalFolder() { }
+	public override string[] UserIsMemeberOf(CommonSettings settings)
+	{
+		return new string[] { SolidCPUnixGroup };
 	}
 }

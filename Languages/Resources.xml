@@ -47631,6 +47631,21 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Hosting Spaces Folder:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx</File>
+    <Key>chkRead.Text</Key>
+    <DefaultValue>Read</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx</File>
+    <Key>chkWrite.Text</Key>
+    <DefaultValue>Write</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx</File>
+    <Key>lblAccessRights.Text</Key>
+    <DefaultValue>Access Rights:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_Settings.ascx.resx</File>
     <Key>lblConfigFile.Text</Key>
     <DefaultValue>vsftpd Configuration File:</DefaultValue>

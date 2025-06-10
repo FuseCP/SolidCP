@@ -171,9 +171,11 @@ namespace SolidCP.Portal
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2017, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2017));
                 if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2019))
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2019, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2019));
-                if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2022))
-                    AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2022, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2022));
-                if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2014))
+				if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2022))
+					AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2022, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2022));
+				if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2025))
+					AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2025, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2025));
+				if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2014))
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2014, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2014));
                 if (cntx.Groups.ContainsKey(ResourceGroups.MsSql2012))
                     AddDatabaseEngine(DeploymentParameterWellKnownTag.Sql, ResourceGroups.MsSql2012, GetSharedLocalizedString("ResourceGroup." + ResourceGroups.MsSql2012));

@@ -50,7 +50,7 @@ namespace SolidCP.Setup
 		public Result Update(object args) => base.Update(args, "Update Standalone Server",
 			Installer.Current.UpdateStandaloneServer);
 		public Result Setup(object args) => base.InstallOrSetup(args, "Setup Standalone Server",
-			Installer.Current.ConfigureStandaloneServer, true);
+			Installer.Current.SetupStandaloneServer, true);
 
 		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall Standalone Server",
 			Installer.Current.RemoveStandaloneServer);

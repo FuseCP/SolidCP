@@ -38,5 +38,6 @@
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.EnterpriseServer.Code\SolidCP.EnterpriseServer.Code.csproj" />
+        <ProjectReference Include="..\SolidCP.Web.Services\SolidCP.Web.Services.csproj" />
     </ItemGroup>
 </Project>

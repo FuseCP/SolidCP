@@ -52,7 +52,7 @@ namespace SolidCP.Setup
 			Installer.Current.UpdateWebDavPortal);
 
 		public Result Setup(object args) => base.InstallOrSetup(args, "Setup WebDavPortal",
-			Installer.Current.ConfigureWebDavPortal, true);
+			Installer.Current.SetupWebDavPortal, true);
 
 		public Result Uninstall(object args) => base.Uninstall(args, "Uninstall WebDavPortal",
 			Installer.Current.RemoveWebDavPortal);

@@ -74,14 +74,14 @@ namespace SolidCP.WebSite.Services
 			dt.Columns.Add("InstallerType", typeof(string));
             dt.Columns.Add("Platforms", typeof(string));
 
-            var component = release.Parent;
+            var component = release?.Parent?.Parent;
 			dt.Rows.Add(
 				Int32.Parse(release.Element("releaseFileID").Value),
 				release.Element("fullFilePath").Value,
 				release.Element("upgradeFilePath").Value,
 				release.Element("installerPath").Value,
 				release.Element("installerType").Value,
-                component.Element("platforms")?.Value ?? "Windows");
+                release.Element("platforms")?.Value ?? component.Element("platforms")?.Value ?? "Windows");
 
 			ds.AcceptChanges(); // save
 			return ds;
@@ -159,7 +159,7 @@ namespace SolidCP.WebSite.Services
 			//
             if (r != null)
             {
-                var component = r.Parent;
+                var component = r.Parent.Parent;
                 dt.Rows.Add(
                     Int32.Parse(r.Element("releaseFileID").Value),
                     r.Attribute("version").Value,
@@ -168,7 +168,7 @@ namespace SolidCP.WebSite.Services
                     r.Element("upgradeFilePath").Value,
                     r.Element("installerPath").Value,
                     r.Element("installerType").Value,
-				    component.Element("platforms")?.Value ?? "Windows");
+				    r.Element("platforms")?.Value ?? component.Element("platforms")?.Value ?? "Windows");
 			}
 
 			ds.AcceptChanges(); // save
@@ -181,7 +181,7 @@ namespace SolidCP.WebSite.Services
 
             // select all available components
             var components = from component in xml.Descendants("component")
-                             select component;
+							 select component;
 
             // build dataset structure
             DataSet ds = new DataSet();
@@ -224,7 +224,7 @@ namespace SolidCP.WebSite.Services
                     release.Element("fullFilePath").Value,
                     release.Element("installerPath").Value,
                     release.Element("installerType").Value,
-                    component.Element("platforms")?.Value ?? "Windows");
+                    release.Element("platforms")?.Value ?? component.Element("platforms")?.Value ?? "Windows");
 			}
 
             ds.AcceptChanges(); // save
@@ -253,7 +253,7 @@ namespace SolidCP.WebSite.Services
                           && Boolean.Parse(r.Attribute("available").Value)
                           && (includeBeta || !includeBeta && !Boolean.Parse(r.Attribute("beta").Value))
                           select r).LastOrDefault();
-            var component = update?.Parent;
+            var component = update?.Parent?.Parent;
 
             DataSet ds = new DataSet();
             DataTable dt = ds.Tables.Add();
@@ -276,7 +276,7 @@ namespace SolidCP.WebSite.Services
                     update.Element("upgradeFilePath").Value,
                     update.Element("installerPath").Value,
 					update.Element("installerType").Value,
-				    component.Element("platforms")?.Value ?? "Windows");
+				    update.Element("platforms")?.Value ?? component.Element("platforms")?.Value ?? "Windows");
 			}
 
 			ds.AcceptChanges(); // save

@@ -218,8 +218,9 @@ namespace SolidCP.Portal
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2016, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2017, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2019, false));
-                sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2022, false));
-                sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2000, false));
+				sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2022, false));
+				sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MsSql2025, false));
+				sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2000, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2005, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2008, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2012, false));
@@ -227,9 +228,10 @@ namespace SolidCP.Portal
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2016, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2017, false));
                 sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2019, false));
-                sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2022, false));
-            }
-            else if (driverName == "MySql")
+				sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2022, false));
+				sqlUsers.AddRange(ES.Services.DatabaseServers.GetSqlUsers(packageId, ResourceGroups.MsSql2025, false));
+			}
+			else if (driverName == "MySql")
             {
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MySql4, false));
                 sqlDatabases.AddRange(ES.Services.DatabaseServers.GetSqlDatabases(packageId, ResourceGroups.MySql5, false));
