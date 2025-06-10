@@ -154,7 +154,7 @@ namespace SolidCP.Providers.Virtualization
 
         private MiManager _mi;
         private readonly object _cimClientLock = new object();
-        private MiManager mi
+        private MiManager Mi
         {
             get
             {
@@ -168,6 +168,12 @@ namespace SolidCP.Providers.Virtualization
                 }
             }
         }
+        private readonly Lazy<FileSystemHelper> _fileSystemHelper;
+        public FileSystemHelper FileSystemHelper => _fileSystemHelper.Value;
+
+        private readonly Lazy<VdsHelper> _vdsHelper;
+        public VdsHelper VdsHelper => _vdsHelper.Value;
+
         private readonly Lazy<VirtualMachineHelper> _virtualMachineHelper;
         public VirtualMachineHelper VirtualMachineHelper => _virtualMachineHelper.Value;
 
@@ -185,10 +191,12 @@ namespace SolidCP.Providers.Virtualization
         #region Constructors
         public HyperV2012R2()
         {
-            _virtualMachineHelper = new Lazy<VirtualMachineHelper>(() => new VirtualMachineHelper(PowerShell, mi));
-            _dvdDriveHelper = new Lazy<DvdDriveHelper>(() => new DvdDriveHelper(PowerShell, mi));
-            _hardDriveHelper = new Lazy<HardDriveHelper>(() => new HardDriveHelper(PowerShell, mi));
-            _biosHelper = new Lazy<BiosHelper>(() => new BiosHelper(PowerShell, mi, DvdDriveHelper, HardDriveHelper));
+            _fileSystemHelper = new Lazy<FileSystemHelper>(() => new FileSystemHelper(Mi));
+            _vdsHelper = new Lazy<VdsHelper>(() => new VdsHelper(Mi, FileSystemHelper));
+            _virtualMachineHelper = new Lazy<VirtualMachineHelper>(() => new VirtualMachineHelper(PowerShell, Mi));
+            _dvdDriveHelper = new Lazy<DvdDriveHelper>(() => new DvdDriveHelper(PowerShell, Mi));
+            _hardDriveHelper = new Lazy<HardDriveHelper>(() => new HardDriveHelper(PowerShell, Mi, FileSystemHelper));
+            _biosHelper = new Lazy<BiosHelper>(() => new BiosHelper(PowerShell, Mi, DvdDriveHelper, HardDriveHelper));
         }
         #endregion
 
@@ -343,7 +351,7 @@ namespace SolidCP.Providers.Virtualization
             VirtualMachine vm = null;
             try
             {
-                CimInstance cimObj = mi.GetCimInstanceWithSelect(
+                CimInstance cimObj = Mi.GetCimInstanceWithSelect(
                     "Msvm_ComputerSystem",
                     "Name, ElementName, EnabledState",
                     "Name = '{0}'", vmId
@@ -412,7 +420,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                CimInstance[] cimVms = mi.EnumerateCimInstances("Msvm_ComputerSystem");
+                CimInstance[] cimVms = Mi.EnumerateCimInstances("Msvm_ComputerSystem");
 
                 HostedSolutionLog.LogInfo("After CIM command");
                 foreach (CimInstance currentCim in cimVms)
@@ -1741,7 +1749,7 @@ namespace SolidCP.Providers.Virtualization
             List<KvpExchangeDataItem> pairs = new List<KvpExchangeDataItem>();
 
             // load VM
-            CimInstance cimVm = mi.GetCimInstanceWithSelect(
+            CimInstance cimVm = Mi.GetCimInstanceWithSelect(
                 "Msvm_ComputerSystem",
                 "Name, ElementName",
                 "Name = '{0}'", vmId); //Name = "GUID"
@@ -1750,7 +1758,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                CimInstance cimInstKvpExchange = mi.GetAssociatedCimInstance(cimVm, "Msvm_KvpExchangeComponent", "Msvm_SystemDevice");
+                CimInstance cimInstKvpExchange = Mi.GetAssociatedCimInstance(cimVm, "Msvm_KvpExchangeComponent", "Msvm_SystemDevice");
                 objKvpExchange = cimInstKvpExchange.CimInstanceProperties;
             }
             catch
@@ -1889,6 +1897,7 @@ namespace SolidCP.Providers.Virtualization
                 throw;
             }
         }
+
         public MountedDiskInfo MountVirtualHardDisk(string vhdPath)
         {
             bool lockTaken = false;
@@ -1932,7 +1941,7 @@ namespace SolidCP.Providers.Virtualization
 
                 var diskNumber = result[0].GetInt("DiskNumber");
 
-                var diskInfo = VdsHelper.GetMountedDiskInfo(ServerNameSettings, diskNumber);
+                var diskInfo = VdsHelper.GetMountedDiskInfo(diskNumber);
                 
                 return diskInfo;
             }
@@ -1975,8 +1984,8 @@ namespace SolidCP.Providers.Virtualization
 
             // check destination folder
             string destFolder = Path.GetDirectoryName(destinationPath);
-            if (!DirectoryExists(destFolder))
-                CreateFolder(destFolder);
+            if (!FileSystemHelper.DirectoryExists(destFolder))
+                FileSystemHelper.CreateFolder(destFolder);
             
             sourcePath = FileUtils.EvaluateSystemVariables(sourcePath);
             destinationPath = FileUtils.EvaluateSystemVariables(destinationPath);
@@ -1986,8 +1995,8 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                CimInstance imageService = mi.GetCimInstance("Msvm_ImageManagementService");
-                CimClass settingsClass = mi.GetCimClass("Msvm_VirtualHardDiskSettingData");
+                CimInstance imageService = Mi.GetCimInstance("Msvm_ImageManagementService");
+                CimClass settingsClass = Mi.GetCimClass("Msvm_VirtualHardDiskSettingData");
 
                 CimInstance settingsInstance = new CimInstance(settingsClass);
                 settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
@@ -2008,7 +2017,7 @@ namespace SolidCP.Providers.Virtualization
                         CimFlags.None),
                     CimMethodParameter.Create(
                         "VirtualDiskSettingData",
-                        mi.SerializeToCimDtd20(settingsInstance),
+                        Mi.SerializeToCimDtd20(settingsInstance),
                         Microsoft.Management.Infrastructure.CimType.String,
                         CimFlags.None)
                 };
@@ -2018,9 +2027,9 @@ namespace SolidCP.Providers.Virtualization
                 //$svcClass = Get - CimClass - ClassName Msvm_ImageManagementService - Namespace root/virtualization/v2
                 //$method = $svcClass.CimClassMethods["ConvertVirtualHardDisk"]
                 //$method.Parameters | Select-Object Name, CimType, Qualifiers, IsIn, IsOut
-                CimMethodResult outParams = mi.InvokeMethod(imageService, "ConvertVirtualHardDisk", inParams);
+                CimMethodResult outParams = Mi.InvokeMethod(imageService, "ConvertVirtualHardDisk", inParams);
 
-                return JobHelper.CreateJobResultFromCimResults(mi, outParams);
+                return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
             }
             catch (Exception ex)
             {
@@ -2035,7 +2044,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 var result = HardDriveHelper.CreateVirtualHardDisk(destinationPath, diskType, blockSizeBytes, sizeGB);
 
-                return JobHelper.CreateJobResultFromCimResults(mi, result);
+                return JobHelper.CreateJobResultFromCimResults(Mi, result);
             }
             catch (Exception ex)
             {
@@ -2046,116 +2055,25 @@ namespace SolidCP.Providers.Virtualization
 
         public void DeleteRemoteFile(string path)
         {
-            if (DirectoryExists(path))
-                DeleteFolder(path); // WMI way
+            if (FileSystemHelper.DirectoryExists(path))
+                FileSystemHelper.DeleteFolder(path); // WMI way
             else if (FileExists(path))
-                DeleteFile(path); // WMI way
+                FileSystemHelper.DeleteFile(path); // WMI way
         }
 
         public void ExpandDiskVolume(string diskAddress, string volumeName)
         {
-            // find mounted disk using VDS
-            Vds.Advanced.AdvancedDisk advancedDisk = null;
-            Vds.Pack diskPack = null;
-
-            VdsHelper.FindVdsDisk(ServerNameSettings, diskAddress, out advancedDisk, out diskPack);
-
-            if (advancedDisk == null)
-                throw new Exception("Could not find mounted disk");
-
-            // find volume
-            Vds.Volume diskVolume = null;
-            foreach (Vds.Volume volume in diskPack.Volumes)
-            {
-                if (volume.DriveLetter.ToString() == volumeName)
-                {
-                    diskVolume = volume;
-                    break;
-                }
-            }
-
-            if (diskVolume == null)
-                throw new Exception("Could not find disk volume: " + volumeName);
-
-            // determine maximum available space
-            ulong oneMegabyte = 1048576;
-            ulong freeSpace = 0;
-            foreach (Vds.DiskExtent extent in advancedDisk.Extents)
-            {
-                if (extent.Type != Microsoft.Storage.Vds.DiskExtentType.Free)
-                    continue;
-
-                if (extent.Size > oneMegabyte)
-                    freeSpace += extent.Size;
-            }
-
-            if (freeSpace == 0)
-                return;
-
-            // input disk
-            Vds.InputDisk inputDisk = new Vds.InputDisk();
-            foreach (Vds.VolumePlex plex in diskVolume.Plexes)
-            {
-                inputDisk.DiskId = advancedDisk.Id;
-                inputDisk.Size = freeSpace;
-                inputDisk.PlexId = plex.Id;
-
-                foreach (Vds.DiskExtent extent in plex.Extents)
-                    inputDisk.MemberIndex = extent.MemberIndex;
-
-                break;
-            }
-
-            // extend volume
-            Vds.Async extendEvent = diskVolume.BeginExtend(new Vds.InputDisk[] { inputDisk }, null, null);
-            while (!extendEvent.IsCompleted)
-                System.Threading.Thread.Sleep(100);
-            diskVolume.EndExtend(extendEvent);
+            VdsHelper.ExpandDiskVolume(diskAddress, volumeName);            
         }
-
        
         public string ReadRemoteFile(string path)
         {
-            // temp file name on "system" drive available through hidden share
-            string tempPath = Path.Combine(VdsHelper.GetTempRemoteFolder(ServerNameSettings), Guid.NewGuid().ToString("N"));
-
-            HostedSolutionLog.LogInfo("Read remote file: " + path);
-            HostedSolutionLog.LogInfo("Local file temp path: " + tempPath);
-
-            // copy remote file to temp file (WMI)
-            if (!CopyFile(path, tempPath))
-                return null;
-
-            // read content of temp file
-            string remoteTempPath = VdsHelper.ConvertToUNC(ServerNameSettings, tempPath);
-            HostedSolutionLog.LogInfo("Remote file temp path: " + remoteTempPath);
-
-            string content = File.ReadAllText(remoteTempPath);
-
-            // delete temp file (WMI)
-            DeleteFile(tempPath);
-
-            return content;
+            return FileSystemHelper.ReadRemoteFile(path);
         }
 
         public void WriteRemoteFile(string path, string content)
         {
-            // temp file name on "system" drive available through hidden share
-            string tempPath = Path.Combine(VdsHelper.GetTempRemoteFolder(ServerNameSettings), Guid.NewGuid().ToString("N"));
-
-            // write to temp file
-            string remoteTempPath = VdsHelper.ConvertToUNC(ServerNameSettings, tempPath);
-            File.WriteAllText(remoteTempPath, content);
-
-            // delete file (WMI)
-            if (FileExists(path))
-                DeleteFile(path);
-
-            // copy (WMI)
-            CopyFile(tempPath, path);
-
-            // delete temp file (WMI)
-            DeleteFile(tempPath);
+            FileSystemHelper.WriteRemoteFile(path, content);
         }
         #endregion
 
@@ -2168,7 +2086,7 @@ namespace SolidCP.Providers.Virtualization
             ConcreteJob job;
             try
             {
-                var result = mi.GetCimInstance("CIM_Job", "InstanceID = '{0}'", jobId);
+                var result = Mi.GetCimInstance("CIM_Job", "InstanceID = '{0}'", jobId);
                 job = JobHelper.CreateFromCimObject(result);
             }
             catch (Exception ex)
@@ -2455,7 +2373,7 @@ namespace SolidCP.Providers.Virtualization
                 {
                     //DeleteFile(vm.RootFolderPath); //not necessarily, we are guaranteed to delete files using DeleteVirtualMachineExtended
                     if (IsEmptyFolders(vm.RootFolderPath))
-                        DeleteFolder(vm.RootFolderPath);
+                        FileSystemHelper.DeleteFolder(vm.RootFolderPath);
                     else
                         HostedSolutionLog.LogWarning(String.Format("Cannot delete virtual machine folder '{0}' it is not Empty!",
                         vm.RootFolderPath));
@@ -2714,54 +2632,12 @@ namespace SolidCP.Providers.Virtualization
                 return File.Exists(path);
             else
             {
-                Wmi cimv2 = new Wmi(ServerNameSettings, Constants.WMI_CIMV2_NAMESPACE);
-                ManagementObject objFile = cimv2.GetWmiObject("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\"));
-                return (objFile != null);
-            }
-        }
-
-        public bool DirectoryExists(string path)
-        {
-            if (path.StartsWith(@"\\")) // network share
-                                        // TODO: That won't work with remote HyperV, unless network share added into domain.
-                                        // Need to check remotly
-                return Directory.Exists(path);
-            else
-            {
-                using (var cim = new MiManager(mi, Constants.WMI_CIMV2_NAMESPACE)) //because change namespace
+                using (var cim = new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE))
                 {
-                    CimInstance objDir = cim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
+                    CimInstance objDir = cim.GetCimInstance("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\"));
                     return (objDir != null);
                 }
             }
-        }
-
-        public bool CopyFile(string sourceFileName, string destinationFileName)
-        {
-            HostedSolutionLog.LogInfo("Copy file - source: " + sourceFileName);
-            HostedSolutionLog.LogInfo("Copy file - destination: " + destinationFileName);
-
-            if (sourceFileName.StartsWith(@"\\")) // network share
-            {
-                if (!File.Exists(sourceFileName))
-                    return false;
-
-                File.Copy(sourceFileName, destinationFileName);
-            }
-            else
-            {
-                if (!FileExists(sourceFileName))
-                    return false;
-
-                // copy using WMI
-                Wmi cimv2 = new Wmi(ServerNameSettings, Constants.WMI_CIMV2_NAMESPACE);
-                ManagementObject objFile = cimv2.GetWmiObject("CIM_Datafile", "Name='{0}'", sourceFileName.Replace("\\", "\\\\"));
-                if (objFile == null)
-                    throw new Exception("Source file does not exists: " + sourceFileName);
-
-                objFile.InvokeMethod("Copy", new object[] { destinationFileName });
-            }
-            return true;
         }
 
         public bool IsEmptyFolders(string path)
@@ -2775,68 +2651,6 @@ namespace SolidCP.Providers.Virtualization
             Collection<PSObject> result = PowerShell.Execute(cmdScript, false);
             return result.Count < 1;
         }
-
-        public void DeleteFile(string path)
-        {
-            if (path.StartsWith(@"\\"))
-            {
-                // network share
-                File.Delete(path);
-            }
-            else
-            {
-                // delete file using WMI
-                Wmi cimv2 = new Wmi(ServerNameSettings, "root\\cimv2");
-                ManagementObject objFile = cimv2.GetWmiObject("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\"));
-                objFile.InvokeMethod("Delete", null);
-            }
-        }
-
-        public void DeleteFolder(string path)
-        {
-            if (path.StartsWith(@"\\"))
-            {
-                // network share
-                try
-                {
-                    FileUtils.DeleteFile(path);
-                }
-                catch { /* just skip */ }
-                FileUtils.DeleteFile(path);
-            }
-            else
-            {
-                // local folder
-                // delete sub folders first
-                ManagementObjectCollection objSubFolders = GetSubFolders(path);
-                foreach (ManagementObject objSubFolder in objSubFolders)
-                    DeleteFolder(objSubFolder["Name"].ToString());
-
-                // delete this folder itself
-                Wmi cimv2 = new Wmi(ServerNameSettings, "root\\cimv2");
-                ManagementObject objFolder = cimv2.GetWmiObject("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-                objFolder.InvokeMethod("Delete", null);
-            }
-        }
-
-        private ManagementObjectCollection GetSubFolders(string path)
-        {
-            if (path.EndsWith("\\"))
-                path = path.Substring(0, path.Length - 1);
-
-            Wmi cimv2 = new Wmi(ServerNameSettings, "root\\cimv2");
-
-            return cimv2.ExecuteWmiQuery("Associators of {Win32_Directory.Name='"
-                + path + "'} "
-                + "Where AssocClass = Win32_Subdirectory "
-                + "ResultRole = PartComponent");
-        }
-
-        public void CreateFolder(string path)
-        {
-            VdsHelper.ExecuteRemoteProcess(ServerNameSettings, String.Format("cmd.exe /c md \"{0}\"", path));
-        }
-
 
         #endregion
 

@@ -16,14 +16,16 @@ namespace SolidCP.Providers.Virtualization
     {
         private PowerShellManager _powerShell;
         private MiManager _mi;
+        private FileSystemHelper _fileSystemHelper;
 
-        public HardDriveHelper(PowerShellManager powerShellManager, MiManager mi)
+        public HardDriveHelper(PowerShellManager powerShellManager, MiManager mi, FileSystemHelper fileSystemHelper)
         {
             _powerShell = powerShellManager;
             _mi = mi;
+            _fileSystemHelper = fileSystemHelper;
         }
 
-        public VirtualHardDiskInfo[] Get(string vmname) //TODO: can be a bottleneck with PowerShell? Need to check it, especally when calls from HyperV.GetHddUsagesFromKVPHyperV()
+        public VirtualHardDiskInfo[] Get(string vmname)
         {
             List<VirtualHardDiskInfo> disks = new List<VirtualHardDiskInfo>();
 
@@ -240,7 +242,7 @@ namespace SolidCP.Providers.Virtualization
         public CimMethodResult CreateVirtualHardDisk(string destinationPath, VirtualHardDiskType diskType, uint blockSizeBytes, UInt64 sizeGB)
         {
             string destFolder = Path.GetDirectoryName(destinationPath);
-            if (!DirectoryExists(destFolder)) CreateFolder(destFolder);
+            if (!_fileSystemHelper.DirectoryExists(destFolder)) _fileSystemHelper.CreateFolder(destFolder);
 
             destinationPath = FileUtils.EvaluateSystemVariables(destinationPath);
 
@@ -276,28 +278,6 @@ namespace SolidCP.Providers.Virtualization
             //cmd.Parameters.Add(diskType.ToString());
             //if (blockSizeBytes > 0) cmd.Parameters.Add("BlockSizeBytes", blockSizeBytes);
             //return powerShellwithJobs.TryExecuteAsJob(cmd, true);
-        }
-
-        private void CreateFolder(string path)
-        {
-            string serverNameSettings = _powerShell.RemoteComputerName; //TODO: remove
-            VdsHelper.ExecuteRemoteProcess(serverNameSettings, String.Format("cmd.exe /c md \"{0}\"", path));
-        }
-
-        private bool DirectoryExists(string path)
-        {
-            if (path.StartsWith(@"\\")) // network share
-                                        // TODO: That won't work with remote HyperV, unless network share added into domain.
-                                        // Need to check remotly
-                return Directory.Exists(path);
-            else
-            {
-                using (var mi = new MiManager(_mi, Constants.WMI_CIMV2_NAMESPACE)) //because change namespace
-                {
-                    CimInstance objDir = mi.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-                    return (objDir != null);
-                }
-            }
         }
 
         public void SetIOPS(VirtualMachine vm, int minIOPS, int maxIOPS)
