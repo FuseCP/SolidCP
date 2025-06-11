@@ -2,6 +2,7 @@
 using Microsoft.Management.Infrastructure.Options;
 using Microsoft.Management.Infrastructure.Serialization;
 using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -122,11 +123,11 @@ namespace SolidCP.Providers.Virtualization
         }
 
         /// <summary>
-        /// Get a CIM instance based on the provided light/proxy/empty instance object.
+        /// Get a CIM instance based on the provided light/proxy instance object.
         /// </summary>
-        public CimInstance GetInstance(CimInstance notInitInstance)
+        public CimInstance GetInstance(CimInstance proxyInstance)
         {
-            return _session.GetInstance(_namespacePath, notInitInstance);
+            return _session.GetInstance(_namespacePath, proxyInstance);
         }
 
         /// <summary>
@@ -246,6 +247,17 @@ namespace SolidCP.Providers.Virtualization
                     throw new ObjectDisposedException(ToString());
                 }
             }
+        }
+
+        internal void Dump(CimInstance obj)
+        {
+            #if DEBUG
+            foreach (var prop in obj.CimInstanceProperties)
+            {
+                string typeName = prop.Value == null ? "null" : prop.Value.GetType().ToString();
+                Debug.WriteLine(prop.Name + ": " + prop.Value + " (" + typeName + ")");
+            }
+            #endif
         }
 
         public void Dispose()

@@ -455,12 +455,9 @@ namespace SolidCP.Providers.Virtualization
 
         public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
         {
-            //ManagementBaseObject objSummary = GetVirtualMachineSummaryInformation(vmId, (SummaryInformationRequest)size);
-            CimInstance cimSummary = VirtualMachineHelper.GetSummaryInformation(vmId, (SummaryInformationRequest)size);
-            //wmi.Dump(objSummary);
+            CimInstance settingData = VirtualMachineHelper.GetVirtualMachineSettingsObject(vmId);
+            CimInstance cimSummary = VirtualMachineHelper.GetSummaryInformation(settingData, (SummaryInformationRequest)size);
             return GetTumbnailFromSummaryInformation(cimSummary, size);
-            //return GetTumbnailFromSummaryInformation(objSummary, size);
-            //return (byte[]) (new ImageConverter()).ConvertTo(new Bitmap(80, 60), typeof (byte[]));
         }
 
         private byte[] GetTumbnailFromSummaryInformation(CimInstance cimSummary, ThumbnailSize size)
@@ -482,62 +479,6 @@ namespace SolidCP.Providers.Virtualization
             }
 
             byte[] imgData = (byte[])objSummary["ThumbnailImage"].Value;
-
-            // create new bitmap
-            Bitmap bmp = new Bitmap(width, height);
-
-            if (imgData != null)
-            {
-                // lock bitmap
-                Rectangle rect = new Rectangle(0, 0, width, height);
-                BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.WriteOnly, PixelFormat.Format16bppRgb565);
-
-                // get address of the first line
-                IntPtr ptr = bmpData.Scan0;
-
-                // coby thumbnail bytes into bitmap
-                System.Runtime.InteropServices.Marshal.Copy(imgData, 0, ptr, imgData.Length);
-
-                // unlock image
-                bmp.UnlockBits(bmpData);
-            }
-            else
-            {
-                // fill grey rectangle
-                Graphics g = Graphics.FromImage(bmp);
-                SolidBrush brush = new SolidBrush(Color.LightGray);
-                g.FillRectangle(brush, 0, 0, width, height);
-            }
-
-            MemoryStream stream = new MemoryStream();
-            bmp.Save(stream, ImageFormat.Png);
-
-            stream.Flush();
-            byte[] buffer = stream.ToArray();
-
-            bmp.Dispose();
-            stream.Dispose();
-
-            return buffer;
-        }
-
-        private byte[] GetTumbnailFromSummaryInformation(ManagementBaseObject objSummary, ThumbnailSize size)
-        {
-            int width = 80;
-            int height = 60;
-
-            if (size == ThumbnailSize.Medium160x120)
-            {
-                width = 160;
-                height = 120;
-            }
-            else if (size == ThumbnailSize.Large320x240)
-            {
-                width = 320;
-                height = 240;
-            }
-
-            byte[] imgData = (byte[])objSummary["ThumbnailImage"];
 
             // create new bitmap
             Bitmap bmp = new Bitmap(width, height);
@@ -1066,14 +1007,15 @@ namespace SolidCP.Providers.Virtualization
         {
             List<ConcreteJob> jobs = new List<ConcreteJob>();
 
-            ManagementBaseObject objSummary = GetVirtualMachineSummaryInformation(
-                vmId, SummaryInformationRequest.AsynchronousTasks);
-            ManagementBaseObject[] objJobs = (ManagementBaseObject[])objSummary["AsynchronousTasks"];
+            CimInstance settingData = VirtualMachineHelper.GetVirtualMachineSettingsObject(vmId);
+
+            CimInstance objSummary = VirtualMachineHelper.GetSummaryInformation(settingData, SummaryInformationRequest.AsynchronousTasks);
+            CimInstance[] objJobs = (CimInstance[])objSummary.CimInstanceProperties["AsynchronousTasks"].Value;
 
             if (objJobs != null)
             {
-                foreach (ManagementBaseObject objJob in objJobs)
-                    jobs.Add(CreateJobFromWmiObject(objJob));
+                foreach (CimInstance objJob in objJobs)
+                    jobs.Add(JobHelper.CreateFromCimObject(objJob));
             }
 
             return jobs;
@@ -1319,7 +1261,7 @@ namespace SolidCP.Providers.Virtualization
 
         public byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
         {
-            ManagementBaseObject objSummary = GetSnapshotSummaryInformation(snapshotId, (SummaryInformationRequest)size);
+            CimInstance objSummary = GetSnapshotSummaryInformation(snapshotId, (SummaryInformationRequest)size);
             return GetTumbnailFromSummaryInformation(objSummary, size);
         }
 
@@ -1798,56 +1740,66 @@ namespace SolidCP.Providers.Virtualization
         public JobResult AddKVPItems(string vmId, KvpExchangeDataItem[] items)
         {
             // get KVP management object
-            ManagementObject objVmsvc = GetVirtualSystemManagementService();
+            CimInstance objVmsvc = GetVirtualSystemManagementService();
 
             // create KVP items array
             string[] wmiItems = new string[items.Length];
 
             for (int i = 0; i < items.Length; i++)
             {
-                ManagementClass clsKvp = wmi.GetWmiClass("Msvm_KvpExchangeDataItem");
-                ManagementObject objKvp = clsKvp.CreateInstance();
-                objKvp["Name"] = items[i].Name;
-                objKvp["Data"] = items[i].Data;
-                objKvp["Source"] = 0;
-
+                CimClass clsKvp = _mi.GetCimClass("Msvm_KvpExchangeDataItem");
+                CimInstance objKvp = new CimInstance(clsKvp);
+                objKvp.CimInstanceProperties["Name"].Value = items[i].Name;
+                objKvp.CimInstanceProperties["Data"].Value = items[i].Data;
+                objKvp.CimInstanceProperties["Source"].Value = (ushort)0;
+                
                 // convert to WMI format
-                wmiItems[i] = objKvp.GetText(TextFormat.CimDtd20);
+                wmiItems[i] = Mi.SerializeToCimDtd20(objKvp);
             }
 
-            ManagementBaseObject inParams = objVmsvc.GetMethodParameters("AddKvpItems");
-            inParams["TargetSystem"] = GetVirtualMachineObject(vmId);
-            inParams["DataItems"] = wmiItems;
-
+            var inParams = new CimMethodParametersCollection
+            {
+                CimMethodParameter.Create(
+                    "TargetSystem",GetVirtualMachineObject(vmId), Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
+                    ),
+                CimMethodParameter.Create(
+                    "DataItems",  wmiItems, CimFlags.In
+                    )
+            };
             // invoke method
-            ManagementBaseObject outParams = objVmsvc.InvokeMethod("AddKvpItems", inParams, null);
-            return CreateJobResultFromWmiMethodResults(outParams);
+            CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "AddKvpItems", inParams);
+
+            return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
         }
 
         public JobResult RemoveKVPItems(string vmId, string[] itemNames)
         {
             // get KVP management object
-            ManagementObject objVmsvc = GetVirtualSystemManagementService();
+            CimInstance objVmsvc = GetVirtualSystemManagementService();
 
             // delete items one by one
             for (int i = 0; i < itemNames.Length; i++)
             {
-                ManagementClass clsKvp = wmi.GetWmiClass("Msvm_KvpExchangeDataItem");
-                ManagementObject objKvp = clsKvp.CreateInstance();
-                objKvp["Name"] = itemNames[i];
-                objKvp["Data"] = "";
-                objKvp["Source"] = 0;
+                CimClass clsKvp = _mi.GetCimClass("Msvm_KvpExchangeDataItem");
+                CimInstance objKvp = new CimInstance(clsKvp);
+                objKvp.CimInstanceProperties["Name"].Value = itemNames[i];
+                objKvp.CimInstanceProperties["Data"].Value = "";
+                objKvp.CimInstanceProperties["Source"].Value = (ushort)0;
 
                 // convert to WMI format
-                string wmiItem = objKvp.GetText(TextFormat.CimDtd20);
+                string wmiItem = Mi.SerializeToCimDtd20(objKvp);
 
-                // call method
-                ManagementBaseObject inParams = objVmsvc.GetMethodParameters("RemoveKvpItems");
-                inParams["TargetSystem"] = GetVirtualMachineObject(vmId);
-                inParams["DataItems"] = new string[] { wmiItem };
-
+                var inParams = new CimMethodParametersCollection
+                {
+                    CimMethodParameter.Create(
+                        "TargetSystem", GetVirtualMachineObject(vmId), Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
+                        ),
+                    CimMethodParameter.Create(
+                        "DataItems", new string[] { wmiItem }, CimFlags.In
+                        )
+                };
                 // invoke method
-                objVmsvc.InvokeMethod("RemoveKvpItems", inParams, null);
+                CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "RemoveKvpItems", inParams);
             }
             return null;
         }
@@ -1855,30 +1807,40 @@ namespace SolidCP.Providers.Virtualization
         public JobResult ModifyKVPItems(string vmId, KvpExchangeDataItem[] items)
         {
             // get KVP management object
-            ManagementObject objVmsvc = GetVirtualSystemManagementService();
+            CimInstance objVmsvc = GetVirtualSystemManagementService();
 
             // create KVP items array
             string[] wmiItems = new string[items.Length];
 
             for (int i = 0; i < items.Length; i++)
             {
-                ManagementClass clsKvp = wmi.GetWmiClass("Msvm_KvpExchangeDataItem");
-                ManagementObject objKvp = clsKvp.CreateInstance();
-                objKvp["Name"] = items[i].Name;
-                objKvp["Data"] = items[i].Data;
-                objKvp["Source"] = 0;
+                CimInstance objKvp = new CimInstance("Msvm_KvpExchangeDataItem");
+                objKvp.CimInstanceProperties.Add(
+                    CimProperty.Create("Name", items[i].Name, CimFlags.Property)
+                    );
+                objKvp.CimInstanceProperties.Add(
+                    CimProperty.Create("Data", items[i].Data, CimFlags.Property)
+                    );
+                objKvp.CimInstanceProperties.Add(
+                    CimProperty.Create("Source", (ushort)0, CimFlags.Property)
+                    );
 
                 // convert to WMI format
-                wmiItems[i] = objKvp.GetText(TextFormat.CimDtd20);
+                wmiItems[i] = Mi.SerializeToCimDtd20(objKvp);
             }
-
-            ManagementBaseObject inParams = objVmsvc.GetMethodParameters("ModifyKvpItems");
-            inParams["TargetSystem"] = GetVirtualMachineObject(vmId);
-            inParams["DataItems"] = wmiItems;
-
+            var inParams = new CimMethodParametersCollection
+            {
+                CimMethodParameter.Create(
+                    "TargetSystem", GetVirtualMachineObject(vmId), Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
+                    ),
+                CimMethodParameter.Create(
+                    "DataItems",  wmiItems, CimFlags.In
+                    )
+            };
             // invoke method
-            ManagementBaseObject outParams = objVmsvc.InvokeMethod("ModifyKvpItems", inParams, null);
-            return CreateJobResultFromWmiMethodResults(outParams);
+            CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "ModifyKvpItems", inParams);
+
+            return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
         }
         #endregion
 
@@ -2426,116 +2388,31 @@ namespace SolidCP.Providers.Virtualization
             return value == null ? 0 : Convert.ToInt64(value);
         }
 
-        protected JobResult CreateJobResultFromWmiMethodResults(ManagementBaseObject outParams)
+        private CimInstance GetVirtualSystemManagementService()
         {
-            JobResult result = new JobResult();
-
-            // return value
-            result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams["ReturnValue"]);
-
-            // try getting job details job
-            try
-            {
-                ManagementBaseObject objJob = wmi.GetWmiObjectByPath((string)outParams["Job"]);
-                if (objJob != null && objJob.Properties.Count > 0)
-                {
-                    result.Job = CreateJobFromWmiObject(objJob);
-                }
-            }
-            catch { /* dumb */ }
-
-            return result;
+            return Mi.GetCimInstance("msvm_VirtualSystemManagementService");
         }
 
-        private ManagementObject GetVirtualSystemManagementService()
+        private CimInstance GetVirtualMachineObject(string vmId)
         {
-            return wmi.GetWmiObject("msvm_VirtualSystemManagementService");
+            return Mi.GetCimInstance("msvm_ComputerSystem", "Name = '{0}'", vmId);
         }
 
-        protected ManagementObject GetImageManagementService()
+        private CimInstance GetSnapshotObject(string snapshotId)
         {
-            return wmi.GetWmiObject("msvm_ImageManagementService");
+            return Mi.GetCimInstanceWithSelect("Msvm_VirtualSystemSettingData", "InstanceID", "ConfigurationID = '{0}'", snapshotId) ??
+                   Mi.GetCimInstanceWithSelect("Msvm_VirtualSystemSettingData", "InstanceID", "InstanceID = '{0}'", "Microsoft:" + snapshotId);
         }
 
-        private ManagementObject GetVirtualMachineObject(string vmId)
-        {
-            return wmi.GetWmiObject("msvm_ComputerSystem", "Name = '{0}'", vmId);
-        }
-
-        private ManagementObject GetSnapshotObject(string snapshotId)
-        {
-            return wmi.GetWmiObject("Msvm_VirtualSystemSettingData", "InstanceID = '{0}'", snapshotId) ??
-                   wmi.GetWmiObject("Msvm_VirtualSystemSettingData", "InstanceID = '{0}'", "Microsoft:" + snapshotId);
-        }
-
-
-        private ConcreteJob CreateJobFromWmiObject(ManagementBaseObject objJob) //TODO: remove, when will change all references to JobHelper.CreateFromWmiObject
-        {
-            if (objJob == null || objJob.Properties.Count == 0)
-                return null;
-
-            ConcreteJob job = new ConcreteJob();
-            job.Id = (string)objJob["InstanceID"];
-            job.JobState = (ConcreteJobState)Convert.ToInt32(objJob["JobState"]);
-            job.Caption = (string)objJob["Caption"];
-            job.Description = (string)objJob["Description"];
-            job.StartTime = Wmi.ToDateTime((string)objJob["StartTime"]);
-            // TODO proper parsing of WMI time spans, e.g. 00000000000001.325247:000
-            job.ElapsedTime = DateTime.Now; //wmi.ToDateTime((string)objJob["ElapsedTime"]);
-            job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"]);
-            job.ErrorDescription = (string)objJob["ErrorDescription"];
-            job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"]);
-            return job;
-        }
-
-        private ManagementBaseObject GetSnapshotSummaryInformation(
+        private CimInstance GetSnapshotSummaryInformation(
             string snapshotId,
             SummaryInformationRequest requestedInformation)
         {
             // find VM settings object
-            ManagementObject objVmSetting = GetSnapshotObject(snapshotId);
+            CimInstance objVmSetting = GetSnapshotObject(snapshotId);
 
             // get summary
-            return GetSummaryInformation(objVmSetting, requestedInformation);
-        }
-
-        private ManagementBaseObject GetVirtualMachineSummaryInformation(
-            string vmId,
-            params SummaryInformationRequest[] requestedInformation)
-        {
-            // find VM settings object
-            ManagementObject objVmSetting = GetVirtualMachineSettingsObject(vmId);
-
-            // get summary
-            return GetSummaryInformation(objVmSetting, requestedInformation);
-        }
-
-        private ManagementBaseObject GetSummaryInformation(
-            ManagementObject objVmSetting, params SummaryInformationRequest[] requestedInformation)
-        {
-            if (requestedInformation == null || requestedInformation.Length == 0)
-                throw new ArgumentNullException("requestedInformation");
-
-            // get management service
-            ManagementObject objVmsvc = GetVirtualSystemManagementService();
-
-            uint[] reqif = new uint[requestedInformation.Length];
-            for (int i = 0; i < requestedInformation.Length; i++)
-                reqif[i] = (uint)requestedInformation[i];
-
-            // get method params
-            ManagementBaseObject inParams = objVmsvc.GetMethodParameters("GetSummaryInformation");
-            inParams["SettingData"] = new ManagementObject[] { objVmSetting };
-            inParams["RequestedInformation"] = reqif;
-
-            // invoke method
-            ManagementBaseObject outParams = objVmsvc.InvokeMethod("GetSummaryInformation", inParams, null);
-            return ((ManagementBaseObject[])outParams["SummaryInformation"])[0];
-        }
-
-        private ManagementObject GetVirtualMachineSettingsObject(string vmId)
-        {
-            return wmi.GetWmiObject("msvm_VirtualSystemSettingData", "InstanceID Like 'Microsoft:{0}%'", vmId);
+            return VirtualMachineHelper.GetSummaryInformation(objVmSetting, requestedInformation);
         }
 
         private bool JobCompleted(ConcreteJob job)

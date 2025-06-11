@@ -52,9 +52,14 @@ namespace SolidCP.Providers.Virtualization
             JobResult result = new JobResult();
 
             result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams.OutParameters["ReturnValue"].Value);
-            CimInstance objJob = outParams.OutParameters["Job"].Value as CimInstance;
+            try
+            {
+                CimInstance objJob = outParams.OutParameters["Job"].Value as CimInstance;
+                result.Job = CreateFromCimObject(mi.GetInstance(objJob));
 
-            result.Job = CreateFromCimObject(mi.GetInstance(objJob));
+            } catch (Exception e) {
+                HostedSolutionLog.LogError(e);
+            }
 
             return result;
         }

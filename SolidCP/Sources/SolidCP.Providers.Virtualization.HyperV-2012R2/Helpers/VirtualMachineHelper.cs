@@ -38,30 +38,27 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
-        public CimInstance GetSummaryInformation(string vmId, params SummaryInformationRequest[] requestedInformation)
+        public CimInstance GetVirtualMachineSettingsObject(string vmId)
         {
-            if (string.IsNullOrWhiteSpace(vmId)) {
-                HostedSolutionLog.LogWarning("VM identifier cannot be empty.", nameof(vmId));
-            }
+            CimInstance vmInstance = _mi.GetCimInstance("Msvm_ComputerSystem", "Name = '{0}'", vmId);
+            return _mi.GetAssociatedCimInstance(vmInstance, "Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState"); //Optimizated query
+            //CimInstance settingData = GetCimInstance("Msvm_VirtualSystemSettingData", "InstanceID Like 'Microsoft:{0}%'", vmId); //this is slower ~6 times that two the above query
+        }
+
+        public CimInstance GetSummaryInformation(CimInstance settingData, params SummaryInformationRequest[] requestedInformation)
+        {
             if (requestedInformation == null || requestedInformation.Length == 0) {
                 HostedSolutionLog.LogWarning("At least one SummaryInformationRequest must be provided.", nameof(requestedInformation));
-            }
-
-            CimInstance managementService = _mi.GetCimInstance("Msvm_VirtualSystemManagementService");
-            if (managementService == null) {
-                HostedSolutionLog.LogWarning("Failed to retrieve Msvm_VirtualSystemManagementService instance.");
             }
 
             uint[] reqif = new uint[requestedInformation.Length];
             for (int i = 0; i < requestedInformation.Length; i++)
                 reqif[i] = (uint)requestedInformation[i];
 
-            CimInstance vmInstance = _mi.GetCimInstance("Msvm_ComputerSystem", "Name = '{0}'", vmId);
-            CimInstance settingData = _mi.GetAssociatedCimInstance(vmInstance, "Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState"); //Optimizated query
-            //CimInstance settingData = GetCimInstance("Msvm_VirtualSystemSettingData", "InstanceID Like 'Microsoft:{0}%'", vmId); //this is slower ~6 times that two the above query
-            
-            if (settingData == null)
-                HostedSolutionLog.LogWarning($"Virtual machine with ID '{vmId}' not found.");
+            CimInstance managementService = _mi.GetCimInstance("Msvm_VirtualSystemManagementService");
+            if (managementService == null) {
+                HostedSolutionLog.LogWarning("Failed to retrieve Msvm_VirtualSystemManagementService instance.");
+            }
 
             var inParams = new CimMethodParametersCollection
             {
@@ -71,17 +68,14 @@ namespace SolidCP.Providers.Virtualization
 
             CimMethodResult result = _mi.InvokeMethod(managementService, "GetSummaryInformation", inParams);
 
-            if (result.ReturnValue.Value is uint retVal && retVal != 0){
+            if (result.ReturnValue.Value is uint retVal && retVal != 0) {
                 HostedSolutionLog.LogError(new Exception($"GetSummaryInformation returned error code: {retVal}"));
             }
 
             object summaryObj = result.OutParameters["SummaryInformation"].Value;
-            if (summaryObj is CimInstance[] summaryArray)
-            {
+            if (summaryObj is CimInstance[] summaryArray) {
                 return summaryArray.FirstOrDefault();
-            }
-            else
-            {
+            } else {
                 return null;
             }
         }
@@ -252,7 +246,7 @@ namespace SolidCP.Providers.Virtualization
                 CimInstance cimSettings = _mi.GetAssociatedCimInstance(cimVm, "Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState");
                 var objSettings = cimSettings.CimInstanceProperties;
 
-                CimInstance cimSummary = GetSummaryInformation(vmId,
+                CimInstance cimSummary = GetSummaryInformation(cimSettings,
                     SummaryInformationRequest.Heartbeat,
                     SummaryInformationRequest.MemoryUsage,
                     SummaryInformationRequest.ProcessorLoad,
