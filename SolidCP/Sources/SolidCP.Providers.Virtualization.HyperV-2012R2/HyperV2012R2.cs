@@ -189,7 +189,7 @@ namespace SolidCP.Providers.Virtualization
             _virtualMachineHelper = new Lazy<VirtualMachineHelper>(() => new VirtualMachineHelper(PowerShell, Mi));
             _dvdDriveHelper = new Lazy<DvdDriveHelper>(() => new DvdDriveHelper(PowerShell, Mi));
             _hardDriveHelper = new Lazy<HardDriveHelper>(() => new HardDriveHelper(PowerShell, Mi, FileSystemHelper));
-            _biosHelper = new Lazy<BiosHelper>(() => new BiosHelper(PowerShell, Mi, DvdDriveHelper, HardDriveHelper));
+            _biosHelper = new Lazy<BiosHelper>(() => new BiosHelper(PowerShell, DvdDriveHelper, HardDriveHelper));
         }
         #endregion
 
@@ -1519,31 +1519,33 @@ namespace SolidCP.Providers.Virtualization
 
                 foreach (CimInstance vswitch in allSwitches)
                 {
-                    string switchId = vswitch.CimInstanceProperties["Name"]?.Value?.ToString();
-                    string switchName = vswitch.CimInstanceProperties["ElementName"]?.Value?.ToString();
+                    using (vswitch) {
+                        string switchId = vswitch.CimInstanceProperties["Name"]?.Value?.ToString();
+                        string switchName = vswitch.CimInstanceProperties["ElementName"]?.Value?.ToString();
 
-                    CimInstance[] switchPorts = mi.EnumerateAssociatedInstances(vswitch, "Msvm_SystemDevice", "Msvm_EthernetSwitchPort");
+                        CimInstance[] switchPorts = mi.EnumerateAssociatedInstances(vswitch, "Msvm_SystemDevice", "Msvm_EthernetSwitchPort");
 
-                    bool hasExternalPort = false;
+                        bool hasExternalPort = false;
 
-                    foreach (CimInstance port in switchPorts)
-                    {
-                        string portName = port.CimInstanceProperties["ElementName"]?.Value?.ToString();
-                        if (!string.IsNullOrEmpty(portName) && portName.EndsWith("_External", StringComparison.OrdinalIgnoreCase))
+                        foreach (CimInstance port in switchPorts)
                         {
-                            hasExternalPort = true;
-                            break;
+                            string portName = port.CimInstanceProperties["ElementName"]?.Value?.ToString();
+                            if (!string.IsNullOrEmpty(portName) && portName.EndsWith("_External", StringComparison.OrdinalIgnoreCase))
+                            {
+                                hasExternalPort = true;
+                                break;
+                            }
                         }
-                    }
 
-                    if (hasExternalPort)
-                    {
-                        VirtualSwitch sw = new VirtualSwitch();
-                        //sw.SwitchId = switchId;
-                        sw.SwitchId = sw.Name = switchName;
-                        sw.SwitchType = "External";
-                        externalSwitches.Add(sw);
-                    }
+                        if (hasExternalPort)
+                        {
+                            VirtualSwitch sw = new VirtualSwitch();
+                            //sw.SwitchId = switchId;
+                            sw.SwitchId = sw.Name = switchName;
+                            sw.SwitchType = "External";
+                            externalSwitches.Add(sw);
+                        }
+                    }                    
                 }
             }
 
@@ -1642,12 +1644,16 @@ namespace SolidCP.Providers.Virtualization
                 "Name, ElementName",
                 "Name = '{0}'", vmId); //Name = "GUID"
 
-            CimKeyedCollection<CimProperty> objKvpExchange = null;
+            string[] xmlPairs = null;
 
             try
             {
-                CimInstance cimInstKvpExchange = Mi.GetAssociatedCimInstance(cimVm, "Msvm_KvpExchangeComponent", "Msvm_SystemDevice");
-                objKvpExchange = cimInstKvpExchange.CimInstanceProperties;
+                using (cimVm)
+                using (CimInstance cimInstKvpExchange = Mi.GetAssociatedCimInstance(cimVm, "Msvm_KvpExchangeComponent", "Msvm_SystemDevice"))
+                {
+                    // return XML pairs
+                    xmlPairs = (string[])cimInstKvpExchange.CimInstanceProperties[exchangeItemsName].Value;
+                }                
             }
             catch
             {
@@ -1655,9 +1661,6 @@ namespace SolidCP.Providers.Virtualization
                 //HostedSolutionLog.LogError("GetKVPItems", new Exception("msvm_KvpExchangeComponent"));
                 return pairs;
             }
-
-            // return XML pairs
-            string[] xmlPairs = (string[])objKvpExchange[exchangeItemsName].Value;
 
             if (xmlPairs == null)
                 return pairs;
@@ -1684,109 +1687,113 @@ namespace SolidCP.Providers.Virtualization
         }
 
         public JobResult AddKVPItems(string vmId, KvpExchangeDataItem[] items)
-        {
-            // get KVP management object
-            CimInstance objVmsvc = GetVirtualSystemManagementService();
-
+        {            
             // create KVP items array
             string[] wmiItems = new string[items.Length];
 
             for (int i = 0; i < items.Length; i++)
             {
-                CimClass clsKvp = _mi.GetCimClass("Msvm_KvpExchangeDataItem");
-                CimInstance objKvp = new CimInstance(clsKvp);
-                objKvp.CimInstanceProperties["Name"].Value = items[i].Name;
-                objKvp.CimInstanceProperties["Data"].Value = items[i].Data;
-                objKvp.CimInstanceProperties["Source"].Value = (ushort)0;
-                
-                // convert to WMI format
-                wmiItems[i] = Mi.SerializeToCimDtd20(objKvp);
+                using (CimInstance objKvp = new CimInstance(Mi.GetCimClass("Msvm_KvpExchangeDataItem")))
+                {
+                    objKvp.CimInstanceProperties["Name"].Value = items[i].Name;
+                    objKvp.CimInstanceProperties["Data"].Value = items[i].Data;
+                    objKvp.CimInstanceProperties["Source"].Value = (ushort)0;
+
+                    // convert to WMI format
+                    wmiItems[i] = Mi.SerializeToCimDtd20(objKvp);
+                }
             }
 
-            var inParams = new CimMethodParametersCollection
+            using (CimInstance vmObj = GetVirtualMachineObject(vmId))
+            using (var inParams = new CimMethodParametersCollection
             {
                 CimMethodParameter.Create(
-                    "TargetSystem",GetVirtualMachineObject(vmId), Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
+                    "TargetSystem", vmObj, Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
                     ),
                 CimMethodParameter.Create(
                     "DataItems",  wmiItems, CimFlags.In
                     )
-            };
-            // invoke method
-            CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "AddKvpItems", inParams);
-
-            return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+            })            
+            using (CimInstance objVmsvc = GetVirtualSystemManagementService()) // get KVP management object           
+            using (CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "AddKvpItems", inParams)) // invoke method
+            {
+                return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+            }
         }
 
         public JobResult RemoveKVPItems(string vmId, string[] itemNames)
         {
-            // get KVP management object
-            CimInstance objVmsvc = GetVirtualSystemManagementService();
-
             // delete items one by one
             for (int i = 0; i < itemNames.Length; i++)
             {
-                CimClass clsKvp = _mi.GetCimClass("Msvm_KvpExchangeDataItem");
-                CimInstance objKvp = new CimInstance(clsKvp);
-                objKvp.CimInstanceProperties["Name"].Value = itemNames[i];
-                objKvp.CimInstanceProperties["Data"].Value = "";
-                objKvp.CimInstanceProperties["Source"].Value = (ushort)0;
+                string wmiItem = null;
+                using (CimInstance objKvp = new CimInstance(Mi.GetCimClass("Msvm_KvpExchangeDataItem")))
+                {
+                    objKvp.CimInstanceProperties["Name"].Value = itemNames[i];
+                    objKvp.CimInstanceProperties["Data"].Value = "";
+                    objKvp.CimInstanceProperties["Source"].Value = (ushort)0;
 
-                // convert to WMI format
-                string wmiItem = Mi.SerializeToCimDtd20(objKvp);
+                    // convert to WMI format
+                    wmiItem = Mi.SerializeToCimDtd20(objKvp);
+                }
 
-                var inParams = new CimMethodParametersCollection
+                using (CimInstance vmObj = GetVirtualMachineObject(vmId))
+                using (var inParams = new CimMethodParametersCollection
                 {
                     CimMethodParameter.Create(
-                        "TargetSystem", GetVirtualMachineObject(vmId), Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
+                        "TargetSystem", vmObj, Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
                         ),
                     CimMethodParameter.Create(
                         "DataItems", new string[] { wmiItem }, CimFlags.In
                         )
-                };
-                // invoke method
-                CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "RemoveKvpItems", inParams);
+                })
+                using (CimInstance objVmsvc = GetVirtualSystemManagementService()) // get KVP management object
+                {
+                    Mi.InvokeMethod(objVmsvc, "RemoveKvpItems", inParams); // invoke method
+                }
             }
             return null;
         }
 
         public JobResult ModifyKVPItems(string vmId, KvpExchangeDataItem[] items)
         {
-            // get KVP management object
-            CimInstance objVmsvc = GetVirtualSystemManagementService();
-
             // create KVP items array
             string[] wmiItems = new string[items.Length];
 
             for (int i = 0; i < items.Length; i++)
             {
-                CimInstance objKvp = new CimInstance("Msvm_KvpExchangeDataItem");
-                objKvp.CimInstanceProperties.Add(
-                    CimProperty.Create("Name", items[i].Name, CimFlags.Property)
-                    );
-                objKvp.CimInstanceProperties.Add(
-                    CimProperty.Create("Data", items[i].Data, CimFlags.Property)
-                    );
-                objKvp.CimInstanceProperties.Add(
-                    CimProperty.Create("Source", (ushort)0, CimFlags.Property)
-                    );
+                using (CimInstance objKvp = new CimInstance("Msvm_KvpExchangeDataItem"))
+                {
+                    objKvp.CimInstanceProperties.Add(
+                        CimProperty.Create("Name", items[i].Name, CimFlags.Property)
+                        );
+                    objKvp.CimInstanceProperties.Add(
+                        CimProperty.Create("Data", items[i].Data, CimFlags.Property)
+                        );
+                    objKvp.CimInstanceProperties.Add(
+                        CimProperty.Create("Source", (ushort)0, CimFlags.Property)
+                        );
 
-                // convert to WMI format
-                wmiItems[i] = Mi.SerializeToCimDtd20(objKvp);
+                    // convert to WMI format
+                    wmiItems[i] = Mi.SerializeToCimDtd20(objKvp);
+                }               
             }
-            var inParams = new CimMethodParametersCollection
+
+            using (CimInstance vmObj = GetVirtualMachineObject(vmId))
+            using (var inParams = new CimMethodParametersCollection
             {
                 CimMethodParameter.Create(
-                    "TargetSystem", GetVirtualMachineObject(vmId), Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
+                    "TargetSystem", vmObj, Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In
                     ),
                 CimMethodParameter.Create(
-                    "DataItems",  wmiItems, CimFlags.In
+                    "DataItems", wmiItems, CimFlags.In
                     )
-            };
-            // invoke method
-            CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "ModifyKvpItems", inParams);
-
-            return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+            })
+            using (CimInstance objVmsvc = GetVirtualSystemManagementService()) // get KVP management object                                                                               
+            using (CimMethodResult outParams = Mi.InvokeMethod(objVmsvc, "ModifyKvpItems", inParams)) // invoke method
+            {
+                return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+            }
         }
         #endregion
 
@@ -1903,41 +1910,43 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                CimInstance imageService = Mi.GetCimInstance("Msvm_ImageManagementService");
-                CimClass settingsClass = Mi.GetCimClass("Msvm_VirtualHardDiskSettingData");
-
-                CimInstance settingsInstance = new CimInstance(settingsClass);
-                settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
-                settingsInstance.CimInstanceProperties["Type"].Value = diskType;
-                settingsInstance.CimInstanceProperties["Format"].Value = format;
-                settingsInstance.CimInstanceProperties["BlockSize"].Value = (blockSizeBytes > 0) ? blockSizeBytes : 0;
-                //settingsInstance.CimInstanceProperties["ParentPath"].Value = null;
-                //settingsInstance.CimInstanceProperties["MaxInternalSize"].Value = 0;
-                //settingsInstance.CimInstanceProperties["LogicalSectorSize"].Value = 0;
-                //settingsInstance.CimInstanceProperties["PhysicalSectorSize"].Value = 0;
-
-                var inParams = new CimMethodParametersCollection
+                using (CimInstance imageService = Mi.GetCimInstance("Msvm_ImageManagementService"))
+                using (CimClass settingsClass = Mi.GetCimClass("Msvm_VirtualHardDiskSettingData"))
+                using (CimInstance settingsInstance = new CimInstance(settingsClass))
                 {
-                    CimMethodParameter.Create(
-                        "SourcePath",
-                        sourcePath,
-                        Microsoft.Management.Infrastructure.CimType.String,
-                        CimFlags.None),
-                    CimMethodParameter.Create(
-                        "VirtualDiskSettingData",
-                        Mi.SerializeToCimDtd20(settingsInstance),
-                        Microsoft.Management.Infrastructure.CimType.String,
-                        CimFlags.None)
-                };
-                //can be checked docs via powershell command:
-                //Get-CimClass -ClassName Msvm_ImageManagementService -Namespace root/virtualization/v2 | Select -Object -ExpandProperty CimClassMethods
-                //or
-                //$svcClass = Get - CimClass - ClassName Msvm_ImageManagementService - Namespace root/virtualization/v2
-                //$method = $svcClass.CimClassMethods["ConvertVirtualHardDisk"]
-                //$method.Parameters | Select-Object Name, CimType, Qualifiers, IsIn, IsOut
-                CimMethodResult outParams = Mi.InvokeMethod(imageService, "ConvertVirtualHardDisk", inParams);
+                    settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
+                    settingsInstance.CimInstanceProperties["Type"].Value = diskType;
+                    settingsInstance.CimInstanceProperties["Format"].Value = format;
+                    settingsInstance.CimInstanceProperties["BlockSize"].Value = (blockSizeBytes > 0) ? blockSizeBytes : 0;
+                    //settingsInstance.CimInstanceProperties["ParentPath"].Value = null;
+                    //settingsInstance.CimInstanceProperties["MaxInternalSize"].Value = 0;
+                    //settingsInstance.CimInstanceProperties["LogicalSectorSize"].Value = 0;
+                    //settingsInstance.CimInstanceProperties["PhysicalSectorSize"].Value = 0;
 
-                return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+                    var inParams = new CimMethodParametersCollection
+                    {
+                        CimMethodParameter.Create(
+                            "SourcePath",
+                            sourcePath,
+                            Microsoft.Management.Infrastructure.CimType.String,
+                            CimFlags.None),
+                        CimMethodParameter.Create(
+                            "VirtualDiskSettingData",
+                            Mi.SerializeToCimDtd20(settingsInstance),
+                            Microsoft.Management.Infrastructure.CimType.String,
+                            CimFlags.None)
+                    };
+                    //can be checked docs via powershell command:
+                    //Get-CimClass -ClassName Msvm_ImageManagementService -Namespace root/virtualization/v2 | Select -Object -ExpandProperty CimClassMethods
+                    //or
+                    //$svcClass = Get - CimClass - ClassName Msvm_ImageManagementService - Namespace root/virtualization/v2
+                    //$method = $svcClass.CimClassMethods["ConvertVirtualHardDisk"]
+                    //$method.Parameters | Select-Object Name, CimType, Qualifiers, IsIn, IsOut
+                    using (CimMethodResult outParams = Mi.InvokeMethod(imageService, "ConvertVirtualHardDisk", inParams))
+                    {
+                        return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+                    }
+                } 
             }
             catch (Exception ex)
             {
@@ -2362,10 +2371,11 @@ namespace SolidCP.Providers.Virtualization
             SummaryInformationRequest requestedInformation)
         {
             // find VM settings object
-            CimInstance objVmSetting = GetSnapshotObject(snapshotId);
-
-            // get summary
-            return VirtualMachineHelper.GetSummaryInformation(objVmSetting, requestedInformation);
+            using (CimInstance objVmSetting = GetSnapshotObject(snapshotId))
+            {
+                // get summary
+                return VirtualMachineHelper.GetSummaryInformation(objVmSetting, requestedInformation);
+            }            
         }
 
         private bool JobCompleted(ConcreteJob job)

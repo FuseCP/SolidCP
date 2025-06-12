@@ -41,17 +41,19 @@ namespace SolidCP.Providers.Virtualization
             result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams.OutParameters["ReturnValue"].Value);
             try
             {
-                CimInstance objJob = outParams.OutParameters["Job"].Value as CimInstance;
-                if (objJob == null)
-                { //we suppose if obj is null, then job already finished. Anyway ReturnValue should be checked first
-                    result.ReturnValue = ReturnCode.OK;
-                    result.Job = new ConcreteJob { 
-                        JobState = ConcreteJobState.New, 
-                        ErrorDescription = "The job has never been started"
-                    };
-                    return result;
-                }
-                result.Job = CreateFromCimObject(mi.GetInstance(objJob));
+                using (CimInstance objJob = outParams.OutParameters["Job"].Value as CimInstance)
+                {
+                    if (objJob == null)
+                    { //we suppose if obj is null, then job already finished. Anyway ReturnValue should be checked first
+                        result.Job = new ConcreteJob
+                        {
+                            JobState = ConcreteJobState.New,
+                            ErrorDescription = "The job has never been started"
+                        };
+                        return result;
+                    }
+                    result.Job = CreateFromCimObject(mi.GetInstance(objJob));
+                }                
 
             } catch (Exception e) {
                 HostedSolutionLog.LogError(e);

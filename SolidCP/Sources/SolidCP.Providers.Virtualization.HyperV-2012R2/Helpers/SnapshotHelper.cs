@@ -32,7 +32,7 @@ namespace SolidCP.Providers.Virtualization
             return snapshot;
         }
 
-        public static VirtualMachineSnapshot GetFromWmi(CimInstance objSnapshot)
+        public static VirtualMachineSnapshot GetFromCim(CimInstance objSnapshot)
         {
             if (objSnapshot == null || objSnapshot.CimInstanceProperties.Count == 0)
                 return null;

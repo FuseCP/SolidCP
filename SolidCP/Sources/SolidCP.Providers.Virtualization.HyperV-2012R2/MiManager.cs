@@ -54,9 +54,11 @@ namespace SolidCP.Providers.Virtualization
 
         public string SerializeToCimDtd20(CimInstance cimInstance)
         {
-            CimSerializer serializer = CimSerializer.Create();
-            byte[] serializedBytes = serializer.Serialize(cimInstance, InstanceSerializationOptions.None);
-            return Encoding.Unicode.GetString(serializedBytes);
+            using (CimSerializer serializer = CimSerializer.Create())
+            {
+                byte[] serializedBytes = serializer.Serialize(cimInstance, InstanceSerializationOptions.None);
+                return Encoding.Unicode.GetString(serializedBytes);
+            }            
         }
 
         public CimInstance GetCimInstance(string className)

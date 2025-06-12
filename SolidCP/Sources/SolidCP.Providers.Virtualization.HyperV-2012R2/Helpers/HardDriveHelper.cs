@@ -249,17 +249,17 @@ namespace SolidCP.Providers.Virtualization
             string fileExtension = Path.GetExtension(destinationPath);
             VirtualHardDiskFormat format = fileExtension.Equals(".vhdx", StringComparison.InvariantCultureIgnoreCase) ? VirtualHardDiskFormat.VHDX : VirtualHardDiskFormat.VHD;
 
-            CimInstance imageService = _mi.GetCimInstance("Msvm_ImageManagementService");
-            CimClass settingsClass = _mi.GetCimClass("Msvm_VirtualHardDiskSettingData");
+            using (CimInstance imageService = _mi.GetCimInstance("Msvm_ImageManagementService"))
+            using (CimClass settingsClass = _mi.GetCimClass("Msvm_VirtualHardDiskSettingData"))
+            using (CimInstance settingsInstance = new CimInstance(settingsClass))
+            {
+                settingsInstance.CimInstanceProperties["MaxInternalSize"].Value = sizeGB * Constants.Size1G;
+                settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
+                settingsInstance.CimInstanceProperties["Type"].Value = diskType;
+                settingsInstance.CimInstanceProperties["Format"].Value = format;
+                settingsInstance.CimInstanceProperties["BlockSize"].Value = (blockSizeBytes > 0) ? blockSizeBytes : 0;
 
-            CimInstance settingsInstance = new CimInstance(settingsClass);
-            settingsInstance.CimInstanceProperties["MaxInternalSize"].Value = sizeGB * Constants.Size1G;
-            settingsInstance.CimInstanceProperties["Path"].Value = destinationPath;
-            settingsInstance.CimInstanceProperties["Type"].Value = diskType;
-            settingsInstance.CimInstanceProperties["Format"].Value = format;
-            settingsInstance.CimInstanceProperties["BlockSize"].Value = (blockSizeBytes > 0) ? blockSizeBytes : 0;
-
-            var inParams = new CimMethodParametersCollection
+                var inParams = new CimMethodParametersCollection
                 {
                     CimMethodParameter.Create(
                         "VirtualDiskSettingData",
@@ -268,9 +268,8 @@ namespace SolidCP.Providers.Virtualization
                         CimFlags.None)
                 };
 
-            return _mi.InvokeMethod(imageService, "CreateVirtualHardDisk", inParams);
-
-
+                return _mi.InvokeMethod(imageService, "CreateVirtualHardDisk", inParams);
+            }
             //Command cmd = new Command("New-VHD");
 
             //cmd.Parameters.Add("SizeBytes", sizeGB * Constants.Size1G);

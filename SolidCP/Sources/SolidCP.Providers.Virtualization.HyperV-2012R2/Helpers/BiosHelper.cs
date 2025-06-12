@@ -13,14 +13,12 @@ namespace SolidCP.Providers.Virtualization
     public class BiosHelper
     {
         private PowerShellManager _powerShell;
-        private MiManager _mi;
         private DvdDriveHelper _dvdDriveHelper;
         private HardDriveHelper _hardDriveHelper;
 
-        public BiosHelper(PowerShellManager powerShellManager, MiManager mi, DvdDriveHelper dvdDriveHelper, HardDriveHelper hardDriveHelper)
+        public BiosHelper(PowerShellManager powerShellManager, DvdDriveHelper dvdDriveHelper, HardDriveHelper hardDriveHelper)
         {
             _powerShell = powerShellManager;
-            _mi = mi;
             _dvdDriveHelper = dvdDriveHelper;
             _hardDriveHelper = hardDriveHelper;
         }
