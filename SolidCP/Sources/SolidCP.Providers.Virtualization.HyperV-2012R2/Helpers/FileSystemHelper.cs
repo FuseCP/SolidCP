@@ -75,9 +75,12 @@ namespace SolidCP.Providers.Virtualization
             else
             {
                 // delete file using WMI
-                CimInstance objFile = _miCim.GetCimInstance("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\"));
-                CimMethodResult result = _miCim.InvokeMethod(objFile, "Delete", null);
-                //check result?
+                using (CimInstance objFile = _miCim.GetCimInstance("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\")))
+                {
+                    if (objFile != null)
+                        _miCim.InvokeMethod(objFile, "Delete", null);//check result?
+                    //CimMethodResult result = _miCim.InvokeMethod(objFile, "Delete", null);
+                }
             }
         }
 
@@ -98,12 +101,18 @@ namespace SolidCP.Providers.Virtualization
                 // local folder
                 // delete sub folders first
                 CimInstance[] objSubFolders = GetSubFolders(path);
-                foreach (CimInstance objSubFolder in objSubFolders)
-                    DeleteFolder(objSubFolder.CimInstanceProperties["Name"].Value.ToString());
+                foreach (CimInstance objSubFolder in objSubFolders) {
+                    using (objSubFolder) {
+                        DeleteFolder(objSubFolder.CimInstanceProperties["Name"].Value.ToString());
+                    }
+                }
 
                 // delete this folder itself
-                CimInstance objFile = _miCim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-                _miCim.InvokeMethod(objFile, "Delete", null); //check result?
+                using (CimInstance objFile = _miCim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\")))
+                {
+                    if (objFile != null)
+                        _miCim.InvokeMethod(objFile, "Delete", null); //check result?
+                }                
             }
         }
 
@@ -112,9 +121,10 @@ namespace SolidCP.Providers.Virtualization
             if (path.EndsWith("\\"))
                 path = path.Substring(0, path.Length - 1);
 
-            var directory = _miCim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-
-            return _miCim.EnumerateAssociatedInstances(directory, "Win32_Subdirectory", "Win32_Directory", "GroupComponent", "PartComponent");
+            using (CimInstance directory = _miCim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\")))
+            {
+                return _miCim.EnumerateAssociatedInstances(directory, "Win32_Subdirectory", "Win32_Directory", "GroupComponent", "PartComponent");
+            }                
         }
 
         public bool CopyFile(string sourceFileName, string destinationFileName)
@@ -134,12 +144,12 @@ namespace SolidCP.Providers.Virtualization
                 if (!FileExists(sourceFileName))
                     return false;
 
-                CimInstance objFile = _miCim.GetCimInstance("CIM_DataFile", "Name = '{0}'", sourceFileName.Replace("\\", "\\\\"));
-                if (objFile == null)
-                    throw new Exception("Source file does not exists: " + sourceFileName);
+                using (CimInstance objFile = _miCim.GetCimInstance("CIM_DataFile", "Name = '{0}'", sourceFileName.Replace("\\", "\\\\")))
+                {
+                    if (objFile == null)
+                        throw new Exception("Source file does not exists: " + sourceFileName);
 
-
-                var inParams = new CimMethodParametersCollection
+                    var inParams = new CimMethodParametersCollection
                     {
                         CimMethodParameter.Create(
                             "FileName",
@@ -149,11 +159,12 @@ namespace SolidCP.Providers.Virtualization
                         )
                     };
 
-                CimMethodResult result = _miCim.InvokeMethod(objFile, "Copy", inParams);
-
-                if ((uint)result.ReturnValue.Value != 0)
-                    throw new Exception("Copy file failed: Result error: " + result.ReturnValue.Value.ToString());
-
+                    using (CimMethodResult result = _miCim.InvokeMethod(objFile, "Copy", inParams))
+                    {
+                        if ((uint)result.ReturnValue.Value != 0)
+                            throw new Exception("Copy file failed: Result error: " + result.ReturnValue.Value.ToString());
+                    }                        
+                }
                 //    // copy using WMI
                 //    Wmi cimv2 = new Wmi(ServerNameSettings, Constants.WMI_CIMV2_NAMESPACE);
                 //ManagementObject objFile = cimv2.GetWmiObject("CIM_Datafile", "Name='{0}'", sourceFileName.Replace("\\", "\\\\"));
@@ -173,8 +184,10 @@ namespace SolidCP.Providers.Virtualization
                 return File.Exists(path);
             else
             {
-                CimInstance objDir = _miCim.GetCimInstance("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\"));
-                return (objDir != null);
+                using (CimInstance objDir = _miCim.GetCimInstance("CIM_Datafile", "Name='{0}'", path.Replace("\\", "\\\\")))
+                {
+                    return (objDir != null);
+                }                    
             }
         }
 
@@ -189,15 +202,17 @@ namespace SolidCP.Providers.Virtualization
 
         public string GetTempRemoteFolder()
         {
-            CimInstance objOS = _miCim.GetCimInstance("win32_OperatingSystem");
-            string sysPath = objOS.CimInstanceProperties["SystemDirectory"].Value.ToString();
-            // remove trailing slash
-            if (sysPath.EndsWith("\\"))
-                sysPath = sysPath.Substring(0, sysPath.Length - 1);
+            using (CimInstance objOS = _miCim.GetCimInstance("win32_OperatingSystem"))
+            {
+                string sysPath = objOS.CimInstanceProperties["SystemDirectory"].Value.ToString();
+                // remove trailing slash
+                if (sysPath.EndsWith("\\"))
+                    sysPath = sysPath.Substring(0, sysPath.Length - 1);
 
-            sysPath = sysPath.Substring(0, sysPath.LastIndexOf("\\") + 1) + "Temp";
+                sysPath = sysPath.Substring(0, sysPath.LastIndexOf("\\") + 1) + "Temp";
 
-            return sysPath;
+                return sysPath;
+            }                
         }
 
         public bool DirectoryExists(string path)
@@ -208,8 +223,10 @@ namespace SolidCP.Providers.Virtualization
                 return Directory.Exists(path);
             else
             {
-                CimInstance objDir = _miCim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\"));
-                return (objDir != null);
+                using (CimInstance objDir = _miCim.GetCimInstance("Win32_Directory", "Name='{0}'", path.Replace("\\", "\\\\")))
+                {
+                    return (objDir != null);
+                }                    
             }
         }
 
@@ -231,39 +248,49 @@ namespace SolidCP.Providers.Virtualization
             {
                 CimMethodParameter.Create("CommandLine", command, Microsoft.Management.Infrastructure.CimType.String, CimFlags.In)
             };
+            
+            CimMethodResult createResult = null;
 
-            // run process
-            var createResult = await Task.Run(() => _miCim.InvokeStaticMethod("Win32_Process", "Create", methodParams));
-
-            uint returnValue = (uint)createResult.ReturnValue.Value;
-            if (returnValue != 0)
+            try
             {
-                throw new InvalidOperationException($"Failed to create remote process. Win32_Process.Create returned error code: {returnValue}.");
-            }
+                // run process
+                createResult = await Task.Run(() => _miCim.InvokeStaticMethod("Win32_Process", "Create", methodParams));
 
-            uint processId = (uint)createResult.OutParameters["ProcessId"].Value;
-            if (processId == 0)
-            {
-                throw new InvalidOperationException("Win32_Process.Create executed successfully, but did not return a process identifier (ProcessId).");
-            }
-
-            // wait until finished (CIM has no event watcher so we will use polling)
-            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
-            while (stopwatch.Elapsed < effectiveTimeout)
-            {
-                var processInstance = await Task.Run(() => _miCim.GetCimInstance("Win32_Process", "ProcessId = {0}", processId));
-
-                if (processInstance == null)
+                uint returnValue = (uint)createResult.ReturnValue.Value;
+                if (returnValue != 0)
                 {
-                    return true; // successfully finished
+                    throw new InvalidOperationException($"Failed to create remote process. Win32_Process.Create returned error code: {returnValue}.");
                 }
 
-                await Task.Delay(1000);
-            }
+                uint processId = (uint)createResult.OutParameters["ProcessId"].Value;
+                if (processId == 0)
+                {
+                    throw new InvalidOperationException("Win32_Process.Create executed successfully, but did not return a process identifier (ProcessId).");
+                }
 
-            if (terminateTimeoutProcess)
+                // wait until finished (CIM has no event watcher so we will use polling)
+                var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+                while (stopwatch.Elapsed < effectiveTimeout)
+                {
+                    using (var processInstance = await Task.Run(() => _miCim.GetCimInstance("Win32_Process", "ProcessId = {0}", processId)))
+                    {
+                        if (processInstance == null)
+                        {
+                            return true; // successfully finished
+                        }
+                    }
+
+                    await Task.Delay(1000);
+                }
+
+                if (terminateTimeoutProcess)
+                {
+                    await TryTerminateProcessAsync(processId);
+                }
+            }
+            finally
             {
-                await TryTerminateProcessAsync(processId);
+                createResult?.Dispose();
             }
 
             return false; // process did not finish in time
@@ -271,15 +298,22 @@ namespace SolidCP.Providers.Virtualization
 
         private async Task TryTerminateProcessAsync(uint processId)
         {
+            CimInstance processToKill = null;
+            CimMethodResult terminateResult = null;
             try
             {
-                var processToKill = await Task.Run(() => _miCim.GetCimInstance("Win32_Process", "ProcessId = {0}", processId));
+                processToKill = await Task.Run(() => _miCim.GetCimInstance("Win32_Process", "ProcessId = {0}", processId));
                 if (processToKill != null)
                 {
-                    await Task.Run(() => _miCim.InvokeMethod(processToKill, "Terminate"));
+                    terminateResult = await Task.Run(() => _miCim.InvokeMethod(processToKill, "Terminate"));
                 }
             }
             catch { }
+            finally
+            {
+                processToKill?.Dispose();
+                terminateResult?.Dispose();
+            }
         }
     }
 }

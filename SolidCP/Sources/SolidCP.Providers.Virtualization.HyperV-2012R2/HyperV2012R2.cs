@@ -425,20 +425,23 @@ namespace SolidCP.Providers.Virtualization
                 HostedSolutionLog.LogInfo("After CIM command");
                 foreach (CimInstance currentCim in cimVms)
                 {
-                    var current = currentCim.CimInstanceProperties;
-                    if (!string.Equals(current["Caption"].Value as string, "Virtual Machine", StringComparison.Ordinal)) //we need only VMs
-                        continue;
+                    using (currentCim)
+                    {
+                        var current = currentCim.CimInstanceProperties;
+                        if (!string.Equals(current["Caption"].Value as string, "Virtual Machine", StringComparison.Ordinal)) //we need only VMs
+                            continue;
 
-                    HostedSolutionLog.LogInfo("- start VM -");
-                    var vm = new VirtualMachine();
-                    vm.VirtualMachineId = (string)current["Name"].Value;
-                    HostedSolutionLog.LogInfo("VirtualMachineId {0}", vm.VirtualMachineId);
-                    vm.Name = (string)current["ElementName"].Value;
-                    HostedSolutionLog.LogInfo("Name {0}", vm.Name);
-                    vm.ReplicationState = (ReplicationState)Convert.ToInt32(current["ReplicationState"].Value);
-                    HostedSolutionLog.LogInfo("ReplicationState {0}", vm.ReplicationState);
-                    vmachines.Add(vm);
-                    HostedSolutionLog.LogInfo("- end VM -");
+                        HostedSolutionLog.LogInfo("- start VM -");
+                        var vm = new VirtualMachine();
+                        vm.VirtualMachineId = (string)current["Name"].Value;
+                        HostedSolutionLog.LogInfo("VirtualMachineId {0}", vm.VirtualMachineId);
+                        vm.Name = (string)current["ElementName"].Value;
+                        HostedSolutionLog.LogInfo("Name {0}", vm.Name);
+                        vm.ReplicationState = (ReplicationState)Convert.ToInt32(current["ReplicationState"].Value);
+                        HostedSolutionLog.LogInfo("ReplicationState {0}", vm.ReplicationState);
+                        vmachines.Add(vm);
+                        HostedSolutionLog.LogInfo("- end VM -");
+                    }                    
                 }
                 HostedSolutionLog.LogInfo("Finish");
             }
@@ -455,9 +458,11 @@ namespace SolidCP.Providers.Virtualization
 
         public byte[] GetVirtualMachineThumbnailImage(string vmId, ThumbnailSize size)
         {
-            CimInstance settingData = VirtualMachineHelper.GetVirtualMachineSettingsObject(vmId);
-            CimInstance cimSummary = VirtualMachineHelper.GetSummaryInformation(settingData, (SummaryInformationRequest)size);
-            return GetTumbnailFromSummaryInformation(cimSummary, size);
+            using (CimInstance settingData = VirtualMachineHelper.GetVirtualMachineSettingsObject(vmId))
+            using (CimInstance cimSummary = VirtualMachineHelper.GetSummaryInformation(settingData, (SummaryInformationRequest)size))
+            {
+                return GetTumbnailFromSummaryInformation(cimSummary, size);
+            }            
         }
 
         private byte[] GetTumbnailFromSummaryInformation(CimInstance cimSummary, ThumbnailSize size)

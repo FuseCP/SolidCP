@@ -49,6 +49,7 @@ namespace SolidCP.Providers.Virtualization
                     diskVolume = volume;
                     break;
                 }
+                volume?.Dispose();
             }
 
             if (diskVolume == null)
@@ -88,6 +89,9 @@ namespace SolidCP.Providers.Virtualization
             while (!extendEvent.IsCompleted)
                 System.Threading.Thread.Sleep(100);
             diskVolume.EndExtend(extendEvent);
+
+            advancedDisk?.Dispose();
+            diskPack?.Dispose();
         }
 
         public MountedDiskInfo GetMountedDiskInfo(int driveNumber)
@@ -108,6 +112,8 @@ namespace SolidCP.Providers.Virtualization
             {
                 Thread.Sleep(20000);
                 HostedSolutionLog.LogInfo("Trying to find mounted disk - second attempt");
+                advancedDisk?.Dispose();
+                diskPack?.Dispose();
                 FindVdsDisk(diskInfo.DiskNumber, out advancedDisk, out diskPack);
             }
 
@@ -133,91 +139,99 @@ namespace SolidCP.Providers.Virtualization
                     "Model='Msft Virtual Disk SCSI Disk Device' and ScsiTargetID={0} and ScsiLogicalUnit={1} and scsiPort={2}",
                     targetId, lun, portNumber
                 );
-
-            if (useDiskPartToClearReadOnly)
+            using (objDisk)
             {
-                // *** Clear Read-Only and bring disk online with DiskPart ***
-                HostedSolutionLog.LogInfo("Clearing disk Read-only flag and bringing disk online");
-
-                if (objDisk != null && objDisk.CimInstanceProperties["Index"]?.Value != null)
+                if (useDiskPartToClearReadOnly)
                 {
-                    // disk found
-                    // run DiskPart
-                    string diskPartResult = RunDiskPart(
-                        String.Format(@"select disk {0}
-                                        attributes disk clear readonly
-                                        online disk
-                                        exit", Convert.ToInt32(objDisk.CimInstanceProperties["Index"].Value)));
+                    // *** Clear Read-Only and bring disk online with DiskPart ***
+                    HostedSolutionLog.LogInfo("Clearing disk Read-only flag and bringing disk online");
 
-                    HostedSolutionLog.LogInfo("DiskPart Result: " + diskPartResult);
-                }
-            }
-            else
-            {
-                // *** Clear Read-Only and bring disk online with VDS ***
-                // clear Read-Only
-                if ((advancedDisk.Flags & DiskFlags.ReadOnly) == DiskFlags.ReadOnly)
-                {
-                    HostedSolutionLog.LogInfo("Clearing disk Read-only flag");
-                    advancedDisk.ClearFlags(DiskFlags.ReadOnly);
-                    while ((advancedDisk.Flags & DiskFlags.ReadOnly) == DiskFlags.ReadOnly)
+                    if (objDisk != null && objDisk.CimInstanceProperties["Index"]?.Value != null)
                     {
-                        Thread.Sleep(100);
-                        advancedDisk.Refresh();
+                        // disk found
+                        // run DiskPart
+                        string diskPartResult = RunDiskPart(
+                            String.Format(@"select disk {0}
+                                    attributes disk clear readonly
+                                    online disk
+                                    exit", Convert.ToInt32(objDisk.CimInstanceProperties["Index"].Value)));
+
+                        HostedSolutionLog.LogInfo("DiskPart Result: " + diskPartResult);
                     }
                 }
-
-                // bring disk ONLINE
-                if (advancedDisk.Status == DiskStatus.Offline)
+                else
                 {
-                    HostedSolutionLog.LogInfo("Bringing disk online");
-                    advancedDisk.Online();
-                    while (advancedDisk.Status == DiskStatus.Offline)
+                    // *** Clear Read-Only and bring disk online with VDS ***
+                    // clear Read-Only
+                    if ((advancedDisk.Flags & DiskFlags.ReadOnly) == DiskFlags.ReadOnly)
                     {
-                        Thread.Sleep(100);
-                        advancedDisk.Refresh();
-                    }
-                }
-            }
-
-            // small pause after getting disk online
-            Thread.Sleep(3000);
-
-            // get disk again
-            FindVdsDisk(diskInfo.DiskNumber, out advancedDisk, out diskPack);
-
-            // find volumes using VDS
-            List<string> volumes = new List<string>();
-            HostedSolutionLog.LogInfo("Querying disk volumes with VDS");
-            foreach (Volume volume in diskPack.Volumes)
-            {
-                string letter = volume.DriveLetter.ToString();
-                if (letter != "")
-                    volumes.Add(letter);
-            }
-
-            // find volumes using WMI
-            if (volumes.Count == 0 && objDisk != null)
-            {
-                HostedSolutionLog.LogInfo("Querying disk volumes with WMI");
-                var partitions = _miCim.EnumerateAssociatedInstances(objDisk, "Win32_DiskDriveToDiskPartition", "Win32_DiskPartition");
-                foreach (var objPartition in partitions)
-                {
-                    var logicalDisks = _miCim.EnumerateAssociatedInstances(objPartition, "Win32_LogicalDiskToPartition", "Win32_LogicalDisk");
-                    foreach (var objVolume in logicalDisks)
-                    {
-                        if (objVolume.CimInstanceProperties["Name"]?.Value != null)
+                        HostedSolutionLog.LogInfo("Clearing disk Read-only flag");
+                        advancedDisk.ClearFlags(DiskFlags.ReadOnly);
+                        while ((advancedDisk.Flags & DiskFlags.ReadOnly) == DiskFlags.ReadOnly)
                         {
-                            volumes.Add(objVolume.CimInstanceProperties["Name"].Value.ToString().TrimEnd(':'));
+                            Thread.Sleep(100);
+                            advancedDisk.Refresh();
+                        }
+                    }
+
+                    // bring disk ONLINE
+                    if (advancedDisk.Status == DiskStatus.Offline)
+                    {
+                        HostedSolutionLog.LogInfo("Bringing disk online");
+                        advancedDisk.Online();
+                        while (advancedDisk.Status == DiskStatus.Offline)
+                        {
+                            Thread.Sleep(100);
+                            advancedDisk.Refresh();
                         }
                     }
                 }
+
+                // small pause after getting disk online
+                Thread.Sleep(3000);
+
+                //dispose objects get disk again
+                advancedDisk?.Dispose();
+                diskPack?.Dispose();
+                FindVdsDisk(diskInfo.DiskNumber, out advancedDisk, out diskPack);
+
+                // find volumes using VDS
+                List<string> volumes = new List<string>();
+                HostedSolutionLog.LogInfo("Querying disk volumes with VDS");
+                foreach (Volume volume in diskPack.Volumes)
+                {
+                    string letter = volume.DriveLetter.ToString();
+                    if (letter != "")
+                        volumes.Add(letter);
+                }
+
+                // find volumes using WMI
+                if (volumes.Count == 0 && objDisk != null)
+                {
+                    HostedSolutionLog.LogInfo("Querying disk volumes with WMI");
+                    var partitions = _miCim.EnumerateAssociatedInstances(objDisk, "Win32_DiskDriveToDiskPartition", "Win32_DiskPartition");
+                    foreach (var objPartition in partitions)
+                    {
+                        var logicalDisks = _miCim.EnumerateAssociatedInstances(objPartition, "Win32_LogicalDiskToPartition", "Win32_LogicalDisk");
+                        foreach (var objVolume in logicalDisks)
+                        {
+                            if (objVolume.CimInstanceProperties["Name"]?.Value != null)
+                            {
+                                volumes.Add(objVolume.CimInstanceProperties["Name"].Value.ToString().TrimEnd(':'));
+                            }
+                        }
+                    }
+                }
+
+                HostedSolutionLog.LogInfo("Volumes found: " + volumes.Count);
+
+                // Set volumes
+                diskInfo.DiskVolumes = volumes.ToArray();
             }
 
-            HostedSolutionLog.LogInfo("Volumes found: " + volumes.Count);
-
-            // Set volumes
-            diskInfo.DiskVolumes = volumes.ToArray();
+            // dispose objects
+            advancedDisk?.Dispose();
+            diskPack?.Dispose();
 
             return diskInfo;
         }
@@ -239,34 +253,49 @@ namespace SolidCP.Providers.Virtualization
             advancedDisk = null;
             diskPack = null;
 
-            ServiceLoader serviceLoader = new ServiceLoader();
-            Service vds = serviceLoader.LoadService(_serverName);
-            vds.WaitForServiceReady();
-
-            foreach (Disk disk in vds.UnallocatedDisks)
+            using (ServiceLoader serviceLoader = new ServiceLoader())
+            using (Service vds = serviceLoader.LoadService(_serverName)) 
             {
-                if (compareFunc(disk))
+                vds.WaitForServiceReady();
+
+                foreach (Disk disk in vds.UnallocatedDisks)
                 {
-                    advancedDisk = (AdvancedDisk) disk;
-                    break;
+                    if (compareFunc(disk))
+                    {
+                        advancedDisk = (AdvancedDisk)disk;
+                        break;
+                    }
+                    disk?.Dispose(); // disose disk if it is not an AdvancedDisk
                 }
-            }
 
-            if (advancedDisk == null)
-            {
-                vds.HardwareProvider = false;
-                vds.SoftwareProvider = true;
+                if (advancedDisk == null)
+                {
+                    vds.HardwareProvider = false;
+                    vds.SoftwareProvider = true;
 
-                foreach (SoftwareProvider provider in vds.Providers)
-                    foreach (Pack pack in provider.Packs)
-                        foreach (Disk disk in pack.Disks)
-                            if (compareFunc(disk))
+                    foreach (SoftwareProvider provider in vds.Providers)
+                    {
+                        using (provider) 
+                        {
+                            foreach (Pack pack in provider.Packs)
                             {
-                                diskPack = pack;
-                                advancedDisk = (AdvancedDisk) disk;
-                                break;
+                                foreach (Disk disk in pack.Disks)
+                                {
+                                    if (compareFunc(disk))
+                                    {
+                                        diskPack = pack;
+                                        advancedDisk = (AdvancedDisk)disk;
+                                        //break; //this looks like a bug, why do we break here and then continue the loop?
+                                        return;
+                                    }
+                                    disk?.Dispose();
+                                }
+                                pack?.Dispose(); // manually dispose, without using block (cause out parameter)
                             }
-            }
+                        }                            
+                    }
+                }
+            }            
         }
 
         // obsolete and currently is not used
