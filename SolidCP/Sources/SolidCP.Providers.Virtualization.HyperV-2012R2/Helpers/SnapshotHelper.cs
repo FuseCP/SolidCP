@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Management.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
@@ -32,16 +32,16 @@ namespace SolidCP.Providers.Virtualization
             return snapshot;
         }
 
-        public static VirtualMachineSnapshot GetFromWmi(ManagementBaseObject objSnapshot)
+        public static VirtualMachineSnapshot GetFromWmi(CimInstance objSnapshot)
         {
-            if (objSnapshot == null || objSnapshot.Properties.Count == 0)
+            if (objSnapshot == null || objSnapshot.CimInstanceProperties.Count == 0)
                 return null;
 
             VirtualMachineSnapshot snapshot = new VirtualMachineSnapshot();
-            snapshot.Id = (string)objSnapshot["InstanceID"];
-            snapshot.Name = (string)objSnapshot["ElementName"];
+            snapshot.Id = (string)objSnapshot.CimInstanceProperties["InstanceID"].Value;
+            snapshot.Name = (string)objSnapshot.CimInstanceProperties["ElementName"].Value;
 
-            string parentId = (string)objSnapshot["Parent"];
+            string parentId = (string)objSnapshot.CimInstanceProperties["Parent"].Value;
             if (!String.IsNullOrEmpty(parentId))
             {
                 int idx = parentId.IndexOf("Microsoft:");
@@ -52,7 +52,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 snapshot.Id = snapshot.Id.ToLower().Replace("microsoft:", "");
             }
-            snapshot.Created = Wmi.ToDateTime((string)objSnapshot["CreationTime"]);
+            snapshot.Created = (DateTime)objSnapshot.CimInstanceProperties["CreationTime"].Value;
 
             if (string.IsNullOrEmpty(snapshot.ParentId))
                 snapshot.ParentId = null; // for capability

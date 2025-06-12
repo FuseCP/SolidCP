@@ -38,6 +38,10 @@ using System.Diagnostics;
 
 namespace SolidCP.Providers.Virtualization
 {
+    /// <summary>
+    /// DEPRECATED: This class will be removed in the next release (after 2025?).
+    /// Please use <c>MiManager</c> instead.
+    /// </summary>
     internal class Wmi
     {
         string nameSpace = null;

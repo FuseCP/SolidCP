@@ -40,7 +40,6 @@ using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
 
-using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 
@@ -146,12 +145,6 @@ namespace SolidCP.Providers.Virtualization
             get { return _powerShellAsync ?? (_powerShellAsync = new PowerShellManager(ServerNameSettings, true)); }
         }
 
-        private Wmi _wmi;
-        private Wmi wmi
-        {
-            get { return _wmi ?? (_wmi = new Wmi(ServerNameSettings, Constants.WMI_VIRTUALIZATION_NAMESPACE)); }
-        }
-
         private MiManager _mi;
         private readonly object _cimClientLock = new object();
         private MiManager Mi
@@ -212,7 +205,7 @@ namespace SolidCP.Providers.Virtualization
             return GetVirtualMachineInternal(vmId, true);
         }        
 
-        protected VirtualMachine GetVirtualMachineInternal(string vmId, bool extendedInfo)
+        protected VirtualMachine GetVirtualMachineInternal(string vmId, bool extendedInfo)  //TODO: make dinamic selecting of how much info we need to get
         {
             HostedSolutionLog.LogStart("GetVirtualMachine");
             HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
@@ -351,16 +344,18 @@ namespace SolidCP.Providers.Virtualization
             VirtualMachine vm = null;
             try
             {
-                CimInstance cimObj = Mi.GetCimInstanceWithSelect(
+                using (CimInstance cimObj = Mi.GetCimInstanceWithSelect(
                     "Msvm_ComputerSystem",
                     "Name, ElementName, EnabledState",
                     "Name = '{0}'", vmId
-                    );
-
-                vm = new VirtualMachine();
-                vm.VirtualMachineId = (string)cimObj.CimInstanceProperties["Name"].Value;
-                vm.Name = (string)cimObj.CimInstanceProperties["ElementName"].Value;
-                vm.State = (VirtualMachineState)Convert.ToInt32(cimObj.CimInstanceProperties["EnabledState"].Value);
+                    )
+                )
+                {
+                    vm = new VirtualMachine();
+                    vm.VirtualMachineId = (string)cimObj.CimInstanceProperties["Name"].Value;
+                    vm.Name = (string)cimObj.CimInstanceProperties["ElementName"].Value;
+                    vm.State = (VirtualMachineState)Convert.ToInt32(cimObj.CimInstanceProperties["EnabledState"].Value);
+                }                
             }
             catch (Exception ex)
             {
@@ -1012,18 +1007,18 @@ namespace SolidCP.Providers.Virtualization
         {
             List<ConcreteJob> jobs = new List<ConcreteJob>();
 
-            CimInstance settingData = VirtualMachineHelper.GetVirtualMachineSettingsObject(vmId);
-
-            CimInstance objSummary = VirtualMachineHelper.GetSummaryInformation(settingData, SummaryInformationRequest.AsynchronousTasks);
-            CimInstance[] objJobs = (CimInstance[])objSummary.CimInstanceProperties["AsynchronousTasks"].Value;
-
-            if (objJobs != null)
+            using (CimInstance settingData = VirtualMachineHelper.GetVirtualMachineSettingsObject(vmId))
+            using (CimInstance objSummary = VirtualMachineHelper.GetSummaryInformation(settingData, SummaryInformationRequest.AsynchronousTasks)) 
             {
-                foreach (CimInstance objJob in objJobs)
-                    jobs.Add(JobHelper.CreateFromCimObject(objJob));
-            }
+                CimInstance[] objJobs = (CimInstance[])objSummary.CimInstanceProperties["AsynchronousTasks"].Value;
 
-            return jobs;
+                if (objJobs != null)
+                    foreach (CimInstance objJob in objJobs)
+                        using (objJob)
+                            jobs.Add(JobHelper.CreateFromCimObject(objJob));
+
+                return jobs;
+            }            
         }
 
         public JobResult RenameVirtualMachine(string vmId, string name, string clusterName)
@@ -1266,8 +1261,10 @@ namespace SolidCP.Providers.Virtualization
 
         public byte[] GetSnapshotThumbnailImage(string snapshotId, ThumbnailSize size)
         {
-            CimInstance objSummary = GetSnapshotSummaryInformation(snapshotId, (SummaryInformationRequest)size);
-            return GetTumbnailFromSummaryInformation(objSummary, size);
+            using (CimInstance objSummary = GetSnapshotSummaryInformation(snapshotId, (SummaryInformationRequest)size))
+            {
+                return GetTumbnailFromSummaryInformation(objSummary, size);
+            }
         }
 
         #endregion
@@ -1562,122 +1559,66 @@ namespace SolidCP.Providers.Virtualization
         {
             JobResult result = new JobResult();
 
-            ManagementObject virtualSystemManageService = wmi.GetWmiObject("Msvm_VirtualSystemManagementService");
             //get VM
-            ManagementObject objVM = wmi.GetWmiObject("Msvm_ComputerSystem", "Name = '{0}'", vmId);
-            ManagementObject objVMSystemSettings = GetVirtualMachineSettings(objVM); //cwmi.GetRelatedWmiObject(objVM, "Msvm_VirtualSystemSettingData");
-            ManagementObject objSynEthernerSettingsData = null;
-            if (string.IsNullOrEmpty(guestNetworkAdapterConfiguration.MAC)) //If dont have we just take first an adapter from VM.
+            using (CimInstance objVM = Mi.GetCimInstance("Msvm_ComputerSystem", "Name = '{0}'", vmId))
+            using (CimInstance objVMSystemSettings = Mi.GetAssociatedCimInstance(objVM, "Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState"))
             {
-                objSynEthernerSettingsData = wmi.GetRelatedWmiObject(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData");
-            }
-            else
-            {
-                objSynEthernerSettingsData = 
-                    GetRelatedSelectedWmiObject(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData", "Address", guestNetworkAdapterConfiguration.MAC.ToUpper());
-            }           
-            //get the object with current adapter setting.
-            ManagementObject objGuestNetworkAdapterConfig = GetGuestNetworkAdapterConfiguration(objSynEthernerSettingsData);
+                CimInstance objSynEthernerSettingsData = null;
 
-            //string[] showIP = (string[])objGuestNetworkAdapterConfig["IPAddresses"];
-            //string[] IPs = { "10.20.30.95", "10.20.30.96" };
-            //string[] subnets = { "255.255.255.0", "255.255.255.0" };
-            //string[] gateways = { "10.20.30.2" };
-            //string[] DNSs = { "8.8.8.8", "8.8.4.4" };
+                if (string.IsNullOrEmpty(guestNetworkAdapterConfiguration.MAC)) //If dont have we just take first an adapter from VM.
+                {
+                    objSynEthernerSettingsData = Mi.GetAssociatedCimInstance(objVMSystemSettings, "Msvm_SyntheticEthernetPortSettingData");
+                }
+                else
+                {
+                    objSynEthernerSettingsData = //search for network adapter with MAC address in VM settings.
+                        Mi.EnumerateAssociatedInstances(objVMSystemSettings, null, "Msvm_SyntheticEthernetPortSettingData")
+                        .FirstOrDefault(
+                            a => string.Equals(
+                                    a.CimInstanceProperties["Address"]?.Value?.ToString(),
+                                    guestNetworkAdapterConfiguration.MAC,
+                                    StringComparison.OrdinalIgnoreCase
+                            )
+                        );
+                }
 
-            //TODO: possible need to configure the ProtocolIFType for IPv6 (need to check in future) at this moment we use default that has VM
-            objGuestNetworkAdapterConfig["DHCPEnabled"] = guestNetworkAdapterConfiguration.DHCPEnabled;
-            objGuestNetworkAdapterConfig["IPAddresses"] = guestNetworkAdapterConfiguration.IPAddresses;
-            objGuestNetworkAdapterConfig["Subnets"] = guestNetworkAdapterConfiguration.Subnets;
-            objGuestNetworkAdapterConfig["DefaultGateways"] = guestNetworkAdapterConfiguration.DefaultGateways;
-            objGuestNetworkAdapterConfig["DNSServers"] = guestNetworkAdapterConfiguration.DNSServers;            
+                if (objSynEthernerSettingsData == null)
+                    throw new InvalidOperationException($"Could not find network adapter for VM '{vmId}' with MAC '{guestNetworkAdapterConfiguration.MAC}' or no adapter found.");
+                                
+                using (objSynEthernerSettingsData)
+                //get the object with current adapter setting.
+                using (CimInstance objGuestNetworkAdapterConfig = Mi.GetAssociatedCimInstance(objSynEthernerSettingsData, "Msvm_GuestNetworkAdapterConfiguration", "Msvm_SettingDataComponent"))
+                {
+                    //string[] showIP = (string[])objGuestNetworkAdapterConfig["IPAddresses"];
+                    //string[] IPs = { "10.20.30.95", "10.20.30.96" };
+                    //string[] subnets = { "255.255.255.0", "255.255.255.0" };
+                    //string[] gateways = { "10.20.30.2" };
+                    //string[] DNSs = { "8.8.8.8", "8.8.4.4" };
 
-            //Convert to XML format
-            string[] networkConfiguration = { objGuestNetworkAdapterConfig.GetText(TextFormat.CimDtd20) };
+                    //TODO: possible need to configure the ProtocolIFType for IPv6 (need to check in future) at this moment we use default that has VM
+                    objGuestNetworkAdapterConfig.CimInstanceProperties["DHCPEnabled"].Value = guestNetworkAdapterConfiguration.DHCPEnabled;
+                    objGuestNetworkAdapterConfig.CimInstanceProperties["IPAddresses"].Value = guestNetworkAdapterConfiguration.IPAddresses;
+                    objGuestNetworkAdapterConfig.CimInstanceProperties["Subnets"].Value = guestNetworkAdapterConfiguration.Subnets;
+                    objGuestNetworkAdapterConfig.CimInstanceProperties["DefaultGateways"].Value = guestNetworkAdapterConfiguration.DefaultGateways;
+                    objGuestNetworkAdapterConfig.CimInstanceProperties["DNSServers"].Value = guestNetworkAdapterConfiguration.DNSServers;
 
-            result.ReturnValue = SetGuestNetworkAdapterConfiguration(virtualSystemManageService, objVM, networkConfiguration);
-            return result;
+                    // Convert to XML format
+                    string[] networkConfiguration = { Mi.SerializeToCimDtd20(objGuestNetworkAdapterConfig) };
+
+                    using (CimMethodParametersCollection inParams = new CimMethodParametersCollection
+                    {
+                        CimMethodParameter.Create("ComputerSystem", objVM, Microsoft.Management.Infrastructure.CimType.Reference, CimFlags.In),
+                        CimMethodParameter.Create("NetworkConfiguration", networkConfiguration, CimFlags.In)
+                    })
+                    using (CimMethodResult outParams = Mi.InvokeMethod(GetVirtualSystemManagementService(), "SetGuestNetworkAdapterConfiguration", inParams))
+                    {
+                        return JobHelper.CreateJobResultFromCimResults(Mi, outParams);
+                    }                    
+                }
+            }            
         }
 
-        //TODO: jobs?
-        private ReturnCode SetGuestNetworkAdapterConfiguration(
-            ManagementObject virtualSystemManageService, ManagementObject ComputerSystem, string[] NetworkConfiguration)//, out ManagementPath Job)
-        {
-            ManagementBaseObject inParams = null;
-            inParams = virtualSystemManageService.GetMethodParameters("SetGuestNetworkAdapterConfiguration");
-            inParams["ComputerSystem"] = ComputerSystem.Path;
-            inParams["NetworkConfiguration"] = NetworkConfiguration;
-            ManagementBaseObject outParams = virtualSystemManageService.InvokeMethod("SetGuestNetworkAdapterConfiguration", inParams, null);
-            //Job = null;
-            //if (outParams.Properties["Job"] != null)
-            //{
-            //    Job = new ManagementPath((string)outParams.Properties["Job"].Value);
-            //}
-            return (ReturnCode)Convert.ToUInt32(outParams.Properties["ReturnValue"].Value);
-        }
 
-        private ManagementObject GetGuestNetworkAdapterConfiguration(ManagementObject EthernerSettings)
-        {
-            using (ManagementObjectCollection settingsCollection =
-                    EthernerSettings.GetRelated("Msvm_GuestNetworkAdapterConfiguration", "Msvm_SettingDataComponent",
-                    null, null, null, null, false, null))
-            {
-                ManagementObject guestNetworkAdapterConfiguration =
-                    GetFirstObjectFromCollection(settingsCollection);
-
-                return guestNetworkAdapterConfiguration;
-            }
-        }
-
-        private ManagementObject GetVirtualMachineSettings(ManagementObject virtualMachine)
-        {
-            using (ManagementObjectCollection settingsCollection =
-                    virtualMachine.GetRelated("Msvm_VirtualSystemSettingData", "Msvm_SettingsDefineState",
-                    null, null, null, null, false, null))
-            {
-                ManagementObject virtualMachineSettings =
-                    GetFirstObjectFromCollection(settingsCollection);
-
-                return virtualMachineSettings;
-            }
-        }
-
-        private ManagementObject GetRelatedSelectedWmiObject(ManagementObject obj, string className, string byPropertyName, string withValue)
-        {
-            ManagementObjectCollection col = obj.GetRelated(className);
-            return GetSelectedObjectFromCollection(col, byPropertyName, withValue);
-        }
-
-        private ManagementObject GetSelectedObjectFromCollection(ManagementObjectCollection collection, string byPropertyName, string withValue)
-        {
-            if (collection.Count == 0)
-            {
-                throw new ArgumentException("The collection contains no objects", "collection");
-            }
-
-            foreach (ManagementObject managementObject in collection)
-            {
-                if (string.Equals((string)managementObject[byPropertyName], withValue))
-                    return managementObject;
-            }
-
-            return null;
-        }
-
-        private ManagementObject GetFirstObjectFromCollection(ManagementObjectCollection collection)
-        {
-            if (collection.Count == 0)
-            {
-                throw new ArgumentException("The collection contains no objects", "collection");
-            }
-
-            foreach (ManagementObject managementObject in collection)
-            {
-                return managementObject;
-            }
-
-            return null;
-        }
         #endregion
 
         #region KVP
@@ -2050,11 +1991,13 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogStart("GetJob");
             HostedSolutionLog.DebugInfo("jobId: {0}", jobId);
 
-            ConcreteJob job;
+            ConcreteJob job = null;
             try
             {
-                var result = Mi.GetCimInstance("CIM_Job", "InstanceID = '{0}'", jobId);
-                job = JobHelper.CreateFromCimObject(result);
+                using (var result = Mi.GetCimInstance("CIM_Job", "InstanceID = '{0}'", jobId))
+                {
+                    job = JobHelper.CreateFromCimObject(result);
+                }
             }
             catch (Exception ex)
             {
@@ -2097,9 +2040,10 @@ namespace SolidCP.Providers.Virtualization
         {
             List<ConcreteJob> jobs = new List<ConcreteJob>();
 
-            ManagementObjectCollection objJobs = wmi.GetWmiObjects("CIM_Job");
-            foreach (ManagementObject objJob in objJobs)
-                jobs.Add(JobHelper.CreateFromWmiObject(objJob));
+            CimInstance[] objJobs = Mi.EnumerateCimInstances("CIM_Job");
+            foreach (CimInstance objJob in objJobs)
+                using (objJob)
+                    jobs.Add(JobHelper.CreateFromCimObject(objJob));
 
             return jobs;
         }
@@ -2123,12 +2067,16 @@ namespace SolidCP.Providers.Virtualization
         public int GetProcessorCoresNumber()
         {
             int coreCount = 0;
-            Wmi cimv2 = new Wmi(ServerNameSettings, Constants.WMI_CIMV2_NAMESPACE);
 
-            foreach (var item in cimv2.ExecuteWmiQuery("Select * from Win32_Processor"))
+            using(var _mi = new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE))
             {
-                coreCount += int.Parse(item["NumberOfLogicalProcessors"].ToString());
+                foreach (CimInstance item in _mi.EnumerateCimInstances("Win32_Processor"))
+                {
+                    using (item)
+                        coreCount += int.Parse(item.CimInstanceProperties["NumberOfLogicalProcessors"].Value.ToString());                                               
+                }
             }
+
             return coreCount;
         }
 
