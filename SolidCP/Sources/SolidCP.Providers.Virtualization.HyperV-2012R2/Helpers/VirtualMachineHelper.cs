@@ -167,7 +167,18 @@ namespace SolidCP.Providers.Virtualization
             return str;
         }
 
-        public int GetVMProcessors(string name)
+        public int GetVMProcessors(string vmId)
+        {
+            int procs = 0;
+            using(CimInstance vmSettings = GetVirtualMachineSettingsObject(vmId))
+            using(CimInstance cimSummary = GetSummaryInformation(vmSettings, SummaryInformationRequest.NumberOfProcessors))
+            {
+                procs = Convert.ToInt32(cimSummary.CimInstanceProperties["NumberOfProcessors"].Value);                
+            }
+            return procs;
+        }
+
+        public int GetVMProcessorsPS(string name) //22 time slower than CIM GetVMProcessors
         {
             int procs = 0;
 
