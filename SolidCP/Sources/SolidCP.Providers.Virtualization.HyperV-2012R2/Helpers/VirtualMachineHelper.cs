@@ -114,14 +114,20 @@ namespace SolidCP.Providers.Virtualization
 
         public OperationalStatus GetVMHeartBeatStatus(string vmId)
         {
-            HostedSolution.HostedSolutionLog.LogWarning("GetVMHeartBeatStatus: oj oj oj");
             OperationalStatus status = OperationalStatus.None;
-
-            using (CimInstance vmSettings = GetVirtualMachineSettingsObject(vmId))
-            using (CimInstance cimSummary = GetSummaryInformation(vmSettings, SummaryInformationRequest.Heartbeat))
+            try
             {
-                status = (OperationalStatus)Convert.ToInt32(cimSummary.CimInstanceProperties["Heartbeat"].Value);
+                using (CimInstance vmSettings = GetVirtualMachineSettingsObject(vmId))
+                using (CimInstance cimSummary = GetSummaryInformation(vmSettings, SummaryInformationRequest.Heartbeat))
+                {
+                    status = (OperationalStatus)Convert.ToInt32(cimSummary.CimInstanceProperties["Heartbeat"].Value);
+                }
             }
+            catch
+            {
+                //Nothing to do here — the panel works so fast that we can even get an exception while fetching the VM Heartbeat :D
+            }
+
             return status;
         }
 
