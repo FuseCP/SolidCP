@@ -23,7 +23,7 @@ namespace SolidCP.Providers.Virtualization
             _hardDriveHelper = hardDriveHelper;
         }
 
-        public BiosInfo Get(string name, int generation)
+        public BiosInfo Get(PSObject vmPSObj, int generation)
         {
             BiosInfo info = new BiosInfo();
 
@@ -32,9 +32,9 @@ namespace SolidCP.Providers.Virtualization
             {
                 Command cmd = new Command("Get-VMFirmware");
 
-                cmd.Parameters.Add("VMName", name);
+                cmd.Parameters.Add("VM", vmPSObj);
 
-                Collection<PSObject> result = _powerShell.Execute(cmd, true);
+                Collection<PSObject> result = _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
                 if (result != null && result.Count > 0)
                 {
                     info.NumLockEnabled = true;
@@ -74,9 +74,9 @@ namespace SolidCP.Providers.Virtualization
             {
                 Command cmd = new Command("Get-VMBios");
 
-                cmd.Parameters.Add("VMName", name);
+                cmd.Parameters.Add("VM", vmPSObj);
 
-                Collection<PSObject> result = _powerShell.Execute(cmd, true);
+                Collection<PSObject> result = _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
                 if (result != null && result.Count > 0)
                 {
                     info.NumLockEnabled = Convert.ToBoolean(result[0].GetProperty("NumLockEnabled"));
@@ -98,14 +98,14 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public void Update(VirtualMachine vm, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot, string secureBootTemplate)
+        public void Update(VirtualMachine vm, PSObject vmPSObj, bool bootFromCD, bool numLockEnabled, bool EnableSecureBoot, string secureBootTemplate)
         {
             // for Win2012R2+ and Win8.1+
             if (vm.Generation == 2)
             {
                 Command cmd = new Command("Set-VMFirmware");
 
-                cmd.Parameters.Add("VMName", vm.Name);
+                cmd.Parameters.Add("VM", vmPSObj);
                 if (vm.State == VirtualMachineState.Off)
                 {
                     if (EnableSecureBoot)
@@ -118,24 +118,24 @@ namespace SolidCP.Providers.Virtualization
                 }
 
                 if (bootFromCD)
-                    cmd.Parameters.Add("FirstBootDevice", _dvdDriveHelper.GetPS(vm.Name));
+                    cmd.Parameters.Add("FirstBootDevice", _dvdDriveHelper.GetPS(vmPSObj));
                 else
-                    cmd.Parameters.Add("FirstBootDevice", _hardDriveHelper.GetPS(vm.Name).FirstOrDefault());
+                    cmd.Parameters.Add("FirstBootDevice", _hardDriveHelper.GetPS(vmPSObj).FirstOrDefault());
 
-                _powerShell.Execute(cmd, true);
+                _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
             }
             // for others win and linux
             else
             {
                 Command cmd = new Command("Set-VMBios");
 
-                cmd.Parameters.Add("VMName", vm.Name);
+                cmd.Parameters.Add("VM", vmPSObj);
                 var bootOrder = bootFromCD
                     ? new[] { "CD", "IDE", "LegacyNetworkAdapter", "Floppy" }
                     : new[] { "IDE", "CD", "LegacyNetworkAdapter", "Floppy" };
                 cmd.Parameters.Add("StartupOrder", bootOrder);
 
-                _powerShell.Execute(cmd, true);
+                _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
             }
         }
     }

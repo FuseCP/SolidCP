@@ -10,22 +10,28 @@ using System.IO;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class NetworkAdapterHelper
+    public class NetworkAdapterHelper
     {
         private const int defaultvlan = 0;
+        private PowerShellManager _powerShell;
 
-        public static VirtualMachineNetworkAdapter[] Get(PowerShellManager powerShell, string vmName)
+        public NetworkAdapterHelper(PowerShellManager powerShellManager)
+        {
+            _powerShell = powerShellManager;
+        }
+
+        public VirtualMachineNetworkAdapter[] Get(PSObject vmObj)
         {
             List<VirtualMachineNetworkAdapter> adapters = new List<VirtualMachineNetworkAdapter>();
 
             Command cmd = new Command("Get-VMNetworkAdapter");
-            if (!string.IsNullOrEmpty(vmName)) cmd.Parameters.Add("VMName", vmName);
+            if (vmObj != null) cmd.Parameters.Add("VM", vmObj);
 
             Command cmdvlan = new Command("Get-VMNetworkAdapterVlan");
-            if (!string.IsNullOrEmpty(vmName)) cmdvlan.Parameters.Add("VMName", vmName);
+            if (vmObj != null) cmdvlan.Parameters.Add("VM", vmObj);
 
-            Collection<PSObject> result = powerShell.Execute(cmd, true);
-            Collection<PSObject> resultvlan = powerShell.Execute(cmdvlan, true);
+            Collection<PSObject> result = _powerShell.Execute(cmd, false);//False, because all remote connection information is already contained in vmObj
+            Collection<PSObject> resultvlan = _powerShell.Execute(cmdvlan, false);
             int i = 0;
             if (result != null && result.Count > 0)
             {
@@ -61,27 +67,27 @@ namespace SolidCP.Providers.Virtualization
             return adapters.ToArray();
         }
 
-        public static VirtualMachineNetworkAdapter Get(PowerShellManager powerShell, string vmName, string macAddress)
+        public VirtualMachineNetworkAdapter Get(PSObject vmObj, string macAddress)
         {
-            var adapters = Get(powerShell, vmName);
+            var adapters = Get(vmObj);
             return adapters.FirstOrDefault(a => a.MacAddress == macAddress);
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm)
+        public void Update(VirtualMachine vm, PSObject vmObj)
         {
             // External NIC
             if (!vm.ExternalNetworkEnabled && !String.IsNullOrEmpty(vm.ExternalNicMacAddress))
             {
-                Delete(powerShell, vm.Name, vm.ExternalNicMacAddress);
+                Delete(vmObj, vm.ExternalNicMacAddress);
                 vm.ExternalNicMacAddress = null; // reset MAC
             }
             else if (vm.ExternalNetworkEnabled && !String.IsNullOrEmpty(vm.ExternalNicMacAddress)
-                && Get(powerShell, vm.Name, vm.ExternalNicMacAddress) == null)
+                && Get(vmObj, vm.ExternalNicMacAddress) == null)
             {
-                Add(powerShell, vm.Name, vm.ExternalSwitchId, vm.ExternalNicMacAddress, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
+                Add(vmObj, vm.ExternalSwitchId, vm.ExternalNicMacAddress, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
                 try
                 {
-                    SetVLAN(powerShell, vm.Name, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.defaultaccessvlan);
+                    SetVLAN(vmObj, Constants.EXTERNAL_NETWORK_ADAPTER_NAME, vm.defaultaccessvlan);
                 }
                 catch (Exception ex)
                 {
@@ -92,16 +98,16 @@ namespace SolidCP.Providers.Virtualization
             // Private NIC
             if (!vm.PrivateNetworkEnabled && !String.IsNullOrEmpty(vm.PrivateNicMacAddress))
             {
-                Delete(powerShell, vm.Name, vm.PrivateNicMacAddress);
+                Delete(vmObj, vm.PrivateNicMacAddress);
                 vm.PrivateNicMacAddress = null; // reset MAC
             }
             else if (vm.PrivateNetworkEnabled && !String.IsNullOrEmpty(vm.PrivateNicMacAddress)
-                 && Get(powerShell, vm.Name, vm.PrivateNicMacAddress) == null)
+                 && Get(vmObj, vm.PrivateNicMacAddress) == null)
             {
-                Add(powerShell, vm.Name, vm.PrivateSwitchId, vm.PrivateNicMacAddress, Constants.PRIVATE_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
+                Add(vmObj, vm.PrivateSwitchId, vm.PrivateNicMacAddress, Constants.PRIVATE_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
                 try
                 {
-                    SetVLAN(powerShell, vm.Name, Constants.PRIVATE_NETWORK_ADAPTER_NAME, vm.PrivateNetworkVlan);
+                    SetVLAN(vmObj, Constants.PRIVATE_NETWORK_ADAPTER_NAME, vm.PrivateNetworkVlan);
                 }
                 catch (Exception ex)
                 {
@@ -112,16 +118,16 @@ namespace SolidCP.Providers.Virtualization
             // DMZ NIC
             if (!vm.DmzNetworkEnabled && !String.IsNullOrEmpty(vm.DmzNicMacAddress))
             {
-                Delete(powerShell, vm.Name, vm.DmzNicMacAddress);
+                Delete(vmObj, vm.DmzNicMacAddress);
                 vm.DmzNicMacAddress = null; // reset MAC
             }
             else if (vm.DmzNetworkEnabled && !String.IsNullOrEmpty(vm.DmzNicMacAddress)
-                 && Get(powerShell, vm.Name, vm.DmzNicMacAddress) == null)
+                 && Get(vmObj, vm.DmzNicMacAddress) == null)
             {
-                Add(powerShell, vm.Name, vm.DmzSwitchId, vm.DmzNicMacAddress, Constants.DMZ_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
+                Add(vmObj, vm.DmzSwitchId, vm.DmzNicMacAddress, Constants.DMZ_NETWORK_ADAPTER_NAME, vm.LegacyNetworkAdapter);
                 try
                 {
-                    SetVLAN(powerShell, vm.Name, Constants.DMZ_NETWORK_ADAPTER_NAME, vm.DmzNetworkVlan);
+                    SetVLAN(vmObj, Constants.DMZ_NETWORK_ADAPTER_NAME, vm.DmzNetworkVlan);
                 }
                 catch (Exception ex)
                 {
@@ -130,11 +136,11 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public static void Add(PowerShellManager powerShell, string vmName, string switchId, string macAddress, string adapterName, bool legacyAdapter)
+        public void Add(PSObject vmObj, string switchId, string macAddress, string adapterName, bool legacyAdapter)
         {
             Command cmd = new Command("Add-VMNetworkAdapter");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("Name", adapterName);
             cmd.Parameters.Add("SwitchName", switchId);
 
@@ -143,43 +149,43 @@ namespace SolidCP.Providers.Virtualization
             else
                 cmd.Parameters.Add("StaticMacAddress", macAddress);
 
-            powerShell.Execute(cmd, true, true);
+            _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
 
         }
 
-        public static void SetVLAN(PowerShellManager powerShell, string vmName, string adapterName, int vlan)
+        public void SetVLAN(PSObject vmObj, string adapterName, int vlan)
         {
             if (vlan >= 1)
             {
                 Command cmd = new Command("Set-VMNetworkAdapterVlan");
 
-                cmd.Parameters.Add("VMName", vmName);
+                cmd.Parameters.Add("VM", vmObj);
                 cmd.Parameters.Add("VMNetworkAdapterName", adapterName);
                 cmd.Parameters.Add("Access");
                 cmd.Parameters.Add("VlanId", vlan.ToString());
 
-                powerShell.Execute(cmd, true, true);
+                _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
             }
         }
 
-        public static void Delete(PowerShellManager powerShell, string vmName, string macAddress)
+        public void Delete(PSObject vmObj, string macAddress)
         {
-            var networkAdapter = Get(powerShell, vmName, macAddress);
+            var networkAdapter = Get(vmObj, macAddress);
 
             if (networkAdapter == null)
                 return;
 
-            Delete(powerShell, vmName, networkAdapter);
+            Delete(vmObj, networkAdapter);
         }
 
-        public static void Delete(PowerShellManager powerShell, string vmName, VirtualMachineNetworkAdapter networkAdapter)
+        public void Delete(PSObject vmObj, VirtualMachineNetworkAdapter networkAdapter)
         {
             Command cmd = new Command("Remove-VMNetworkAdapter");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("Name", networkAdapter.Name);
 
-            powerShell.Execute(cmd, true, true);
+            _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
         }
     }
 }

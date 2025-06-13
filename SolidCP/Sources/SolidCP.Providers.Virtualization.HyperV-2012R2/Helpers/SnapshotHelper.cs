@@ -9,9 +9,16 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class SnapshotHelper
+    public class SnapshotHelper
     {
-        public static VirtualMachineSnapshot GetFromPS(PSObject psObject, string runningSnapshotId = null)
+        private PowerShellManager _powerShell;
+
+        public SnapshotHelper(PowerShellManager powerShellManager)
+        {
+            _powerShell = powerShellManager;
+        }
+
+        public VirtualMachineSnapshot GetFromPS(PSObject psObject, string runningSnapshotId = null)
         {
             var snapshot = new VirtualMachineSnapshot
             {
@@ -32,7 +39,7 @@ namespace SolidCP.Providers.Virtualization
             return snapshot;
         }
 
-        public static VirtualMachineSnapshot GetFromCim(CimInstance objSnapshot)
+        public VirtualMachineSnapshot GetFromCim(CimInstance objSnapshot)
         {
             if (objSnapshot == null || objSnapshot.CimInstanceProperties.Count == 0)
                 return null;
@@ -60,22 +67,22 @@ namespace SolidCP.Providers.Virtualization
             return snapshot;
         }
 
-        public static void Delete(PowerShellManager powerShell, VirtualMachineSnapshot snapshot, bool includeChilds)
+        public void Delete(VirtualMachineSnapshot snapshot, bool includeChilds) //TODO: better to use VMObject instead of VMName ???
         {
             Command cmd = new Command("Remove-VMSnapshot");
             cmd.Parameters.Add("VMName", snapshot.VMName);
             cmd.Parameters.Add("Name", snapshot.Name);
             if (includeChilds) cmd.Parameters.Add("IncludeAllChildSnapshots", true);
 
-            powerShell.Execute(cmd, true);
+            _powerShell.Execute(cmd, true);
         }
 
-        public static void Delete(PowerShellManager powerShell, string vmName)
+        public void Delete(PSObject vmObj)
         {
             Command cmd = new Command("Remove-VMSnapshot");
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VM", vmObj);
 
-            powerShell.Execute(cmd, true);
+            _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
         }
     }
 }

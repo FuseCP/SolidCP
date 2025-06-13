@@ -20,11 +20,11 @@ namespace SolidCP.Providers.Virtualization
             _mi = mi;
         }
 
-        public DvdDriveInfo Get(string vmName)
+        public DvdDriveInfo Get(PSObject vmObj)
         {
             DvdDriveInfo info = null;
 
-            PSObject result = GetPS(vmName);
+            PSObject result = GetPS(vmObj);
 
             if (result != null)
             {
@@ -39,13 +39,13 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public PSObject GetPS(string vmName)
+        public PSObject GetPS(PSObject vmObj)
         {
             Command cmd = new Command("Get-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VM", vmObj);
 
-            Collection<PSObject> result = _powerShell.Execute(cmd, true);
+            Collection<PSObject> result = _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
 
             if (result != null && result.Count > 0)
             {
@@ -55,13 +55,13 @@ namespace SolidCP.Providers.Virtualization
             return null;
         }
 
-        public void Set(string vmName, string path)
+        public void Set(PSObject vmObj, string path)
         {
-            var dvd = Get(vmName);
+            var dvd = Get(vmObj);
  
             Command cmd = new Command("Set-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VMName", vmObj.GetString("Name"));
             cmd.Parameters.Add("Path", path);
             cmd.Parameters.Add("ControllerNumber", dvd.ControllerNumber);
             cmd.Parameters.Add("ControllerLocation", dvd.ControllerLocation);
@@ -69,30 +69,30 @@ namespace SolidCP.Providers.Virtualization
             _powerShell.Execute(cmd, true);
         }
 
-        public void Update(VirtualMachine vm, bool dvdDriveShouldBeInstalled)
+        public void Update(VirtualMachine vm, PSObject vmObj, bool dvdDriveShouldBeInstalled)
         {
             if (!vm.DvdDriveInstalled && dvdDriveShouldBeInstalled)
-                Add(vm.Name);
+                Add(vmObj);
             else if (vm.DvdDriveInstalled && !dvdDriveShouldBeInstalled)
-                Remove(vm.Name);
+                Remove(vmObj);
         }
 
-        public void Add(string vmName)
+        public void Add(PSObject vmObj)
         {
             Command cmd = new Command("Add-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VM", vmObj);
 
-            _powerShell.Execute(cmd, true, true);
+            _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
         }
 
-        public void Remove(string vmName)
+        public void Remove(PSObject vmObj)
         {
-            var dvd = Get(vmName);
+            var dvd = Get(vmObj);
 
             Command cmd = new Command("Remove-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VMName", vmObj.GetString("Name"));
             cmd.Parameters.Add("ControllerNumber", dvd.ControllerNumber);
             cmd.Parameters.Add("ControllerLocation", dvd.ControllerLocation);
 

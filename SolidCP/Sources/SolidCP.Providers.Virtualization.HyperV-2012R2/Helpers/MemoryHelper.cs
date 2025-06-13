@@ -9,15 +9,22 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class MemoryHelper
+    public class MemoryHelper
     {
-        public static DynamicMemory GetDynamicMemory(PowerShellManager powerShell, string vmName)
+        private PowerShellManager _powerShell;
+
+        public MemoryHelper(PowerShellManager powerShellManager)
+        {
+            _powerShell = powerShellManager;
+        }
+
+        public DynamicMemory GetDynamicMemory(PSObject vmObj)
         {
             DynamicMemory info = null;
 
             Command cmd = new Command("Get-VMMemory");
-            cmd.Parameters.Add("VMName", vmName);
-            Collection<PSObject> result = powerShell.Execute(cmd);
+            cmd.Parameters.Add("VM", vmObj);
+            Collection<PSObject> result = _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
 
             if (result != null && result.Count > 0)
             {
@@ -32,11 +39,11 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, int ramMb, DynamicMemory dynamicMemory)
+        public void Update(PSObject vmObj, int ramMb, DynamicMemory dynamicMemory)
         {
             Command cmd = new Command("Set-VMMemory");
 
-            cmd.Parameters.Add("VMName", vm.Name);
+            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("StartupBytes", ramMb * Constants.Size1M);
 
             if (dynamicMemory != null && dynamicMemory.Enabled)
@@ -52,7 +59,7 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("DynamicMemoryEnabled", false);
             }
 
-            powerShell.Execute(cmd, true, true);
+            _powerShell.Execute(cmd, false, true);
         }
     }
 }

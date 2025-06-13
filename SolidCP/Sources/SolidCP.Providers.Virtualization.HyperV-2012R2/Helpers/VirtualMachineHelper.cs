@@ -4,6 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -81,7 +82,19 @@ namespace SolidCP.Providers.Virtualization
             }            
         }
 
-        public OperationalStatus GetVMHeartBeatStatusFromGetVmResult(Collection<PSObject> result, string name)
+        public PSObject GetVmPSObject(string vmId) //if any Powershell command accept VM object WE MUST use it as it extremely faster
+        {
+            Command cmd = new Command("Get-VM");
+            cmd.Parameters.Add("Id", vmId);
+            Collection<PSObject> result = _powerShell.Execute(cmd, true, true);
+            if (result != null && result.Count > 0)
+            {
+                return result[0];
+            }
+            return null;
+        }
+
+        public OperationalStatus GetVMHeartBeatStatusFromGetVmResult(PSObject result, string vmId)
         {
             OperationalStatus status = OperationalStatus.None;
             try
@@ -92,40 +105,32 @@ namespace SolidCP.Providers.Virtualization
             catch
             {
                 HostedSolution.HostedSolutionLog.LogWarning("GetVMHeartBeatStatus: can not get OperationalStatus from Get-VM result");
-                status = GetVMHeartBeatStatus("PrimaryStatusDescription"); //try to get it again, but from Get-VMIntegrationService
+                status = GetVMHeartBeatStatus(vmId); //try to get it again, but from CIM/Mi
             }
 
             return status;
 
         }
 
-        public OperationalStatus GetVMHeartBeatStatus(string name)
+        public OperationalStatus GetVMHeartBeatStatus(string vmId)
         {
+            HostedSolution.HostedSolutionLog.LogWarning("GetVMHeartBeatStatus: oj oj oj");
             OperationalStatus status = OperationalStatus.None;
 
-            Command cmd = new Command("Get-VMIntegrationService");
-
-            cmd.Parameters.Add("VMName", name);
-            cmd.Parameters.Add("Name", "HeartBeat");
-
-            Collection<PSObject> result = _powerShell.Execute(cmd, true);
-            if (result != null && result.Count > 0)
+            using (CimInstance vmSettings = GetVirtualMachineSettingsObject(vmId))
+            using (CimInstance cimSummary = GetSummaryInformation(vmSettings, SummaryInformationRequest.Heartbeat))
             {
-                //var statusString = result[0].GetProperty("PrimaryOperationalStatus");
-                string statusString = TryToGetStatusString(result, "PrimaryOperationalStatus");
-
-                if (statusString != null)
-                    status = (OperationalStatus)Enum.Parse(typeof(OperationalStatus), statusString); //statusString.ToString()
+                status = (OperationalStatus)Convert.ToInt32(cimSummary.CimInstanceProperties["Heartbeat"].Value);
             }
             return status;
         }
 
-        private string TryToGetStatusString(Collection<PSObject> result, string propertyName, bool isLast = false) //burn in hell MS for your bugs!
+        private string TryToGetStatusString(PSObject result, string propertyName, bool isLast = false) //burn in hell MS for your bugs!
         {
             string status = null;
             try
             {
-                var statusString = result[0].GetProperty(propertyName);
+                var statusString = result.GetProperty(propertyName);
                 if (statusString != null)
                     status = statusString.ToString();
             }
@@ -195,20 +200,20 @@ namespace SolidCP.Providers.Virtualization
             return procs;
         }
 
-        public void UpdateProcessors(VirtualMachine vm, int cpuCores, int cpuLimitSettings, int cpuReserveSettings, int cpuWeightSettings)
+        public void UpdateProcessors(PSObject vmObj, int cpuCores, int cpuLimitSettings, int cpuReserveSettings, int cpuWeightSettings)
         {
             Command cmd = new Command("Set-VMProcessor");
 
-            cmd.Parameters.Add("VMName", vm.Name);
+            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("Count", cpuCores);
             cmd.Parameters.Add("Maximum", cpuLimitSettings);
             cmd.Parameters.Add("Reserve", cpuReserveSettings);
             cmd.Parameters.Add("RelativeWeight", cpuWeightSettings);
 
-            _powerShell.Execute(cmd, true);
+            _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
         }
 
-        public void Delete(string vmName, string vmId, string clusterName)
+        public void Delete(PSObject vmObj, string vmId, string clusterName)
         {
             if (!String.IsNullOrEmpty(clusterName))
             {
@@ -219,28 +224,28 @@ namespace SolidCP.Providers.Virtualization
                 _powerShell.Execute(cmdCluster, false);
             }
             Command cmd = new Command("Remove-VM");
-            cmd.Parameters.Add("Name", vmName);
+            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("Force");
-            _powerShell.Execute(cmd, true, true);
+            _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
         }
 
-        public void Stop(string vmName, bool force)
+        public void Stop(PSObject vmObj, bool force)
         {
             Command cmd = new Command("Stop-VM");
 
-            cmd.Parameters.Add("Name", vmName);
+            cmd.Parameters.Add("VM", vmObj);
             if (force) cmd.Parameters.Add("Force");
             //if (!string.IsNullOrEmpty(reason)) cmd.Parameters.Add("Reason", reason);
             try
             {
-                _powerShell.Execute(cmd, true, true);
+                _powerShell.Execute(cmd, false, true);
             }
             catch
             {
                 cmd = new Command("Stop-VM");
-                cmd.Parameters.Add("Name", vmName);
+                cmd.Parameters.Add("VM", vmObj);
                 cmd.Parameters.Add("TurnOff");
-                _powerShell.Execute(cmd);
+                _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
             }
             
         }

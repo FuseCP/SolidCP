@@ -25,11 +25,11 @@ namespace SolidCP.Providers.Virtualization
             _fileSystemHelper = fileSystemHelper;
         }
 
-        public VirtualHardDiskInfo[] Get(string vmname)
+        public VirtualHardDiskInfo[] Get(PSObject vmObj)
         {
             List<VirtualHardDiskInfo> disks = new List<VirtualHardDiskInfo>();
 
-            Collection<PSObject> result = GetPS(vmname);
+            Collection<PSObject> result = GetPS(vmObj);
 
             if (result != null && result.Count > 0)
             {
@@ -72,12 +72,12 @@ namespace SolidCP.Providers.Virtualization
         //    return drives.FirstOrDefault(d=>d.Path == vhdPath);
         //}
 
-        public Collection<PSObject> GetPS(string vmname)
+        public Collection<PSObject> GetPS(PSObject vmObj)
         {
             Command cmd = new Command("Get-VMHardDiskDrive");
-            cmd.Parameters.Add("VMName", vmname);
+            cmd.Parameters.Add("VM", vmObj);
 
-            return _powerShell.Execute(cmd, true);
+            return _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
         }
 
         public void GetVirtualHardDiskDetail(string path, ref VirtualHardDiskInfo disk)
@@ -100,10 +100,10 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public void Update(VirtualMachine realVm, VirtualMachine vmSettings)
+        public void Update(VirtualMachine realVm, VirtualMachine vmSettings, PSObject vmObj)
         {
             if (realVm.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
-                realVm.Disks = Get(realVm.Name);
+                realVm.Disks = Get(vmObj);
 
             bool vhdChanged = false;
 
@@ -182,17 +182,17 @@ namespace SolidCP.Providers.Virtualization
                         VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[0]);
                         CreateVirtualHardDisk(vmSettings.VirtualHardDrivePath[i], disk.DiskType, disk.BlockSizeBytes, (ulong)vmSettings.HddSize[i]);
                         Command cmd = new Command("Add-VMHardDiskDrive");
-                        cmd.Parameters.Add("VMName", realVm.Name);
+                        cmd.Parameters.Add("VM", vmObj);
                         cmd.Parameters.Add("Path", vmSettings.VirtualHardDrivePath[i]);
                         cmd.Parameters.Add("ControllerType", realVm.Disks[0].VHDControllerType.ToString());
-                        _powerShell.Execute(cmd, true, true);
+                        _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
                         vhdChanged = true;
                     }
                 }
             }
 
             // resize VHD check
-            if (vhdChanged) realVm.Disks = Get(realVm.Name);
+            if (vhdChanged) realVm.Disks = Get(vmObj);
             if (realVm.Disks != null)
             {
                 for (int i = 0; i < realVm.Disks.Length; i++)
@@ -279,7 +279,7 @@ namespace SolidCP.Providers.Virtualization
             //return powerShellwithJobs.TryExecuteAsJob(cmd, true);
         }
 
-        public void SetIOPS(VirtualMachine vm, int minIOPS, int maxIOPS)
+        public void SetIOPS(VirtualMachine vm, int minIOPS, int maxIOPS) //TODO, we can send an object of HDD to increase performance in powerShell execution
         {
             //TODO
             //*********Move checks in the Enterprise Server methods?*********//
