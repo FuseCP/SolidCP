@@ -25,11 +25,11 @@ namespace SolidCP.Providers.Virtualization
             _fileSystemHelper = fileSystemHelper;
         }
 
-        public VirtualHardDiskInfo[] Get(PSObject vmObj)
+        public VirtualHardDiskInfo[] Get(VirtualMachineData vmData)
         {
             List<VirtualHardDiskInfo> disks = new List<VirtualHardDiskInfo>();
 
-            Collection<PSObject> result = GetPS(vmObj);
+            Collection<PSObject> result = GetPS(vmData);
 
             if (result != null && result.Count > 0)
             {
@@ -72,12 +72,11 @@ namespace SolidCP.Providers.Virtualization
         //    return drives.FirstOrDefault(d=>d.Path == vhdPath);
         //}
 
-        public Collection<PSObject> GetPS(PSObject vmObj)
+        public Collection<PSObject> GetPS(VirtualMachineData vmData)
         {
             Command cmd = new Command("Get-VMHardDiskDrive");
-            cmd.Parameters.Add("VM", vmObj);
 
-            return _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
+            return _powerShell.ExecuteOnVm(cmd, vmData, true);
         }
 
         public void GetVirtualHardDiskDetail(string path, ref VirtualHardDiskInfo disk)
@@ -100,19 +99,19 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public void Update(VirtualMachine realVm, VirtualMachine vmSettings, PSObject vmObj)
+        public void Update(VirtualMachineData realVmData, VirtualMachine vmSettings)
         {
-            if (realVm.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
-                realVm.Disks = Get(vmObj);
+            if (realVmData.VM.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
+                realVmData.VM.Disks = Get(realVmData);
 
             bool vhdChanged = false;
 
             // remove VHD check
-            if (realVm.Disks.Length > 1)
+            if (realVmData.VM.Disks.Length > 1)
             {
-                for (int i = 1; i < realVm.Disks.Length; i++)
+                for (int i = 1; i < realVmData.VM.Disks.Length; i++)
                 {
-                    VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[i]);
+                    VirtualHardDiskInfo disk = GetParentVHD(realVmData.VM.Disks[i]);
                     bool remove = true;
                     foreach (string path in vmSettings.VirtualHardDrivePath)
                     {
@@ -125,13 +124,13 @@ namespace SolidCP.Providers.Virtualization
                     if (remove)
                     {
                         Command cmd = new Command("Remove-VMHardDiskDrive");
-                        cmd.Parameters.Add("VMName", realVm.Name);
-                        cmd.Parameters.Add("ControllerType", realVm.Disks[i].VHDControllerType.ToString());
-                        cmd.Parameters.Add("ControllerNumber", realVm.Disks[i].ControllerNumber);
-                        cmd.Parameters.Add("ControllerLocation", realVm.Disks[i].ControllerLocation);
+                        cmd.Parameters.Add("VMName", realVmData.VM.Name);
+                        cmd.Parameters.Add("ControllerType", realVmData.VM.Disks[i].VHDControllerType.ToString());
+                        cmd.Parameters.Add("ControllerNumber", realVmData.VM.Disks[i].ControllerNumber);
+                        cmd.Parameters.Add("ControllerLocation", realVmData.VM.Disks[i].ControllerLocation);
                         _powerShell.Execute(cmd, true, true);
                         vhdChanged = true;
-                        Delete(realVm.Disks[i]);
+                        Delete(realVmData.VM.Disks[i]);
                     }
                 }
             }
@@ -167,9 +166,9 @@ namespace SolidCP.Providers.Virtualization
                     }
                     else
                     {
-                        for (int t = 0; t < realVm.Disks.Length; t++)
+                        for (int t = 0; t < realVmData.VM.Disks.Length; t++)
                         {
-                            VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[t]);
+                            VirtualHardDiskInfo disk = GetParentVHD(realVmData.VM.Disks[t]);
                             if (disk.Path != null && Path.GetFileName(vmSettings.VirtualHardDrivePath[i]).ToLower().Equals(Path.GetFileName(disk.Path).ToLower()))
                             {
                                 add = false;
@@ -179,27 +178,26 @@ namespace SolidCP.Providers.Virtualization
                     }
                     if (add)
                     {
-                        VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[0]);
+                        VirtualHardDiskInfo disk = GetParentVHD(realVmData.VM.Disks[0]);
                         CreateVirtualHardDisk(vmSettings.VirtualHardDrivePath[i], disk.DiskType, disk.BlockSizeBytes, (ulong)vmSettings.HddSize[i]);
                         Command cmd = new Command("Add-VMHardDiskDrive");
-                        cmd.Parameters.Add("VM", vmObj);
                         cmd.Parameters.Add("Path", vmSettings.VirtualHardDrivePath[i]);
-                        cmd.Parameters.Add("ControllerType", realVm.Disks[0].VHDControllerType.ToString());
-                        _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
+                        cmd.Parameters.Add("ControllerType", realVmData.VM.Disks[0].VHDControllerType.ToString());
+                        _powerShell.ExecuteOnVm(cmd, realVmData, true);
                         vhdChanged = true;
                     }
                 }
             }
 
             // resize VHD check
-            if (vhdChanged) realVm.Disks = Get(vmObj);
-            if (realVm.Disks != null)
+            if (vhdChanged) realVmData.VM.Disks = Get(realVmData);
+            if (realVmData.VM.Disks != null)
             {
-                for (int i = 0; i < realVm.Disks.Length; i++)
+                for (int i = 0; i < realVmData.VM.Disks.Length; i++)
                 {
-                    int oldHddSize = Convert.ToInt32(realVm.Disks[i].FileSize / Constants.Size1G);
+                    int oldHddSize = Convert.ToInt32(realVmData.VM.Disks[i].FileSize / Constants.Size1G);
                     int newhddSize = 0;
-                    VirtualHardDiskInfo disk = GetParentVHD(realVm.Disks[i]);
+                    VirtualHardDiskInfo disk = GetParentVHD(realVmData.VM.Disks[i]);
                     if (i == 0)
                     {
                         newhddSize = vmSettings.HddSize[0];
@@ -222,7 +220,7 @@ namespace SolidCP.Providers.Virtualization
 
                     Command cmd = new Command("Resize-VHD");
                     cmd.Parameters.Add("SizeBytes", newhddSize * Constants.Size1G);
-                    cmd.Parameters.Add("Path", realVm.Disks[i].Path);
+                    cmd.Parameters.Add("Path", realVmData.VM.Disks[i].Path);
                     _powerShell.Execute(cmd, true);
                 }
             }

@@ -206,20 +206,19 @@ namespace SolidCP.Providers.Virtualization
             return procs;
         }
 
-        public void UpdateProcessors(PSObject vmObj, int cpuCores, int cpuLimitSettings, int cpuReserveSettings, int cpuWeightSettings)
+        public void UpdateProcessors(VirtualMachineData vmData, int cpuCores, int cpuLimitSettings, int cpuReserveSettings, int cpuWeightSettings)
         {
             Command cmd = new Command("Set-VMProcessor");
 
-            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("Count", cpuCores);
             cmd.Parameters.Add("Maximum", cpuLimitSettings);
             cmd.Parameters.Add("Reserve", cpuReserveSettings);
             cmd.Parameters.Add("RelativeWeight", cpuWeightSettings);
 
-            _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
+            _powerShell.ExecuteOnVm(cmd, vmData);
         }
 
-        public void Delete(PSObject vmObj, string vmId, string clusterName)
+        public void Delete(VirtualMachineData vmData, string vmId, string clusterName)
         {
             if (!String.IsNullOrEmpty(clusterName))
             {
@@ -230,28 +229,25 @@ namespace SolidCP.Providers.Virtualization
                 _powerShell.Execute(cmdCluster, false);
             }
             Command cmd = new Command("Remove-VM");
-            cmd.Parameters.Add("VM", vmObj);
             cmd.Parameters.Add("Force");
-            _powerShell.Execute(cmd, false, true); //False, because all remote connection information is already contained in vmObj
+            _powerShell.ExecuteOnVm(cmd, vmData, true);
         }
 
-        public void Stop(PSObject vmObj, bool force)
+        public void Stop(VirtualMachineData vmData, bool force)
         {
             Command cmd = new Command("Stop-VM");
 
-            cmd.Parameters.Add("VM", vmObj);
             if (force) cmd.Parameters.Add("Force");
             //if (!string.IsNullOrEmpty(reason)) cmd.Parameters.Add("Reason", reason);
             try
             {
-                _powerShell.Execute(cmd, false, true);
+                _powerShell.ExecuteOnVm(cmd, vmData, true);
             }
             catch
             {
                 cmd = new Command("Stop-VM");
-                cmd.Parameters.Add("VM", vmObj);
                 cmd.Parameters.Add("TurnOff");
-                _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
+                _powerShell.ExecuteOnVm(cmd, vmData);
             }
             
         }

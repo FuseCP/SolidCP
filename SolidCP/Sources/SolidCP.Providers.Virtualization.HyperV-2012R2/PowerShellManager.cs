@@ -71,9 +71,21 @@ namespace SolidCP.Providers.Virtualization
             }
         }
 
-        public Collection<PSObject> Execute(Command cmd)
+        /// <summary>
+        /// Executes the specified PowerShell command against the provided virtual machine by automatically
+        /// adding the "-VM" parameter.
+        /// </summary>
+        /// <remarks>
+        /// Not all PowerShell cmdlets support the "-VM" parameter; please consult the official documentation
+        /// for each cmdlet to verify compatibility before using this method.
+        /// </remarks>
+        public Collection<PSObject> ExecuteOnVm(Command cmd, VirtualMachineData vmData, bool withExceptions = false)
         {
-            return Execute(cmd, true);
+            if (vmData.RawObject == null)
+                throw new NullReferenceException("VM rawObject is null! You must use GetVirtualMachine/GetVmPSObject method before using this method!");
+
+            cmd.Parameters.Add("VM", vmData.RawObject);
+            return Execute(cmd, false, withExceptions); //False, because all remote connection information is already contained in RawObject
         }
 
         public Collection<PSObject> Execute(Command cmd, bool addComputerNameParameter)

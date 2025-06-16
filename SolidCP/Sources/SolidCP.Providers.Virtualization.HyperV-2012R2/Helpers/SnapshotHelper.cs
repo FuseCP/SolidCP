@@ -77,12 +77,11 @@ namespace SolidCP.Providers.Virtualization
             _powerShell.Execute(cmd, true);
         }
 
-        public void Delete(PSObject vmObj)
+        public void Delete(VirtualMachineData vmData)
         {
             Command cmd = new Command("Remove-VMSnapshot");
-            cmd.Parameters.Add("VM", vmObj);
 
-            _powerShell.Execute(cmd, false); //False, because all remote connection information is already contained in vmObj
+            _powerShell.ExecuteOnVm(cmd, vmData);
         }
     }
 }
