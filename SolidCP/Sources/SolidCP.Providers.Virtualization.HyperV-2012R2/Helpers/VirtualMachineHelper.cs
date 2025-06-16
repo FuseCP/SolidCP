@@ -81,7 +81,7 @@ namespace SolidCP.Providers.Virtualization
                 }                
             }            
         }
-
+                
         public PSObject GetVmPSObject(string vmId) //if any Powershell command accept VM object WE MUST use it as it extremely faster
         {
             Command cmd = new Command("Get-VM");

@@ -213,27 +213,30 @@ namespace SolidCP.Providers.Virtualization
 
         public VirtualMachine GetVirtualMachine(string vmId)
         {
-            return GetVirtualMachineInternal(vmId, false).VM;
+            try
+            {
+                VirtualMachineData vmData = GetVirtualMachineDataGeneral(vmId, true); //we suppress errors, because this method only for client view
+                
+                // If it is possible get usage ram and usage hdd data from KVP
+                SetUsagesFromKVP(ref vmData);
+
+                return vmData.VM;
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachine", ex);
+                throw;
+            }            
         }
         
         public VirtualMachine GetVirtualMachineEx(string vmId)
         {
-            return GetVirtualMachineInternal(vmId, true).VM;
-        }
-        
-        protected VirtualMachineData GetVirtualMachineData(string vmId)
-        {
-            return GetVirtualMachineInternal(vmId, false);
+            return GetVirtualMachineExtendedInfo(vmId).VM;
         }
 
-        protected VirtualMachineData GetVirtualMachineDataEx(string vmId)
+        protected VirtualMachineData GetVirtualMachineDataGeneral(string vmId, bool suppressErrors = false)
         {
-            return GetVirtualMachineInternal(vmId, true);
-        }
-
-        protected VirtualMachineData GetVirtualMachineInternal(string vmId, bool extendedInfo)
-        {
-            HostedSolutionLog.LogStart("GetVirtualMachine");
+            HostedSolutionLog.LogStart("GetVirtualMachineDataGeneral");
             HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
 
             VirtualMachineData vmData = new VirtualMachineData();
@@ -247,88 +250,106 @@ namespace SolidCP.Providers.Virtualization
 
                 if (vmObject != null)
                 {
-
                     vm.Name = vmObject.GetString("Name");
-                    vm.State = vmObject.GetEnum<VirtualMachineState>("State");
-                    vm.CpuUsage = ConvertNullableToInt32(vmObject.GetProperty("CpuUsage"));
-                    vm.Version = string.IsNullOrEmpty(vmObject.GetString("Version")) ? "0.0": vmObject.GetString("Version");
+                    vm.State = vmObject.GetEnum<VirtualMachineState>("State", VirtualMachineState.Unknown, suppressErrors);
+                    vm.CpuUsage = Convert.ToInt32(vmObject.GetProperty("CpuUsage", true)); //we don't care about CpuUsage
+                    vm.Version = string.IsNullOrEmpty(vmObject.GetString("Version")) ? "0.0" : vmObject.GetString("Version");
                     // This does not truly give the RAM usage, only the memory assigned to the VPS - True for Version 5.0
                     // Lets handle detection of total memory and usage else where. SetUsagesFromKVP method have been made for it.
 
                     if (Convert.ToDouble(vm.Version) > Convert.ToDouble(Constants.ConfigurationVersion))
-                        vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(vmObject.GetProperty("MemoryDemand")) / Constants.Size1M);
+                        vm.RamUsage = Convert.ToInt32(Convert.ToInt64(vmObject.GetProperty("MemoryDemand", true)) / Constants.Size1M);
                     else
-                        vm.RamUsage = Convert.ToInt32(ConvertNullableToInt64(vmObject.GetProperty("MemoryStartup")) / Constants.Size1M);
+                        vm.RamUsage = Convert.ToInt32(Convert.ToInt64(vmObject.GetProperty("MemoryStartup", true)) / Constants.Size1M);
 
-                    vm.RamSize = Convert.ToInt32(ConvertNullableToInt64(vmObject.GetProperty("MemoryStartup")) / Constants.Size1M);
+                    vm.RamSize = Convert.ToInt32(Convert.ToInt64(vmObject.GetProperty("MemoryStartup", suppressErrors)) / Constants.Size1M);
                     vm.Uptime = Convert.ToInt64(vmObject.GetProperty<TimeSpan>("UpTime").TotalMilliseconds);
-                    vm.Status = vmObject.GetProperty("Status").ToString();
+                    vm.Status = Convert.ToString(vmObject.GetProperty("Status", suppressErrors));
                     vm.Generation = vmObject.GetInt("Generation");
                     vm.ProcessorCount = vmObject.GetInt("ProcessorCount");
                     vm.ParentSnapshotId = vmObject.GetString("ParentSnapshotId");
                     vm.Heartbeat = VirtualMachineHelper.GetVMHeartBeatStatusFromGetVmResult(vmObject, vm.Name);
                     vm.CreatedDate = vmObject.GetProperty<DateTime>("CreationTime");
-                    vm.ReplicationState = vmObject.GetEnum<ReplicationState>("ReplicationState");
+                    vm.ReplicationState = vmObject.GetEnum<ReplicationState>("ReplicationState", ReplicationState.NotApplicable, suppressErrors);
                     vm.IsClustered = vmObject.GetBool("IsClustered");
-
-                    vmData.VM = vm;
-                    if (extendedInfo)
-                    {
-                        vm.CpuCores = VirtualMachineHelper.GetVMProcessors(vm.VirtualMachineId);
-
-                        // BIOS 
-                        BiosInfo biosInfo = BiosHelper.Get(vmData, vm.Generation);
-                        vm.NumLockEnabled = biosInfo.NumLockEnabled;
-                        vm.BootFromCD = biosInfo.BootFromCD;
-                        vm.EnableSecureBoot = biosInfo.SecureBootEnabled;
-                        vm.SecureBootTemplate = biosInfo.SecureBootTemplate;                     
-
-                        // DVD drive
-                        var dvdInfo = DvdDriveHelper.Get(vmData);
-                        vm.DvdDriveInstalled = dvdInfo != null;
-
-                        // HDD
-                        vm.Disks = HardDriveHelper.Get(vmData);
-
-                        if (vm.Disks != null && vm.Disks.GetLength(0) > 0)
-                        {
-                            vm.HddMinimumIOPS = Convert.ToInt32(vm.Disks[0].MinimumIOPS);
-                            vm.HddMaximumIOPS = Convert.ToInt32(vm.Disks[0].MaximumIOPS);
-                            vm.VirtualHardDrivePath = new string[vm.Disks.GetLength(0)];
-                            vm.HddSize = new int[vm.Disks.GetLength(0)];
-                            for (int i = 0; i < vm.Disks.GetLength(0); i++)
-                            {
-                                vm.VirtualHardDrivePath[i] = vm.Disks[i].Path;
-                                vm.HddSize[i] = Convert.ToInt32(vm.Disks[i].MaxInternalSize / Constants.Size1G);
-                            }
-                        }
-
-                        // network adapters
-                        vm.Adapters = NetworkAdapterHelper.Get(vmData);
-                        foreach (VirtualMachineNetworkAdapter adapter in vm.Adapters)
-                        {
-                            if(adapter.Name == Constants.EXTERNAL_NETWORK_ADAPTER_NAME)
-                                vm.ExternalNetworkEnabled = true;
-
-                            if (adapter.Name == Constants.PRIVATE_NETWORK_ADAPTER_NAME)
-                                vm.PrivateNetworkEnabled = true;
-                        }                        
-                    }
 
                     vm.DynamicMemory = MemoryHelper.GetDynamicMemory(vmData);
 
-                    vmData.VM = vm; // update VM with last data
-                    // If it is possible get usage ram and usage hdd data from KVP
-                    SetUsagesFromKVP(ref vmData);
+                    vmData.VM = vm;
                 }
             }
             catch (Exception ex)
             {
-                HostedSolutionLog.LogError("GetVirtualMachine", ex);
+                HostedSolutionLog.LogError("GetVirtualMachineDataGeneral", ex);
                 throw;
             }
+            finally 
+            {
+                HostedSolutionLog.LogEnd("GetVirtualMachineDataGeneral");
+            }
 
-            HostedSolutionLog.LogEnd("GetVirtualMachine");
+            return vmData;
+        }
+
+        protected VirtualMachineData GetVirtualMachineExtendedInfo(string vmId)
+        {
+            HostedSolutionLog.LogStart("GetVirtualMachineExtendedInfo");
+            HostedSolutionLog.DebugInfo("Virtual Machine: {0}", vmId);
+
+            VirtualMachineData vmData = GetVirtualMachineDataGeneral(vmId, false);
+
+            try
+            {
+                vmData.VM.CpuCores = VirtualMachineHelper.GetVMProcessors(vmData.VM.VirtualMachineId);
+
+                // BIOS 
+                BiosInfo biosInfo = BiosHelper.Get(vmData, vmData.VM.Generation);
+                vmData.VM.NumLockEnabled = biosInfo.NumLockEnabled;
+                vmData.VM.BootFromCD = biosInfo.BootFromCD;
+                vmData.VM.EnableSecureBoot = biosInfo.SecureBootEnabled;
+                vmData.VM.SecureBootTemplate = biosInfo.SecureBootTemplate;
+
+                // DVD drive
+                var dvdInfo = DvdDriveHelper.Get(vmData);
+                vmData.VM.DvdDriveInstalled = dvdInfo != null;
+
+                // HDD
+                vmData.VM.Disks = HardDriveHelper.Get(vmData);
+
+                if (vmData.VM.Disks != null && vmData.VM.Disks.GetLength(0) > 0)
+                {
+                    vmData.VM.HddMinimumIOPS = Convert.ToInt32(vmData.VM.Disks[0].MinimumIOPS);
+                    vmData.VM.HddMaximumIOPS = Convert.ToInt32(vmData.VM.Disks[0].MaximumIOPS);
+                    vmData.VM.VirtualHardDrivePath = new string[vmData.VM.Disks.GetLength(0)];
+                    vmData.VM.HddSize = new int[vmData.VM.Disks.GetLength(0)];
+                    for (int i = 0; i < vmData.VM.Disks.GetLength(0); i++)
+                    {
+                        vmData.VM.VirtualHardDrivePath[i] = vmData.VM.Disks[i].Path;
+                        vmData.VM.HddSize[i] = Convert.ToInt32(vmData.VM.Disks[i].MaxInternalSize / Constants.Size1G);
+                    }
+                }
+
+                // network adapters
+                vmData.VM.Adapters = NetworkAdapterHelper.Get(vmData);
+                foreach (VirtualMachineNetworkAdapter adapter in vmData.VM.Adapters)
+                {
+                    if (adapter.Name == Constants.EXTERNAL_NETWORK_ADAPTER_NAME)
+                        vmData.VM.ExternalNetworkEnabled = true;
+
+                    if (adapter.Name == Constants.PRIVATE_NETWORK_ADAPTER_NAME)
+                        vmData.VM.PrivateNetworkEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                HostedSolutionLog.LogError("GetVirtualMachineExtendedInfo", ex);
+                throw;
+            }
+            finally
+            {
+                HostedSolutionLog.LogEnd("GetVirtualMachineExtendedInfo");
+            }
+            
             return vmData;
         }
 
@@ -619,7 +640,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {     
-                var realVmData = GetVirtualMachineDataEx(vm.VirtualMachineId);
+                var realVmData = GetVirtualMachineExtendedInfo(vm.VirtualMachineId);
 
                 DvdDriveHelper.Update(realVmData, vm.DvdDriveInstalled); // Dvd should be before bios because bios sets boot order
                 BiosHelper.Update(realVmData, vm.BootFromCD, vm.NumLockEnabled, vm.EnableSecureBoot, vm.SecureBootTemplate);
@@ -655,7 +676,7 @@ namespace SolidCP.Providers.Virtualization
                 {
                     return false;
                 }
-                var vmData = GetVirtualMachineDataEx(vm.VirtualMachineId);
+                var vmData = GetVirtualMachineExtendedInfo(vm.VirtualMachineId);
                 var realVm = vmData.VM;
                 bool canChangeValueWihoutReboot = false;
                 if (realVm.CpuCores == vm.CpuCores)
@@ -890,7 +911,7 @@ namespace SolidCP.Providers.Virtualization
             HostedSolutionLog.LogStart("ChangeVirtualMachineState");
             var jobResult = new JobResult();
 
-            var vmData = GetVirtualMachineData(vmId);
+            var vmData = GetVirtualMachineDataGeneral(vmId, false);
 
             bool isServerStatusOK = (vmData.VM.Heartbeat != OperationalStatus.Ok || vmData.VM.Heartbeat != OperationalStatus.Paused); 
 
@@ -951,7 +972,7 @@ namespace SolidCP.Providers.Virtualization
                     switch (newState)
                     {
                         case VirtualMachineRequestedState.Start: //sometimes we can get an error here, but it in 90% does not mean anything.
-                            vmData = GetVirtualMachineData(vmId);
+                            vmData = GetVirtualMachineDataGeneral(vmId, false);
                             if (vmData.VM.Heartbeat != OperationalStatus.Ok || vmData.VM.State != VirtualMachineState.Running)
                                 ChangeVirtualMachineState(vmId, VirtualMachineRequestedState.Reset, clusterName);
                             cmdTxt = "";
@@ -996,7 +1017,7 @@ namespace SolidCP.Providers.Virtualization
 
         public ReturnCode ShutDownVirtualMachine(string vmId, bool force, string reason)
         {
-            var vmData = GetVirtualMachineData(vmId);
+            var vmData = GetVirtualMachineDataGeneral(vmId);
             bool isServerStatusOK = (vmData.VM.Heartbeat != OperationalStatus.Ok || vmData.VM.Heartbeat != OperationalStatus.Paused);
             
             if (isServerStatusOK)
@@ -1027,7 +1048,7 @@ namespace SolidCP.Providers.Virtualization
 
         public JobResult RenameVirtualMachine(string vmId, string name, string clusterName)
         {
-            var vmData = GetVirtualMachineData(vmId);
+            var vmData = GetVirtualMachineDataGeneral(vmId, true);
 
             if (!String.IsNullOrEmpty(clusterName))
             {
@@ -1065,7 +1086,7 @@ namespace SolidCP.Providers.Virtualization
 
         protected JobResult DeleteVirtualMachineInternal(string vmId, bool withExternalData, string clusterName)
         {
-            var vmData = GetVirtualMachineDataEx(vmId);
+            var vmData = GetVirtualMachineExtendedInfo(vmId);
 
             // The virtual computer system must be in the powered off or saved state prior to calling this method.
             if (vmData.VM.State != VirtualMachineState.Saved && vmData.VM.State != VirtualMachineState.Off)
@@ -1099,7 +1120,7 @@ namespace SolidCP.Providers.Virtualization
 
         public JobResult ExportVirtualMachine(string vmId, string exportPath)
         {
-            var vmData = GetVirtualMachineData(vmId);
+            var vmData = GetVirtualMachineDataGeneral(vmId);
 
             // The virtual computer system must be in the powered off or saved state prior to calling this method.
             if (vmData.VM.State != VirtualMachineState.Off)
@@ -1121,7 +1142,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
 
                 Command cmd = new Command("Get-VMSnapshot");
 
@@ -1169,7 +1190,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
 
                 Command cmd = new Command("Checkpoint-VM");
 
@@ -1188,7 +1209,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
                 var snapshot = GetSnapshot(snapshotId);
 
                 Command cmd = new Command("Rename-VMSnapshot");
@@ -1209,7 +1230,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
                 var snapshot = GetSnapshot(snapshotId);
 
                 Command cmd = new Command("Restore-VMSnapshot");
@@ -1277,7 +1298,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
                 dvdInfo = DvdDriveHelper.Get(vmData);
             }
             catch (Exception ex)
@@ -1301,7 +1322,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
                 DvdDriveHelper.Set(vmData, isoPath);
             }
             catch (Exception ex)
@@ -1321,7 +1342,7 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                var vmData = GetVirtualMachineData(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
                 DvdDriveHelper.Set(vmData, null);
             }
             catch (Exception ex)
@@ -2148,7 +2169,7 @@ namespace SolidCP.Providers.Virtualization
         {
             try
             {
-                VirtualMachine vps = GetVirtualMachine(vm.VirtualMachineId);
+                VirtualMachine vps = GetVirtualMachineDataGeneral(vm.VirtualMachineId, false).VM;
                 JobResult result = null;
 
                 if (vps == null)
@@ -2236,7 +2257,7 @@ namespace SolidCP.Providers.Virtualization
             try
             {
                 JobResult result = null;
-                VirtualMachine vps = GetVirtualMachine(vm.VirtualMachineId);
+                VirtualMachine vps = GetVirtualMachineDataGeneral(vm.VirtualMachineId, false).VM;
 
                 if (vps == null)
                 {
@@ -2334,16 +2355,6 @@ namespace SolidCP.Providers.Virtualization
         internal double ConvertNullableToDouble(object value)
         {
             return value == null ? 0 : Convert.ToDouble(value);
-        }
-
-        internal int ConvertNullableToInt32(object value)
-        {
-            return value == null ? 0 : Convert.ToInt32(value);
-        }
-
-        internal long ConvertNullableToInt64(object value)
-        {
-            return value == null ? 0 : Convert.ToInt64(value);
         }
 
         private CimInstance GetVirtualSystemManagementService()
@@ -2566,7 +2577,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode != ReplicaMode.ReplicationEnabled)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachineEx(vmId);
+            var vm = GetVirtualMachineExtendedInfo(vmId).VM;
 
             Command cmd = new Command("Enable-VMReplication");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2607,7 +2618,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode != ReplicaMode.ReplicationEnabled)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachineEx(vmId);
+            var vm = GetVirtualMachineExtendedInfo(vmId).VM;
 
             Command cmd = new Command("Set-VMReplication");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2645,7 +2656,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode != ReplicaMode.ReplicationEnabled)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachine(vmId);
+            var vm = GetVirtualMachineDataGeneral(vmId, true).VM;
 
             Command cmd = new Command("Test-VMReplicationConnection");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2662,7 +2673,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode != ReplicaMode.ReplicationEnabled)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachine(vmId);
+            var vm = GetVirtualMachineDataGeneral(vmId, true).VM;
 
             Command cmd = new Command("Start-VMInitialReplication");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2676,7 +2687,7 @@ namespace SolidCP.Providers.Virtualization
                 throw new Exception("Server does not allow replication by settings");
 
             VmReplication replica = null;
-            var vm = GetVirtualMachineEx(vmId);
+            var vm = GetVirtualMachineExtendedInfo(vmId).VM;
 
             Command cmd = new Command("Get-VMReplication");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2686,7 +2697,7 @@ namespace SolidCP.Providers.Virtualization
             if (result != null && result.Count > 0)
             {
                 replica = new VmReplication();
-                replica.ReplicaFrequency = result[0].GetEnum<ReplicaFrequency>("FrequencySec", ReplicaFrequency.Seconds30);
+                replica.ReplicaFrequency = result[0].GetEnum<ReplicaFrequency>("FrequencySec", ReplicaFrequency.Seconds30, true);
                 replica.Thumbprint = result[0].GetString("CertificateThumbprint");
                 replica.AdditionalRecoveryPoints = result[0].GetInt("RecoveryHistory");
                 replica.VSSSnapshotFrequencyHour = result[0].GetInt("VSSSnapshotFrequencyHour");
@@ -2708,7 +2719,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode == ReplicaMode.None)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachine(vmId);
+            var vm = GetVirtualMachineDataGeneral(vmId, true).VM;
 
             ReplicaHelper.RemoveVmReplication(vm.Name, ServerNameSettings);
         }
@@ -2720,7 +2731,7 @@ namespace SolidCP.Providers.Virtualization
                 throw new Exception("Server does not allow replication by settings");
 
             ReplicationDetailInfo replica = null;
-            var vm = GetVirtualMachine(vmId);
+            var vm = GetVirtualMachineDataGeneral(vmId, true).VM;
 
             Command cmd = new Command("Measure-VMReplication");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2756,7 +2767,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode != ReplicaMode.ReplicationEnabled)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachine(vmId);
+            var vm = GetVirtualMachineDataGeneral(vmId, true).VM;
 
             Command cmd = new Command("Suspend-VMReplication");
             cmd.Parameters.Add("VmName", vm.Name);
@@ -2769,7 +2780,7 @@ namespace SolidCP.Providers.Virtualization
             if (ReplicaMode != ReplicaMode.ReplicationEnabled)
                 throw new Exception("Server does not allow replication by settings");
 
-            var vm = GetVirtualMachine(vmId);
+            var vm = GetVirtualMachineDataGeneral(vmId, true).VM;
 
             Command cmd = new Command("Resume-VMReplication");
             cmd.Parameters.Add("VmName", vm.Name);
