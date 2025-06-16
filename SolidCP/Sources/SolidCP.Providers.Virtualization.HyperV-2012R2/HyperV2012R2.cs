@@ -1951,10 +1951,27 @@ namespace SolidCP.Providers.Virtualization
 
         public void DeleteRemoteFile(string path)
         {
-            if (FileSystemHelper.DirectoryExists(path))
-                FileSystemHelper.DeleteFolder(path); // WMI way
-            else if (FileExists(path))
-                FileSystemHelper.DeleteFile(path); // WMI way
+            TryDeleteRemoteFile(path, true);
+        }
+
+        protected void TryDeleteRemoteFile(string path, bool repeat)
+        {
+            try
+            {
+                if (FileSystemHelper.DirectoryExists(path))
+                    FileSystemHelper.DeleteFolder(path); // MI way
+                else if (FileExists(path))
+                    FileSystemHelper.DeleteFile(path); // MI way
+            }
+            catch (Exception ex) //we can get a very rare bug with access denied if file already deleted. So wait and try again, if folder/file still exists.
+            {
+                if(!repeat) {
+                    HostedSolutionLog.LogError("TryDeleteRemoteFile", ex);
+                    throw;
+                }
+                System.Threading.Thread.Sleep(5000);
+                TryDeleteRemoteFile(path, false); // try again
+            }
         }
 
         public void ExpandDiskVolume(string diskAddress, string volumeName)
