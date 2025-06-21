@@ -2592,56 +2592,6 @@ VALUES (167, NULL, 'Proxmox', 20, 1);
 SELECT changes();
 
 
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('BCC_MAIL', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'String', 'admin@mydomain.com', 3);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('ERROR_MAIL_BODY', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'MultiString', 'Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.', 11);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('ERROR_MAIL_SUBJECT', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'String', 'Certificate error or website is unavailable', 10);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('EXPIRATION_MAIL_BODY', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'MultiString', 'Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).', 5);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('EXPIRATION_MAIL_SUBJECT', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'String', 'Website certificate expiration notice', 4);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('SEND_14_DAYS_BEFORE_EXPIRATION', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 7);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('SEND_30_DAYS_BEFORE_EXPIRATION', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 6);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('SEND_BCC', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'false', 2);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('SEND_MAIL_TO_CUSTOMER', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 1);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('SEND_SSL_ERROR', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'false', 9);
-SELECT changes();
-
-INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
-VALUES ('SEND_TODAY_EXPIRED', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 8);
-SELECT changes();
-
-
-INSERT INTO "ScheduleTaskViewConfiguration" ("ConfigurationID", "TaskID", "Description", "Environment")
-VALUES ('ASP_NET', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', '~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx', 'ASP.NET');
-SELECT changes();
-
-
 INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
 VALUES ('SCHEDULE_TASK_ACTIVATE_PAID_INVOICES', 0, 'SolidCP.Ecommerce.EnterpriseServer.ActivatePaidInvoicesTask, SolidCP.EnterpriseServer.Code');
 SELECT changes();
@@ -2679,6 +2629,10 @@ VALUES ('SCHEDULE_TASK_CHECK_WEBSITE', 3, 'SolidCP.EnterpriseServer.CheckWebSite
 SELECT changes();
 
 INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
+VALUES ('SCHEDULE_TASK_CHECK_WEBSITES_SSL', 3, 'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code');
+SELECT changes();
+
+INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
 VALUES ('SCHEDULE_TASK_DELETE_EXCHANGE_ACCOUNTS', 3, 'SolidCP.EnterpriseServer.DeleteExchangeAccountsTask, SolidCP.EnterpriseServer.Code');
 SELECT changes();
 
@@ -2712,10 +2666,6 @@ SELECT changes();
 
 INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
 VALUES ('SCHEDULE_TASK_RUN_SYSTEM_COMMAND', 1, 'SolidCP.EnterpriseServer.RunSystemCommandTask, SolidCP.EnterpriseServer.Code');
-SELECT changes();
-
-INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
-VALUES ('SCHEDULE_TASK_CHECK_WEBSITES_SSL', 3, 'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code');
 SELECT changes();
 
 INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
@@ -4829,6 +4779,50 @@ VALUES ('USERNAME', 'SCHEDULE_TASK_CHECK_WEBSITE', 'String', NULL, 2);
 SELECT changes();
 
 INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('BCC_MAIL', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'String', 'admin@mydomain.com', 3);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('ERROR_MAIL_BODY', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'MultiString', 'Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.', 11);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('ERROR_MAIL_SUBJECT', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'String', 'Certificate error or website is unavailable', 10);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('EXPIRATION_MAIL_BODY', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'MultiString', 'Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).', 5);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('EXPIRATION_MAIL_SUBJECT', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'String', 'Website certificate expiration notice', 4);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('SEND_14_DAYS_BEFORE_EXPIRATION', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 7);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('SEND_30_DAYS_BEFORE_EXPIRATION', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 6);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('SEND_BCC', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'false', 2);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('SEND_MAIL_TO_CUSTOMER', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 1);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('SEND_SSL_ERROR', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'false', 9);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
+VALUES ('SEND_TODAY_EXPIRED', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', 'Boolean', 'true', 8);
+SELECT changes();
+
+INSERT INTO "ScheduleTaskParameters" ("ParameterID", "TaskID", "DataTypeID", "DefaultValue", "ParameterOrder")
 VALUES ('DAYS_BEFORE', 'SCHEDULE_TASK_DOMAIN_EXPIRATION', 'String', NULL, 1);
 SELECT changes();
 
@@ -5103,6 +5097,10 @@ SELECT changes();
 
 INSERT INTO "ScheduleTaskViewConfiguration" ("ConfigurationID", "TaskID", "Description", "Environment")
 VALUES ('ASP_NET', 'SCHEDULE_TASK_CHECK_WEBSITE', '~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsite.ascx', 'ASP.NET');
+SELECT changes();
+
+INSERT INTO "ScheduleTaskViewConfiguration" ("ConfigurationID", "TaskID", "Description", "Environment")
+VALUES ('ASP_NET', 'SCHEDULE_TASK_CHECK_WEBSITES_SSL', '~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx', 'ASP.NET');
 SELECT changes();
 
 INSERT INTO "ScheduleTaskViewConfiguration" ("ConfigurationID", "TaskID", "Description", "Environment")
@@ -6549,54 +6547,6 @@ SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('AdminUsername', 22, 'Administrator');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('BindConfigPath', 24, 'c:\BIND\dns\etc\named.conf');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('BindReloadBatch', 24, 'c:\BIND\dns\reload.bat');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('ExpireLimit', 24, '1209600');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('MinimumTTL', 24, '86400');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('NameServers', 24, 'ns1.yourdomain.com;ns2.yourdomain.com');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('RecordDefaultTTL', 24, '86400');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('RecordMinimumTTL', 24, '3600');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('RefreshInterval', 24, '3600');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('ResponsiblePerson', 24, 'hostmaster.[DOMAIN_NAME]');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('RetryDelay', 24, '600');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('ZoneFileNameTemplate', 24, 'db.[domain_name].txt');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('ZonesFolderPath', 24, 'c:\BIND\dns\zones');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
@@ -8088,10 +8038,6 @@ VALUES ('ConfigFile', 1910, '/etc/vsftpd.conf');
 SELECT changes();
 
 INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
-VALUES ('BinPath', 1911, '');
-SELECT changes();
-
-INSERT INTO "ServiceDefaultProperties" ("PropertyName", "ProviderID", "PropertyValue")
 VALUES ('ConfigFile', 1911, '/etc/apache2/apache2.conf');
 SELECT changes();
 
@@ -8302,7 +8248,7 @@ CREATE INDEX "WebDavAccessTokensIdx_AccountID" ON "WebDavAccessTokens" ("Account
 CREATE INDEX "WebDavPortalUsersSettingsIdx_AccountId" ON "WebDavPortalUsersSettings" ("AccountId");
 
 INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
-VALUES ('20250515113931_InitialCreate', '9.0.4');
+VALUES ('20250621163101_InitialCreate', '9.0.6');
 
 COMMIT;
 
