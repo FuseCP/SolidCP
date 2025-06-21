@@ -21,7 +21,7 @@ namespace SolidCP.UniversalInstaller;
 #if NETCOREAPP
 public class SetupAssemblyLoadContext : AssemblyLoadContext
 {
-	public AssemblyLoader Loader { get; set; } = null;
+	public object Loader { get; set; } = null;
 
 	public SetupAssemblyLoadContext() : base("Setup Context", true) { }
 	protected override Assembly Load(AssemblyName name)
@@ -41,17 +41,28 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		});
 		if (loadedAssembly != null)
 			return loadedAssembly;
-		
-		return Loader?.ResolveAssembly(this, name);
+
+		var type = Loader?.GetType();
+		var resolveAssembly = type?.GetMethod("ResolveAssembly", BindingFlags.Public | BindingFlags.Instance);
+		return resolveAssembly?.Invoke(Loader, new object[] { this, name }) as Assembly;
+		//return Loader?.ResolveAssembly(this, name);
+	}
+	protected override nint LoadUnmanagedDll(string unmanagedDllName)
+	{
+		var type = Loader?.GetType();
+		var resolveAssembly = type?.GetMethod("ResolveNativeDll", BindingFlags.Public | BindingFlags.Instance);
+		var result = resolveAssembly?.Invoke(Loader, new object[] { Assembly.GetExecutingAssembly(), unmanagedDllName });
+		return (nint)(result ?? IntPtr.Zero);
+		//return Loader?.ResolveNativeDll(Assembly.GetExecutingAssembly(), unmanagedDllName) ?? default(nint);
 	}
 }
 #endif
 
-	// This class exists in SolidCP.UniversalInstaller, SolidCP.Setup and in
-	// SolidCP.UniversalInstaller.Runtime. It is responsible for loading the assemblies in the
-	// EmbeddedResources. The version in SolidCP.Setup is for NET Standard and relies on the
-	// version in SolidCP.UniversalInstaller.Runtime that is NetFX & NetCore specific.
-	public class AssemblyLoader
+// This class exists in SolidCP.UniversalInstaller, SolidCP.Setup and in
+// SolidCP.UniversalInstaller.Runtime. It is responsible for loading the assemblies in the
+// EmbeddedResources. The version in SolidCP.Setup is for NET Standard and relies on the
+// version in SolidCP.UniversalInstaller.Runtime that is NetFX & NetCore specific.
+public class AssemblyLoader
 {
 	public const string TmpFolder = "SolidCPInstallerAssemblyLoaderDlls";
 	public const string NativeDllsFolder = "NativeDlls";
@@ -200,10 +211,18 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		IsDefault = ctx == System.Runtime.Loader.AssemblyLoadContext.Default;
 		if (IsDefault) {
 			ctx.Resolving += (loadContext, name) => ResolveAssembly(loadContext, name);
+			ctx.ResolvingUnmanagedDll += ResolveNativeDll;
 		}
 		else if (ctx is SetupAssemblyLoadContext setupCtx)
 		{
 			setupCtx.Loader = this;
+			//setupCtx.ResolvingUnmanagedDll += ResolveNativeDll;
+		}
+		else if (ctx.GetType().Name == nameof(SetupAssemblyLoadContext))
+		{
+			var type = ctx.GetType();
+			var loader = type.GetProperty("Loader", BindingFlags.Public | BindingFlags.Instance);
+			loader.SetValue(ctx, this);
 		}
 		AssemblyLoadContext = ctx;
 	}
@@ -213,11 +232,13 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 			(IsMac ? "osx-" : IsLinux ? "linux-" : "");
 		var arch = RuntimeInformation.OSArchitecture.ToString().ToLowerInvariant();
 		runtimeId += arch;
+		file = Path.Combine(AssembliesPath, "runtimes", runtimeId, "native", file);
+		if (File.Exists(file)) return file;
 		file = Path.Combine(AssembliesPath, "runtimes", runtimeId, file);
 		if (File.Exists(file)) return file;
 		else return null;
 	}
-	public IntPtr ResolveNativeDll(string lib, Assembly assembly)
+	public IntPtr ResolveNativeDll(Assembly assembly, string lib)
 	{
 		var dll = TryFile(lib) ??
 			(IsWindows ? TryFile(lib + ".dll") : null) ??
@@ -319,7 +340,7 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		"System.Memory.dll",
 		"System.Threading.dll",
 		"System.Threading.Tasks.dll",
-		"System.Diagnostics.DiagnosticSource.dll",
+		//"System.Diagnostics.DiagnosticSource.dll",
 		"System.IO.FileSystem.AccessControl.dll",
 		"System.Security.AccessControl.dll",
 		"System.Security.Principal.Windows.dll",
@@ -371,11 +392,18 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 				var name = resname.Substring(slash + 1)
 					.Replace('/', Path.DirectorySeparatorChar)
 					.Replace('\\', Path.DirectorySeparatorChar);
-				if (/*(name.StartsWith($"{arch}/") || !name.Contains("/")) && */
+				if ((name.StartsWith($"{arch}{Path.DirectorySeparatorChar}") ||
+					name.StartsWith($"runtimes{Path.DirectorySeparatorChar}") ||
+					!name.Contains(Path.DirectorySeparatorChar)) &&
 					IsWindows && name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase) ||
 					IsMac && name.EndsWith(".dylib", StringComparison.OrdinalIgnoreCase) ||
 					IsLinux && name.EndsWith(".so", StringComparison.OrdinalIgnoreCase))
 				{
+					if (name.StartsWith($"{arch}{Path.DirectorySeparatorChar}"))
+					{
+						slash = name.IndexOf(Path.DirectorySeparatorChar);
+						name = name.Substring(slash + 1);
+					}
 					var filename = Path.Combine(AssembliesPath, name);
 					using (var src = asm.GetManifestResourceStream(resname))
 						SaveToFile(src, filename);
@@ -418,6 +446,11 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 		{
 			var path = Path.Combine(AssembliesPath, "runtimes", runtimeId, "native");
 			AddEnvironmentPaths(path);
+			if (IsLinux && IsLinuxMusl)
+			{
+				path = Path.Combine(AssembliesPath, "runtimes", runtimeId.Replace("-musl-", "-"), "native");
+				AddEnvironmentPaths(path);
+			}
 		}
 
 		CopyRuntimeLibFiles(runtimeId);
@@ -433,6 +466,18 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 			foreach (var src in Directory.EnumerateFiles(runtimeLibPath))
 			{
 				File.Copy(src, Path.Combine(AssembliesPath, Path.GetFileName(src)));
+			}
+		}
+		if (IsLinux && IsLinuxMusl && runtimeId.Contains("-musl-"))
+		{
+			runtimeId = runtimeId.Replace("-musl-", "-");
+			runtimeLibPath = Path.Combine(AssembliesPath, "runtimes", runtimeId, "lib", "netstandard2.0");
+			if (Directory.Exists(runtimeLibPath))
+			{
+				foreach (var src in Directory.EnumerateFiles(runtimeLibPath))
+				{
+					File.Copy(src, Path.Combine(AssembliesPath, Path.GetFileName(src)));
+				}
 			}
 		}
 	}
@@ -472,5 +517,19 @@ public class SetupAssemblyLoadContext : AssemblyLoadContext
 #if Costura
 		CosturaUtility.Initialize();
 #endif
+	}
+}
+
+[Serializable]
+public class RemoteRunner : MarshalByRefObject
+{
+	public object RemoteRun(string fileName, string typeName, string methodName, object[] parameters)
+	{
+		AssemblyLoader.Init(this.GetType().Assembly);
+		return RemoteRunOnLoadContext(fileName, typeName, methodName, parameters);
+	}
+	public object RemoteRunOnLoadContext(string fileName, string typeName, string methodName, object[] parameters)
+	{
+		return Installer.Current.LoadContext.RemoteRun(fileName, typeName, methodName, parameters);
 	}
 }

@@ -16,7 +16,6 @@
         <DefineConstants Condition="$(EmbedReferences) == 'true'">$(DefineConstants);Costura</DefineConstants>
         <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
         <RestoreSources>$(RestoreSources);../../Lib;https://api.nuget.org/v3/index.json</RestoreSources>
-        <GenerateDependencyFile>false</GenerateDependencyFile>
         <ApplicationManifest>SolidCP.Installer.manifest</ApplicationManifest>
     </PropertyGroup>
 
@@ -46,17 +45,18 @@
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Core\SolidCP.UniversalInstaller.Core.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj" />
-        <ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj">
+        <!--<ProjectReference Include="..\SolidCP.UniversalInstaller.Runtime\SolidCP.UniversalInstaller.Runtime.csproj">
             <SetTargetFramework>TargetFramework=net8.0</SetTargetFramework>
-        </ProjectReference>
+        </ProjectReference>-->
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Avalonia\SolidCP.UniversalInstaller.UI.Avalonia.csproj" />
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj" />
     </ItemGroup>
+
     <ItemGroup Condition="$(TargetFramework) == 'net48'">
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
             <SetTargetFramework>TargetFramework=net48</SetTargetFramework>
         </ProjectReference>
-        <PackageReference Include="System.Security.Permissions" Version="9.0.4" />
+        <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
@@ -66,9 +66,12 @@
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-        <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
-        <PackageReference Include="System.Management" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.6" />
+        <PackageReference Include="System.Management" Version="9.0.6" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.6" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
     </ItemGroup>
     
     <ItemGroup>
@@ -113,7 +116,7 @@
             <LogicalName>DllsNetFX/%(Filename)%(Extension)</LogicalName>
             <Link>DllsNetFX\%(RecursiveDir)%(Filename)%(Extension)</Link>
         </EmbeddedResource>-->
-        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll">
+        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll;$(PkgMono_Posix_NETStandard)\runtimes\**\*.so">
             <LogicalName>Dlls/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
             <Link>Dlls\runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
         </EmbeddedResource>
@@ -122,6 +125,10 @@
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <EmbeddedResource Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.dll">
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll">
+            <LogicalName>DllsNetCore/System.ServiceProcess.ServiceController.dll</LogicalName>
+            <Link>DllsNetCore\System.ServiceProcess.ServiceController.dll</Link>
         </EmbeddedResource>
     </ItemGroup>
         
@@ -135,6 +142,7 @@
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.dll" />
             <DllsToKeep Include="$(OutputPath)\**\installer.settings.json" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.runtimeconfig.json" />
+            <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.deps.json" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.pdb" />
             <DllsToKeep Include="$(OutputPath)\**\SolidCP.Installer.Core.deps.json" />
             <DllsToDelete Include="$(OutputPath)\**\*.*" Exclude="@(DllsToKeep)" />

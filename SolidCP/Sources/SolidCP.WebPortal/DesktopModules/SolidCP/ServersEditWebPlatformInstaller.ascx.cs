@@ -610,7 +610,7 @@ namespace SolidCP.Portal
         {
             if (string.IsNullOrEmpty(imgUrl))
             {
-                return GetThemedImage("../icons/dvd_disc_48.png");
+                return GetThemedImage("../Icons/dvd_disc_48.png");
             }
 
             return imgUrl;

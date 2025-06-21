@@ -53,7 +53,7 @@ namespace SolidCP.Setup
             Installer.Current.UpdateEnterpriseServer);
 
         public Result Setup(object args) => base.InstallOrSetup(args, "Setup EnterpriseServer",
-			() => Installer.Current.ConfigureEnterpriseServer(), true);
+			Installer.Current.SetupEnterpriseServer, true);
 
         public Result Uninstall(object args) => base.Uninstall(args, "Uninstall EnterpriseServer",
             Installer.Current.RemoveEnterpriseServer);

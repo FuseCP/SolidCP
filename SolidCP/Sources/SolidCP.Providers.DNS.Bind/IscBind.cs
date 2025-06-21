@@ -30,17 +30,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.ServiceProcess;
+using SolidCP.Providers;
 using SolidCP.Providers.OS;
-using SolidCP.Server.Utils;
 using SolidCP.Providers.Utils;
+using SolidCP.Server.Utils;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.ServiceProcess;
+using System.Text;
+using System.Text.RegularExpressions;
 
 
 namespace SolidCP.Providers.DNS
@@ -87,10 +88,61 @@ namespace SolidCP.Providers.DNS
         {
             get { return ProviderSettings["BindReloadBatch"]; }
         }
-        #endregion
 
-        #region Zones
-        public virtual bool ZoneExists(string zoneName)
+		public override SettingPair[] GetProviderDefaultSettings()
+		{
+            return OSInfo.IsWindows ?
+                new SettingPair[]
+                {
+				    new SettingPair("BindConfigPath", "c:\\BIND\\dns\\etc\\named.conf"),
+                    new SettingPair("BindReloadBatch", "c:\\BIND\\bin\\rndc.exe"),
+		        	new SettingPair("ExpireLimit", "1209600"),
+			        new SettingPair("MinimumTTL", "86400"),
+			        new SettingPair("NameServers", "ns1.yourdomain.com;ns2.yourdomain.com"),
+			        new SettingPair("RecordDefaultTTL", "86400"),
+			        new SettingPair("RecordMinimumTTL", "3600"),
+			        new SettingPair("RefreshInterval", "3600"),
+			        new SettingPair("ResponsiblePerson", "hostmaster.[DOMAIN_NAME]"),
+			        new SettingPair("RetryDelay", "600"),
+			        new SettingPair("ZoneFileNameTemplate","db.[domain_name].txt"),
+			        new SettingPair("ZonesFolderPath", "c:\\BIND\\dns\\zones"),
+                } :
+                new SettingPair[]
+                {
+					new SettingPair("BindConfigPath", "/etc/bind/named.conf"),
+					new SettingPair("BindReloadBatch", "rndc"),
+					new SettingPair("ExpireLimit", "1209600"),
+					new SettingPair("MinimumTTL", "86400"),
+					new SettingPair("NameServers", "ns1.yourdomain.com;ns2.yourdomain.com"),
+					new SettingPair("RecordDefaultTTL", "86400"),
+					new SettingPair("RecordMinimumTTL", "3600"),
+					new SettingPair("RefreshInterval", "3600"),
+					new SettingPair("ResponsiblePerson", "hostmaster.[DOMAIN_NAME]"),
+					new SettingPair("RetryDelay", "600"),
+					new SettingPair("ZoneFileNameTemplate","db.[domain_name].txt"),
+					new SettingPair("ZonesFolderPath", "/etc/bind/zones"),
+                };
+		}
+
+		public override string[] Install()
+		{
+			if (!Directory.Exists(ZonesFolderPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(ZonesFolderPath);
+                }
+                catch (Exception ex)
+                {
+                    return new string[] { String.Format("Failed to create BIND zones folder: {0}", ZonesFolderPath) };
+                }
+			}
+            return new string[0];
+		}
+		#endregion
+
+		#region Zones
+		public virtual bool ZoneExists(string zoneName)
         {
             foreach (string name in GetZones())
             {
@@ -129,7 +181,7 @@ namespace SolidCP.Providers.DNS
             StringBuilder sb = new StringBuilder();
             sb.Append("\r\nzone \"").Append(zoneName).Append("\" in {\r\n");
             sb.Append("\ttype master;\r\n");
-            sb.Append("\tfile \"").Append(GetZoneFileName(zoneName)).Append("\";\r\n");
+            sb.Append("\tfile \"").Append(GetZoneFilePath(zoneName)).Append("\";\r\n");
             sb.Append("\tallow-transfer {");
             if (secondaryServers == null || secondaryServers.Length == 0)
             {
@@ -169,7 +221,7 @@ namespace SolidCP.Providers.DNS
             StringBuilder sb = new StringBuilder();
             sb.Append("\r\nzone \"").Append(zoneName).Append("\" in {\r\n");
             sb.Append("\ttype slave;\r\n");
-            sb.Append("\tfile \"").Append(GetZoneFileName(zoneName)).Append("\";\r\n");
+            sb.Append("\tfile \"").Append(GetZoneFilePath(zoneName)).Append("\";\r\n");
             sb.Append("\tmasters {");
             if (masterServers == null || masterServers.Length == 0)
             {
@@ -1006,11 +1058,6 @@ namespace SolidCP.Providers.DNS
                 throw ex;
             }
 
-            if (cmd.Contains(' ') && !cmd.StartsWith("\""))
-            {
-                cmd = $"\"{cmd}\"";
-            }
-
             string rndcArguments = Args;
             if (!string.IsNullOrEmpty(zoneName))
             {
@@ -1033,9 +1080,11 @@ namespace SolidCP.Providers.DNS
 				var bat = File.ReadAllText(cmd);
 				shell = OSInfo.Unix.DefaultShell.ExecScript(bat, rndcArguments);
 			}
+			else if (cmd.Contains(' ') && !cmd.StartsWith("\"")) shell = Shell.Default.Exec($"\"{cmd}\" {rndcArguments}");
+			else if (string.IsNullOrWhiteSpace(cmd)) shell = Shell.Default.Exec($"rndc {rndcArguments}");
 			else shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
 
-            var output = shell.Output().Result;
+			var output = shell.Output().Result;
             if (shell.ExitCode().Result != 0 || Regex.IsMatch(output, "error", RegexOptions.IgnoreCase))
             {
                 Log.WriteError(output, null);

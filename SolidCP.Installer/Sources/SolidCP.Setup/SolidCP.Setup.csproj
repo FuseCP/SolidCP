@@ -28,11 +28,16 @@
 
     <ItemGroup>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Include="System.Management" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="System.Management" Version="9.0.6" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
-        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" />
         <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
-        <!--<PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
+        <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.6" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Data.SqlClient.SNI" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="Microsoft.Data.SqlClient.SNI.Runtime" Version="6.0.2" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <!--<PackageReference Include="System.DirectoryServices" Version="9.0.3" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>
 
@@ -84,18 +89,59 @@
             <LogicalName>DllsNetCore/System.Management.dll</LogicalName>
             <Link>DllsNetCore\System.Management.dll</Link>
         </EmbeddedResource>
-        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll">
+        <EmbeddedResource Include="$(PkgMicrosoft_Win32_Registry)\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll">
+            <LogicalName>Dlls/Microsoft.Win32.Registry.dll</LogicalName>
+            <Link>Dlls\Microsoft.Win32.Registry.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMono_Posix_NETStandard)\runtimes\**\*.dll;$(PkgMono_Posix_NETStandard)\runtimes\**\*.so">
             <LogicalName>Dlls/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
             <Link>Dlls\runtimes\%(RecursiveDir)%(Filename)%(Extension)</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll">
+            <LogicalName>DllsNetCore/System.ServiceProcess.ServiceController.dll</LogicalName>
+            <Link>DllsNetCore\System.ServiceProcess.ServiceController.dll</Link>
         </EmbeddedResource>
         <!--<EmbeddedResource Include="$(PkgSystem_DirectoryServices)\runtimes\win\lib\net8.0\System.DirectoryServices.dll">
             <LogicalName>DllsNetCore/System.DirectoryServices.dll</LogicalName>
             <Link>DllsNetCore\System.DirectoryServices.dll</Link>
         </EmbeddedResource>-->
-        <!--<EmbeddedResource Include="$(PkgMicrosoft_Win32_Registry)\runtimes\win\lib\netstandard2.0\Microsoft.Win32.Registry.dll">
-            <LogicalName>DllsNetCore/Microsoft.Win32.Registry.dll</LogicalName>
-            <Link>DllsNetCore\Microsoft.Win32.Registry.dll</Link>
-        </EmbeddedResource>-->
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\win\lib\net8.0\Microsoft.Data.SqlClient.dll">
+            <LogicalName>DllsNetCoreWin/Microsoft.Data.SqlClient.dll</LogicalName>
+            <Link>DllsNetCoreWin\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\unix\lib\net8.0\Microsoft.Data.SqlClient.dll">
+            <LogicalName>DllsNetCoreUnix/Microsoft.Data.SqlClient.dll</LogicalName>
+            <Link>DllsNetCoreUnix\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient)\runtimes\win\lib\net462\Microsoft.Data.SqlClient.dll">
+            <LogicalName>DllsNetFXWin/Microsoft.Data.SqlClient.dll</LogicalName>
+            <Link>DllsNetFXWin\Microsoft.Data.SqlClient.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI)\build\net462\Microsoft.Data.SqlClient.SNI.arm64.dll">
+            <LogicalName>NativeDlls/arm64/Microsoft.Data.SqlClient.SNI.arm64.dll</LogicalName>
+            <Link>NativeDlls\arm64\Microsoft.Data.SqlClient.SNI.arm64.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI)\build\net462\Microsoft.Data.SqlClient.SNI.x64.dll">
+            <LogicalName>NativeDlls/x64/Microsoft.Data.SqlClient.SNI.x64.dll</LogicalName>
+            <Link>NativeDlls\x64\Microsoft.Data.SqlClient.SNI.x64.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI)\build\net462\Microsoft.Data.SqlClient.SNI.x86.dll">
+            <LogicalName>NativeDlls/x86/Microsoft.Data.SqlClient.SNI.x86.dll</LogicalName>
+            <Link>NativeDlls\x86\Microsoft.Data.SqlClient.SNI.x86.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI_Runtime)\runtimes\win-arm64\native\Microsoft.Data.SqlClient.SNI.dll">
+            <LogicalName>NativeDlls/arm64/Microsoft.Data.SqlClient.SNI.dll</LogicalName>
+            <Link>NativeDlls\arm64\Microsoft.Data.SqlClient.SNI.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI_Runtime)\runtimes\win-x64\native\Microsoft.Data.SqlClient.SNI.dll">
+            <LogicalName>NativeDlls/x64/Microsoft.Data.SqlClient.SNI.dll</LogicalName>
+            <Link>NativeDlls\x64\Microsoft.Data.SqlClient.SNI.dll</Link>
+        </EmbeddedResource>
+        <EmbeddedResource Include="$(PkgMicrosoft_Data_SqlClient_SNI_Runtime)\runtimes\win-x86\native\Microsoft.Data.SqlClient.SNI.dll">
+            <LogicalName>NativeDlls/x86/Microsoft.Data.SqlClient.SNI.dll</LogicalName>
+            <Link>NativeDlls\x86\Microsoft.Data.SqlClient.SNI.dll</Link>
+        </EmbeddedResource>
+
 
         <EmbeddedResource Include="..\..\..\SolidCP\Sources\SolidCP.EnterpriseServer.Data\bin\$(Configuration)\net8.0\runtimes\**\*.*">
             <LogicalName>DllsNetCore/runtimes/%(RecursiveDir)%(Filename)%(Extension)</LogicalName>
@@ -116,6 +162,11 @@
             <MgmtDll Include="$(PkgSystem_Management)\runtimes\win\lib\net8.0\System.Management.*" />
         </ItemGroup>
         <Copy SourceFiles="@(MgmtDll)" DestinationFolder="$(OutputPath)" />
+    </Target>-->
+
+    <!--<Target Name="CopyServiceProcessRuntime" BeforeTargets="FodyTarget">
+        <Message Importance="high" Text="Copying $(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll"  />
+        <Copy SourceFiles="$(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll" DestinationFolder="$(OutputPath)" />
     </Target>-->
 
 </Project>

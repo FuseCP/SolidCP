@@ -10,7 +10,6 @@
         <OutputPath>bin\$(Configuration)</OutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <StartupObject>SolidCP.UniversalInstaller.Core.Program</StartupObject>
-        <GenerateDependencyFile>true</GenerateDependencyFile>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
         <Optimize>false</Optimize>
@@ -63,7 +62,7 @@
         <PackageReference Include="System.ServiceModel.NetTcp" Version="4.4.*" />
         <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.0" />
         <PackageReference Include="System.ServiceModel.Security" Version="4.4.*" />-->
-        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.4" />
+        <PackageReference Include="System.Text.Encoding.CodePages" Version="9.0.6" />
     </ItemGroup>
     <ItemGroup Condition=" ('$(TargetFramework)' == 'netstandard2.0') Or ('$(TargetFramework)' == 'net8.0')">
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />

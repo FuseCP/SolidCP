@@ -1,39 +1,59 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <RootNamespace>SolidCP.Providers.Web</RootNamespace>
-    <TargetFramework>net48</TargetFramework>
-    <OutputPath>..\SolidCP.Server\bin\IIs80\</OutputPath>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <LangVersion>11</LangVersion>
-    <Nullable>disable</Nullable>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.Web.Administration, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\Lib\References\Microsoft\Windows2012\Microsoft.Web.Administration.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.DirectoryServices" />
-    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\Lib\References\Microsoft\Windows2012\System.Management.Automation.dll</HintPath>
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-    <ProjectReference Include="..\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj" />
-    <ProjectReference Include="..\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj" />
-    <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-  </ItemGroup>
+    <PropertyGroup>
+        <RootNamespace>SolidCP.Providers.Web</RootNamespace>
+        <TargetFramework>net48</TargetFramework>
+        <OutputPath>..\SolidCP.Server\bin\IIs80\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <LangVersion>11</LangVersion>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.Web.Administration, Version=7.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\..\Lib\References\Microsoft\Windows2012\Microsoft.Web.Administration.dll</HintPath>
+            <SpecificVersion>False</SpecificVersion>
+        </Reference>
+        <Reference Include="System.DirectoryServices" />
+        <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\..\Lib\References\Microsoft\Windows2012\System.Management.Automation.dll</HintPath>
+            <SpecificVersion>False</SpecificVersion>
+        </Reference>
+        <Reference Include="System.Data.DataSetExtensions" />
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Providers.Web.IIs60\SolidCP.Providers.Web.IIs60.csproj" />
+        <ProjectReference Include="..\SolidCP.Providers.Web.IIS70\SolidCP.Providers.Web.IIs70.csproj" />
+        <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    </ItemGroup>
+
+    <Target Name="DeleteUnusedDlls" AfterTargets="Build">
+        <ItemGroup>
+            <FilesToDelete Include="$(OutputPath)System.*" />
+            <FilesToDelete Include="$(OutputPath)Renci.*" />
+            <FilesToDelete Include="$(OutputPath)Newtonsoft.*" />
+            <FilesToDelete Include="$(OutputPath)Standard.*" />
+            <FilesToDelete Include="$(OutputPath)BouncyCastle.*" />
+            <FilesToDelete Include="$(OutputPath)Microsoft.Bcl.*" />
+            <FilesToDelete Include="$(OutputPath)Microsoft.Extensions.*" />
+            <FilesToDelete Include="$(OutputPath)Mono.*" />
+            <FilesToDelete Include="$(OutputPath)SolidCP.Providers.Base.*" />
+            <FilesToDelete Include="$(OutputPath)SolidCP.Server.Utils.*" />
+            <FilesToDelete Include="$(OutputPath)SolidCP.Providers.HostedSolution.dll" />
+            <FilesToDelete Include="$(OutputPath)SolidCP.Providers.HostedSolution.pdb" />
+            <FilesToDelete Include="$(OutputPath)Microsoft.Win32.*" />
+        </ItemGroup>
+        <Delete Files="@(FilesToDelete)" />
+    </Target>
+
 </Project>

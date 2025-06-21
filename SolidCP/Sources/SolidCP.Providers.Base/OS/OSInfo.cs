@@ -38,7 +38,8 @@ namespace SolidCP.Providers.OS
 		public static bool IsFreeBSD => RuntimeInformation.IsOSPlatform(FreeBSD);
 		public static bool IsNetBSD => RuntimeInformation.IsOSPlatform(NetBSD);
 		public static bool IsSystemd => IsLinux && Directory.Exists("/run/systemd/system");
-
+		public static bool IsWSL => IsLinux && File.Exists("/proc/version") && File.ReadAllText("/proc/version").ToLower().Contains("microsoft");
+		public static bool IsOpenRC => IsLinux && File.Exists("etc/rc") && Shell.Standard.Find("rc-status") != null;
 
 		static OSFlavor flavor = OSFlavor.Unknown;
 		static Version version = new Version("0.0.0.0");
@@ -52,6 +53,7 @@ namespace SolidCP.Providers.OS
 				return WindowsOSInfo.NetFXVersion;
 			}
 		}
+		public static string NetFXVersion => WindowsOSInfo.NetFXVersion;
 
 		public static string NetDescription
 		{
@@ -139,7 +141,7 @@ namespace SolidCP.Providers.OS
 			{
 				var entryAssemblies = new string[] { "SolidCP.Server", "SolidCP.EnterpriseServer", "SolidCP.WebPortal", "SolidCP.WebDavPortal" };
 				var entryAssembly = AppDomain.CurrentDomain.GetAssemblies()
-					.FirstOrDefault(a => entryAssemblies.Any(name => a.GetName().Name == name)) ?? Assembly.GetEntryAssembly();
+					.FirstOrDefault(a => entryAssemblies.Any(name => a.GetName().Name == name)) ?? Assembly.GetEntryAssembly() ?? Assembly.GetExecutingAssembly();
 				var fileVersion = entryAssembly.GetCustomAttribute<AssemblyFileVersionAttribute>();
 				if (fileVersion == null) return "";
 				else return fileVersion.Version;
@@ -172,6 +174,46 @@ namespace SolidCP.Providers.OS
 					}
 					return name;
 
+				}
+				else if (IsWindows)
+				{
+					switch (WindowsVersion)
+					{
+						case WindowsVersion.WindowsServer2025:
+							return "Windows Server 2025";
+						case WindowsVersion.WindowsServer2022:
+							return "Windows Server 2022";
+						case WindowsVersion.Windows11:
+							return "Windows 11";
+						case WindowsVersion.Windows10:
+							return "Windows 10";
+						case WindowsVersion.WindowsServer2019:
+							return "Windows Server 2019";
+						case WindowsVersion.WindowsServer2016:
+							return "Windows Server 2016";
+						case WindowsVersion.WindowsServer2012R2:
+							return "Windows Server 2012 R2";
+						case WindowsVersion.WindowsServer2012:
+							return "Windows Server 2012";
+						case WindowsVersion.Windows8:
+							return "Windows 8";
+						case WindowsVersion.Windows81:
+							return "Windows 8.1";
+						case WindowsVersion.Vista:
+							return "Windows Vista";
+						case WindowsVersion.Windows7:
+							return "Windows 7";
+						case WindowsVersion.WindowsServer2008R2:
+							return "Windows Server 2008 R2";
+						case WindowsVersion.WindowsServer2008:
+							return "Windows Server 2008";
+						case WindowsVersion.WindowsServer2003:
+							return "Windows Server 2003";
+						case WindowsVersion.WindowsXP:
+							return "Windows XP";
+						default:
+							return RuntimeInformation.OSDescription;
+					}
 				}
 				else
 				{

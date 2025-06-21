@@ -184,6 +184,16 @@ namespace SolidCP.Providers.DNS
                             SrvPort = (UInt16)data["Port"].Value,
                         };
                     }
+                case DnsRecordType.PTR:
+                    {
+                        return new DnsRecord()
+                        {
+                            RecordType = tp,
+                            RecordName = host,
+                            RecordTTL = timetolive,
+                            RecordData = RemoveTrailingDot(data["PtrDomainName"].Value as string),
+                        };
+                    }
                 case DnsRecordType.CAA:
                 case DnsRecordType.UNKNOWN:
                     {

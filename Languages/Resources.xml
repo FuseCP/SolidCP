@@ -5627,6 +5627,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
+    <Key>SchedulerTask.SCHEDULE_TASK_CHECK_WEBSITES_SSL</Key>
+    <DefaultValue>Check websites SSL certificate</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_SharedResources.ascx.resx</File>
     <Key>SchedulerTask.SCHEDULE_TASK_SUSPEND_PACKAGES</Key>
     <DefaultValue>Suspend Overused Hosting Spaces</DefaultValue>
   </Resource>
@@ -37525,11 +37530,6 @@ After creating your virtual directory go to FP administrator and create a subweb
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
-    <Key>lblBinPath.Text</Key>
-    <DefaultValue>Apache Bin Folder:</DefaultValue>
-  </Resource>
-  <Resource>
-    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\Apache_Settings.ascx.resx</File>
     <Key>lblConfigFile.Text</Key>
     <DefaultValue>Apache Configuration File:</DefaultValue>
   </Resource>
@@ -47631,6 +47631,21 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <DefaultValue>Hosting Spaces Folder:</DefaultValue>
   </Resource>
   <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx</File>
+    <Key>chkRead.Text</Key>
+    <DefaultValue>Read</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx</File>
+    <Key>chkWrite.Text</Key>
+    <DefaultValue>Write</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_EditAccount.ascx.resx</File>
+    <Key>lblAccessRights.Text</Key>
+    <DefaultValue>Access Rights:</DefaultValue>
+  </Resource>
+  <Resource>
     <File>DesktopModules\SolidCP\ProviderControls\App_LocalResources\vsftpd_Settings.ascx.resx</File>
     <Key>lblConfigFile.Text</Key>
     <DefaultValue>vsftpd Configuration File:</DefaultValue>
@@ -51929,6 +51944,71 @@ The following substitution variables can be used in the pattern:&lt;br/&gt;
     <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsite.ascx.resx</File>
     <Key>lblUrl.Text</Key>
     <DefaultValue>URL:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>cbMailToCustomer.Text</Key>
+    <DefaultValue>Send mail to customer account</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>cbSend14DaysBeforeExpiration.Text</Key>
+    <DefaultValue>Send notification 14 days before expiration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>cbSend30DaysBeforeExpiration.Text</Key>
+    <DefaultValue>Send notification 30 days before expiration</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>cbSendBcc.Text</Key>
+    <DefaultValue>Send BCC to:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>cbSendSslError.Text</Key>
+    <DefaultValue>Send SSL error notification</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>cbSendTodayExpired.Text</Key>
+    <DefaultValue>Send today expired SSL notification</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblErrorMailBody.Text</Key>
+    <DefaultValue>SSL Error Mail Body:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblErrorMailBodyHint.Text</Key>
+    <DefaultValue>([domain], [url], [error] variables are supported)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblErrorMailSubject.Text</Key>
+    <DefaultValue>SSL Error Mail Subject:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblExpirationMailBody.Text</Key>
+    <DefaultValue>Expiration Mail Body:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblExpirationMailBodyHint.Text</Key>
+    <DefaultValue>([domain], [url], [issuer], [expires_in_days], [expires_on_date] variables are supported)</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblExpirationMailSubject.Text</Key>
+    <DefaultValue>Expiration Mail Subject:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\CheckWebsitesSslView.ascx.resx</File>
+    <Key>lblMailFrom.Text</Key>
+    <DefaultValue>Mail From:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\ScheduleTaskControls\App_LocalResources\DomainExpirationView.ascx.resx</File>

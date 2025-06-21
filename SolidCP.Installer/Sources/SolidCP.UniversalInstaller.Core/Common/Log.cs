@@ -225,8 +225,8 @@ namespace SolidCP.UniversalInstaller
 			try
 			{
 				OnWrite?.Invoke();
-				string name = Assembly.GetEntryAssembly().GetName().Name;
-				string version = Assembly.GetEntryAssembly().GetName().Version.ToString();
+				string name = Installer.Current.GetEntryAssembly().GetName().Name;
+				string version = Installer.Current.GetEntryAssembly().GetName().Version.ToString();
 				string identity = WindowsIdentity.GetCurrent().Name;
 				string line = string.Format("[{0:G}] {1} {2} Started by {3}", DateTime.Now, name, version, identity);
 				Trace.WriteLine(line);
@@ -239,7 +239,7 @@ namespace SolidCP.UniversalInstaller
 			try
 			{
 				OnWrite?.Invoke();
-				string name = Assembly.GetEntryAssembly().GetName().Name;
+				string name = Installer.Current.GetEntryAssembly().GetName().Name;
 				string line = string.Format("[{0:G}] {1} Ended", DateTime.Now, name);
 				Trace.WriteLine(line);
 			}

@@ -18765,6 +18765,86 @@ END
 GO
 
 
+-- check websites ssl task
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTasks] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL')
+BEGIN
+INSERT [dbo].[ScheduleTasks] ([TaskID], [TaskType], [RoleID]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code', 3)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'SEND_MAIL_TO_CUSTOMER')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SEND_MAIL_TO_CUSTOMER', N'Boolean', N'true', 1)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'SEND_BCC')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SEND_BCC', N'Boolean', N'false', 2)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'BCC_MAIL')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'BCC_MAIL', N'String', N'admin@mydomain.com', 3)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'EXPIRATION_MAIL_SUBJECT')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'EXPIRATION_MAIL_SUBJECT', N'String', N'Website certificate expiration notice', 4)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'EXPIRATION_MAIL_BODY')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'EXPIRATION_MAIL_BODY', N'MultiString', N'Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).', 5)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'SEND_30_DAYS_BEFORE_EXPIRATION')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SEND_30_DAYS_BEFORE_EXPIRATION', N'Boolean', N'true', 6)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'SEND_14_DAYS_BEFORE_EXPIRATION')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SEND_14_DAYS_BEFORE_EXPIRATION', N'Boolean', N'true', 7)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'SEND_TODAY_EXPIRED')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SEND_TODAY_EXPIRED', N'Boolean', N'true', 8)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'SEND_SSL_ERROR')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'SEND_SSL_ERROR', N'Boolean', N'false', 9)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'ERROR_MAIL_SUBJECT')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'ERROR_MAIL_SUBJECT', N'String', N'Certificate error or website is unavailable', 10)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskParameters] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL' AND [ParameterID] = N'ERROR_MAIL_BODY')
+BEGIN
+INSERT [dbo].[ScheduleTaskParameters] ([TaskID], [ParameterID], [DataTypeID], [DefaultValue], [ParameterOrder]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'ERROR_MAIL_BODY', N'MultiString', N'Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.', 11)
+END
+GO
+
+IF NOT EXISTS (SELECT * FROM [dbo].[ScheduleTaskViewConfiguration] WHERE [TaskID] = N'SCHEDULE_TASK_CHECK_WEBSITES_SSL')
+BEGIN
+INSERT [dbo].[ScheduleTaskViewConfiguration] ([TaskID], [ConfigurationID], [Environment], [Description]) VALUES (N'SCHEDULE_TASK_CHECK_WEBSITES_SSL', N'ASP_NET', N'ASP.NET', N'~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx')
+END
+GO
+
 -- MariaDB 10.4
 
 IF NOT EXISTS (SELECT * FROM [dbo].[Providers] WHERE [ProviderID] = '1571')
@@ -21260,7 +21340,7 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250419122736_InitialCreate'
+    WHERE [MigrationId] = N'20250515113607_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
@@ -21297,12 +21377,12 @@ GO
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250419122736_InitialCreate'
+    WHERE [MigrationId] = N'20250515113607_InitialCreate'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
     VALUES
-		(N'20250419122736_InitialCreate', N'9.0.3');
+		(N'20250515113607_InitialCreate', N'9.0.3');
 END;
 GO
 
@@ -21604,3 +21684,61 @@ SELECT
     INNER JOIN [dbo].[Servers] AS [Extent7] ON [Distinct1].[C1] = [Extent7].[ServerID]
     
 GO
+
+
+-- Fix endless loop in UserParents for UserId 0
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'TF' AND name = 'UserParents')
+DROP FUNCTION [dbo].[UserParents]
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE FUNCTION [dbo].[UserParents]
+    (
+    	@ActorID int,
+    	@UserID int
+    )
+    RETURNS @T TABLE (UserOrder int IDENTITY(1,1), UserID int)
+    AS
+    BEGIN
+    	-- insert current user
+    	INSERT @T VALUES (@UserID)
+
+    	DECLARE @TopUserID int
+    	IF @ActorID = -1
+    	BEGIN
+    		SELECT @TopUserID = UserID FROM Users WHERE OwnerID IS NULL
+    	END
+    	ELSE
+    	BEGIN
+    		SET @TopUserID = @ActorID
+
+    		IF EXISTS (SELECT UserID FROM Users WHERE UserID = @ActorID AND IsPeer = 1)
+    		SELECT @TopUserID = OwnerID FROM Users WHERE UserID = @ActorID AND IsPeer = 1
+    	END
+
+    	-- owner
+    	DECLARE @OwnerID int, @TmpUserID int
+
+    	SET @TmpUserID = @UserID
+        SET @OwnerID = -1
+
+    	WHILE (@TmpUserID <> @TopUserID AND @OwnerID IS NOT NULL)
+    	BEGIN
+
+    		SET @OwnerID = NULL
+    		SELECT @OwnerID = OwnerID FROM Users WHERE UserID = @TmpUserID
+
+    		IF @OwnerID IS NOT NULL
+    		BEGIN
+    			INSERT @T VALUES (@OwnerID)
+    			SET @TmpUserID = @OwnerID
+    		END
+    	END
+
+    RETURN
+    END
+GO
+

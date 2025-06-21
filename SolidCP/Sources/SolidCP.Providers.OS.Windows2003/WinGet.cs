@@ -15,7 +15,7 @@ namespace SolidCP.Providers.OS
 
 		public override Shell InstallAsync(string apps)
 		{
-			return Shell.ExecAsync($"winget install {apps.Replace(',', ' ').Replace(';', ' ')}");
+			return Shell.ExecAsync($"winget install {apps.Replace(',', ' ').Replace(';', ' ')} --accept-source-agreements --accept-package-agreements");
 		}
 
 		public override bool IsInstalled(string apps)

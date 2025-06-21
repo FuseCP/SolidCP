@@ -342,6 +342,9 @@ namespace SolidCP.Providers.Web
 			set { php5VersionsInstalled = value; }
 		}
 
+		[DataMember]
+		public WebServerType WebServerType { get; set; } = WebServerType.Iis;
+
 		#region Web Deploy Publishing Properties
 		/// <summary>
 		/// Gets or sets Web Deploy publishing account name

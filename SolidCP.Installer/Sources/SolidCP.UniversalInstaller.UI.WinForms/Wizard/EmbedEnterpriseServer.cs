@@ -68,19 +68,16 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			get
 			{
-				var installerPath = Settings.InstallFolder;
-				var webClientsPath1 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.EnterpriseServerFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
-				var webClientsPath2 = Path.GetFullPath(Path.Combine(installerPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder), "bin", "Code", "SolidCP.Web.Clients.dll"));
-				return installerPath == Installer.Current.Settings.EnterpriseServer.InstallFolder &&
-					(File.Exists(webClientsPath1) || File.Exists(webClientsPath2));
+				var installerPath = Settings.InstallPath;
+				var webClientsPath = Path.GetFullPath(Path.Combine(installerPath, "..", Installer.Current.Settings.EnterpriseServer.InstallFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
+				return File.Exists(webClientsPath);
 			}
 		}
-
 		protected internal override void OnAfterDisplay(EventArgs e)
 		{
 			base.OnAfterDisplay(e);
 			//unattended setup
-			if ((Installer.Current.Settings.Installer.IsUnattended || !CanEmbed) && AllowMoveNext)
+			if (Installer.Current.Settings.Installer.IsUnattended && AllowMoveNext)
 				Wizard.GoNext();
 		}
 
@@ -90,9 +87,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 			{
 				Settings.EnterpriseServerUrl = string.Empty;
 
-				string installFolder = Settings.InstallFolder;
+				string installFolder = Settings.InstallPath;
 				string path = Path.Combine(installFolder, @"App_Data\SiteSettings.config");
-
+				
 				if (!File.Exists(path))
 				{
 					Log.WriteInfo(string.Format("File {0} not found", path));
@@ -113,17 +110,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 				Settings.EmbedEnterpriseServer = urlNode.InnerText.StartsWith("assembly://");
 				if (Settings.EmbedEnterpriseServer && string.IsNullOrEmpty(Settings.EnterpriseServerPath))
 				{
-					if (Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.EnterpriseServerFolder)))
+					if (Directory.Exists(Path.Combine(Settings.InstallPath, "..", Installer.Current.EnterpriseServerFolder)))
 					{
-						Settings.EnterpriseServerPath = $"..\\{Installer.Current.EnterpriseServerFolder}";
-					}
-					else if (Directory.Exists(Path.Combine(Installer.Current.InstallWebRootPath, Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder))))
-					{
-						Settings.EnterpriseServerPath = $"..\\{Installer.Current.PathWithSpaces(Installer.Current.EnterpriseServerFolder)}";
-					}
-					if (!OSInfo.IsWindows)
-					{
-						Settings.EnterpriseServerPath = Settings.EnterpriseServerPath.Replace('\\', Path.DirectorySeparatorChar);
+						Settings.EnterpriseServerPath = Path.Combine("..", Installer.Current.EnterpriseServerFolder);
 					}
 				}
 			}
@@ -158,10 +147,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 		private bool CheckFields() => true;
 
-		private string DefaultEntServerPath => $"..\\{Global.EntServer.ComponentName}";
+		private string DefaultEntServerPath => Path.Combine("..", Global.EntServer.ComponentName);
 		private string AbsolutePath(string relativePath) => Path.IsPathRooted(relativePath) ? relativePath :
-			Path.GetFullPath(Path.Combine(Settings.InstallFolder, relativePath));
-		private string RelativePath(string absolutePath) => GetRelativePath(Settings.InstallFolder, absolutePath);
+			Path.GetFullPath(Path.Combine(Settings.InstallPath, relativePath));
+		private string RelativePath(string absolutePath) => GetRelativePath(Settings.InstallPath, absolutePath);
 
 		/// <summary>
 		/// Creates a relative path from one file or folder to another.

@@ -54,14 +54,12 @@ namespace SolidCP.Portal.ProviderControls
 		{
 			txtConfigPath.Text = settings["ConfigPath"];
 			txtConfigFile.Text = settings["ConfigFile"];
-			txtBinPath.Text = settings["BinPath"];
 		}
 
 		public void SaveSettings(StringDictionary settings)
 		{
 			settings["ConfigPath"] = txtConfigPath.Text;
 			settings["ConfigFile"] = txtConfigFile.Text;
-			settings["BinPath"] = txtBinPath.Text;
 		}
 	}
 }
