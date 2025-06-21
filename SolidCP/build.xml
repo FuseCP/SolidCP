@@ -1038,11 +1038,11 @@
 		<Zip Files="@(StandaloneInstallFiles)" ZipFileName="$(DeployFolder)\SolidCP-StandaloneServerSetup-$(Version).zip" WorkingDirectory="$(StandaloneInstall)" />
 		-->
 
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Portal.zip&quot; &quot;$(PortalInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Web-Dav-Portal.zip&quot; &quot;$(WebDavPortalInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-EnterpriseServer.zip&quot; &quot;$(EnterpriseServerInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Server.zip&quot; &quot;$(ServerInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-StandaloneServerSetup.zip&quot; &quot;$(StandaloneInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Portal.zip&quot; &quot;$(PortalInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Web-Dav-Portal.zip&quot; &quot;$(WebDavPortalInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer.zip&quot; &quot;$(EnterpriseServerInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server.zip&quot; &quot;$(ServerInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-StandaloneServerSetup.zip&quot; &quot;$(StandaloneInstall)\*&quot;" />
 
 
 		<!-- zip updates
@@ -1062,14 +1062,14 @@
 		<Zip Files="@(InstallerUpdateFiles)" ZipFileName="$(DeployFolder)\SolidCP-Installer-$(Version)-Update.zip" WorkingDirectory="$(InstallerBuild)" />
 		-->
 
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Portal-Update.zip&quot; &quot;$(PortalUpdate)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-WebDavPortal-Update.zip&quot; &quot;$(WebDavPortalUpdate)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip&quot; &quot;$(EnterpriseServerUpdate)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Installer-$(Version).zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Installer-$(Version)-Update.zip&quot; &quot;$(InstallerBuild)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(DeployFolder)\SolidCP-Installer-Unix-$(Version).zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Portal-Update.zip&quot; &quot;$(PortalUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-WebDavPortal-Update.zip&quot; &quot;$(WebDavPortalUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-EnterpriseServer-Update.zip&quot; &quot;$(EnterpriseServerUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Server-Update.zip&quot; &quot;$(ServerUpdate)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\Manual-Update.zip&quot; &quot;$(UpdateFolder)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-$(Version).zip&quot; &quot;$(InstallerBuild)\net48\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-$(Version)-Update.zip&quot; &quot;$(InstallerBuild)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(DeployFolder)\SolidCP-Installer-Unix-$(Version).zip&quot; &quot;$(InstallerBuild)\net8.0\*&quot;" />
 
 		<!-- zip tools
 		<Zip Files="@(ImportCsvInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-CsvBulk-$(Version).zip" WorkingDirectory="$(ImportCsvInstall)" />
@@ -1080,18 +1080,18 @@
 		<Zip Files="@(SCPTransportAgentInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-SCPTransportAgent-$(Version).zip" WorkingDirectory="$(SCPTransportAgentInstall)" />
 		-->
 
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-Import-CsvBulk.zip&quot; &quot;$(ImportCsvInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-HyperVUtils.zip&quot; &quot;$(HyperVUtilsInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-VMConfig.zip&quot; &quot;$(VMConfigInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-Import-Enterprise.zip&quot; &quot;$(ImportEnterpriseInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-AWStatsViewer.zip&quot; &quot;$(AWStatsViewerInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-SCPTransportAgent.zip&quot; &quot;$(SCPTransportAgentInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip&quot; &quot;$(FixDefaultPublicFolderMailboxInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-Configuration-Tool.zip&quot; &quot;$(SolidCP-Configuration-ToolInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
-		<Exec Command="$(ZipCmd) a -mx9 &quot;$(ToolsFolder)\SolidCP-dSHeuristics.zip&quot; &quot;$(SolidCP-dSHeuristicsInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Import-CsvBulk.zip&quot; &quot;$(ImportCsvInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-HyperVUtils.zip&quot; &quot;$(HyperVUtilsInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-VMConfig.zip&quot; &quot;$(VMConfigInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Import-Enterprise.zip&quot; &quot;$(ImportEnterpriseInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-AWStatsViewer.zip&quot; &quot;$(AWStatsViewerInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-SCPTransportAgent.zip&quot; &quot;$(SCPTransportAgentInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip&quot; &quot;$(FixDefaultPublicFolderMailboxInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Configuration-Tool.zip&quot; &quot;$(SolidCP-Configuration-ToolInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-dSHeuristics.zip&quot; &quot;$(SolidCP-dSHeuristicsInstall)\*&quot;" />
   </Target>
 
   <Target Name="Deploy" DependsOnTargets="CreateInstallPackages" />
