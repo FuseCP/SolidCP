@@ -2449,7 +2449,7 @@ BEGIN
     INSERT INTO public."ScheduleTasks" ("TaskID", "RoleID", "TaskType")
     VALUES ('SCHEDULE_TASK_RUN_SYSTEM_COMMAND', 1, 'SolidCP.EnterpriseServer.RunSystemCommandTask, SolidCP.EnterpriseServer.Code');
     INSERT INTO public."ScheduleTasks" ("TaskID", "RoleID", "TaskType")
-    VALUES ('SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL', 3, 'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code');
+    VALUES ('SCHEDULE_TASK_CHECK_WEBSITES_SSL', 3, 'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code');
     INSERT INTO public."ScheduleTasks" ("TaskID", "RoleID", "TaskType")
     VALUES ('SCHEDULE_TASK_SEND_MAIL', 3, 'SolidCP.EnterpriseServer.SendMailNotificationTask, SolidCP.EnterpriseServer.Code');
     INSERT INTO public."ScheduleTasks" ("TaskID", "RoleID", "TaskType")

@@ -2655,7 +2655,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.Sqlite
                     { "SCHEDULE_TASK_NOTIFY_OVERUSED_DATABASES", 2, "SolidCP.EnterpriseServer.NotifyOverusedDatabasesTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_RUN_PAYMENT_QUEUE", 0, "SolidCP.Ecommerce.EnterpriseServer.RunPaymentQueueTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_RUN_SYSTEM_COMMAND", 1, "SolidCP.EnterpriseServer.RunSystemCommandTask, SolidCP.EnterpriseServer.Code" },
-                    { "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL", 3, "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code" },
+                    { "SCHEDULE_TASK_CHECK_WEBSITES_SSL", 3, "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_SEND_MAIL", 3, "SolidCP.EnterpriseServer.SendMailNotificationTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_SUSPEND_OVERDUE_INVOICES", 0, "SolidCP.Ecommerce.EnterpriseServer.SuspendOverdueInvoicesTask, SolidCP.EnterpriseServer.Code" },
                     { "SCHEDULE_TASK_SUSPEND_PACKAGES", 2, "SolidCP.EnterpriseServer.SuspendOverusedPackagesTask, SolidCP.EnterpriseServer.Code" },

@@ -2171,7 +2171,7 @@ BEGIN
     (N''SCHEDULE_TASK_NOTIFY_OVERUSED_DATABASES'', 2, N''SolidCP.EnterpriseServer.NotifyOverusedDatabasesTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_RUN_PAYMENT_QUEUE'', 0, N''SolidCP.Ecommerce.EnterpriseServer.RunPaymentQueueTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_RUN_SYSTEM_COMMAND'', 1, N''SolidCP.EnterpriseServer.RunSystemCommandTask, SolidCP.EnterpriseServer.Code''),
-    (N''SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL'', 3, N''SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code''),
+    (N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', 3, N''SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_SEND_MAIL'', 3, N''SolidCP.EnterpriseServer.SendMailNotificationTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_SUSPEND_OVERDUE_INVOICES'', 0, N''SolidCP.Ecommerce.EnterpriseServer.SuspendOverdueInvoicesTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_SUSPEND_PACKAGES'', 2, N''SolidCP.EnterpriseServer.SuspendOverusedPackagesTask, SolidCP.EnterpriseServer.Code''),

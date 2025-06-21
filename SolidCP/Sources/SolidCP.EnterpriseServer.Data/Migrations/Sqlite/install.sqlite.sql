@@ -2715,7 +2715,7 @@ VALUES ('SCHEDULE_TASK_RUN_SYSTEM_COMMAND', 1, 'SolidCP.EnterpriseServer.RunSyst
 SELECT changes();
 
 INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")
-VALUES ('SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL', 3, 'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code');
+VALUES ('SCHEDULE_TASK_CHECK_WEBSITES_SSL', 3, 'SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code');
 SELECT changes();
 
 INSERT INTO "ScheduleTasks" ("TaskID", "RoleID", "TaskType")

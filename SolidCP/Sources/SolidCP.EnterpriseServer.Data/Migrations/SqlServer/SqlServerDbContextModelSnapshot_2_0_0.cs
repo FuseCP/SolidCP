@@ -9996,7 +9996,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.SqlServer
                         },
                         new
                         {
-                            TaskId = "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
                             RoleId = 3,
                             TaskType = "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code"
                         });
