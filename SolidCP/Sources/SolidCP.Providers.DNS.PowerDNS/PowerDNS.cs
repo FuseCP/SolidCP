@@ -1170,6 +1170,14 @@ namespace SolidCP.Providers.DNS
                     result = DnsRecordType.TXT;
                     break;
 
+                case "PTR":
+                    result = DnsRecordType.PTR;
+                    break;
+
+                case "CAA":
+                    result = DnsRecordType.CAA;
+                    break;
+
                 case "SOA":
                     result = DnsRecordType.SOA;
                     break;
@@ -1218,6 +1226,14 @@ namespace SolidCP.Providers.DNS
 
                 case DnsRecordType.TXT:
                     result = "TXT";
+                    break;
+
+                case DnsRecordType.CAA:
+                    result = "CAA";
+                    break;
+
+                case DnsRecordType.PTR:
+                    result = "PTR";
                     break;
 
                 case DnsRecordType.SRV:
