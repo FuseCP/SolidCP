@@ -666,7 +666,7 @@ public class WindowsInstaller : Installer
 		var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
 			Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
 				"bin_dotnet" : "bin\\Code";
-		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.SchedulerService.exe");
+		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "SolidCP.SchedulerService.exe");
 
 		var config = exe + ".config";
 		var xml = XElement.Load(config);

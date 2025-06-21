@@ -64,7 +64,7 @@ public class Configuration
 	public static void Log(string msg)
 	{
 		Console.WriteLine(msg);
-		if (Debugger.IsAttached) Debugger.Log(1, "HostPanelPro", msg);
+		if (Debugger.IsAttached) Debugger.Log(1, "SolidCP", msg);
 		//Trace.TraceInformation(msg);
 	}
 
