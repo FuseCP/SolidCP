@@ -249,8 +249,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 				Settings.DatabaseServer = server;
 				Settings.DatabaseType = dbtype;
 				Settings.DatabasePort = dbport ?? 0;
-				Settings.DatabaseUser = dbuser;
-				Settings.DatabasePassword = dbpassword;
+				Settings.DatabaseUser = Settings.DatabasePassword = null;
 				Settings.DatabaseWindowsAuthentication = windowsAuthentication;
 				Settings.DbInstallConnectionString = connectionString;
 			}

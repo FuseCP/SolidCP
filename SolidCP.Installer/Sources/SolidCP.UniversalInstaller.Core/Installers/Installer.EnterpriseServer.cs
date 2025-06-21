@@ -224,11 +224,11 @@ public abstract partial class Installer
 			if (settings.DatabaseWindowsAuthentication)
 			{
 				settings.DatabaseUser = settings.DatabaseName;
-				settings.DatabasePassword = Utils.GetRandomString(16);
+				settings.DatabasePassword = Utils.GetRandomString(20);
 				settings.DatabaseWindowsAuthentication = false;
 			}
-			var user = settings.DatabaseUser;
-			var password = settings.DatabasePassword;
+			var user = settings.DatabaseUser ?? settings.DatabaseName;
+			var password = settings.DatabasePassword ?? Utils.GetRandomString(20);
 			var db = settings.DatabaseName;
 
 			DatabaseUtils.InstallFreshDatabase(connstr, db, user, password, progress => Log.WriteLine("."));
