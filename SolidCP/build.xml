@@ -1078,7 +1078,7 @@
 		<Zip Files="@(ImportEnterpriseInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" WorkingDirectory="$(ImportEnterpriseInstall)" />
 		<Zip Files="@(AWStatsViewerInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-AWStatsViewer-$(Version).zip" WorkingDirectory="$(AWStatsViewerInstall)" />
 		<Zip Files="@(SCPTransportAgentInstallFiles)" ZipFileName="$(ToolsFolder)\SolidCP-SCPTransportAgent-$(Version).zip" WorkingDirectory="$(SCPTransportAgentInstall)" />
-		-->
+		 -->
 
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Import-CsvBulk.zip&quot; &quot;$(ImportCsvInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-HyperVUtils.zip&quot; &quot;$(HyperVUtilsInstall)\*&quot;" />
