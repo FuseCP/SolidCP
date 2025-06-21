@@ -106,15 +106,15 @@
 	</Target>
 
 	<Target Name="RestorePackages" DependsOnTargets="ShowParameters">
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.Server.sln" />
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServer.sln" />
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk.sln" />
-		<Exec Command="dotnet restore $(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils.sln" />
-		<Exec Command="dotnet restore $(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" />
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" />
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" />
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\SolidCP.Server.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\SolidCP.WebPortalAndEnterpriseServer.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" />
 	</Target>
 
 	<Target Name="GenerateBuildVersionFilesInstaller" DependsOnTargets="RestorePackages">
@@ -435,7 +435,7 @@
 	</Target>
 
 	<Target Name="CreateLocalizationToolkitBuild" DependsOnTargets="CreateSCPTransportAgentBuild">
-		<Exec Command="dotnet restore $(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit.sln" />
 
 		<!-- compile toolkit -->
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.LocalizationToolkit\SolidCP.LocalizationToolkit.csproj" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)">
@@ -464,8 +464,8 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)</InstallerProjectBin>
 		</PropertyGroup>
 
-		<Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.Installer.sln" />
-		<Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(InstallerProjectRoot)SolidCP.Installer.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
@@ -496,7 +496,7 @@
 			<InstallerProjectBin>$(InstallerProjectRoot)SolidCP.UniversalInstaller\bin\$(BuildConfiguration)\net48\</InstallerProjectBin>
 		</PropertyGroup>
 
-	    <Exec Command="dotnet restore $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
+	    <Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" />
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.UniversalInstaller.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
