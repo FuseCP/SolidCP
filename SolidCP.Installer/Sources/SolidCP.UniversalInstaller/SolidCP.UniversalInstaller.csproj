@@ -56,7 +56,7 @@
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
             <SetTargetFramework>TargetFramework=net48</SetTargetFramework>
         </ProjectReference>
-        <PackageReference Include="System.Security.Permissions" Version="9.0.4" />
+        <PackageReference Include="System.Security.Permissions" Version="9.0.6" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
         <ProjectReference Include="..\SolidCP.UniversalInstaller.UI.WinForms\SolidCP.UniversalInstaller.UI.WinForms.csproj">
@@ -66,12 +66,12 @@
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-        <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.4" />
-        <PackageReference Include="System.Management" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="System.Runtime.Serialization.Formatters" Version="9.0.6" />
+        <PackageReference Include="System.Management" Version="9.0.6" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
         <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" GeneratePathProperty="true" />
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
-        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.6" GeneratePathProperty="true" IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />
     </ItemGroup>
     
     <ItemGroup>
