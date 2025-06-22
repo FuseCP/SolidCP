@@ -65,7 +65,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.lblIntro.Text = "The connection information will be used by the Setup Wizard to install the database objects only. Click Next to continue.";
 			this.txtSqlServerServer.Text = Settings.DatabaseServer == "localhost" ? "(local)" : Settings.DatabaseServer;
 			txtSqlServerDatabase.Text = txtMySqlDatabase.Text = txtSqliteDatabase.Text = Settings.DatabaseName ?? "SolidCP";
-			txtSqlServerLogin.Text = txtMySqlUser.Text = Settings.DatabaseUser ?? "SolidCP";
+			txtSqlServerLogin.Text = Settings.DatabaseUser ?? "sa";
+			txtMySqlUser.Text = Settings.DatabaseUser ?? "root";
 			txtSqlServerPassword.Text = txtMySqlPassword.Text = Settings.DatabasePassword;
 			txtMySqlServer.Text = Settings.DatabaseServer;
 			txtMySqlPort.Text = Settings.DatabasePort != default ? Settings.DatabasePort.ToString() : "3306";
