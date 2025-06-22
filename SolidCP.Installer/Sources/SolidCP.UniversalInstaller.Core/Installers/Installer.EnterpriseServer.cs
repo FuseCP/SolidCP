@@ -211,7 +211,6 @@ public abstract partial class Installer
 		File.WriteAllText(configFile, config.ToString());
 	}
 
-	public virtual string DefaultDatabaseUser => SolidCP;
 	public virtual void InstallDatabase()
 	{
 		Transaction(() =>
@@ -293,8 +292,13 @@ public abstract partial class Installer
 		{
 			settings.DatabaseUser = settings.DatabaseName;
 		}
-		DatabaseUtils.DeleteUser(connstr, settings.DatabaseUser);
-		DatabaseUtils.DeleteLogin(connstr, settings.DatabaseUser);
+		try
+		{
+			DatabaseUtils.DeleteUser(connstr, settings.DatabaseUser);
+			DatabaseUtils.DeleteLogin(connstr, settings.DatabaseUser);
+		}
+		catch { }
+
 		InstallLog("Deleted Database");
 	}
 	public virtual void CountInstallDatabaseStatements()
@@ -303,7 +307,7 @@ public abstract partial class Installer
 		var connstr = settings.DbInstallConnectionString;
 		if (string.IsNullOrEmpty(settings.DatabaseUser))
 		{
-			settings.DatabaseUser = DefaultDatabaseUser;
+			settings.DatabaseUser = settings.DatabaseName;
 			settings.DatabasePassword = Utils.GetRandomString(32);
 		}
 		var user = settings.DatabaseUser;

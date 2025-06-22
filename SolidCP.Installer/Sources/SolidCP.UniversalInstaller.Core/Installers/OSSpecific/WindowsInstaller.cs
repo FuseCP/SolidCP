@@ -639,6 +639,115 @@ public class WindowsInstaller : Installer
 
 		if (SecurityUtils.UserExists(domain, username)) SecurityUtils.DeleteUser(domain, username);
 	}
+	public virtual void AddUnixGroup(string group) => Shell.Exec($"groupadd {group}");
+	public virtual void AddUnixUser(string user, string group, string password)
+	{
+		Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
+
+		var shell = Shell.ExecAsync($"passwd {user}");
+		shell.Input.WriteLine(password);
+		shell.Input.WriteLine(password);
+		var output = shell.Output().Result;
+		Log.WriteLine(output);
+
+		InstallLog($"Added System User {user}.");
+	}
+
+	bool installedAspNetCoreSharedServer = false;
+	public void InstallAspNetCoreSharedServer()
+	{
+		Log.WriteStart("Install AspNetCoreSharedServer");
+
+		const string AspNetCoreSharedServerVersion = "1.0.18";
+
+		if (installedAspNetCoreSharedServer) return;
+		installedAspNetCoreSharedServer = true;
+
+		Shell.Standard.Exec($"dotnet tool install AspNetCoreSharedServer -g --version {AspNetCoreSharedServerVersion}");
+
+		AddUnixGroup("www-data");
+		AddUnixUser("www-data", "www-data", Utils.GetRandomString(16));
+
+		var conf = Configuration.Current;
+		using (var mutex = new Configuration.NamedMutex())
+		{
+			conf.Load();
+			conf.EnableHttp3 = false;
+			conf.User = "www-data";
+			conf.Group = null;
+			conf.Save();
+		}
+
+		const string ServiceId = "aspnetcore-shared-server";
+		const string Description = "ASP.NET Core Shared Server support for shared hosting of ASP.NET Core applications";
+		const string Command = "/root/.dotnet/tools/AspNetCoreSharedServer";
+
+		ServiceDescription service;
+		if (IsSystemd)
+		{
+			service = new SystemdServiceDescription()
+			{
+				ServiceId = ServiceId,
+				Description = Description,
+				Executable = Command,
+				DependsOn = new List<string>() { "network-online.target" },
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				Restart = "on-failure",
+				RestartSec = "1s",
+				StartLimitBurst = "5",
+				StartLimitIntervalSec = "500",
+				User = "root",
+				Group = "root",
+				SyslogIdentifier = ServiceId
+			};
+		}
+		else if (IsOpenRC)
+		{
+			var rcservice = new OpenRCServiceDescription()
+			{
+				ServiceId = ServiceId,
+				Description = Description,
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				CommandUser = "root",
+				Command = Command,
+				CommandBackground = true,
+				PidFile = $"/run/{ServiceId}.pid",
+				StopTimeout = 30
+			};
+			if (!OSInfo.IsWSL) rcservice.Need = "net";
+			service = rcservice;
+		}
+		else if (OSInfo.IsMac)
+		{
+			var log = Path.Combine(WebsiteLogsPath, $"{ServiceId}.log");
+			service = new LaunchdServiceDescription()
+			{
+				Label = ServiceId,
+				Executable = Command,
+				Environment = new Dictionary<string, string>()
+				{
+					{ "ASPNETCORE_ENVIRONMENT", "Production" }
+				},
+				ExitTimeout = 30,
+				KeepAlive = true,
+				RunAtLoad = true,
+				StandardOutPath = log,
+				StandardErrorPath = log,
+				StartOnMount = true
+			};
+		}
+		else throw new NotSupportedException("Only SystemD, OpenRC and Launchd are supported.");
+
+		InstallService(service);
+
+		Log.WriteEnd("Installed AspNetCoreSharedServer");
+	}
 
 	public override void InstallWebsite(string name, string path, CommonSettings settings,
 		string group, string dll, string description, string serviceId)
