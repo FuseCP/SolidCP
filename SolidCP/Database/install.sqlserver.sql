@@ -11,7 +11,7 @@ GO
 BEGIN TRANSACTION;
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [AdditionalGroups] (
@@ -24,7 +24,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [AuditLog] (
@@ -46,7 +46,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [AuditLogSources] (
@@ -57,7 +57,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [AuditLogTasks] (
@@ -70,7 +70,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [BackgroundTasks] (
@@ -100,7 +100,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Clusters] (
@@ -112,7 +112,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeDeletedAccounts] (
@@ -129,7 +129,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeDisclaimers] (
@@ -143,7 +143,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeMailboxPlanRetentionPolicyTags] (
@@ -156,7 +156,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeRetentionPolicyTags] (
@@ -172,7 +172,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [OCSUsers] (
@@ -187,7 +187,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageSettings] (
@@ -201,7 +201,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSCertificates] (
@@ -218,7 +218,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSCollections] (
@@ -233,7 +233,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSServerSettings] (
@@ -249,7 +249,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ResourceGroups] (
@@ -264,7 +264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ScheduleTasks] (
@@ -277,7 +277,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [SfBUserPlans] (
@@ -307,7 +307,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [SfBUsers] (
@@ -323,7 +323,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [SSLCertificates] (
@@ -350,7 +350,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [StorageSpaceLevels] (
@@ -363,7 +363,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [SupportServiceLevels] (
@@ -376,7 +376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [SystemSettings] (
@@ -389,7 +389,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [TempIds] (
@@ -405,7 +405,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Themes] (
@@ -421,7 +421,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ThemeSettings] (
@@ -436,7 +436,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Users] (
@@ -481,7 +481,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Versions] (
@@ -493,7 +493,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [BackgroundTaskLogs] (
@@ -513,7 +513,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [BackgroundTaskParameters] (
@@ -529,7 +529,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [BackgroundTaskStack] (
@@ -542,7 +542,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSCollectionSettings] (
@@ -570,7 +570,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSMessages] (
@@ -586,7 +586,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSServers] (
@@ -605,7 +605,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Providers] (
@@ -623,7 +623,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ResourceGroupDnsRecords] (
@@ -641,7 +641,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Servers] (
@@ -670,7 +670,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ServiceItemTypes] (
@@ -693,7 +693,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ScheduleTaskParameters] (
@@ -709,7 +709,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ScheduleTaskViewConfiguration] (
@@ -724,7 +724,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [StorageSpaceLevelResourceGroups] (
@@ -739,7 +739,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Comments] (
@@ -757,7 +757,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [UserSettings] (
@@ -772,7 +772,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ServiceDefaultProperties] (
@@ -786,7 +786,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [HostingPlans] (
@@ -810,7 +810,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [IPAddresses] (
@@ -830,7 +830,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PrivateNetworkVLANs] (
@@ -845,7 +845,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Services] (
@@ -865,7 +865,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [VirtualGroups] (
@@ -882,7 +882,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Quotas] (
@@ -904,7 +904,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [HostingPlanResources] (
@@ -920,7 +920,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Packages] (
@@ -947,7 +947,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ServiceProperties] (
@@ -961,7 +961,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [StorageSpaces] (
@@ -984,7 +984,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [VirtualServices] (
@@ -999,7 +999,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [HostingPlanQuotas] (
@@ -1014,7 +1014,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [GlobalDnsRecords] (
@@ -1040,7 +1040,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageAddons] (
@@ -1059,7 +1059,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageQuotas] (
@@ -1074,7 +1074,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageResources] (
@@ -1090,7 +1090,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackagesBandwidth] (
@@ -1107,7 +1107,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackagesDiskspace] (
@@ -1122,7 +1122,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageServices] (
@@ -1136,7 +1136,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackagesTreeCache] (
@@ -1150,7 +1150,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageVLANs] (
@@ -1166,7 +1166,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Schedule] (
@@ -1194,7 +1194,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ServiceItems] (
@@ -1213,7 +1213,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [StorageSpaceFolders] (
@@ -1232,7 +1232,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ScheduleParameters] (
@@ -1246,7 +1246,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [DmzIPAddresses] (
@@ -1261,7 +1261,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [Domains] (
@@ -1290,7 +1290,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeOrganizationDomains] (
@@ -1306,7 +1306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeOrganizations] (
@@ -1322,7 +1322,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PackageIPAddresses] (
@@ -1341,7 +1341,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [PrivateIPAddresses] (
@@ -1356,7 +1356,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ServiceItemProperties] (
@@ -1370,7 +1370,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [EnterpriseFolders] (
@@ -1389,7 +1389,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [DomainDnsRecords] (
@@ -1406,7 +1406,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeMailboxPlans] (
@@ -1448,7 +1448,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeOrganizationSettings] (
@@ -1462,7 +1462,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeOrganizationSsFolders] (
@@ -1478,7 +1478,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [LyncUserPlans] (
@@ -1509,7 +1509,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeAccounts] (
@@ -1539,7 +1539,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [LyncUsers] (
@@ -1556,7 +1556,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [AccessTokens] (
@@ -1574,7 +1574,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [BlackBerryUsers] (
@@ -1589,7 +1589,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [CRMUsers] (
@@ -1607,7 +1607,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [EnterpriseFoldersOwaPermissions] (
@@ -1623,7 +1623,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [ExchangeAccountEmailAddresses] (
@@ -1637,7 +1637,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [RDSCollectionUsers] (
@@ -1652,7 +1652,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [WebDavAccessTokens] (
@@ -1670,7 +1670,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE TABLE [WebDavPortalUsersSettings] (
@@ -1684,7 +1684,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'SourceName') AND [object_id] = OBJECT_ID(N'[AuditLogSources]'))
@@ -1734,7 +1734,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'SourceName', N'TaskName', N'TaskDescription') AND [object_id] = OBJECT_ID(N'[AuditLogTasks]'))
@@ -2058,7 +2058,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'GroupID', N'GroupController', N'GroupName', N'GroupOrder', N'ShowGroup') AND [object_id] = OBJECT_ID(N'[ResourceGroups]'))
@@ -2111,43 +2111,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ParameterID', N'TaskID', N'DataTypeID', N'DefaultValue', N'ParameterOrder') AND [object_id] = OBJECT_ID(N'[ScheduleTaskParameters]'))
-        SET IDENTITY_INSERT [ScheduleTaskParameters] ON;
-    EXEC(N'INSERT INTO [ScheduleTaskParameters] ([ParameterID], [TaskID], [DataTypeID], [DefaultValue], [ParameterOrder])
-    VALUES (N''BCC_MAIL'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''String'', N''admin@mydomain.com'', 3),
-    (N''ERROR_MAIL_BODY'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''MultiString'', N''Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.'', 11),
-    (N''ERROR_MAIL_SUBJECT'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''String'', N''Certificate error or website is unavailable'', 10),
-    (N''EXPIRATION_MAIL_BODY'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''MultiString'', N''Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).'', 5),
-    (N''EXPIRATION_MAIL_SUBJECT'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''String'', N''Website certificate expiration notice'', 4),
-    (N''SEND_14_DAYS_BEFORE_EXPIRATION'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 7),
-    (N''SEND_30_DAYS_BEFORE_EXPIRATION'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 6),
-    (N''SEND_BCC'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''false'', 2),
-    (N''SEND_MAIL_TO_CUSTOMER'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 1),
-    (N''SEND_SSL_ERROR'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''false'', 9),
-    (N''SEND_TODAY_EXPIRED'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 8)');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ParameterID', N'TaskID', N'DataTypeID', N'DefaultValue', N'ParameterOrder') AND [object_id] = OBJECT_ID(N'[ScheduleTaskParameters]'))
-        SET IDENTITY_INSERT [ScheduleTaskParameters] OFF;
-END;
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
-)
-BEGIN
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ConfigurationID', N'TaskID', N'Description', N'Environment') AND [object_id] = OBJECT_ID(N'[ScheduleTaskViewConfiguration]'))
-        SET IDENTITY_INSERT [ScheduleTaskViewConfiguration] ON;
-    EXEC(N'INSERT INTO [ScheduleTaskViewConfiguration] ([ConfigurationID], [TaskID], [Description], [Environment])
-    VALUES (N''ASP_NET'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx'', N''ASP.NET'')');
-    IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ConfigurationID', N'TaskID', N'Description', N'Environment') AND [object_id] = OBJECT_ID(N'[ScheduleTaskViewConfiguration]'))
-        SET IDENTITY_INSERT [ScheduleTaskViewConfiguration] OFF;
-END;
-
-IF NOT EXISTS (
-    SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'TaskID', N'RoleID', N'TaskType') AND [object_id] = OBJECT_ID(N'[ScheduleTasks]'))
@@ -2162,6 +2126,7 @@ BEGIN
     (N''SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE'', 1, N''SolidCP.EnterpriseServer.CalculatePackagesDiskspaceTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_CANCEL_OVERDUE_INVOICES'', 0, N''SolidCP.Ecommerce.EnterpriseServer.CancelOverdueInvoicesTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_CHECK_WEBSITE'', 3, N''SolidCP.EnterpriseServer.CheckWebSiteTask, SolidCP.EnterpriseServer.Code''),
+    (N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', 3, N''SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_DELETE_EXCHANGE_ACCOUNTS'', 3, N''SolidCP.EnterpriseServer.DeleteExchangeAccountsTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', 3, N''SolidCP.EnterpriseServer.DomainExpirationTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_DOMAIN_LOOKUP'', 1, N''SolidCP.EnterpriseServer.DomainLookupViewTask, SolidCP.EnterpriseServer.Code''),
@@ -2171,7 +2136,6 @@ BEGIN
     (N''SCHEDULE_TASK_NOTIFY_OVERUSED_DATABASES'', 2, N''SolidCP.EnterpriseServer.NotifyOverusedDatabasesTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_RUN_PAYMENT_QUEUE'', 0, N''SolidCP.Ecommerce.EnterpriseServer.RunPaymentQueueTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_RUN_SYSTEM_COMMAND'', 1, N''SolidCP.EnterpriseServer.RunSystemCommandTask, SolidCP.EnterpriseServer.Code''),
-    (N''SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL'', 3, N''SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_SEND_MAIL'', 3, N''SolidCP.EnterpriseServer.SendMailNotificationTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_SUSPEND_OVERDUE_INVOICES'', 0, N''SolidCP.Ecommerce.EnterpriseServer.SuspendOverdueInvoicesTask, SolidCP.EnterpriseServer.Code''),
     (N''SCHEDULE_TASK_SUSPEND_PACKAGES'', 2, N''SolidCP.EnterpriseServer.SuspendOverusedPackagesTask, SolidCP.EnterpriseServer.Code''),
@@ -2183,7 +2147,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'SettingsName', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[SystemSettings]'))
@@ -2203,7 +2167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeSettingID', N'PropertyName', N'PropertyValue', N'SettingsName', N'ThemeID') AND [object_id] = OBJECT_ID(N'[ThemeSettings]'))
@@ -2235,7 +2199,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ThemeID', N'DisplayName', N'DisplayOrder', N'Enabled', N'LTRName', N'RTLName') AND [object_id] = OBJECT_ID(N'[Themes]'))
@@ -2248,7 +2212,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'UserID', N'AdditionalParams', N'Address', N'Changed', N'City', N'Comments', N'CompanyName', N'Country', N'Created', N'EcommerceEnabled', N'Email', N'FailedLogins', N'Fax', N'FirstName', N'HtmlMail', N'InstantMessenger', N'LastName', N'LoginStatusId', N'OneTimePasswordState', N'OwnerID', N'Password', N'PinSecret', N'PrimaryPhone', N'RoleID', N'SecondaryEmail', N'SecondaryPhone', N'State', N'StatusID', N'SubscriberNumber', N'Username', N'Zip') AND [object_id] = OBJECT_ID(N'[Users]'))
@@ -2261,7 +2225,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'DatabaseVersion', N'BuildDate') AND [object_id] = OBJECT_ID(N'[Versions]'))
@@ -2281,7 +2245,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PackageID', N'BandwidthUpdated', N'PackageComments', N'PackageName', N'ParentPackageID', N'PlanID', N'PurchaseDate', N'ServerID', N'StatusID', N'StatusIDchangeDate', N'UserID') AND [object_id] = OBJECT_ID(N'[Packages]'))
@@ -2294,7 +2258,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ProviderID', N'DisableAutoDiscovery', N'DisplayName', N'EditorControl', N'GroupID', N'ProviderName', N'ProviderType') AND [object_id] = OBJECT_ID(N'[Providers]'))
@@ -2453,7 +2417,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
@@ -2763,7 +2727,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'RecordID', N'GroupID', N'MXPriority', N'RecordData', N'RecordName', N'RecordOrder', N'RecordType') AND [object_id] = OBJECT_ID(N'[ResourceGroupDnsRecords]'))
@@ -2791,7 +2755,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ParameterID', N'TaskID', N'DataTypeID', N'DefaultValue', N'ParameterOrder') AND [object_id] = OBJECT_ID(N'[ScheduleTaskParameters]'))
@@ -2826,9 +2790,21 @@ BEGIN
     (N''USE_RESPONSE_DOESNT_CONTAIN'', N''SCHEDULE_TASK_CHECK_WEBSITE'', N''Boolean'', N''false'', 1),
     (N''USE_RESPONSE_STATUS'', N''SCHEDULE_TASK_CHECK_WEBSITE'', N''Boolean'', N''false'', 1),
     (N''USERNAME'', N''SCHEDULE_TASK_CHECK_WEBSITE'', N''String'', NULL, 2),
+    (N''BCC_MAIL'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''String'', N''admin@mydomain.com'', 3),
+    (N''ERROR_MAIL_BODY'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''MultiString'', N''Hello, <br>we cannot verify the SSL certificate for the domain [domain]. <br><br>Error message: [error] <br><br>Please check if the website is available.'', 11),
+    (N''ERROR_MAIL_SUBJECT'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''String'', N''Certificate error or website is unavailable'', 10),
+    (N''EXPIRATION_MAIL_BODY'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''MultiString'', N''Hello, <br>Your certificate for the [domain] will expire in [expires_in_days] days (on [expires_on_date]).'', 5),
+    (N''EXPIRATION_MAIL_SUBJECT'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''String'', N''Website certificate expiration notice'', 4),
+    (N''SEND_14_DAYS_BEFORE_EXPIRATION'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 7),
+    (N''SEND_30_DAYS_BEFORE_EXPIRATION'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 6),
+    (N''SEND_BCC'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''false'', 2),
+    (N''SEND_MAIL_TO_CUSTOMER'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 1),
+    (N''SEND_SSL_ERROR'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''false'', 9),
+    (N''SEND_TODAY_EXPIRED'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''Boolean'', N''true'', 8),
     (N''DAYS_BEFORE'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''String'', NULL, 1),
-    (N''ENABLE_NOTIFICATION'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''Boolean'', N''false'', 3),
-    (N''INCLUDE_NONEXISTEN_DOMAINS'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''Boolean'', N''false'', 4),
+    (N''ENABLE_NOTIFICATION'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''Boolean'', N''false'', 3);
+    INSERT INTO [ScheduleTaskParameters] ([ParameterID], [TaskID], [DataTypeID], [DefaultValue], [ParameterOrder])
+    VALUES (N''INCLUDE_NONEXISTEN_DOMAINS'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''Boolean'', N''false'', 4),
     (N''MAIL_TO'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''String'', NULL, 2),
     (N''DNS_SERVERS'', N''SCHEDULE_TASK_DOMAIN_LOOKUP'', N''String'', NULL, 1),
     (N''MAIL_TO'', N''SCHEDULE_TASK_DOMAIN_LOOKUP'', N''String'', NULL, 2),
@@ -2838,9 +2814,8 @@ BEGIN
     (N''FTP_FOLDER'', N''SCHEDULE_TASK_FTP_FILES'', N''String'', NULL, 5),
     (N''FTP_PASSWORD'', N''SCHEDULE_TASK_FTP_FILES'', N''String'', NULL, 4),
     (N''FTP_SERVER'', N''SCHEDULE_TASK_FTP_FILES'', N''String'', N''ftp.myserver.com'', 2),
-    (N''FTP_USERNAME'', N''SCHEDULE_TASK_FTP_FILES'', N''String'', NULL, 3);
-    INSERT INTO [ScheduleTaskParameters] ([ParameterID], [TaskID], [DataTypeID], [DefaultValue], [ParameterOrder])
-    VALUES (N''CRM_REPORT'', N''SCHEDULE_TASK_HOSTED_SOLUTION_REPORT'', N''Boolean'', N''true'', 6),
+    (N''FTP_USERNAME'', N''SCHEDULE_TASK_FTP_FILES'', N''String'', NULL, 3),
+    (N''CRM_REPORT'', N''SCHEDULE_TASK_HOSTED_SOLUTION_REPORT'', N''Boolean'', N''true'', 6),
     (N''EMAIL'', N''SCHEDULE_TASK_HOSTED_SOLUTION_REPORT'', N''String'', NULL, 1),
     (N''EXCHANGE_REPORT'', N''SCHEDULE_TASK_HOSTED_SOLUTION_REPORT'', N''Boolean'', N''true'', 2),
     (N''LYNC_REPORT'', N''SCHEDULE_TASK_HOSTED_SOLUTION_REPORT'', N''Boolean'', N''true'', 4),
@@ -2870,8 +2845,9 @@ BEGIN
     (N''MAIL_SUBJECT'', N''SCHEDULE_TASK_SEND_MAIL'', N''String'', NULL, 3),
     (N''MAIL_TO'', N''SCHEDULE_TASK_SEND_MAIL'', N''String'', NULL, 2),
     (N''BANDWIDTH_OVERUSED'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1),
-    (N''DISKSPACE_OVERUSED'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1),
-    (N''SEND_SUSPENSION_EMAIL'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1),
+    (N''DISKSPACE_OVERUSED'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1);
+    INSERT INTO [ScheduleTaskParameters] ([ParameterID], [TaskID], [DataTypeID], [DefaultValue], [ParameterOrder])
+    VALUES (N''SEND_SUSPENSION_EMAIL'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1),
     (N''SEND_WARNING_EMAIL'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1),
     (N''SUSPEND_OVERUSED'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''Boolean'', N''true'', 1),
     (N''SUSPENSION_MAIL_BCC'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1),
@@ -2881,9 +2857,8 @@ BEGIN
     (N''SUSPENSION_USAGE_THRESHOLD'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', N''100'', 1),
     (N''WARNING_MAIL_BCC'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1),
     (N''WARNING_MAIL_BODY'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1),
-    (N''WARNING_MAIL_FROM'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1);
-    INSERT INTO [ScheduleTaskParameters] ([ParameterID], [TaskID], [DataTypeID], [DefaultValue], [ParameterOrder])
-    VALUES (N''WARNING_MAIL_SUBJECT'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1),
+    (N''WARNING_MAIL_FROM'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1),
+    (N''WARNING_MAIL_SUBJECT'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', NULL, 1),
     (N''WARNING_USAGE_THRESHOLD'', N''SCHEDULE_TASK_SUSPEND_PACKAGES'', N''String'', N''80'', 1),
     (N''DAYS_BEFORE_EXPIRATION'', N''SCHEDULE_TASK_USER_PASSWORD_EXPIRATION_NOTIFICATION'', N''String'', NULL, 1),
     (N''FOLDER'', N''SCHEDULE_TASK_ZIP_FILES'', N''String'', NULL, 1),
@@ -2894,7 +2869,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ConfigurationID', N'TaskID', N'Description', N'Environment') AND [object_id] = OBJECT_ID(N'[ScheduleTaskViewConfiguration]'))
@@ -2909,6 +2884,7 @@ BEGIN
     (N''ASP_NET'', N''SCHEDULE_TASK_CALCULATE_PACKAGES_DISKSPACE'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/EmptyView.ascx'', N''ASP.NET''),
     (N''ASP_NET'', N''SCHEDULE_TASK_CANCEL_OVERDUE_INVOICES'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/EmptyView.ascx'', N''ASP.NET''),
     (N''ASP_NET'', N''SCHEDULE_TASK_CHECK_WEBSITE'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsite.ascx'', N''ASP.NET''),
+    (N''ASP_NET'', N''SCHEDULE_TASK_CHECK_WEBSITES_SSL'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/CheckWebsitesSslView.ascx'', N''ASP.NET''),
     (N''ASP_NET'', N''SCHEDULE_TASK_DOMAIN_EXPIRATION'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/DomainExpirationView.ascx'', N''ASP.NET''),
     (N''ASP_NET'', N''SCHEDULE_TASK_DOMAIN_LOOKUP'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/DomainLookupView.ascx'', N''ASP.NET''),
     (N''ASP_NET'', N''SCHEDULE_TASK_FTP_FILES'', N''~/DesktopModules/SolidCP/ScheduleTaskControls/SendFilesViaFtp.ascx'', N''ASP.NET''),
@@ -2928,7 +2904,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -2941,7 +2917,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -2960,7 +2936,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -2973,7 +2949,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -2986,7 +2962,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -2999,7 +2975,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3015,7 +2991,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3032,7 +3008,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3045,7 +3021,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3058,7 +3034,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3072,7 +3048,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3086,7 +3062,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3102,7 +3078,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3118,7 +3094,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3132,7 +3108,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3156,7 +3132,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3170,7 +3146,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ItemTypeID', N'Backupable', N'CalculateBandwidth', N'CalculateDiskspace', N'DisplayName', N'Disposable', N'GroupID', N'Importable', N'Searchable', N'Suspendable', N'TypeName', N'TypeOrder') AND [object_id] = OBJECT_ID(N'[ServiceItemTypes]'))
@@ -3188,7 +3164,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'SettingsName', N'UserID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[UserSettings]'))
@@ -3338,7 +3314,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PackageID', N'ParentPackageID') AND [object_id] = OBJECT_ID(N'[PackagesTreeCache]'))
@@ -3351,7 +3327,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'QuotaID', N'GroupID', N'HideQuota', N'ItemTypeID', N'PerOrganization', N'QuotaDescription', N'QuotaName', N'QuotaOrder', N'QuotaTypeID', N'ServiceQuota') AND [object_id] = OBJECT_ID(N'[Quotas]'))
@@ -3411,7 +3387,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ScheduleID', N'Enabled', N'FromTime', N'HistoriesNumber', N'Interval', N'LastRun', N'MaxExecutionTime', N'NextRun', N'PackageID', N'PriorityID', N'ScheduleName', N'ScheduleTypeID', N'StartTime', N'TaskID', N'ToTime', N'WeekMonthDay') AND [object_id] = OBJECT_ID(N'[Schedule]'))
@@ -3425,7 +3401,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
@@ -3535,18 +3511,6 @@ BEGIN
     (N''RootPassword'', 17, N''''),
     (N''AdminPassword'', 22, N''''),
     (N''AdminUsername'', 22, N''Administrator''),
-    (N''BindConfigPath'', 24, N''c:\BIND\dns\etc\named.conf''),
-    (N''BindReloadBatch'', 24, N''c:\BIND\dns\reload.bat''),
-    (N''ExpireLimit'', 24, N''1209600''),
-    (N''MinimumTTL'', 24, N''86400''),
-    (N''NameServers'', 24, N''ns1.yourdomain.com;ns2.yourdomain.com''),
-    (N''RecordDefaultTTL'', 24, N''86400''),
-    (N''RecordMinimumTTL'', 24, N''3600''),
-    (N''RefreshInterval'', 24, N''3600''),
-    (N''ResponsiblePerson'', 24, N''hostmaster.[DOMAIN_NAME]''),
-    (N''RetryDelay'', 24, N''600''),
-    (N''ZoneFileNameTemplate'', 24, N''db.[domain_name].txt''),
-    (N''ZonesFolderPath'', 24, N''c:\BIND\dns\zones''),
     (N''DomainId'', 25, N''1''),
     (N''KeepDeletedItemsDays'', 27, N''14''),
     (N''KeepDeletedMailboxesDays'', 27, N''30''),
@@ -3558,9 +3522,8 @@ BEGIN
     (N''ExpireLimit'', 28, N''1209600''),
     (N''MinimumTTL'', 28, N''86400''),
     (N''NameServers'', 28, N''ns1.yourdomain.com;ns2.yourdomain.com''),
-    (N''RecordDefaultTTL'', 28, N''86400'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''RecordMinimumTTL'', 28, N''3600''),
+    (N''RecordDefaultTTL'', 28, N''86400''),
+    (N''RecordMinimumTTL'', 28, N''3600''),
     (N''RefreshInterval'', 28, N''3600''),
     (N''ResponsiblePerson'', 28, N''hostmaster.[DOMAIN_NAME]''),
     (N''RetryDelay'', 28, N''600''),
@@ -3571,8 +3534,9 @@ BEGIN
     (N''DomainsPath'', 29, N''%SYSTEMDRIVE%\SmarterMail''),
     (N''ServerIPAddress'', 29, N''127.0.0.1;127.0.0.1''),
     (N''ServiceUrl'', 29, N''http://localhost:9998/services/''),
-    (N''ExternalAddress'', 30, N''localhost''),
-    (N''InstallFolder'', 30, N''%PROGRAMFILES%\MySQL\MySQL Server 5.1''),
+    (N''ExternalAddress'', 30, N''localhost'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''InstallFolder'', 30, N''%PROGRAMFILES%\MySQL\MySQL Server 5.1''),
     (N''InternalAddress'', 30, N''localhost,3306''),
     (N''RootLogin'', 30, N''root''),
     (N''RootPassword'', 30, N''''),
@@ -3601,9 +3565,8 @@ BEGIN
     (N''PDNSDbPort'', 56, N''3306''),
     (N''PDNSDbServer'', 56, N''localhost''),
     (N''PDNSDbUser'', 56, N''root''),
-    (N''RecordDefaultTTL'', 56, N''86400'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''RecordMinimumTTL'', 56, N''3600''),
+    (N''RecordDefaultTTL'', 56, N''86400''),
+    (N''RecordMinimumTTL'', 56, N''3600''),
     (N''RefreshInterval'', 56, N''3600''),
     (N''ResponsiblePerson'', 56, N''hostmaster.[DOMAIN_NAME]''),
     (N''RetryDelay'', 56, N''600''),
@@ -3614,8 +3577,9 @@ BEGIN
     (N''ServerIPAddress'', 60, N''127.0.0.1;127.0.0.1''),
     (N''ServiceUrl'', 60, N''http://localhost:9998/services/''),
     (N''LogDeleteDays'', 62, N''0''),
-    (N''LogFormat'', 62, N''W3Cex''),
-    (N''LogWildcard'', 62, N''*.log''),
+    (N''LogFormat'', 62, N''W3Cex'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''LogWildcard'', 62, N''*.log''),
     (N''Password'', 62, N''''),
     (N''ServerID'', 62, N''1''),
     (N''SmarterLogDeleteMonths'', 62, N''0''),
@@ -3644,9 +3608,8 @@ BEGIN
     (N''DomainsPath'', 66, N''%SYSTEMDRIVE%\SmarterMail''),
     (N''ServerIPAddress'', 66, N''127.0.0.1;127.0.0.1''),
     (N''ServiceUrl'', 66, N''http://localhost:9998/services/''),
-    (N''AdminPassword'', 67, N'''');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''AdminUsername'', 67, N''admin''),
+    (N''AdminPassword'', 67, N''''),
+    (N''AdminUsername'', 67, N''admin''),
     (N''defaultdomainhostname'', 67, N''mail.[DOMAIN_NAME]''),
     (N''DomainsPath'', 67, N''%SYSTEMDRIVE%\SmarterMail\Domains''),
     (N''ServerIPAddress'', 67, N''127.0.0.1;127.0.0.1''),
@@ -3657,8 +3620,9 @@ BEGIN
     (N''AspNet40x64Path'', 101, N''%WINDIR%\Microsoft.NET\Framework64\v4.0.30319\aspnet_isapi.dll''),
     (N''AspNetBitnessMode'', 101, N''32''),
     (N''CFFlashRemotingDirectory'', 101, N''C:\ColdFusion9\runtime\lib\wsconfig\1''),
-    (N''CFScriptsDirectory'', 101, N''C:\Inetpub\wwwroot\CFIDE''),
-    (N''ClassicAspNet20Pool'', 101, N''ASP.NET 2.0 (Classic)''),
+    (N''CFScriptsDirectory'', 101, N''C:\Inetpub\wwwroot\CFIDE'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''ClassicAspNet20Pool'', 101, N''ASP.NET 2.0 (Classic)''),
     (N''ClassicAspNet40Pool'', 101, N''ASP.NET 4.0 (Classic)''),
     (N''ColdFusionPath'', 101, N''C:\ColdFusion9\runtime\lib\wsconfig\jrun_iis6.dll''),
     (N''GalleryXmlFeedUrl'', 101, N''''),
@@ -3687,9 +3651,8 @@ BEGIN
     (N''ClassicAspNet40Pool'', 105, N''ASP.NET 4.0 (Classic)''),
     (N''ColdFusionPath'', 105, N''C:\ColdFusion9\runtime\lib\wsconfig\jrun_iis6.dll''),
     (N''GalleryXmlFeedUrl'', 105, N''''),
-    (N''IntegratedAspNet20Pool'', 105, N''ASP.NET 2.0 (Integrated)'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''IntegratedAspNet40Pool'', 105, N''ASP.NET 4.0 (Integrated)''),
+    (N''IntegratedAspNet20Pool'', 105, N''ASP.NET 2.0 (Integrated)''),
+    (N''IntegratedAspNet40Pool'', 105, N''ASP.NET 4.0 (Integrated)''),
     (N''PerlPath'', 105, N''%SYSTEMDRIVE%\Perl\bin\PerlEx30.dll''),
     (N''Php4Path'', 105, N''%PROGRAMFILES(x86)%\PHP\php.exe''),
     (N''PhpMode'', 105, N''FastCGI''),
@@ -3700,8 +3663,9 @@ BEGIN
     (N''sslusesni'', 105, N''True''),
     (N''WebGroupName'', 105, N''SCP_IUSRS''),
     (N''WmSvc.CredentialsMode'', 105, N''WINDOWS''),
-    (N''WmSvc.Port'', 105, N''8172''),
-    (N''FtpGroupName'', 106, N''SCPFtpUsers''),
+    (N''WmSvc.Port'', 105, N''8172'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''FtpGroupName'', 106, N''SCPFtpUsers''),
     (N''SiteId'', 106, N''Default FTP Site''),
     (N''sslusesni'', 106, N''False''),
     (N''UsersHome'', 111, N''%SYSTEMDRIVE%\HostingSpaces''),
@@ -3730,9 +3694,8 @@ BEGIN
     (N''WmSvc.Port'', 112, N''8172''),
     (N''FtpGroupName'', 113, N''SCPFtpUsers''),
     (N''SiteId'', 113, N''Default FTP Site''),
-    (N''sslusesni'', 113, N''False'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''RootWebApplicationIpAddress'', 200, N''''),
+    (N''sslusesni'', 113, N''False''),
+    (N''RootWebApplicationIpAddress'', 200, N''''),
     (N''UserName'', 204, N''admin''),
     (N''UtilityPath'', 204, N''C:\Program Files\Research In Motion\BlackBerry Enterprise Server Resource Kit\BlackBerry Enterprise Server User Administration Tool''),
     (N''CpuLimit'', 300, N''100''),
@@ -3743,8 +3706,9 @@ BEGIN
     (N''HostnamePattern'', 300, N''vps[user_id].hosterdomain.com''),
     (N''OsTemplatesPath'', 300, N''C:\Hyper-V\Templates''),
     (N''PrivateNetworkFormat'', 300, N''192.168.0.1/16''),
-    (N''RootFolder'', 300, N''C:\Hyper-V\VirtualMachines\[VPS_HOSTNAME]''),
-    (N''StartAction'', 300, N''start''),
+    (N''RootFolder'', 300, N''C:\Hyper-V\VirtualMachines\[VPS_HOSTNAME]'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''StartAction'', 300, N''start''),
     (N''StartupDelay'', 300, N''0''),
     (N''StopAction'', 300, N''shutDown''),
     (N''VirtualDiskType'', 300, N''dynamic''),
@@ -3773,9 +3737,8 @@ BEGIN
     (N''sslmode'', 306, N''True''),
     (N''ExternalAddress'', 307, N''localhost''),
     (N''InstallFolder'', 307, N''%PROGRAMFILES%\MySQL\MySQL Server 8.0''),
-    (N''InternalAddress'', 307, N''localhost,3306'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''RootLogin'', 307, N''root''),
+    (N''InternalAddress'', 307, N''localhost,3306''),
+    (N''RootLogin'', 307, N''root''),
     (N''RootPassword'', 307, N''''),
     (N''sslmode'', 307, N''True''),
     (N''ExternalAddress'', 308, N''localhost''),
@@ -3786,8 +3749,9 @@ BEGIN
     (N''sslmode'', 308, N''True''),
     (N''ExternalAddress'', 320, N''localhost''),
     (N''InstallFolder'', 320, N''%PROGRAMFILES%\MySQL\MySQL Server 9.0''),
-    (N''InternalAddress'', 320, N''localhost,3306''),
-    (N''RootLogin'', 320, N''root''),
+    (N''InternalAddress'', 320, N''localhost,3306'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''RootLogin'', 320, N''root''),
     (N''RootPassword'', 320, N''''),
     (N''sslmode'', 320, N''True''),
     (N''admode'', 410, N''False''),
@@ -3816,9 +3780,8 @@ BEGIN
     (N''InternalAddress'', 1571, N''localhost''),
     (N''RootLogin'', 1571, N''root''),
     (N''RootPassword'', 1571, N''''),
-    (N''ExternalAddress'', 1572, N''localhost'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''InstallFolder'', 1572, N''%PROGRAMFILES%\MariaDB 10.5''),
+    (N''ExternalAddress'', 1572, N''localhost''),
+    (N''InstallFolder'', 1572, N''%PROGRAMFILES%\MariaDB 10.5''),
     (N''InternalAddress'', 1572, N''localhost''),
     (N''RootLogin'', 1572, N''root''),
     (N''RootPassword'', 1572, N''''),
@@ -3829,8 +3792,9 @@ BEGIN
     (N''RootPassword'', 1573, N''''),
     (N''ExternalAddress'', 1574, N''localhost''),
     (N''InstallFolder'', 1574, N''%PROGRAMFILES%\MariaDB 10.7''),
-    (N''InternalAddress'', 1574, N''localhost''),
-    (N''RootLogin'', 1574, N''root''),
+    (N''InternalAddress'', 1574, N''localhost'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''RootLogin'', 1574, N''root''),
     (N''RootPassword'', 1574, N''''),
     (N''ExternalAddress'', 1575, N''localhost''),
     (N''InstallFolder'', 1575, N''%PROGRAMFILES%\MariaDB 10.8''),
@@ -3859,9 +3823,8 @@ BEGIN
     (N''RootPassword'', 1579, N''''),
     (N''ExternalAddress'', 1580, N''localhost''),
     (N''InstallFolder'', 1580, N''%PROGRAMFILES%\MariaDB 11.1''),
-    (N''InternalAddress'', 1580, N''localhost'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''RootLogin'', 1580, N''root''),
+    (N''InternalAddress'', 1580, N''localhost''),
+    (N''RootLogin'', 1580, N''root''),
     (N''RootPassword'', 1580, N''''),
     (N''ExternalAddress'', 1581, N''localhost''),
     (N''InstallFolder'', 1581, N''%PROGRAMFILES%\MariaDB 11.2''),
@@ -3872,8 +3835,9 @@ BEGIN
     (N''InstallFolder'', 1582, N''%PROGRAMFILES%\MariaDB 11.3''),
     (N''InternalAddress'', 1582, N''localhost''),
     (N''RootLogin'', 1582, N''root''),
-    (N''RootPassword'', 1582, N''''),
-    (N''ExternalAddress'', 1583, N''localhost''),
+    (N''RootPassword'', 1582, N'''');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''ExternalAddress'', 1583, N''localhost''),
     (N''InstallFolder'', 1583, N''%PROGRAMFILES%\MariaDB 11.4''),
     (N''InternalAddress'', 1583, N''localhost''),
     (N''RootLogin'', 1583, N''root''),
@@ -3902,9 +3866,8 @@ BEGIN
     (N''ExpireLimit'', 1901, N''1209600''),
     (N''MinimumTTL'', 1901, N''86400''),
     (N''NameServers'', 1901, N''ns1.yourdomain.com;ns2.yourdomain.com''),
-    (N''RecordDefaultTTL'', 1901, N''86400'');
-    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
-    VALUES (N''RecordMinimumTTL'', 1901, N''3600''),
+    (N''RecordDefaultTTL'', 1901, N''86400''),
+    (N''RecordMinimumTTL'', 1901, N''3600''),
     (N''RefreshInterval'', 1901, N''3600''),
     (N''ResponsiblePerson'', 1901, N''hostmaster.[DOMAIN_NAME]''),
     (N''RetryDelay'', 1901, N''600''),
@@ -3915,8 +3878,9 @@ BEGIN
     (N''nameservers'', 1902, N''ns1.yourdomain.com;ns2.yourdomain.com''),
     (N''RecordDefaultTTL'', 1902, N''86400''),
     (N''RecordMinimumTTL'', 1902, N''3600''),
-    (N''refreshinterval'', 1902, N''3600''),
-    (N''responsibleperson'', 1902, N''hostmaster.[DOMAIN_NAME]''),
+    (N''refreshinterval'', 1902, N''3600'');
+    INSERT INTO [ServiceDefaultProperties] ([PropertyName], [ProviderID], [PropertyValue])
+    VALUES (N''responsibleperson'', 1902, N''hostmaster.[DOMAIN_NAME]''),
     (N''retrydelay'', 1902, N''600''),
     (N''AdminLogin'', 1903, N''Admin''),
     (N''ExpireLimit'', 1903, N''1209600''),
@@ -3928,7 +3892,6 @@ BEGIN
     (N''RetryDelay'', 1903, N''600''),
     (N''SimpleDnsUrl'', 1903, N''http://127.0.0.1:8053''),
     (N''ConfigFile'', 1910, N''/etc/vsftpd.conf''),
-    (N''BinPath'', 1911, N''''),
     (N''ConfigFile'', 1911, N''/etc/apache2/apache2.conf''),
     (N''ConfigPath'', 1911, N''/etc/apache2'')');
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'PropertyName', N'ProviderID', N'PropertyValue') AND [object_id] = OBJECT_ID(N'[ServiceDefaultProperties]'))
@@ -3937,7 +3900,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM [sys].[identity_columns] WHERE [name] IN (N'ParameterID', N'ScheduleID', N'ParameterValue') AND [object_id] = OBJECT_ID(N'[ScheduleParameters]'))
@@ -3951,7 +3914,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [AccessTokensIdx_AccountID] ON [AccessTokens] ([AccountID]);
@@ -3959,7 +3922,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [BackgroundTaskLogsIdx_TaskID] ON [BackgroundTaskLogs] ([TaskID]);
@@ -3967,7 +3930,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [BackgroundTaskParametersIdx_TaskID] ON [BackgroundTaskParameters] ([TaskID]);
@@ -3975,7 +3938,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [BackgroundTaskStackIdx_TaskID] ON [BackgroundTaskStack] ([TaskID]);
@@ -3983,7 +3946,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [BlackBerryUsersIdx_AccountId] ON [BlackBerryUsers] ([AccountId]);
@@ -3991,7 +3954,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [CommentsIdx_UserID] ON [Comments] ([UserID]);
@@ -3999,7 +3962,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [CRMUsersIdx_AccountID] ON [CRMUsers] ([AccountID]);
@@ -4007,7 +3970,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [DmzIPAddressesIdx_ItemID] ON [DmzIPAddresses] ([ItemID]);
@@ -4015,7 +3978,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [DomainDnsRecordsIdx_DomainId] ON [DomainDnsRecords] ([DomainId]);
@@ -4023,7 +3986,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [DomainsIdx_MailDomainID] ON [Domains] ([MailDomainID]);
@@ -4031,7 +3994,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [DomainsIdx_PackageID] ON [Domains] ([PackageID]);
@@ -4039,7 +4002,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [DomainsIdx_WebSiteID] ON [Domains] ([WebSiteID]);
@@ -4047,7 +4010,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [DomainsIdx_ZoneItemID] ON [Domains] ([ZoneItemID]);
@@ -4055,7 +4018,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [EnterpriseFoldersIdx_StorageSpaceFolderId] ON [EnterpriseFolders] ([StorageSpaceFolderId]);
@@ -4063,7 +4026,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [EnterpriseFoldersOwaPermissionsIdx_AccountID] ON [EnterpriseFoldersOwaPermissions] ([AccountID]);
@@ -4071,7 +4034,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [EnterpriseFoldersOwaPermissionsIdx_FolderID] ON [EnterpriseFoldersOwaPermissions] ([FolderID]);
@@ -4079,7 +4042,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeAccountEmailAddressesIdx_AccountID] ON [ExchangeAccountEmailAddresses] ([AccountID]);
@@ -4087,7 +4050,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeAccountEmailAddresses_UniqueEmail] ON [ExchangeAccountEmailAddresses] ([EmailAddress]);
@@ -4095,7 +4058,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeAccountsIdx_ItemID] ON [ExchangeAccounts] ([ItemID]);
@@ -4103,7 +4066,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeAccountsIdx_MailboxPlanId] ON [ExchangeAccounts] ([MailboxPlanId]);
@@ -4111,7 +4074,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeAccounts_UniqueAccountName] ON [ExchangeAccounts] ([AccountName]);
@@ -4119,7 +4082,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeMailboxPlansIdx_ItemID] ON [ExchangeMailboxPlans] ([ItemID]);
@@ -4127,7 +4090,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeMailboxPlans] ON [ExchangeMailboxPlans] ([MailboxPlanId]);
@@ -4135,7 +4098,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeOrganizationDomainsIdx_ItemID] ON [ExchangeOrganizationDomains] ([ItemID]);
@@ -4143,7 +4106,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [IX_ExchangeOrganizationDomains_UniqueDomain] ON [ExchangeOrganizationDomains] ([DomainID]) WHERE [DomainID] IS NOT NULL');
@@ -4151,7 +4114,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_ExchangeOrganizations_UniqueOrg] ON [ExchangeOrganizations] ([OrganizationID]);
@@ -4159,7 +4122,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeOrganizationSettingsIdx_ItemId] ON [ExchangeOrganizationSettings] ([ItemId]);
@@ -4167,7 +4130,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeOrganizationSsFoldersIdx_ItemId] ON [ExchangeOrganizationSsFolders] ([ItemId]);
@@ -4175,7 +4138,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ExchangeOrganizationSsFoldersIdx_StorageSpaceFolderId] ON [ExchangeOrganizationSsFolders] ([StorageSpaceFolderId]);
@@ -4183,7 +4146,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_IPAddressID] ON [GlobalDnsRecords] ([IPAddressID]);
@@ -4191,7 +4154,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_PackageID] ON [GlobalDnsRecords] ([PackageID]);
@@ -4199,7 +4162,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_ServerID] ON [GlobalDnsRecords] ([ServerID]);
@@ -4207,7 +4170,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [GlobalDnsRecordsIdx_ServiceID] ON [GlobalDnsRecords] ([ServiceID]);
@@ -4215,7 +4178,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_HostingPlanQuotas_QuotaID] ON [HostingPlanQuotas] ([QuotaID]);
@@ -4223,7 +4186,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_HostingPlanResources_GroupID] ON [HostingPlanResources] ([GroupID]);
@@ -4231,7 +4194,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [HostingPlansIdx_PackageID] ON [HostingPlans] ([PackageID]);
@@ -4239,7 +4202,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [HostingPlansIdx_ServerID] ON [HostingPlans] ([ServerID]);
@@ -4247,7 +4210,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [HostingPlansIdx_UserID] ON [HostingPlans] ([UserID]);
@@ -4255,7 +4218,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IPAddressesIdx_ServerID] ON [IPAddresses] ([ServerID]);
@@ -4263,7 +4226,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE UNIQUE INDEX [IX_LyncUserPlans] ON [LyncUserPlans] ([LyncUserPlanId]);
@@ -4271,7 +4234,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [LyncUserPlansIdx_ItemID] ON [LyncUserPlans] ([ItemID]);
@@ -4279,7 +4242,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [LyncUsersIdx_LyncUserPlanID] ON [LyncUsers] ([LyncUserPlanID]);
@@ -4287,7 +4250,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageAddonsIdx_PackageID] ON [PackageAddons] ([PackageID]);
@@ -4295,7 +4258,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageAddonsIdx_PlanID] ON [PackageAddons] ([PlanID]);
@@ -4303,7 +4266,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIPAddressesIdx_AddressID] ON [PackageIPAddresses] ([AddressID]);
@@ -4311,7 +4274,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIPAddressesIdx_ItemID] ON [PackageIPAddresses] ([ItemID]);
@@ -4319,7 +4282,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIPAddressesIdx_PackageID] ON [PackageIPAddresses] ([PackageID]);
@@ -4327,7 +4290,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PackageQuotas_QuotaID] ON [PackageQuotas] ([QuotaID]);
@@ -4335,7 +4298,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PackageResources_GroupID] ON [PackageResources] ([GroupID]);
@@ -4343,7 +4306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIndex_ParentPackageID] ON [Packages] ([ParentPackageID]);
@@ -4351,7 +4314,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIndex_PlanID] ON [Packages] ([PlanID]);
@@ -4359,7 +4322,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIndex_ServerID] ON [Packages] ([ServerID]);
@@ -4367,7 +4330,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageIndex_UserID] ON [Packages] ([UserID]);
@@ -4375,7 +4338,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PackagesBandwidth_GroupID] ON [PackagesBandwidth] ([GroupID]);
@@ -4383,7 +4346,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PackagesDiskspace_GroupID] ON [PackagesDiskspace] ([GroupID]);
@@ -4391,7 +4354,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PackageServices_ServiceID] ON [PackageServices] ([ServiceID]);
@@ -4399,7 +4362,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_PackagesTreeCache_PackageID] ON [PackagesTreeCache] ([PackageID]);
@@ -4407,7 +4370,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageVLANsIdx_PackageID] ON [PackageVLANs] ([PackageID]);
@@ -4415,7 +4378,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PackageVLANsIdx_VlanID] ON [PackageVLANs] ([VlanID]);
@@ -4423,7 +4386,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PrivateIPAddressesIdx_ItemID] ON [PrivateIPAddresses] ([ItemID]);
@@ -4431,7 +4394,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [PrivateNetworkVLANsIdx_ServerID] ON [PrivateNetworkVLANs] ([ServerID]);
@@ -4439,7 +4402,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ProvidersIdx_GroupID] ON [Providers] ([GroupID]);
@@ -4447,7 +4410,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [QuotasIdx_GroupID] ON [Quotas] ([GroupID]);
@@ -4455,7 +4418,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [QuotasIdx_ItemTypeID] ON [Quotas] ([ItemTypeID]);
@@ -4463,7 +4426,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [RDSCollectionSettingsIdx_RDSCollectionId] ON [RDSCollectionSettings] ([RDSCollectionId]);
@@ -4471,7 +4434,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [RDSCollectionUsersIdx_AccountID] ON [RDSCollectionUsers] ([AccountID]);
@@ -4479,7 +4442,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [RDSCollectionUsersIdx_RDSCollectionId] ON [RDSCollectionUsers] ([RDSCollectionId]);
@@ -4487,7 +4450,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [RDSMessagesIdx_RDSCollectionId] ON [RDSMessages] ([RDSCollectionId]);
@@ -4495,7 +4458,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [RDSServersIdx_RDSCollectionId] ON [RDSServers] ([RDSCollectionId]);
@@ -4503,7 +4466,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ResourceGroupDnsRecordsIdx_GroupID] ON [ResourceGroupDnsRecords] ([GroupID]);
@@ -4511,7 +4474,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ScheduleIdx_PackageID] ON [Schedule] ([PackageID]);
@@ -4519,7 +4482,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ScheduleIdx_TaskID] ON [Schedule] ([TaskID]);
@@ -4527,7 +4490,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_ScheduleTaskViewConfiguration_TaskID] ON [ScheduleTaskViewConfiguration] ([TaskID]);
@@ -4535,7 +4498,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServersIdx_PrimaryGroupID] ON [Servers] ([PrimaryGroupID]);
@@ -4543,7 +4506,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServiceItemsIdx_ItemTypeID] ON [ServiceItems] ([ItemTypeID]);
@@ -4551,7 +4514,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServiceItemsIdx_PackageID] ON [ServiceItems] ([PackageID]);
@@ -4559,7 +4522,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServiceItemsIdx_ServiceID] ON [ServiceItems] ([ServiceID]);
@@ -4567,7 +4530,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServiceItemTypesIdx_GroupID] ON [ServiceItemTypes] ([GroupID]);
@@ -4575,7 +4538,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServicesIdx_ClusterID] ON [Services] ([ClusterID]);
@@ -4583,7 +4546,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServicesIdx_ProviderID] ON [Services] ([ProviderID]);
@@ -4591,7 +4554,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ServicesIdx_ServerID] ON [Services] ([ServerID]);
@@ -4599,7 +4562,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [StorageSpaceFoldersIdx_StorageSpaceId] ON [StorageSpaceFolders] ([StorageSpaceId]);
@@ -4607,7 +4570,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [StorageSpaceLevelResourceGroupsIdx_GroupId] ON [StorageSpaceLevelResourceGroups] ([GroupId]);
@@ -4615,7 +4578,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [StorageSpaceLevelResourceGroupsIdx_LevelId] ON [StorageSpaceLevelResourceGroups] ([LevelId]);
@@ -4623,7 +4586,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [StorageSpacesIdx_ServerId] ON [StorageSpaces] ([ServerId]);
@@ -4631,7 +4594,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [StorageSpacesIdx_ServiceId] ON [StorageSpaces] ([ServiceId]);
@@ -4639,7 +4602,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [IX_TempIds_Created_Scope_Level] ON [TempIds] ([Created], [Scope], [Level]);
@@ -4647,7 +4610,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [ThemeSettingsIdx_ThemeID] ON [ThemeSettings] ([ThemeID]);
@@ -4655,7 +4618,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     EXEC(N'CREATE UNIQUE INDEX [IX_Users_Username] ON [Users] ([Username]) WHERE [Username] IS NOT NULL');
@@ -4663,7 +4626,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [UsersIdx_OwnerID] ON [Users] ([OwnerID]);
@@ -4671,7 +4634,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [VirtualGroupsIdx_GroupID] ON [VirtualGroups] ([GroupID]);
@@ -4679,7 +4642,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [VirtualGroupsIdx_ServerID] ON [VirtualGroups] ([ServerID]);
@@ -4687,7 +4650,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [VirtualServicesIdx_ServerID] ON [VirtualServices] ([ServerID]);
@@ -4695,7 +4658,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [VirtualServicesIdx_ServiceID] ON [VirtualServices] ([ServiceID]);
@@ -4703,7 +4666,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [WebDavAccessTokensIdx_AccountID] ON [WebDavAccessTokens] ([AccountID]);
@@ -4711,7 +4674,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     CREATE INDEX [WebDavPortalUsersSettingsIdx_AccountId] ON [WebDavPortalUsersSettings] ([AccountId]);
@@ -4719,7 +4682,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateWhoisDomainInfo]') AND type in (N'P', N'PC'))
@@ -4728,7 +4691,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateWebDavPortalUsersSettings]') AND type in (N'P', N'PC'))
@@ -4737,7 +4700,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateVirtualGroups]') AND type in (N'P', N'PC'))
@@ -4746,7 +4709,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserThemeSetting]') AND type in (N'P', N'PC'))
@@ -4755,7 +4718,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserSettings]') AND type in (N'P', N'PC'))
@@ -4764,7 +4727,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserPinSecret]') AND type in (N'P', N'PC'))
@@ -4773,7 +4736,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserMfaMode]') AND type in (N'P', N'PC'))
@@ -4782,7 +4745,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUserFailedLoginAttempt]') AND type in (N'P', N'PC'))
@@ -4791,7 +4754,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateUser]') AND type in (N'P', N'PC'))
@@ -4800,7 +4763,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSupportServiceLevel]') AND type in (N'P', N'PC'))
@@ -4809,7 +4772,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateStorageSpaceLevel]') AND type in (N'P', N'PC'))
@@ -4818,7 +4781,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateStorageSpaceFolder]') AND type in (N'P', N'PC'))
@@ -4827,7 +4790,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateStorageSpace]') AND type in (N'P', N'PC'))
@@ -4836,7 +4799,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSfBUserPlan]') AND type in (N'P', N'PC'))
@@ -4845,7 +4808,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSfBUser]') AND type in (N'P', N'PC'))
@@ -4854,7 +4817,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServiceProperties]') AND type in (N'P', N'PC'))
@@ -4863,7 +4826,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServiceItem]') AND type in (N'P', N'PC'))
@@ -4872,7 +4835,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServiceFully]') AND type in (N'P', N'PC'))
@@ -4881,7 +4844,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateService]') AND type in (N'P', N'PC'))
@@ -4890,7 +4853,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateServer]') AND type in (N'P', N'PC'))
@@ -4899,7 +4862,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateSchedule]') AND type in (N'P', N'PC'))
@@ -4908,7 +4871,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSServerSettings]') AND type in (N'P', N'PC'))
@@ -4917,7 +4880,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSServer]') AND type in (N'P', N'PC'))
@@ -4926,7 +4889,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSCollectionSettings]') AND type in (N'P', N'PC'))
@@ -4935,7 +4898,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateRDSCollection]') AND type in (N'P', N'PC'))
@@ -4944,7 +4907,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE object_id = OBJECT_ID(N'[dbo].[UpdateQuotaHidden]') AND type in (N'P', N'PC'))
@@ -4953,7 +4916,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePrivateNetworVLAN]') AND type in (N'P', N'PC'))
@@ -4962,7 +4925,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageSettings]') AND type in (N'P', N'PC'))
@@ -4971,7 +4934,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageQuotas]') AND type in (N'P', N'PC'))
@@ -4980,7 +4943,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageName]') AND type in (N'P', N'PC'))
@@ -4989,7 +4952,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageDiskSpace]') AND type in (N'P', N'PC'))
@@ -4998,7 +4961,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageBandwidthUpdate]') AND type in (N'P', N'PC'))
@@ -5007,7 +4970,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageBandwidth]') AND type in (N'P', N'PC'))
@@ -5016,7 +4979,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackageAddon]') AND type in (N'P', N'PC'))
@@ -5025,7 +4988,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdatePackage]') AND type in (N'P', N'PC'))
@@ -5034,7 +4997,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateLyncUserPlan]') AND type in (N'P', N'PC'))
@@ -5043,7 +5006,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateLyncUser]') AND type in (N'P', N'PC'))
@@ -5052,7 +5015,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateIPAddresses]') AND type in (N'P', N'PC'))
@@ -5061,7 +5024,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateIPAddress]') AND type in (N'P', N'PC'))
@@ -5070,7 +5033,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateHostingPlanQuotas]') AND type in (N'P', N'PC'))
@@ -5079,7 +5042,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateHostingPlan]') AND type in (N'P', N'PC'))
@@ -5088,7 +5051,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
@@ -5097,7 +5060,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeOrganizationSettings]') AND type in (N'P', N'PC'))
@@ -5106,7 +5069,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeMailboxPlan]') AND type in (N'P', N'PC'))
@@ -5115,7 +5078,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeDisclaimer]') AND type in (N'P', N'PC'))
@@ -5124,7 +5087,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeAccountUserPrincipalName]') AND type in (N'P', N'PC'))
@@ -5133,7 +5096,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeAccountSLSettings]') AND type in (N'P', N'PC'))
@@ -5142,7 +5105,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateExchangeAccount]') AND type in (N'P', N'PC'))
@@ -5151,7 +5114,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateEnterpriseFolder]') AND type in (N'P', N'PC'))
@@ -5160,7 +5123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateEntepriseFolderStorageSpaceFolder]') AND type in (N'P', N'PC'))
@@ -5169,7 +5132,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainLastUpdateDate]') AND type in (N'P', N'PC'))
@@ -5178,7 +5141,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainExpirationDate]') AND type in (N'P', N'PC'))
@@ -5187,7 +5150,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainDates]') AND type in (N'P', N'PC'))
@@ -5196,7 +5159,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomainCreationDate]') AND type in (N'P', N'PC'))
@@ -5205,7 +5168,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDomain]') AND type in (N'P', N'PC'))
@@ -5214,7 +5177,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateDnsRecord]') AND type in (N'P', N'PC'))
@@ -5223,7 +5186,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateCRMUser]') AND type in (N'P', N'PC'))
@@ -5232,7 +5195,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateBackgroundTask]') AND type in (N'P', N'PC'))
@@ -5241,7 +5204,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UpdateAdditionalGroup]') AND type in (N'P', N'PC'))
@@ -5250,7 +5213,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SfBUserExists]') AND type in (N'P', N'PC'))
@@ -5259,7 +5222,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetUserOneTimePassword]') AND type in (N'P', N'PC'))
@@ -5268,7 +5231,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetSystemSettings]') AND type in (N'P', N'PC'))
@@ -5277,7 +5240,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetSfBUserSfBUserPlan]') AND type in (N'P', N'PC'))
@@ -5286,7 +5249,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetOrganizationDefaultSfBUserPlan]') AND type in (N'P', N'PC'))
@@ -5295,7 +5258,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetOrganizationDefaultLyncUserPlan]') AND type in (N'P', N'PC'))
@@ -5304,7 +5267,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetOrganizationDefaultExchangeMailboxPlan]') AND type in (N'P', N'PC'))
@@ -5313,7 +5276,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetLyncUserLyncUserPlan]') AND type in (N'P', N'PC'))
@@ -5322,7 +5285,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetItemPrivatePrimaryIPAddress]') AND type in (N'P', N'PC'))
@@ -5331,7 +5294,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetItemPrimaryIPAddress]') AND type in (N'P', N'PC'))
@@ -5340,7 +5303,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetItemDmzPrimaryIPAddress]') AND type in (N'P', N'PC'))
@@ -5349,7 +5312,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetExchangeAccountMailboxplan]') AND type in (N'P', N'PC'))
@@ -5358,7 +5321,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetExchangeAccountDisclaimerId]') AND type in (N'P', N'PC'))
@@ -5367,7 +5330,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SetAccessTokenSmsResponse]') AND type in (N'P', N'PC'))
@@ -5376,7 +5339,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchServiceItemsPaged]') AND type in (N'P', N'PC'))
@@ -5385,7 +5348,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchOrganizationAccounts]') AND type in (N'P', N'PC'))
@@ -5394,7 +5357,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchExchangeAccountsByTypes]') AND type in (N'P', N'PC'))
@@ -5403,7 +5366,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchExchangeAccounts]') AND type in (N'P', N'PC'))
@@ -5412,7 +5375,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SearchExchangeAccount]') AND type in (N'P', N'PC'))
@@ -5421,7 +5384,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveStorageSpaceLevel]') AND type in (N'P', N'PC'))
@@ -5430,7 +5393,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveStorageSpaceFolder]') AND type in (N'P', N'PC'))
@@ -5439,7 +5402,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveStorageSpace]') AND type in (N'P', N'PC'))
@@ -5448,7 +5411,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveRDSUserFromRDSCollection]') AND type in (N'P', N'PC'))
@@ -5457,7 +5420,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveRDSServerFromOrganization]') AND type in (N'P', N'PC'))
@@ -5466,7 +5429,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[RemoveRDSServerFromCollection]') AND type in (N'P', N'PC'))
@@ -5475,7 +5438,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrganizationUserExists]') AND type in (N'P', N'PC'))
@@ -5484,7 +5447,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[OrganizationExists]') AND type in (N'P', N'PC'))
@@ -5493,7 +5456,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[MoveServiceItem]') AND type in (N'P', N'PC'))
@@ -5502,7 +5465,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[LyncUserExists]') AND type in (N'P', N'PC'))
@@ -5511,7 +5474,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InsertStorageSpaceLevel]') AND type in (N'P', N'PC'))
@@ -5520,7 +5483,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InsertStorageSpace]') AND type in (N'P', N'PC'))
@@ -5529,7 +5492,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[InsertCRMUser]') AND type in (N'P', N'PC'))
@@ -5538,7 +5501,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetWebDavPortalUsersSettingsByAccountId]') AND type in (N'P', N'PC'))
@@ -5547,7 +5510,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetWebDavAccessTokenById]') AND type in (N'P', N'PC'))
@@ -5556,7 +5519,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetWebDavAccessTokenByAccessToken]') AND type in (N'P', N'PC'))
@@ -5565,7 +5528,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualServices]') AND type in (N'P', N'PC'))
@@ -5574,7 +5537,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualServers]') AND type in (N'P', N'PC'))
@@ -5583,7 +5546,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPagedProxmox]') AND type in (N'P', N'PC'))
@@ -5592,7 +5555,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPagedForPC]') AND type in (N'P', N'PC'))
@@ -5601,7 +5564,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPaged2012]') AND type in (N'P', N'PC'))
@@ -5610,7 +5573,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetVirtualMachinesPaged]') AND type in (N'P', N'PC'))
@@ -5619,7 +5582,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUsersSummary]') AND type in (N'P', N'PC'))
@@ -5628,7 +5591,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUsersPaged]') AND type in (N'P', N'PC'))
@@ -5637,7 +5600,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserSettings]') AND type in (N'P', N'PC'))
@@ -5646,7 +5609,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserServiceID]') AND type in (N'P', N'PC'))
@@ -5655,7 +5618,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUsers]') AND type in (N'P', N'PC'))
@@ -5664,7 +5627,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserPeers]') AND type in (N'P', N'PC'))
@@ -5673,7 +5636,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserParents]') AND type in (N'P', N'PC'))
@@ -5682,7 +5645,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserPackagesServerUrls]') AND type in (N'P', N'PC'))
@@ -5691,7 +5654,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserEnterpriseFolderWithOwaEditPermission]') AND type in (N'P', N'PC'))
@@ -5700,7 +5663,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserDomainsPaged]') AND type in (N'P', N'PC'))
@@ -5709,7 +5672,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByUsernameInternally]') AND type in (N'P', N'PC'))
@@ -5718,7 +5681,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByUsername]') AND type in (N'P', N'PC'))
@@ -5727,7 +5690,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByIdInternally]') AND type in (N'P', N'PC'))
@@ -5736,7 +5699,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserById]') AND type in (N'P', N'PC'))
@@ -5745,7 +5708,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserByExchangeOrganizationIdInternally]') AND type in (N'P', N'PC'))
@@ -5754,7 +5717,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserAvailableHostingPlans]') AND type in (N'P', N'PC'))
@@ -5763,7 +5726,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUserAvailableHostingAddons]') AND type in (N'P', N'PC'))
@@ -5772,7 +5735,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUnallottedVLANs]') AND type in (N'P', N'PC'))
@@ -5781,7 +5744,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetUnallottedIPAddresses]') AND type in (N'P', N'PC'))
@@ -5790,7 +5753,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThreadBackgroundTasks]') AND type in (N'P', N'PC'))
@@ -5799,7 +5762,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThemeSettings]') AND type in (N'P', N'PC'))
@@ -5808,7 +5771,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThemeSetting]') AND type in (N'P', N'PC'))
@@ -5817,7 +5780,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetThemes]') AND type in (N'P', N'PC'))
@@ -5826,7 +5789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSystemSettings]') AND type in (N'P', N'PC'))
@@ -5835,7 +5798,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSupportServiceLevels]') AND type in (N'P', N'PC'))
@@ -5844,7 +5807,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSupportServiceLevel]') AND type in (N'P', N'PC'))
@@ -5853,7 +5816,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpacesPaged]') AND type in (N'P', N'PC'))
@@ -5862,7 +5825,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpacesByResourceGroupName]') AND type in (N'P', N'PC'))
@@ -5871,7 +5834,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpacesByLevelId]') AND type in (N'P', N'PC'))
@@ -5880,7 +5843,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceLevelsPaged]') AND type in (N'P', N'PC'))
@@ -5889,7 +5852,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceLevelById]') AND type in (N'P', N'PC'))
@@ -5898,7 +5861,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceFoldersByStorageSpaceId]') AND type in (N'P', N'PC'))
@@ -5907,7 +5870,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceFolderById]') AND type in (N'P', N'PC'))
@@ -5916,7 +5879,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceByServiceAndPath]') AND type in (N'P', N'PC'))
@@ -5925,7 +5888,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetStorageSpaceById]') AND type in (N'P', N'PC'))
@@ -5934,7 +5897,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSSLCertificateByID]') AND type in (N'P', N'PC'))
@@ -5943,7 +5906,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSiteCert]') AND type in (N'P', N'PC'))
@@ -5952,7 +5915,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUsersCount]') AND type in (N'P', N'PC'))
@@ -5961,7 +5924,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUsersByPlanId]') AND type in (N'P', N'PC'))
@@ -5970,7 +5933,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUsers]') AND type in (N'P', N'PC'))
@@ -5979,7 +5942,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUserPlans]') AND type in (N'P', N'PC'))
@@ -5988,7 +5951,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUserPlanByAccountId]') AND type in (N'P', N'PC'))
@@ -5997,7 +5960,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSfBUserPlan]') AND type in (N'P', N'PC'))
@@ -6006,7 +5969,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByServerIDGroupName]') AND type in (N'P', N'PC'))
@@ -6015,7 +5978,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByServerID]') AND type in (N'P', N'PC'))
@@ -6024,7 +5987,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByGroupName]') AND type in (N'P', N'PC'))
@@ -6033,7 +5996,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServicesByGroupID]') AND type in (N'P', N'PC'))
@@ -6042,7 +6005,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceProperties]') AND type in (N'P', N'PC'))
@@ -6051,7 +6014,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemTypes]') AND type in (N'P', N'PC'))
@@ -6060,7 +6023,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemType]') AND type in (N'P', N'PC'))
@@ -6069,7 +6032,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsPaged]') AND type in (N'P', N'PC'))
@@ -6078,7 +6041,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsForStatistics]') AND type in (N'P', N'PC'))
@@ -6087,7 +6050,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsCountByNameAndServiceId]') AND type in (N'P', N'PC'))
@@ -6096,7 +6059,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsCount]') AND type in (N'P', N'PC'))
@@ -6105,7 +6068,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsByService]') AND type in (N'P', N'PC'))
@@ -6114,7 +6077,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsByPackage]') AND type in (N'P', N'PC'))
@@ -6123,7 +6086,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemsByName]') AND type in (N'P', N'PC'))
@@ -6132,7 +6095,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItems]') AND type in (N'P', N'PC'))
@@ -6141,7 +6104,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItemByName]') AND type in (N'P', N'PC'))
@@ -6150,7 +6113,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServiceItem]') AND type in (N'P', N'PC'))
@@ -6159,7 +6122,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetService]') AND type in (N'P', N'PC'))
@@ -6168,7 +6131,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServerShortDetails]') AND type in (N'P', N'PC'))
@@ -6177,7 +6140,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServers]') AND type in (N'P', N'PC'))
@@ -6186,7 +6149,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServerInternal]') AND type in (N'P', N'PC'))
@@ -6195,7 +6158,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServerByName]') AND type in (N'P', N'PC'))
@@ -6204,7 +6167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetServer]') AND type in (N'P', N'PC'))
@@ -6213,7 +6176,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSearchTableByColumns]') AND type in (N'P', N'PC'))
@@ -6222,7 +6185,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSearchObject]') AND type in (N'P', N'PC'))
@@ -6231,7 +6194,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSearchableServiceItemTypes]') AND type in (N'P', N'PC'))
@@ -6240,7 +6203,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTaskViewConfigurations]') AND type in (N'P', N'PC'))
@@ -6249,7 +6212,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTasks]') AND type in (N'P', N'PC'))
@@ -6258,7 +6221,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTaskEmailTemplate]') AND type in (N'P', N'PC'))
@@ -6267,7 +6230,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleTask]') AND type in (N'P', N'PC'))
@@ -6276,7 +6239,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSchedulesPaged]') AND type in (N'P', N'PC'))
@@ -6285,7 +6248,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSchedules]') AND type in (N'P', N'PC'))
@@ -6294,7 +6257,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleParameters]') AND type in (N'P', N'PC'))
@@ -6303,7 +6266,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleInternal]') AND type in (N'P', N'PC'))
@@ -6312,7 +6275,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetScheduleBackgroundTasks]') AND type in (N'P', N'PC'))
@@ -6321,7 +6284,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetSchedule]') AND type in (N'P', N'PC'))
@@ -6330,7 +6293,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResourceGroups]') AND type in (N'P', N'PC'))
@@ -6339,7 +6302,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResourceGroupByName]') AND type in (N'P', N'PC'))
@@ -6348,7 +6311,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResourceGroup]') AND type in (N'P', N'PC'))
@@ -6357,7 +6320,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetResellerDomains]') AND type in (N'P', N'PC'))
@@ -6366,7 +6329,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServersPaged]') AND type in (N'P', N'PC'))
@@ -6375,7 +6338,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServerSettings]') AND type in (N'P', N'PC'))
@@ -6384,7 +6347,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServersByItemId]') AND type in (N'P', N'PC'))
@@ -6393,7 +6356,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServersByCollectionId]') AND type in (N'P', N'PC'))
@@ -6402,7 +6365,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServers]') AND type in (N'P', N'PC'))
@@ -6411,7 +6374,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSServerById]') AND type in (N'P', N'PC'))
@@ -6420,7 +6383,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSMessages]') AND type in (N'P', N'PC'))
@@ -6429,7 +6392,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSControllerServiceIDbyFQDN]') AND type in (N'P', N'PC'))
@@ -6438,7 +6401,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionUsersByRDSCollectionId]') AND type in (N'P', N'PC'))
@@ -6447,7 +6410,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionsPaged]') AND type in (N'P', N'PC'))
@@ -6456,7 +6419,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionSettingsByCollectionId]') AND type in (N'P', N'PC'))
@@ -6465,7 +6428,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionsByItemId]') AND type in (N'P', N'PC'))
@@ -6474,7 +6437,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionByName]') AND type in (N'P', N'PC'))
@@ -6483,7 +6446,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCollectionById]') AND type in (N'P', N'PC'))
@@ -6492,7 +6455,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRDSCertificateByServiceId]') AND type in (N'P', N'PC'))
@@ -6501,7 +6464,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetRawServicesByServerID]') AND type in (N'P', N'PC'))
@@ -6510,7 +6473,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetQuotas]') AND type in (N'P', N'PC'))
@@ -6519,7 +6482,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE object_id = OBJECT_ID(N'[dbo].[GetQuotaHidden]') AND type in (N'P', N'PC'))
@@ -6528,7 +6491,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviderServiceQuota]') AND type in (N'P', N'PC'))
@@ -6537,7 +6500,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviders]') AND type in (N'P', N'PC'))
@@ -6546,7 +6509,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProviderByServiceID]') AND type in (N'P', N'PC'))
@@ -6555,7 +6518,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProvider]') AND type in (N'P', N'PC'))
@@ -6564,7 +6527,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetProcessBackgroundTasks]') AND type in (N'P', N'PC'))
@@ -6573,7 +6536,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPrivateNetworVLANsPaged]') AND type in (N'P', N'PC'))
@@ -6582,7 +6545,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPrivateNetworVLAN]') AND type in (N'P', N'PC'))
@@ -6591,7 +6554,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPendingSSLForWebsite]') AND type in (N'P', N'PC'))
@@ -6600,7 +6563,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetParentPackageQuotas]') AND type in (N'P', N'PC'))
@@ -6609,7 +6572,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageUnassignedIPAddresses]') AND type in (N'P', N'PC'))
@@ -6618,7 +6581,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagesPaged]') AND type in (N'P', N'PC'))
@@ -6627,7 +6590,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageSettings]') AND type in (N'P', N'PC'))
@@ -6636,7 +6599,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageServiceID]') AND type in (N'P', N'PC'))
@@ -6645,7 +6608,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagesDiskspacePaged]') AND type in (N'P', N'PC'))
@@ -6654,7 +6617,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagesBandwidthPaged]') AND type in (N'P', N'PC'))
@@ -6663,7 +6626,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackages]') AND type in (N'P', N'PC'))
@@ -6672,7 +6635,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageQuotasForEdit]') AND type in (N'P', N'PC'))
@@ -6681,7 +6644,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageQuotas]') AND type in (N'P', N'PC'))
@@ -6690,7 +6653,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageQuota]') AND type in (N'P', N'PC'))
@@ -6699,7 +6662,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePrivateNetworkVLANs]') AND type in (N'P', N'PC'))
@@ -6708,7 +6671,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePrivateIPAddressesPaged]') AND type in (N'P', N'PC'))
@@ -6717,7 +6680,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePrivateIPAddresses]') AND type in (N'P', N'PC'))
@@ -6726,7 +6689,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackagePackages]') AND type in (N'P', N'PC'))
@@ -6735,7 +6698,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageIPAddressesCount]') AND type in (N'P', N'PC'))
@@ -6744,7 +6707,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageIPAddresses]') AND type in (N'P', N'PC'))
@@ -6753,7 +6716,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageIPAddress]') AND type in (N'P', N'PC'))
@@ -6762,7 +6725,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDmzNetworkVLANs]') AND type in (N'P', N'PC'))
@@ -6771,7 +6734,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDmzIPAddressesPaged]') AND type in (N'P', N'PC'))
@@ -6780,7 +6743,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDmzIPAddresses]') AND type in (N'P', N'PC'))
@@ -6789,7 +6752,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageDiskspace]') AND type in (N'P', N'PC'))
@@ -6798,7 +6761,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageBandwidthUpdate]') AND type in (N'P', N'PC'))
@@ -6807,7 +6770,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageBandwidth]') AND type in (N'P', N'PC'))
@@ -6816,7 +6779,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAddons]') AND type in (N'P', N'PC'))
@@ -6825,7 +6788,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAddon]') AND type in (N'P', N'PC'))
@@ -6834,7 +6797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackage]') AND type in (N'P', N'PC'))
@@ -6843,7 +6806,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationStoragSpacesFolderByType]') AND type in (N'P', N'PC'))
@@ -6852,7 +6815,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationStoragSpaceFolders]') AND type in (N'P', N'PC'))
@@ -6861,7 +6824,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationStatistics]') AND type in (N'P', N'PC'))
@@ -6870,7 +6833,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationRdsUsersCount]') AND type in (N'P', N'PC'))
@@ -6879,7 +6842,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationRdsServersCount]') AND type in (N'P', N'PC'))
@@ -6888,7 +6851,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationRdsCollectionsCount]') AND type in (N'P', N'PC'))
@@ -6897,7 +6860,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationObjectsByDomain]') AND type in (N'P', N'PC'))
@@ -6906,7 +6869,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationGroupsByDisplayName]') AND type in (N'P', N'PC'))
@@ -6915,7 +6878,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationDeletedUser]') AND type in (N'P', N'PC'))
@@ -6924,7 +6887,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOrganizationCRMUserCount]') AND type in (N'P', N'PC'))
@@ -6933,7 +6896,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOCSUsersCount]') AND type in (N'P', N'PC'))
@@ -6942,7 +6905,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetOCSUsers]') AND type in (N'P', N'PC'))
@@ -6951,7 +6914,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetNextSchedule]') AND type in (N'P', N'PC'))
@@ -6960,7 +6923,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetNestedPackagesSummary]') AND type in (N'P', N'PC'))
@@ -6969,7 +6932,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetNestedPackagesPaged]') AND type in (N'P', N'PC'))
@@ -6978,7 +6941,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetMyPackages]') AND type in (N'P', N'PC'))
@@ -6987,7 +6950,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUsersCount]') AND type in (N'P', N'PC'))
@@ -6996,7 +6959,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUsersByPlanId]') AND type in (N'P', N'PC'))
@@ -7005,7 +6968,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUsers]') AND type in (N'P', N'PC'))
@@ -7014,7 +6977,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUserPlans]') AND type in (N'P', N'PC'))
@@ -7023,7 +6986,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUserPlanByAccountId]') AND type in (N'P', N'PC'))
@@ -7032,7 +6995,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLyncUserPlan]') AND type in (N'P', N'PC'))
@@ -7041,7 +7004,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetLevelResourceGroups]') AND type in (N'P', N'PC'))
@@ -7050,7 +7013,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemPrivateIPAddresses]') AND type in (N'P', N'PC'))
@@ -7059,7 +7022,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemIPAddresses]') AND type in (N'P', N'PC'))
@@ -7068,7 +7031,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemIdByOrganizationId]') AND type in (N'P', N'PC'))
@@ -7077,7 +7040,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemDmzIPAddresses]') AND type in (N'P', N'PC'))
@@ -7086,7 +7049,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetIPAddressesPaged]') AND type in (N'P', N'PC'))
@@ -7095,7 +7058,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetIPAddresses]') AND type in (N'P', N'PC'))
@@ -7104,7 +7067,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetIPAddress]') AND type in (N'P', N'PC'))
@@ -7113,7 +7076,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetInstanceID]') AND type in (N'P', N'PC'))
@@ -7122,7 +7085,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingPlans]') AND type in (N'P', N'PC'))
@@ -7131,7 +7094,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingPlanQuotas]') AND type in (N'P', N'PC'))
@@ -7140,7 +7103,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingPlan]') AND type in (N'P', N'PC'))
@@ -7149,7 +7112,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetHostingAddons]') AND type in (N'P', N'PC'))
@@ -7158,7 +7121,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetGroupProviders]') AND type in (N'P', N'PC'))
@@ -7167,7 +7130,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetFilterURLByHostingPlan]') AND type in (N'P', N'PC'))
@@ -7176,7 +7139,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetFilterURL]') AND type in (N'P', N'PC'))
@@ -7185,7 +7148,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeRetentionPolicyTags]') AND type in (N'P', N'PC'))
@@ -7194,7 +7157,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
@@ -7203,7 +7166,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganizationStatistics]') AND type in (N'P', N'PC'))
@@ -7212,7 +7175,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganizationSettings]') AND type in (N'P', N'PC'))
@@ -7221,7 +7184,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganizationDomains]') AND type in (N'P', N'PC'))
@@ -7230,7 +7193,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeOrganization]') AND type in (N'P', N'PC'))
@@ -7239,7 +7202,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxPlans]') AND type in (N'P', N'PC'))
@@ -7248,7 +7211,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxPlanRetentionPolicyTags]') AND type in (N'P', N'PC'))
@@ -7257,7 +7220,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxPlan]') AND type in (N'P', N'PC'))
@@ -7266,7 +7229,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeMailboxes]') AND type in (N'P', N'PC'))
@@ -7275,7 +7238,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeDisclaimers]') AND type in (N'P', N'PC'))
@@ -7284,7 +7247,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeDisclaimer]') AND type in (N'P', N'PC'))
@@ -7293,7 +7256,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountsPaged]') AND type in (N'P', N'PC'))
@@ -7302,7 +7265,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccounts]') AND type in (N'P', N'PC'))
@@ -7311,7 +7274,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountEmailAddresses]') AND type in (N'P', N'PC'))
@@ -7320,7 +7283,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountDisclaimerId]') AND type in (N'P', N'PC'))
@@ -7329,7 +7292,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountByMailboxPlanId]') AND type in (N'P', N'PC'))
@@ -7338,7 +7301,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountByAccountNameWithoutItemId]') AND type in (N'P', N'PC'))
@@ -7347,7 +7310,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccountByAccountName]') AND type in (N'P', N'PC'))
@@ -7356,7 +7319,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetExchangeAccount]') AND type in (N'P', N'PC'))
@@ -7365,7 +7328,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFoldersPaged]') AND type in (N'P', N'PC'))
@@ -7374,7 +7337,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolders]') AND type in (N'P', N'PC'))
@@ -7383,7 +7346,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolderOwaUsers]') AND type in (N'P', N'PC'))
@@ -7392,7 +7355,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolderId]') AND type in (N'P', N'PC'))
@@ -7401,7 +7364,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetEnterpriseFolder]') AND type in (N'P', N'PC'))
@@ -7410,7 +7373,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainsPaged]') AND type in (N'P', N'PC'))
@@ -7419,7 +7382,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainsByZoneID]') AND type in (N'P', N'PC'))
@@ -7428,7 +7391,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainsByDomainItemID]') AND type in (N'P', N'PC'))
@@ -7437,7 +7400,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomains]') AND type in (N'P', N'PC'))
@@ -7446,7 +7409,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainDnsRecords]') AND type in (N'P', N'PC'))
@@ -7455,7 +7418,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainByName]') AND type in (N'P', N'PC'))
@@ -7464,7 +7427,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomainAllDnsRecords]') AND type in (N'P', N'PC'))
@@ -7473,7 +7436,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDomain]') AND type in (N'P', N'PC'))
@@ -7482,7 +7445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsTotal]') AND type in (N'P', N'PC'))
@@ -7491,7 +7454,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByService]') AND type in (N'P', N'PC'))
@@ -7500,7 +7463,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByServer]') AND type in (N'P', N'PC'))
@@ -7509,7 +7472,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByPackage]') AND type in (N'P', N'PC'))
@@ -7518,7 +7481,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecordsByGroup]') AND type in (N'P', N'PC'))
@@ -7527,7 +7490,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetDnsRecord]') AND type in (N'P', N'PC'))
@@ -7536,7 +7499,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMUsersCount]') AND type in (N'P', N'PC'))
@@ -7545,7 +7508,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMUsers]') AND type in (N'P', N'PC'))
@@ -7554,7 +7517,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMUser]') AND type in (N'P', N'PC'))
@@ -7563,7 +7526,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCRMOrganizationUsers]') AND type in (N'P', N'PC'))
@@ -7572,7 +7535,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetComments]') AND type in (N'P', N'PC'))
@@ -7581,7 +7544,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetClusters]') AND type in (N'P', N'PC'))
@@ -7590,7 +7553,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetCertificatesForSite]') AND type in (N'P', N'PC'))
@@ -7599,7 +7562,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBlackBerryUsersCount]') AND type in (N'P', N'PC'))
@@ -7608,7 +7571,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBlackBerryUsers]') AND type in (N'P', N'PC'))
@@ -7617,7 +7580,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTopTask]') AND type in (N'P', N'PC'))
@@ -7626,7 +7589,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTasks]') AND type in (N'P', N'PC'))
@@ -7635,7 +7598,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTaskParams]') AND type in (N'P', N'PC'))
@@ -7644,7 +7607,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTaskLogs]') AND type in (N'P', N'PC'))
@@ -7653,7 +7616,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetBackgroundTask]') AND type in (N'P', N'PC'))
@@ -7662,7 +7625,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAvailableVirtualServices]') AND type in (N'P', N'PC'))
@@ -7671,7 +7634,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogTasks]') AND type in (N'P', N'PC'))
@@ -7680,7 +7643,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogSources]') AND type in (N'P', N'PC'))
@@ -7689,7 +7652,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogRecordsPaged]') AND type in (N'P', N'PC'))
@@ -7698,7 +7661,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAuditLogRecord]') AND type in (N'P', N'PC'))
@@ -7707,7 +7670,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAllServers]') AND type in (N'P', N'PC'))
@@ -7716,7 +7679,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAllPackages]') AND type in (N'P', N'PC'))
@@ -7725,7 +7688,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAdditionalGroups]') AND type in (N'P', N'PC'))
@@ -7734,7 +7697,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetAccessTokenByAccessToken]') AND type in (N'P', N'PC'))
@@ -7743,7 +7706,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeOrganizationExists]') AND type in (N'P', N'PC'))
@@ -7752,7 +7715,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeOrganizationDomainExists]') AND type in (N'P', N'PC'))
@@ -7761,7 +7724,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeAccountExists]') AND type in (N'P', N'PC'))
@@ -7770,7 +7733,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ExchangeAccountEmailAddressExists]') AND type in (N'P', N'PC'))
@@ -7779,7 +7742,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DistributePackageServices]') AND type in (N'P', N'PC'))
@@ -7788,7 +7751,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteVirtualServices]') AND type in (N'P', N'PC'))
@@ -7797,7 +7760,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteUserThemeSetting]') AND type in (N'P', N'PC'))
@@ -7806,7 +7769,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteUserEmailAddresses]') AND type in (N'P', N'PC'))
@@ -7815,7 +7778,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteUser]') AND type in (N'P', N'PC'))
@@ -7824,7 +7787,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSupportServiceLevel]') AND type in (N'P', N'PC'))
@@ -7833,7 +7796,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSfBUserPlan]') AND type in (N'P', N'PC'))
@@ -7842,7 +7805,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSfBUser]') AND type in (N'P', N'PC'))
@@ -7851,7 +7814,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteServiceItem]') AND type in (N'P', N'PC'))
@@ -7860,7 +7823,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteService]') AND type in (N'P', N'PC'))
@@ -7869,7 +7832,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteServer]') AND type in (N'P', N'PC'))
@@ -7878,7 +7841,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteSchedule]') AND type in (N'P', N'PC'))
@@ -7887,7 +7850,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSServerSettings]') AND type in (N'P', N'PC'))
@@ -7896,7 +7859,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSServer]') AND type in (N'P', N'PC'))
@@ -7905,7 +7868,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSCollectionSettings]') AND type in (N'P', N'PC'))
@@ -7914,7 +7877,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteRDSCollection]') AND type in (N'P', N'PC'))
@@ -7923,7 +7886,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeletePrivateNetworkVLAN]') AND type in (N'P', N'PC'))
@@ -7932,7 +7895,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeletePackageAddon]') AND type in (N'P', N'PC'))
@@ -7941,7 +7904,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeletePackage]') AND type in (N'P', N'PC'))
@@ -7950,7 +7913,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOrganizationUsers]') AND type in (N'P', N'PC'))
@@ -7959,7 +7922,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOrganizationStoragSpacesFolder]') AND type in (N'P', N'PC'))
@@ -7968,7 +7931,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOrganizationDeletedUser]') AND type in (N'P', N'PC'))
@@ -7977,7 +7940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteOCSUser]') AND type in (N'P', N'PC'))
@@ -7986,7 +7949,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteLyncUserPlan]') AND type in (N'P', N'PC'))
@@ -7995,7 +7958,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteLyncUser]') AND type in (N'P', N'PC'))
@@ -8004,7 +7967,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteLevelResourceGroups]') AND type in (N'P', N'PC'))
@@ -8013,7 +7976,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemPrivateIPAddresses]') AND type in (N'P', N'PC'))
@@ -8022,7 +7985,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemPrivateIPAddress]') AND type in (N'P', N'PC'))
@@ -8031,7 +7994,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemIPAddresses]') AND type in (N'P', N'PC'))
@@ -8040,7 +8003,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemIPAddress]') AND type in (N'P', N'PC'))
@@ -8049,7 +8012,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemDmzIPAddresses]') AND type in (N'P', N'PC'))
@@ -8058,7 +8021,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteItemDmzIPAddress]') AND type in (N'P', N'PC'))
@@ -8067,7 +8030,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteIPAddress]') AND type in (N'P', N'PC'))
@@ -8076,7 +8039,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteHostingPlan]') AND type in (N'P', N'PC'))
@@ -8085,7 +8048,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExpiredWebDavAccessTokens]') AND type in (N'P', N'PC'))
@@ -8094,7 +8057,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExpiredAccessTokenTokens]') AND type in (N'P', N'PC'))
@@ -8103,7 +8066,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
@@ -8112,7 +8075,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeOrganizationDomain]') AND type in (N'P', N'PC'))
@@ -8121,7 +8084,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeOrganization]') AND type in (N'P', N'PC'))
@@ -8130,7 +8093,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]') AND type in (N'P', N'PC'))
@@ -8139,7 +8102,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeMailboxPlan]') AND type in (N'P', N'PC'))
@@ -8148,7 +8111,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeDisclaimer]') AND type in (N'P', N'PC'))
@@ -8157,7 +8120,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeAccountEmailAddress]') AND type in (N'P', N'PC'))
@@ -8166,7 +8129,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteExchangeAccount]') AND type in (N'P', N'PC'))
@@ -8175,7 +8138,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteEnterpriseFolder]') AND type in (N'P', N'PC'))
@@ -8184,7 +8147,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteDomainDnsRecord]') AND type in (N'P', N'PC'))
@@ -8193,7 +8156,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteDomain]') AND type in (N'P', N'PC'))
@@ -8202,7 +8165,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteDnsRecord]') AND type in (N'P', N'PC'))
@@ -8211,7 +8174,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteCRMOrganization]') AND type in (N'P', N'PC'))
@@ -8220,7 +8183,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteComment]') AND type in (N'P', N'PC'))
@@ -8229,7 +8192,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteCluster]') AND type in (N'P', N'PC'))
@@ -8238,7 +8201,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteCertificate]') AND type in (N'P', N'PC'))
@@ -8247,7 +8210,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBlackBerryUser]') AND type in (N'P', N'PC'))
@@ -8256,7 +8219,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBackgroundTasks]') AND type in (N'P', N'PC'))
@@ -8265,7 +8228,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBackgroundTaskParams]') AND type in (N'P', N'PC'))
@@ -8274,7 +8237,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteBackgroundTask]') AND type in (N'P', N'PC'))
@@ -8283,7 +8246,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAuditLogRecordsComplete]') AND type in (N'P', N'PC'))
@@ -8292,7 +8255,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAuditLogRecords]') AND type in (N'P', N'PC'))
@@ -8301,7 +8264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAllLogRecords]') AND type in (N'P', N'PC'))
@@ -8310,7 +8273,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAllEnterpriseFolderOwaUsers]') AND type in (N'P', N'PC'))
@@ -8319,7 +8282,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAdditionalGroup]') AND type in (N'P', N'PC'))
@@ -8328,7 +8291,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeleteAccessToken]') AND type in (N'P', N'PC'))
@@ -8337,7 +8300,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeallocatePackageVLAN]') AND type in (N'P', N'PC'))
@@ -8346,7 +8309,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[DeallocatePackageIPAddress]') AND type in (N'P', N'PC'))
@@ -8355,7 +8318,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CreateStorageSpaceFolder]') AND type in (N'P', N'PC'))
@@ -8364,7 +8327,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ConvertToExchangeOrganization]') AND type in (N'P', N'PC'))
@@ -8373,7 +8336,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CompleteSSLRequest]') AND type in (N'P', N'PC'))
@@ -8382,7 +8345,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckUserExists]') AND type in (N'P', N'PC'))
@@ -8391,7 +8354,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckSSLExistsForWebsite]') AND type in (N'P', N'PC'))
@@ -8400,7 +8363,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckSSL]') AND type in (N'P', N'PC'))
@@ -8409,7 +8372,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckSfBUserExists]') AND type in (N'P', N'PC'))
@@ -8418,7 +8381,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckServiceLevelUsage]') AND type in (N'P', N'PC'))
@@ -8427,7 +8390,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckServiceItemExistsInService]') AND type in (N'P', N'PC'))
@@ -8436,7 +8399,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckServiceItemExists]') AND type in (N'P', N'PC'))
@@ -8445,7 +8408,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckRDSServer]') AND type in (N'P', N'PC'))
@@ -8454,7 +8417,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckOCSUserExists]') AND type in (N'P', N'PC'))
@@ -8463,7 +8426,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckLyncUserExists]') AND type in (N'P', N'PC'))
@@ -8472,7 +8435,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckDomainUsedByHostedOrganization]') AND type in (N'P', N'PC'))
@@ -8481,7 +8444,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckDomain]') AND type in (N'P', N'PC'))
@@ -8490,7 +8453,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckBlackBerryUserExists]') AND type in (N'P', N'PC'))
@@ -8499,7 +8462,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChangeUserPassword]') AND type in (N'P', N'PC'))
@@ -8508,7 +8471,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChangePackageUser]') AND type in (N'P', N'PC'))
@@ -8517,7 +8480,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[ChangeExchangeAcceptedDomainType]') AND type in (N'P', N'PC'))
@@ -8526,7 +8489,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanChangeMfa]') AND type in (N'P', N'PC'))
@@ -8535,7 +8498,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AllocatePackageVLANs]') AND type in (N'P', N'PC'))
@@ -8544,7 +8507,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AllocatePackageIPAddresses]') AND type in (N'P', N'PC'))
@@ -8553,7 +8516,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddWebDavPortalUsersSettings]') AND type in (N'P', N'PC'))
@@ -8562,7 +8525,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddWebDavAccessToken]') AND type in (N'P', N'PC'))
@@ -8571,7 +8534,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddVirtualServices]') AND type in (N'P', N'PC'))
@@ -8580,7 +8543,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddUserToRDSCollection]') AND type in (N'P', N'PC'))
@@ -8589,7 +8552,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddUser]') AND type in (N'P', N'PC'))
@@ -8598,7 +8561,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSupportServiceLevel]') AND type in (N'P', N'PC'))
@@ -8607,7 +8570,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSSLRequest]') AND type in (N'P', N'PC'))
@@ -8616,7 +8579,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSfBUserPlan]') AND type in (N'P', N'PC'))
@@ -8625,7 +8588,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSfBUser]') AND type in (N'P', N'PC'))
@@ -8634,7 +8597,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddServiceItem]') AND type in (N'P', N'PC'))
@@ -8643,7 +8606,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddService]') AND type in (N'P', N'PC'))
@@ -8652,7 +8615,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddServer]') AND type in (N'P', N'PC'))
@@ -8661,7 +8624,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddSchedule]') AND type in (N'P', N'PC'))
@@ -8670,7 +8633,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSServerToOrganization]') AND type in (N'P', N'PC'))
@@ -8679,7 +8642,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSServerToCollection]') AND type in (N'P', N'PC'))
@@ -8688,7 +8651,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSServer]') AND type in (N'P', N'PC'))
@@ -8697,7 +8660,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSMessage]') AND type in (N'P', N'PC'))
@@ -8706,7 +8669,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSCollectionSettings]') AND type in (N'P', N'PC'))
@@ -8715,7 +8678,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSCollection]') AND type in (N'P', N'PC'))
@@ -8724,7 +8687,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddRDSCertificate]') AND type in (N'P', N'PC'))
@@ -8733,7 +8696,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPrivateNetworkVlan]') AND type in (N'P', N'PC'))
@@ -8742,7 +8705,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPFX]') AND type in (N'P', N'PC'))
@@ -8751,7 +8714,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPackageAddon]') AND type in (N'P', N'PC'))
@@ -8760,7 +8723,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddPackage]') AND type in (N'P', N'PC'))
@@ -8769,7 +8732,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddOrganizationStoragSpacesFolder]') AND type in (N'P', N'PC'))
@@ -8778,7 +8741,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddOrganizationDeletedUser]') AND type in (N'P', N'PC'))
@@ -8787,7 +8750,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddOCSUser]') AND type in (N'P', N'PC'))
@@ -8796,7 +8759,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddLyncUserPlan]') AND type in (N'P', N'PC'))
@@ -8805,7 +8768,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddLyncUser]') AND type in (N'P', N'PC'))
@@ -8814,7 +8777,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddLevelResourceGroups]') AND type in (N'P', N'PC'))
@@ -8823,7 +8786,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddItemPrivateIPAddress]') AND type in (N'P', N'PC'))
@@ -8832,7 +8795,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddItemIPAddress]') AND type in (N'P', N'PC'))
@@ -8841,7 +8804,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddItemDmzIPAddress]') AND type in (N'P', N'PC'))
@@ -8850,7 +8813,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddIPAddress]') AND type in (N'P', N'PC'))
@@ -8859,7 +8822,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddHostingPlan]') AND type in (N'P', N'PC'))
@@ -8868,7 +8831,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeRetentionPolicyTag]') AND type in (N'P', N'PC'))
@@ -8877,7 +8840,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeOrganizationDomain]') AND type in (N'P', N'PC'))
@@ -8886,7 +8849,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeOrganization]') AND type in (N'P', N'PC'))
@@ -8895,7 +8858,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeMailboxPlanRetentionPolicyTag]') AND type in (N'P', N'PC'))
@@ -8904,7 +8867,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeMailboxPlan]') AND type in (N'P', N'PC'))
@@ -8913,7 +8876,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeDisclaimer]') AND type in (N'P', N'PC'))
@@ -8922,7 +8885,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeAccountEmailAddress]') AND type in (N'P', N'PC'))
@@ -8931,7 +8894,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddExchangeAccount]') AND type in (N'P', N'PC'))
@@ -8940,7 +8903,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddEnterpriseFolderOwaUser]') AND type in (N'P', N'PC'))
@@ -8949,7 +8912,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddEnterpriseFolder]') AND type in (N'P', N'PC'))
@@ -8958,7 +8921,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddDomainDnsRecord]') AND type in (N'P', N'PC'))
@@ -8967,7 +8930,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddDomain]') AND type in (N'P', N'PC'))
@@ -8976,7 +8939,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddDnsRecord]') AND type in (N'P', N'PC'))
@@ -8985,7 +8948,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddComment]') AND type in (N'P', N'PC'))
@@ -8994,7 +8957,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddCluster]') AND type in (N'P', N'PC'))
@@ -9003,7 +8966,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBlackBerryUser]') AND type in (N'P', N'PC'))
@@ -9012,7 +8975,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTaskStack]') AND type in (N'P', N'PC'))
@@ -9021,7 +8984,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTaskParam]') AND type in (N'P', N'PC'))
@@ -9030,7 +8993,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTaskLog]') AND type in (N'P', N'PC'))
@@ -9039,7 +9002,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddBackgroundTask]') AND type in (N'P', N'PC'))
@@ -9048,7 +9011,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddAuditLogRecord]') AND type in (N'P', N'PC'))
@@ -9057,7 +9020,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddAdditionalGroup]') AND type in (N'P', N'PC'))
@@ -9066,7 +9029,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[AddAccessToken]') AND type in (N'P', N'PC'))
@@ -9075,7 +9038,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N'[dbo].[UsersDetailed]'))
@@ -9084,7 +9047,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UsersTree]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9093,7 +9056,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[UserParents]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9102,7 +9065,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[SplitString]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9111,7 +9074,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PackagesTree]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9120,7 +9083,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[PackageParents]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9129,7 +9092,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageServiceLevelResource]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9138,7 +9101,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageExceedingQuotas]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9147,7 +9110,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAllocatedResource]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9156,7 +9119,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetPackageAllocatedQuota]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9165,7 +9128,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetItemComments]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9174,7 +9137,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[GetFullIPAddress]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9183,7 +9146,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckUserParent]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9192,7 +9155,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckPackageParent]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9201,7 +9164,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckIsUserAdmin]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9210,7 +9173,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckExceedingQuota]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9219,7 +9182,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckActorUserRights]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9228,7 +9191,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckActorParentPackageRights]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9237,7 +9200,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CheckActorPackageRights]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9246,7 +9209,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanUpdateUserDetails]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9255,7 +9218,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanUpdatePackageDetails]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9264,7 +9227,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanGetUserPassword]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9273,7 +9236,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanGetUserDetails]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9282,7 +9245,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanCreateUser]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9291,7 +9254,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CanChangeMfaFunc]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9300,7 +9263,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CalculateQuotaUsage]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9309,7 +9272,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CalculatePackageDiskspace]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9318,7 +9281,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[CalculatePackageBandwidth]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT'))
@@ -9327,7 +9290,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9335,7 +9298,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9343,7 +9306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- Create UserDetailed view'
@@ -9362,7 +9325,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9370,7 +9333,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9378,7 +9341,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CalculatePackageBandwidth]'
@@ -9422,7 +9385,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9430,7 +9393,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9438,7 +9401,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CalculatePackageDiskspace]'
@@ -9467,7 +9430,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9475,7 +9438,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9483,7 +9446,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CalculateQuotaUsage]'
@@ -9738,7 +9701,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9746,7 +9709,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9754,7 +9717,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CanChangeMfaFunc]'
@@ -9844,7 +9807,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9852,7 +9815,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9860,7 +9823,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CanCreateUser]'
@@ -9923,7 +9886,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -9931,7 +9894,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -9939,7 +9902,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CanGetUserDetails]'
@@ -10012,7 +9975,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10020,7 +9983,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10028,7 +9991,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CanGetUserPassword]'
@@ -10108,7 +10071,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10116,7 +10079,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10124,7 +10087,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CanUpdatePackageDetails]'
@@ -10189,7 +10152,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10197,7 +10160,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10205,7 +10168,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CanUpdateUserDetails]'
@@ -10276,7 +10239,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10284,7 +10247,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10292,7 +10255,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckActorPackageRights]'
@@ -10329,7 +10292,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10337,7 +10300,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10345,7 +10308,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckActorParentPackageRights]'
@@ -10378,7 +10341,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10386,7 +10349,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10394,7 +10357,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckActorUserRights]'
@@ -10466,7 +10429,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10474,7 +10437,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10482,7 +10445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckExceedingQuota]'
@@ -10551,7 +10514,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10559,7 +10522,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10567,7 +10530,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckIsUserAdmin]'
@@ -10592,7 +10555,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10600,7 +10563,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10608,7 +10571,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckPackageParent]'
@@ -10656,7 +10619,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10664,7 +10627,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10672,7 +10635,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[CheckUserParent]'
@@ -10734,7 +10697,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10742,7 +10705,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10750,7 +10713,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[GetFullIPAddress]'
@@ -10777,7 +10740,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10785,7 +10748,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10793,7 +10756,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[GetItemComments]'
@@ -10826,7 +10789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10834,7 +10797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10842,7 +10805,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[GetPackageAllocatedQuota]'
@@ -10959,7 +10922,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -10967,7 +10930,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -10975,7 +10938,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[GetPackageAllocatedResource]'
@@ -11092,7 +11055,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11100,7 +11063,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11108,7 +11071,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[GetPackageExceedingQuotas]'
@@ -11163,7 +11126,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11171,7 +11134,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11179,7 +11142,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[GetPackageServiceLevelResource]'
@@ -11280,7 +11243,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS OFF
@@ -11288,7 +11251,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11296,7 +11259,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[PackageParents]'
@@ -11335,7 +11298,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11343,7 +11306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11351,7 +11314,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[PackagesTree]'
@@ -11391,7 +11354,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11399,7 +11362,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11407,7 +11370,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[SplitString] (@stringToSplit VARCHAR(MAX), @separator CHAR)'
@@ -11440,7 +11403,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11448,7 +11411,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11456,7 +11419,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[UserParents]'
@@ -11509,7 +11472,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS OFF
@@ -11517,7 +11480,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11525,7 +11488,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE FUNCTION [dbo].[UsersTree]'
@@ -11562,7 +11525,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11570,7 +11533,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11578,7 +11541,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateHostingPlanQuotas]'
@@ -11670,7 +11633,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11678,7 +11641,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11686,7 +11649,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageQuotas]'
@@ -11790,7 +11753,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11798,7 +11761,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11806,7 +11769,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddAccessToken]'
@@ -11844,7 +11807,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11852,7 +11815,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11860,7 +11823,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddAdditionalGroup]'
@@ -11890,7 +11853,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11898,7 +11861,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11906,7 +11869,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddAuditLogRecord]'
@@ -11965,7 +11928,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -11973,7 +11936,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -11981,7 +11944,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddBackgroundTask]'
@@ -12059,7 +12022,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12067,7 +12030,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12075,7 +12038,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddBackgroundTaskLog]'
@@ -12118,7 +12081,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12126,7 +12089,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12134,7 +12097,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddBackgroundTaskParam]'
@@ -12165,7 +12128,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12173,7 +12136,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12181,7 +12144,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddBackgroundTaskStack]'
@@ -12203,7 +12166,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12211,7 +12174,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12219,7 +12182,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddBlackBerryUser]'
@@ -12247,7 +12210,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12255,7 +12218,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12263,7 +12226,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddCluster]'
@@ -12288,7 +12251,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12296,7 +12259,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12304,7 +12267,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddComment]'
@@ -12340,7 +12303,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12348,7 +12311,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12356,7 +12319,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddDnsRecord]'
@@ -12441,7 +12404,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12449,7 +12412,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12457,7 +12420,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddDomain]'
@@ -12517,7 +12480,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12525,7 +12488,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12533,7 +12496,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddDomainDnsRecord]'
@@ -12567,7 +12530,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12575,7 +12538,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12583,7 +12546,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddEnterpriseFolder]'
@@ -12628,7 +12591,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12636,7 +12599,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12644,7 +12607,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddEnterpriseFolderOwaUser]'
@@ -12676,7 +12639,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12684,7 +12647,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12692,7 +12655,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeAccount] '
@@ -12748,7 +12711,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12756,7 +12719,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12764,7 +12727,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeAccountEmailAddress]'
@@ -12789,7 +12752,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12797,7 +12760,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12805,7 +12768,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeDisclaimer] '
@@ -12838,7 +12801,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12846,7 +12809,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12854,7 +12817,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeMailboxPlan] '
@@ -12980,7 +12943,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -12988,7 +12951,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -12996,7 +12959,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeMailboxPlanRetentionPolicyTag] '
@@ -13029,7 +12992,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13037,7 +13000,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13045,7 +13008,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeOrganization]'
@@ -13069,7 +13032,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13077,7 +13040,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13085,7 +13048,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeOrganizationDomain]'
@@ -13105,7 +13068,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13113,7 +13076,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13121,7 +13084,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddExchangeRetentionPolicyTag] '
@@ -13163,7 +13126,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13171,7 +13134,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13179,7 +13142,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddHostingPlan]'
@@ -13257,7 +13220,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13265,7 +13228,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13273,7 +13236,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddIPAddress]'
@@ -13305,7 +13268,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13313,7 +13276,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13321,7 +13284,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddItemDmzIPAddress]'
@@ -13356,7 +13319,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13364,7 +13327,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13372,7 +13335,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddItemIPAddress]'
@@ -13397,7 +13360,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13405,7 +13368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13413,7 +13376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddItemPrivateIPAddress]'
@@ -13450,7 +13413,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13458,7 +13421,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13466,7 +13429,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddLevelResourceGroups]'
@@ -13482,7 +13445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13490,7 +13453,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13498,7 +13461,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddLyncUser]'
@@ -13526,7 +13489,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13534,7 +13497,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13542,7 +13505,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddLyncUserPlan] '
@@ -13653,7 +13616,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13661,7 +13624,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13669,7 +13632,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddOCSUser]'
@@ -13700,7 +13663,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13708,7 +13671,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13716,7 +13679,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddOrganizationDeletedUser] '
@@ -13758,7 +13721,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13766,7 +13729,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13774,7 +13737,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddOrganizationStoragSpacesFolder]'
@@ -13804,7 +13767,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13812,7 +13775,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13820,7 +13783,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddPackage]'
@@ -13906,7 +13869,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13914,7 +13877,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -13922,7 +13885,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddPackageAddon]'
@@ -13989,7 +13952,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -13997,7 +13960,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14005,7 +13968,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddPFX]'
@@ -14044,7 +14007,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14052,7 +14015,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14060,7 +14023,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddPrivateNetworkVlan]'
@@ -14087,7 +14050,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14095,7 +14058,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14103,7 +14066,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSCertificate]'
@@ -14144,7 +14107,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14152,7 +14115,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14160,7 +14123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSCollection]'
@@ -14196,7 +14159,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14204,7 +14167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14212,7 +14175,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSCollectionSettings]'
@@ -14284,7 +14247,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14292,7 +14255,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14300,7 +14263,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSMessage]'
@@ -14335,7 +14298,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14343,7 +14306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14351,7 +14314,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSServer]'
@@ -14386,7 +14349,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14394,7 +14357,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14402,7 +14365,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSServerToCollection]'
@@ -14421,7 +14384,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14429,7 +14392,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14437,7 +14400,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddRDSServerToOrganization]'
@@ -14456,7 +14419,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14464,7 +14427,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14472,7 +14435,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddSchedule]'
@@ -14575,7 +14538,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14583,7 +14546,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14591,7 +14554,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddServer]'
@@ -14664,7 +14627,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14672,7 +14635,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14680,7 +14643,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddService]'
@@ -14771,7 +14734,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14779,7 +14742,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14787,7 +14750,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddServiceItem]'
@@ -14906,7 +14869,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14914,7 +14877,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14922,7 +14885,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddSfBUser]'
@@ -14950,7 +14913,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -14958,7 +14921,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -14966,7 +14929,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddSfBUserPlan]'
@@ -15060,7 +15023,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15068,7 +15031,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15076,7 +15039,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddSSLRequest]'
@@ -15117,7 +15080,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15125,7 +15088,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15133,7 +15096,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddSupportServiceLevel]'
@@ -15214,7 +15177,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15222,7 +15185,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15230,7 +15193,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddUser]'
@@ -15351,7 +15314,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15359,7 +15322,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15367,7 +15330,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddUserToRDSCollection]'
@@ -15392,7 +15355,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15400,7 +15363,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15408,7 +15371,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddVirtualServices]'
@@ -15457,7 +15420,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15465,7 +15428,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15473,7 +15436,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddWebDavAccessToken]'
@@ -15514,7 +15477,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15522,7 +15485,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15530,7 +15493,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AddWebDavPortalUsersSettings]'
@@ -15560,7 +15523,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15568,7 +15531,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15576,7 +15539,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AllocatePackageIPAddresses]'
@@ -15628,7 +15591,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15636,7 +15599,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15644,7 +15607,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[AllocatePackageVLANs]'
@@ -15694,7 +15657,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15702,7 +15665,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15710,7 +15673,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CanChangeMfa]'
@@ -15728,7 +15691,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15736,7 +15699,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15744,7 +15707,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ChangeExchangeAcceptedDomainType]'
@@ -15763,7 +15726,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15771,7 +15734,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15779,7 +15742,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ChangePackageUser]'
@@ -15808,7 +15771,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15816,7 +15779,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15824,7 +15787,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ChangeUserPassword]'
@@ -15849,7 +15812,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15857,7 +15820,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15865,7 +15828,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckBlackBerryUserExists]'
@@ -15883,7 +15846,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15891,7 +15854,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15899,7 +15862,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckDomain]'
@@ -15961,7 +15924,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -15969,7 +15932,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -15977,7 +15940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- fix check domain used by HostedOrganization'
@@ -16013,7 +15976,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16021,7 +15984,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16029,7 +15992,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckLyncUserExists]'
@@ -16047,7 +16010,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16055,7 +16018,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16063,7 +16026,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckOCSUserExists]'
@@ -16081,7 +16044,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16089,7 +16052,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16097,7 +16060,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckRDSServer]'
@@ -16131,7 +16094,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16139,7 +16102,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16147,7 +16110,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckServiceItemExists]'
@@ -16181,7 +16144,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16189,7 +16152,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16197,7 +16160,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckServiceItemExistsInService]'
@@ -16225,7 +16188,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16233,7 +16196,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16241,7 +16204,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckServiceLevelUsage]'
@@ -16259,7 +16222,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16267,7 +16230,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16275,7 +16238,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckSfBUserExists]'
@@ -16293,7 +16256,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16301,7 +16264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16309,7 +16272,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckSSL]'
@@ -16345,7 +16308,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16353,7 +16316,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16361,7 +16324,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckSSLExistsForWebsite]'
@@ -16397,7 +16360,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16405,7 +16368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16413,7 +16376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CheckUserExists]'
@@ -16435,7 +16398,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16443,7 +16406,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16451,7 +16414,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CompleteSSLRequest]'
@@ -16494,7 +16457,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16502,7 +16465,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16510,7 +16473,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ConvertToExchangeOrganization]'
@@ -16532,7 +16495,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16540,7 +16503,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16548,7 +16511,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[CreateStorageSpaceFolder]'
@@ -16588,7 +16551,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16596,7 +16559,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16604,7 +16567,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeallocatePackageIPAddress]'
@@ -16640,7 +16603,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16648,7 +16611,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16656,7 +16619,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeallocatePackageVLAN]'
@@ -16692,7 +16655,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16700,7 +16663,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16708,7 +16671,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteAccessToken]'
@@ -16724,7 +16687,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16732,7 +16695,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16740,7 +16703,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteAdditionalGroup]'
@@ -16756,7 +16719,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16764,7 +16727,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16772,7 +16735,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteAllEnterpriseFolderOwaUsers]'
@@ -16788,7 +16751,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16796,7 +16759,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16804,7 +16767,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteAllLogRecords]'
@@ -16818,7 +16781,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16826,7 +16789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16834,7 +16797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteAuditLogRecords]'
@@ -16874,7 +16837,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16882,7 +16845,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16890,7 +16853,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteAuditLogRecordsComplete]'
@@ -16904,7 +16867,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16912,7 +16875,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16920,7 +16883,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteBackgroundTask]'
@@ -16945,7 +16908,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16953,7 +16916,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16961,7 +16924,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteBackgroundTaskParams]'
@@ -16977,7 +16940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -16985,7 +16948,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -16993,7 +16956,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteBackgroundTasks]'
@@ -17018,7 +16981,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17026,7 +16989,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17034,7 +16997,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteBlackBerryUser]'
@@ -17054,7 +17017,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17062,7 +17025,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17070,7 +17033,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteCertificate]'
@@ -17101,7 +17064,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17109,7 +17072,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17117,7 +17080,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteCluster]'
@@ -17140,7 +17103,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17148,7 +17111,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17156,7 +17119,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteComment]'
@@ -17185,7 +17148,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17193,7 +17156,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17201,7 +17164,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteCRMOrganization]'
@@ -17216,7 +17179,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17224,7 +17187,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17232,7 +17195,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteDnsRecord]'
@@ -17268,7 +17231,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17276,7 +17239,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17284,7 +17247,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteDomain]'
@@ -17311,7 +17274,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17319,7 +17282,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17327,7 +17290,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteDomainDnsRecord]'
@@ -17342,7 +17305,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17350,7 +17313,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17358,7 +17321,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteEnterpriseFolder]'
@@ -17375,7 +17338,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17383,7 +17346,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17391,7 +17354,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeAccount]'
@@ -17415,7 +17378,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17423,7 +17386,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17431,7 +17394,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeAccountEmailAddress]'
@@ -17448,7 +17411,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17456,7 +17419,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17464,7 +17427,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeDisclaimer]'
@@ -17482,7 +17445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17490,7 +17453,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17498,7 +17461,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeMailboxPlan]'
@@ -17517,7 +17480,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17525,7 +17488,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17533,7 +17496,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeMailboxPlanRetentionPolicyTag]'
@@ -17550,7 +17513,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17558,7 +17521,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17566,7 +17529,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeOrganization]'
@@ -17584,7 +17547,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17592,7 +17555,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17600,7 +17563,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeOrganizationDomain]'
@@ -17617,7 +17580,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17625,7 +17588,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17633,7 +17596,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExchangeRetentionPolicyTag]'
@@ -17650,7 +17613,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17658,7 +17621,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17666,7 +17629,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExpiredAccessTokenTokens]'
@@ -17678,7 +17641,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17686,7 +17649,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17694,7 +17657,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteExpiredWebDavAccessTokens]'
@@ -17706,7 +17669,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17714,7 +17677,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17722,7 +17685,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteHostingPlan]'
@@ -17766,7 +17729,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17774,7 +17737,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17782,7 +17745,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteIPAddress]'
@@ -17821,7 +17784,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17829,7 +17792,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17837,7 +17800,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteItemDmzIPAddress]'
@@ -17859,7 +17822,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17867,7 +17830,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17875,7 +17838,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteItemDmzIPAddresses]'
@@ -17896,7 +17859,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17904,7 +17867,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17912,7 +17875,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteItemIPAddress]'
@@ -17937,7 +17900,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17945,7 +17908,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17953,7 +17916,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteItemIPAddresses]'
@@ -17977,7 +17940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -17985,7 +17948,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -17993,7 +17956,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteItemPrivateIPAddress]'
@@ -18015,7 +17978,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18023,7 +17986,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18031,7 +17994,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteItemPrivateIPAddresses]'
@@ -18052,7 +18015,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18060,7 +18023,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18068,7 +18031,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteLevelResourceGroups]'
@@ -18084,7 +18047,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18092,7 +18055,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18100,7 +18063,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteLyncUser]'
@@ -18120,7 +18083,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18128,7 +18091,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18136,7 +18099,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteLyncUserPlan]'
@@ -18155,7 +18118,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18163,7 +18126,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18171,7 +18134,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteOCSUser]'
@@ -18191,7 +18154,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18199,7 +18162,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18207,7 +18170,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteOrganizationDeletedUser]'
@@ -18222,7 +18185,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18230,7 +18193,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18238,7 +18201,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteOrganizationStoragSpacesFolder]'
@@ -18254,7 +18217,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18262,7 +18225,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18270,7 +18233,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteOrganizationUsers]'
@@ -18286,7 +18249,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18294,7 +18257,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18302,7 +18265,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeletePackage]'
@@ -18379,7 +18342,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18387,7 +18350,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18395,7 +18358,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeletePackageAddon]'
@@ -18423,7 +18386,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18431,7 +18394,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18439,7 +18402,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeletePrivateNetworkVLAN]'
@@ -18464,7 +18427,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18472,7 +18435,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18480,7 +18443,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteRDSCollection]'
@@ -18501,7 +18464,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18509,7 +18472,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18517,7 +18480,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteRDSCollectionSettings]'
@@ -18533,7 +18496,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18541,7 +18504,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18549,7 +18512,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteRDSServer]'
@@ -18564,7 +18527,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18572,7 +18535,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18580,7 +18543,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteRDSServerSettings]'
@@ -18594,7 +18557,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18602,7 +18565,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18610,7 +18573,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteSchedule]'
@@ -18645,7 +18608,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18653,7 +18616,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18661,7 +18624,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteServer]'
@@ -18718,7 +18681,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18726,7 +18689,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18734,7 +18697,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteService]'
@@ -18776,7 +18739,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18784,7 +18747,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18792,7 +18755,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteServiceItem]'
@@ -18850,7 +18813,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18858,7 +18821,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18866,7 +18829,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteSfBUser]'
@@ -18886,7 +18849,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18894,7 +18857,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18902,7 +18865,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteSfBUserPlan]'
@@ -18921,7 +18884,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18929,7 +18892,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18937,7 +18900,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteSupportServiceLevel]'
@@ -18977,7 +18940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -18985,7 +18948,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -18993,7 +18956,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteUser]'
@@ -19055,7 +19018,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19063,7 +19026,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19071,7 +19034,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- ============================================='
@@ -19093,7 +19056,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19101,7 +19064,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19109,7 +19072,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteUserThemeSetting]'
@@ -19135,7 +19098,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19143,7 +19106,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19151,7 +19114,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DeleteVirtualServices]'
@@ -19196,7 +19159,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19204,7 +19167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19212,7 +19175,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[DistributePackageServices]'
@@ -19403,7 +19366,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19411,7 +19374,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19419,7 +19382,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ExchangeAccountEmailAddressExists]'
@@ -19445,7 +19408,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19453,7 +19416,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19461,7 +19424,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ExchangeAccountExists]'
@@ -19482,7 +19445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19490,7 +19453,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19498,7 +19461,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ExchangeOrganizationDomainExists]'
@@ -19518,7 +19481,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19526,7 +19489,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19534,7 +19497,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[ExchangeOrganizationExists]'
@@ -19555,7 +19518,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19563,7 +19526,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19571,7 +19534,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAccessTokenByAccessToken]'
@@ -19595,7 +19558,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19603,7 +19566,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19611,7 +19574,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAdditionalGroups]'
@@ -19631,7 +19594,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19639,7 +19602,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19647,7 +19610,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAllPackages]'
@@ -19670,7 +19633,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19678,7 +19641,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19686,7 +19649,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAllServers]'
@@ -19713,7 +19676,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19721,7 +19684,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19729,7 +19692,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAuditLogRecord]'
@@ -19765,7 +19728,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19773,7 +19736,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19781,7 +19744,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAuditLogRecordsPaged]'
@@ -19885,7 +19848,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19893,7 +19856,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19901,7 +19864,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAuditLogSources]'
@@ -19915,7 +19878,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19923,7 +19886,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19931,7 +19894,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAuditLogTasks]'
@@ -19951,7 +19914,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -19959,7 +19922,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -19967,7 +19930,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetAvailableVirtualServices]'
@@ -20008,7 +19971,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20016,7 +19979,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20024,7 +19987,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBackgroundTask]'
@@ -20063,7 +20026,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20071,7 +20034,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20079,7 +20042,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBackgroundTaskLogs]'
@@ -20106,7 +20069,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20114,7 +20077,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20122,7 +20085,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBackgroundTaskParams]'
@@ -20144,7 +20107,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20152,7 +20115,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20160,7 +20123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBackgroundTasks]'
@@ -20212,7 +20175,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20220,7 +20183,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20228,7 +20191,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBackgroundTopTask]'
@@ -20268,7 +20231,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20276,7 +20239,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20284,7 +20247,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBlackBerryUsers]'
@@ -20394,7 +20357,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20402,7 +20365,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20410,7 +20373,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetBlackBerryUsersCount]'
@@ -20447,7 +20410,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20455,7 +20418,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20463,7 +20426,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetCertificatesForSite]'
@@ -20497,7 +20460,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20505,7 +20468,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20513,7 +20476,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetClusters]'
@@ -20539,7 +20502,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20547,7 +20510,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20555,7 +20518,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetComments]'
@@ -20600,7 +20563,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20608,7 +20571,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20616,7 +20579,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetCRMOrganizationUsers]'
@@ -20644,7 +20607,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20652,7 +20615,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20660,7 +20623,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetCRMUser]'
@@ -20681,7 +20644,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20689,7 +20652,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20697,7 +20660,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetCRMUsers]'
@@ -20807,7 +20770,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20815,7 +20778,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20823,7 +20786,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetCRMUsersCount] '
@@ -20863,7 +20826,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20871,7 +20834,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20879,7 +20842,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDnsRecord]'
@@ -20927,7 +20890,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20935,7 +20898,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20943,7 +20906,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDnsRecordsByGroup]'
@@ -20969,7 +20932,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -20977,7 +20940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -20985,7 +20948,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDnsRecordsByPackage]'
@@ -21031,7 +20994,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21039,7 +21002,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21047,7 +21010,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDnsRecordsByServer]'
@@ -21090,7 +21053,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21098,7 +21061,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21106,7 +21069,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDnsRecordsByService]'
@@ -21149,7 +21112,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21157,7 +21120,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21165,7 +21128,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDnsRecordsTotal]'
@@ -21292,7 +21255,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21300,7 +21263,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21308,7 +21271,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomain]'
@@ -21348,7 +21311,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21356,7 +21319,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21364,7 +21327,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomainAllDnsRecords]'
@@ -21386,7 +21349,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21394,7 +21357,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21402,7 +21365,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomainByName]'
@@ -21474,7 +21437,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21482,7 +21445,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21490,7 +21453,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomainDnsRecords]'
@@ -21513,7 +21476,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21521,7 +21484,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21529,7 +21492,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomains]'
@@ -21574,7 +21537,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21582,7 +21545,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21590,7 +21553,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomainsByDomainItemID]'
@@ -21629,7 +21592,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21637,7 +21600,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21645,7 +21608,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomainsByZoneID]'
@@ -21684,7 +21647,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21692,7 +21655,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21700,7 +21663,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetDomainsPaged]'
@@ -21815,7 +21778,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21823,7 +21786,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21831,7 +21794,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetEnterpriseFolder]'
@@ -21865,7 +21828,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21873,7 +21836,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21881,7 +21844,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetEnterpriseFolderId]'
@@ -21899,7 +21862,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21907,7 +21870,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21915,7 +21878,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetEnterpriseFolderOwaUsers]'
@@ -21943,7 +21906,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21951,7 +21914,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21959,7 +21922,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetEnterpriseFolders]'
@@ -21975,7 +21938,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -21983,7 +21946,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -21991,7 +21954,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetEnterpriseFoldersPaged]'
@@ -22059,7 +22022,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22067,7 +22030,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22075,7 +22038,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- Password column removed'
@@ -22117,7 +22080,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22125,7 +22088,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22133,7 +22096,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- Password column removed'
@@ -22173,7 +22136,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22181,7 +22144,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22189,7 +22152,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeAccountByAccountNameWithoutItemId] '
@@ -22226,7 +22189,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22234,7 +22197,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22242,7 +22205,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeAccountByMailboxPlanId] '
@@ -22344,7 +22307,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22352,7 +22315,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22360,7 +22323,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeAccountDisclaimerId] '
@@ -22380,7 +22343,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22388,7 +22351,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22396,7 +22359,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeAccountEmailAddresses]'
@@ -22418,7 +22381,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22426,7 +22389,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22434,7 +22397,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeAccounts]'
@@ -22468,7 +22431,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22476,7 +22439,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22484,7 +22447,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeAccountsPaged]'
@@ -22579,7 +22542,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22587,7 +22550,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22595,7 +22558,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeDisclaimer] '
@@ -22618,7 +22581,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22626,7 +22589,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22634,7 +22597,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeDisclaimers]'
@@ -22658,7 +22621,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22666,7 +22629,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22674,7 +22637,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeMailboxes]'
@@ -22704,7 +22667,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22712,7 +22675,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22720,7 +22683,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeMailboxPlan] '
@@ -22770,7 +22733,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22778,7 +22741,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22786,7 +22749,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeMailboxPlanRetentionPolicyTags]'
@@ -22812,7 +22775,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22820,7 +22783,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22828,7 +22791,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeMailboxPlans]'
@@ -22876,7 +22839,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22884,7 +22847,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22892,7 +22855,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeOrganization]'
@@ -22915,7 +22878,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22923,7 +22886,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22931,7 +22894,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeOrganizationDomains]'
@@ -22954,7 +22917,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22962,7 +22925,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -22970,7 +22933,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeOrganizationSettings]'
@@ -22991,7 +22954,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -22999,7 +22962,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23007,7 +22970,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- Exchange2013 Shared and resource mailboxes Organization statistics'
@@ -23065,7 +23028,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23073,7 +23036,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23081,7 +23044,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeRetentionPolicyTag] '
@@ -23106,7 +23069,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23114,7 +23077,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23122,7 +23085,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetExchangeRetentionPolicyTags]'
@@ -23148,7 +23111,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23156,7 +23119,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23164,7 +23127,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetFilterURL]'
@@ -23204,7 +23167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23212,7 +23175,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23220,7 +23183,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetFilterURLByHostingPlan]'
@@ -23274,7 +23237,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23282,7 +23245,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23290,7 +23253,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetGroupProviders]'
@@ -23315,7 +23278,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23323,7 +23286,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23331,7 +23294,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetHostingAddons]'
@@ -23370,7 +23333,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23378,7 +23341,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23386,7 +23349,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetHostingPlan]'
@@ -23418,7 +23381,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23426,7 +23389,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23434,7 +23397,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetHostingPlanQuotas]'
@@ -23495,7 +23458,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23503,7 +23466,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23511,7 +23474,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetHostingPlans]'
@@ -23563,7 +23526,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23571,7 +23534,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23579,7 +23542,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetInstanceID]'
@@ -23595,7 +23558,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23603,7 +23566,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23611,7 +23574,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetIPAddress]'
@@ -23641,7 +23604,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23649,7 +23612,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23657,7 +23620,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetIPAddresses]'
@@ -23705,7 +23668,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23713,7 +23676,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23721,7 +23684,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetIPAddressesPaged]'
@@ -23835,7 +23798,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23843,7 +23806,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23851,7 +23814,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetItemDmzIPAddresses]'
@@ -23876,7 +23839,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23884,7 +23847,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23892,7 +23855,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetItemIdByOrganizationId]'
@@ -23913,7 +23876,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23921,7 +23884,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23929,7 +23892,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetItemIPAddresses]'
@@ -23961,7 +23924,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -23969,7 +23932,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -23977,7 +23940,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetItemPrivateIPAddresses]'
@@ -24003,7 +23966,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24011,7 +23974,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24019,7 +23982,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetLevelResourceGroups]'
@@ -24042,7 +24005,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24050,7 +24013,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24058,7 +24021,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '--'
@@ -24105,7 +24068,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24113,7 +24076,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24121,7 +24084,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetLyncUserPlanByAccountId]'
@@ -24152,7 +24115,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24160,7 +24123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24168,7 +24131,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetLyncUserPlans]'
@@ -24200,7 +24163,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24208,7 +24171,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24216,7 +24179,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetLyncUsers]'
@@ -24344,7 +24307,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24352,7 +24315,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24360,7 +24323,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetLyncUsersByPlanId]'
@@ -24397,7 +24360,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24405,7 +24368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24413,7 +24376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetLyncUsersCount]'
@@ -24437,7 +24400,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24445,7 +24408,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24453,7 +24416,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetMyPackages]'
@@ -24508,7 +24471,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24516,7 +24479,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24524,7 +24487,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetNestedPackagesPaged]'
@@ -24631,7 +24594,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24639,7 +24602,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24647,7 +24610,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetNestedPackagesSummary]'
@@ -24676,7 +24639,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24684,7 +24647,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24692,7 +24655,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetNextSchedule]'
@@ -24755,7 +24718,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24763,7 +24726,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24771,7 +24734,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOCSUsers]'
@@ -24884,7 +24847,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24892,7 +24855,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24900,7 +24863,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOCSUsersCount]'
@@ -24937,7 +24900,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24945,7 +24908,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24953,7 +24916,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationCRMUserCount]'
@@ -24975,7 +24938,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -24983,7 +24946,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -24991,7 +24954,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationDeletedUser]'
@@ -25016,7 +24979,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25024,7 +24987,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25032,7 +24995,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationGroupsByDisplayName]'
@@ -25058,7 +25021,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25066,7 +25029,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25074,7 +25037,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationObjectsByDomain]'
@@ -25148,7 +25111,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25156,7 +25119,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25164,7 +25127,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationRdsCollectionsCount]'
@@ -25182,7 +25145,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25190,7 +25153,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25198,7 +25161,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationRdsServersCount]'
@@ -25216,7 +25179,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25224,7 +25187,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25232,7 +25195,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationRdsUsersCount]'
@@ -25251,7 +25214,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25259,7 +25222,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25267,7 +25230,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationStatistics]'
@@ -25286,7 +25249,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25294,7 +25257,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25302,7 +25265,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationStoragSpaceFolders]'
@@ -25327,7 +25290,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25335,7 +25298,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25343,7 +25306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetOrganizationStoragSpacesFolderByType]'
@@ -25369,7 +25332,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25377,7 +25340,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25385,7 +25348,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackage]'
@@ -25419,7 +25382,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25427,7 +25390,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25435,7 +25398,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageAddon]'
@@ -25469,7 +25432,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25477,7 +25440,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25485,7 +25448,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageAddons]'
@@ -25518,7 +25481,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25526,7 +25489,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25534,7 +25497,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageBandwidth]'
@@ -25586,7 +25549,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25594,7 +25557,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25602,7 +25565,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageBandwidthUpdate]'
@@ -25619,7 +25582,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25627,7 +25590,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25635,7 +25598,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageDiskspace]'
@@ -25677,7 +25640,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25685,7 +25648,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25693,7 +25656,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- DMZ Network'
@@ -25719,7 +25682,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25727,7 +25690,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25735,7 +25698,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageDmzIPAddressesPaged]'
@@ -25815,7 +25778,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25823,7 +25786,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25831,7 +25794,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageDmzNetworkVLANs]'
@@ -25908,7 +25871,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25916,7 +25879,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25924,7 +25887,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageIPAddress]'
@@ -25958,7 +25921,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -25966,7 +25929,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -25974,7 +25937,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageIPAddresses]'
@@ -26081,7 +26044,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26089,7 +26052,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26097,7 +26060,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageIPAddressesCount]'
@@ -26131,7 +26094,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26139,7 +26102,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26147,7 +26110,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagePackages]'
@@ -26200,7 +26163,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26208,7 +26171,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26216,7 +26179,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagePrivateIPAddresses]'
@@ -26240,7 +26203,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26248,7 +26211,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26256,7 +26219,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagePrivateIPAddressesPaged]'
@@ -26335,7 +26298,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26343,7 +26306,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26351,7 +26314,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagePrivateNetworkVLANs]'
@@ -26427,7 +26390,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26435,7 +26398,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26443,7 +26406,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageQuota]'
@@ -26484,7 +26447,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26492,7 +26455,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26500,7 +26463,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageQuotas]'
@@ -26566,7 +26529,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26574,7 +26537,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26582,7 +26545,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageQuotasForEdit]'
@@ -26643,7 +26606,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26651,7 +26614,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26659,7 +26622,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackages]'
@@ -26708,7 +26671,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26716,7 +26679,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26724,7 +26687,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagesBandwidthPaged]'
@@ -26834,7 +26797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26842,7 +26805,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26850,7 +26813,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagesDiskspacePaged]'
@@ -26957,7 +26920,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -26965,7 +26928,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -26973,7 +26936,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageServiceID]'
@@ -27050,7 +27013,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27058,7 +27021,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27066,7 +27029,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageSettings]'
@@ -27136,7 +27099,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27144,7 +27107,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27152,7 +27115,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackagesPaged]'
@@ -27242,7 +27205,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27250,7 +27213,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27258,7 +27221,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPackageUnassignedIPAddresses]'
@@ -27296,7 +27259,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27304,7 +27267,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27312,7 +27275,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetParentPackageQuotas]'
@@ -27378,7 +27341,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27386,7 +27349,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27394,7 +27357,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPendingSSLForWebsite]'
@@ -27426,7 +27389,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27434,7 +27397,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27442,7 +27405,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPrivateNetworVLAN]'
@@ -27467,7 +27430,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27475,7 +27438,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27483,7 +27446,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetPrivateNetworVLANsPaged]'
@@ -27582,7 +27545,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27590,7 +27553,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27598,7 +27561,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetProcessBackgroundTasks]'
@@ -27634,7 +27597,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27642,7 +27605,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27650,7 +27613,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetProvider]'
@@ -27675,7 +27638,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27683,7 +27646,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27691,7 +27654,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetProviderByServiceID]'
@@ -27716,7 +27679,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27724,7 +27687,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27732,7 +27695,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetProviders]'
@@ -27755,7 +27718,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27763,7 +27726,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27771,7 +27734,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetProviderServiceQuota]'
@@ -27797,7 +27760,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetQuotaHidden]'
@@ -27818,7 +27781,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27826,7 +27789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27834,7 +27797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetQuotas]'
@@ -27854,7 +27817,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27862,7 +27825,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27870,7 +27833,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRawServicesByServerID]'
@@ -27914,7 +27877,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27922,7 +27885,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27930,7 +27893,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCertificateByServiceId]'
@@ -27954,7 +27917,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -27962,7 +27925,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -27970,7 +27933,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCollectionById]'
@@ -27992,7 +27955,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28000,7 +27963,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28008,7 +27971,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCollectionByName]'
@@ -28030,7 +27993,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28038,7 +28001,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28046,7 +28009,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCollectionsByItemId]'
@@ -28067,7 +28030,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28075,7 +28038,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28083,7 +28046,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCollectionSettingsByCollectionId]'
@@ -28118,7 +28081,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28126,7 +28089,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28134,7 +28097,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCollectionsPaged]'
@@ -28193,7 +28156,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28201,7 +28164,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28209,7 +28172,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSCollectionUsersByRDSCollectionId]'
@@ -28243,7 +28206,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28251,7 +28214,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28259,7 +28222,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSControllerServiceIDbyFQDN]'
@@ -28279,7 +28242,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28287,7 +28250,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28295,7 +28258,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSMessages]'
@@ -28310,7 +28273,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28318,7 +28281,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28326,7 +28289,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSServerById]'
@@ -28353,7 +28316,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28361,7 +28324,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28369,7 +28332,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSServers]'
@@ -28389,7 +28352,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28397,7 +28360,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28405,7 +28368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSServersByCollectionId]'
@@ -28429,7 +28392,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28437,7 +28400,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28445,7 +28408,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSServersByItemId]'
@@ -28469,7 +28432,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28477,7 +28440,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28485,7 +28448,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSServerSettings]'
@@ -28502,7 +28465,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28510,7 +28473,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28518,7 +28481,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetRDSServersPaged]'
@@ -28601,7 +28564,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28609,7 +28572,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28617,7 +28580,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetResellerDomains]'
@@ -28657,7 +28620,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28665,7 +28628,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28673,7 +28636,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetResourceGroup]'
@@ -28695,7 +28658,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28703,7 +28666,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28711,7 +28674,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetResourceGroupByName]'
@@ -28733,7 +28696,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28741,7 +28704,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28749,7 +28712,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetResourceGroups]'
@@ -28766,7 +28729,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28774,7 +28737,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28782,7 +28745,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSchedule]'
@@ -28846,7 +28809,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28854,7 +28817,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28862,7 +28825,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleBackgroundTasks]'
@@ -28902,7 +28865,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28910,7 +28873,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28918,7 +28881,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleInternal]'
@@ -28957,7 +28920,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -28965,7 +28928,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -28973,7 +28936,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleParameters]'
@@ -29009,7 +28972,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29017,7 +28980,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29025,7 +28988,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSchedules]'
@@ -29104,7 +29067,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29112,7 +29075,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29120,7 +29083,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSchedulesPaged]'
@@ -29236,7 +29199,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29244,7 +29207,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29252,7 +29215,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleTask]'
@@ -29281,7 +29244,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29289,7 +29252,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29297,7 +29260,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleTaskEmailTemplate]'
@@ -29316,7 +29279,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29324,7 +29287,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29332,7 +29295,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleTasks]'
@@ -29358,7 +29321,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29366,7 +29329,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29374,7 +29337,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetScheduleTaskViewConfigurations]'
@@ -29397,7 +29360,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29405,7 +29368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29413,7 +29376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSearchableServiceItemTypes]'
@@ -29432,7 +29395,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -29440,7 +29403,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -29448,7 +29411,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSearchObject]'
@@ -30309,7 +30272,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -30317,7 +30280,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -30325,7 +30288,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSearchTableByColumns]'
@@ -30757,7 +30720,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -30765,7 +30728,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -30773,7 +30736,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServer]'
@@ -30818,7 +30781,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -30826,7 +30789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -30834,7 +30797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServerByName]'
@@ -30876,7 +30839,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -30884,7 +30847,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -30892,7 +30855,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServerInternal]'
@@ -30929,7 +30892,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -30937,7 +30900,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -30945,7 +30908,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServers]'
@@ -30989,7 +30952,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -30997,7 +30960,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31005,7 +30968,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServerShortDetails]'
@@ -31030,7 +30993,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31038,7 +31001,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31046,7 +31009,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetService]'
@@ -31075,7 +31038,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31083,7 +31046,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31091,7 +31054,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItem]'
@@ -31159,7 +31122,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31167,7 +31130,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31175,7 +31138,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemByName]'
@@ -31251,7 +31214,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31259,7 +31222,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31267,7 +31230,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItems]'
@@ -31342,7 +31305,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31350,7 +31313,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31358,7 +31321,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsByName]'
@@ -31429,7 +31392,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31437,7 +31400,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31445,7 +31408,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsByPackage]'
@@ -31514,7 +31477,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31522,7 +31485,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31530,7 +31493,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsByService]'
@@ -31600,7 +31563,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31608,7 +31571,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31616,7 +31579,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsCount]'
@@ -31646,7 +31609,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31654,7 +31617,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31662,7 +31625,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsCountByNameAndServiceId]'
@@ -31689,7 +31652,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31697,7 +31660,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31705,7 +31668,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsForStatistics]'
@@ -31769,7 +31732,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31777,7 +31740,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31785,7 +31748,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemsPaged]'
@@ -31926,7 +31889,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31934,7 +31897,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31942,7 +31905,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemType]'
@@ -31972,7 +31935,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -31980,7 +31943,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -31988,7 +31951,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceItemTypes]'
@@ -32014,7 +31977,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32022,7 +31985,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32030,7 +31993,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServiceProperties]'
@@ -32051,7 +32014,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32059,7 +32022,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32067,7 +32030,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServicesByGroupID]'
@@ -32100,7 +32063,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32108,7 +32071,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32116,7 +32079,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServicesByGroupName]'
@@ -32152,7 +32115,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32160,7 +32123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32168,7 +32131,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServicesByServerID]'
@@ -32205,7 +32168,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32213,7 +32176,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32221,7 +32184,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetServicesByServerIDGroupName]'
@@ -32258,7 +32221,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32266,7 +32229,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32274,7 +32237,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSfBUserPlan] '
@@ -32314,7 +32277,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32322,7 +32285,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32330,7 +32293,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSfBUserPlanByAccountId]'
@@ -32361,7 +32324,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32369,7 +32332,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32377,7 +32340,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSfBUserPlans]'
@@ -32409,7 +32372,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32417,7 +32380,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32425,7 +32388,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSfBUsers]'
@@ -32553,7 +32516,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32561,7 +32524,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32569,7 +32532,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSfBUsersByPlanId]'
@@ -32606,7 +32569,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32614,7 +32577,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32622,7 +32585,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSfBUsersCount]'
@@ -32646,7 +32609,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32654,7 +32617,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32662,7 +32625,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSiteCert]'
@@ -32688,7 +32651,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32696,7 +32659,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32704,7 +32667,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSSLCertificateByID]'
@@ -32729,7 +32692,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32737,7 +32700,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32745,7 +32708,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpaceById]'
@@ -32773,7 +32736,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32781,7 +32744,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32789,7 +32752,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpaceByServiceAndPath] '
@@ -32818,7 +32781,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32826,7 +32789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32834,7 +32797,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpaceFolderById]'
@@ -32858,7 +32821,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32866,7 +32829,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32874,7 +32837,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpaceFoldersByStorageSpaceId]'
@@ -32898,7 +32861,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32906,7 +32869,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32914,7 +32877,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpaceLevelById] '
@@ -32933,7 +32896,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -32941,7 +32904,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -32949,7 +32912,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpaceLevelsPaged]'
@@ -33002,7 +32965,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33010,7 +32973,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33018,7 +32981,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpacesByLevelId] '
@@ -33048,7 +33011,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33056,7 +33019,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33064,7 +33027,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpacesByResourceGroupName] '
@@ -33094,7 +33057,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33102,7 +33065,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33110,7 +33073,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetStorageSpacesPaged]'
@@ -33172,7 +33135,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33180,7 +33143,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33188,7 +33151,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSupportServiceLevel]'
@@ -33205,7 +33168,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33213,7 +33176,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33221,7 +33184,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSupportServiceLevels]'
@@ -33234,7 +33197,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33242,7 +33205,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33250,7 +33213,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetSystemSettings]'
@@ -33274,7 +33237,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33282,7 +33245,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33290,7 +33253,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetThemes]'
@@ -33315,7 +33278,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33323,7 +33286,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33331,7 +33294,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetThemeSetting]'
@@ -33358,7 +33321,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33366,7 +33329,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33374,7 +33337,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetThemeSettings]'
@@ -33399,7 +33362,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33407,7 +33370,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33415,7 +33378,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetThreadBackgroundTasks]'
@@ -33454,7 +33417,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33462,7 +33425,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33470,7 +33433,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUnallottedIPAddresses]'
@@ -33578,7 +33541,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33586,7 +33549,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33594,7 +33557,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUnallottedVLANs]'
@@ -33682,7 +33645,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33690,7 +33653,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33698,7 +33661,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserAvailableHostingAddons]'
@@ -33747,7 +33710,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33755,7 +33718,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33763,7 +33726,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserAvailableHostingPlans]'
@@ -33812,7 +33775,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33820,7 +33783,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33828,7 +33791,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserByExchangeOrganizationIdInternally]'
@@ -33878,7 +33841,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33886,7 +33849,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33894,7 +33857,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserById]'
@@ -33951,7 +33914,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -33959,7 +33922,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -33967,7 +33930,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserByIdInternally]'
@@ -34019,7 +33982,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34027,7 +33990,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34035,7 +33998,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserByUsername]'
@@ -34091,7 +34054,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34099,7 +34062,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34107,7 +34070,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserByUsernameInternally]'
@@ -34160,7 +34123,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34168,7 +34131,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34176,7 +34139,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserDomainsPaged]'
@@ -34256,7 +34219,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34264,7 +34227,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34272,7 +34235,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserEnterpriseFolderWithOwaEditPermission]'
@@ -34291,7 +34254,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34299,7 +34262,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34307,7 +34270,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserPackagesServerUrls]'
@@ -34339,7 +34302,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34347,7 +34310,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34355,7 +34318,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserParents]'
@@ -34397,7 +34360,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34405,7 +34368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34413,7 +34376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserPeers]'
@@ -34456,7 +34419,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34464,7 +34427,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34472,7 +34435,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUsers]'
@@ -34525,7 +34488,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34533,7 +34496,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34541,7 +34504,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '/*'
@@ -34788,7 +34751,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34796,7 +34759,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34804,7 +34767,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUserSettings]'
@@ -34865,7 +34828,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34873,7 +34836,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34881,7 +34844,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUsersPaged]'
@@ -34982,7 +34945,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -34990,7 +34953,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -34998,7 +34961,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetUsersSummary]'
@@ -35033,7 +34996,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35041,7 +35004,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35049,7 +35012,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetVirtualMachinesPaged]'
@@ -35163,7 +35126,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35171,7 +35134,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35179,7 +35142,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetVirtualMachinesPaged2012]'
@@ -35292,7 +35255,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35300,7 +35263,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35308,7 +35271,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetVirtualMachinesPagedForPC]'
@@ -35425,7 +35388,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35433,7 +35396,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35441,7 +35404,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetVirtualMachinesPagedProxmox]'
@@ -35554,7 +35517,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35562,7 +35525,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35570,7 +35533,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetVirtualServers]'
@@ -35602,7 +35565,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35610,7 +35573,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35618,7 +35581,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetVirtualServices]'
@@ -35668,7 +35631,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35676,7 +35639,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35684,7 +35647,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetWebDavAccessTokenByAccessToken]'
@@ -35707,7 +35670,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35715,7 +35678,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35723,7 +35686,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetWebDavAccessTokenById]'
@@ -35746,7 +35709,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35754,7 +35717,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35762,7 +35725,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[GetWebDavPortalUsersSettingsByAccountId]'
@@ -35781,7 +35744,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35789,7 +35752,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35797,7 +35760,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[InsertCRMUser] '
@@ -35833,7 +35796,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35841,7 +35804,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35849,7 +35812,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[InsertStorageSpace]'
@@ -35903,7 +35866,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35911,7 +35874,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35919,7 +35882,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[InsertStorageSpaceLevel]'
@@ -35949,7 +35912,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -35957,7 +35920,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -35965,7 +35928,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[LyncUserExists]'
@@ -36004,7 +35967,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36012,7 +35975,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36020,7 +35983,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[MoveServiceItem]'
@@ -36054,7 +36017,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36062,7 +36025,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36070,7 +36033,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[OrganizationExists]'
@@ -36091,7 +36054,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36099,7 +36062,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36107,7 +36070,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[OrganizationUserExists]'
@@ -36128,7 +36091,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36136,7 +36099,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36144,7 +36107,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[RemoveRDSServerFromCollection]'
@@ -36162,7 +36125,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36170,7 +36133,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36178,7 +36141,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[RemoveRDSServerFromOrganization]'
@@ -36196,7 +36159,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36204,7 +36167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36212,7 +36175,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[RemoveRDSUserFromRDSCollection]'
@@ -36229,7 +36192,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36237,7 +36200,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36245,7 +36208,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[RemoveStorageSpace]'
@@ -36259,7 +36222,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36267,7 +36230,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36275,7 +36238,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[RemoveStorageSpaceFolder]'
@@ -36291,7 +36254,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36299,7 +36262,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36307,7 +36270,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[RemoveStorageSpaceLevel]'
@@ -36321,7 +36284,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36329,7 +36292,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36337,7 +36300,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SearchExchangeAccount]'
@@ -36388,7 +36351,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36396,7 +36359,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36404,7 +36367,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SearchExchangeAccounts]'
@@ -36479,7 +36442,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36487,7 +36450,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36495,7 +36458,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SearchExchangeAccountsByTypes]'
@@ -36564,7 +36527,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36572,7 +36535,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36580,7 +36543,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SearchOrganizationAccounts]'
@@ -36650,7 +36613,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36658,7 +36621,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36666,7 +36629,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SearchServiceItemsPaged]'
@@ -36808,7 +36771,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36816,7 +36779,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36824,7 +36787,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetAccessTokenSmsResponse]'
@@ -36840,7 +36803,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36848,7 +36811,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36856,7 +36819,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetExchangeAccountDisclaimerId] '
@@ -36875,7 +36838,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36883,7 +36846,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36891,7 +36854,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetExchangeAccountMailboxplan] '
@@ -36916,7 +36879,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36924,7 +36887,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36932,7 +36895,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetItemDmzPrimaryIPAddress]'
@@ -36955,7 +36918,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -36963,7 +36926,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -36971,7 +36934,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetItemPrimaryIPAddress]'
@@ -37003,7 +36966,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37011,7 +36974,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37019,7 +36982,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetItemPrivatePrimaryIPAddress]'
@@ -37042,7 +37005,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37050,7 +37013,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37058,7 +37021,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetLyncUserLyncUserPlan]'
@@ -37079,7 +37042,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37087,7 +37050,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37095,7 +37058,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetOrganizationDefaultExchangeMailboxPlan]'
@@ -37116,7 +37079,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37124,7 +37087,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37132,7 +37095,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetOrganizationDefaultLyncUserPlan]'
@@ -37153,7 +37116,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37161,7 +37124,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37169,7 +37132,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetOrganizationDefaultSfBUserPlan]'
@@ -37190,7 +37153,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37198,7 +37161,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37206,7 +37169,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetSfBUserSfBUserPlan]'
@@ -37227,7 +37190,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37235,7 +37198,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37243,7 +37206,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetSystemSettings]'
@@ -37293,7 +37256,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37301,7 +37264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37309,7 +37272,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SetUserOneTimePassword]'
@@ -37328,7 +37291,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37336,7 +37299,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37344,7 +37307,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[SfBUserExists]'
@@ -37383,7 +37346,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37391,7 +37354,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37399,7 +37362,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateAdditionalGroup]'
@@ -37417,7 +37380,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37425,7 +37388,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37433,7 +37396,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateBackgroundTask]'
@@ -37480,7 +37443,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37488,7 +37451,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37496,7 +37459,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateCRMUser]'
@@ -37519,7 +37482,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37527,7 +37490,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37535,7 +37498,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateDnsRecord]'
@@ -37590,7 +37553,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37598,7 +37561,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37606,7 +37569,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateDomain]'
@@ -37649,7 +37612,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37657,7 +37620,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37665,7 +37628,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateDomainCreationDate]'
@@ -37680,7 +37643,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37688,7 +37651,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37696,7 +37659,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateDomainDates]'
@@ -37713,7 +37676,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37721,7 +37684,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37729,7 +37692,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateDomainExpirationDate]'
@@ -37744,7 +37707,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37752,7 +37715,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37760,7 +37723,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateDomainLastUpdateDate]'
@@ -37775,7 +37738,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37783,7 +37746,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37791,7 +37754,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateEntepriseFolderStorageSpaceFolder]'
@@ -37810,7 +37773,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37818,7 +37781,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37826,7 +37789,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateEnterpriseFolder]'
@@ -37847,7 +37810,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37855,7 +37818,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37863,7 +37826,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT '-- Password column removed'
@@ -37920,7 +37883,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37928,7 +37891,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37936,7 +37899,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateExchangeAccountSLSettings]'
@@ -37972,7 +37935,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -37980,7 +37943,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -37988,7 +37951,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateExchangeAccountUserPrincipalName]'
@@ -38009,7 +37972,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38017,7 +37980,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38025,7 +37988,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateExchangeDisclaimer] '
@@ -38048,7 +38011,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38056,7 +38019,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38064,7 +38027,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateExchangeMailboxPlan] '
@@ -38140,7 +38103,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38148,7 +38111,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38156,7 +38119,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateExchangeOrganizationSettings]'
@@ -38177,7 +38140,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38185,7 +38148,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38193,7 +38156,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateExchangeRetentionPolicyTag] '
@@ -38221,7 +38184,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38229,7 +38192,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38237,7 +38200,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateHostingPlan]'
@@ -38311,7 +38274,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38319,7 +38282,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38327,7 +38290,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateIPAddress]'
@@ -38364,7 +38327,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38372,7 +38335,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38380,7 +38343,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateIPAddresses]'
@@ -38422,7 +38385,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38430,7 +38393,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38438,7 +38401,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateLyncUser]'
@@ -38459,7 +38422,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38467,7 +38430,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38475,7 +38438,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateLyncUserPlan] '
@@ -38541,7 +38504,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38549,7 +38512,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38557,7 +38520,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackage]'
@@ -38627,7 +38590,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38635,7 +38598,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38643,7 +38606,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageAddon]'
@@ -38701,7 +38664,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38709,7 +38672,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38717,7 +38680,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageBandwidth]'
@@ -38794,7 +38757,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38802,7 +38765,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38810,7 +38773,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageBandwidthUpdate]'
@@ -38829,7 +38792,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38837,7 +38800,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38845,7 +38808,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageDiskSpace]'
@@ -38897,7 +38860,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38905,7 +38868,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38913,7 +38876,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageName]'
@@ -38948,7 +38911,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -38956,7 +38919,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -38964,7 +38927,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePackageSettings]'
@@ -39019,7 +38982,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39027,7 +38990,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39035,7 +38998,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdatePrivateNetworVLAN]'
@@ -39062,7 +39025,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateQuotaHidden]'
@@ -39082,7 +39045,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39090,7 +39053,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39098,7 +39061,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateRDSCollection]'
@@ -39123,7 +39086,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39131,7 +39094,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39139,7 +39102,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateRDSCollectionSettings]'
@@ -39188,7 +39151,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39196,7 +39159,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39204,7 +39167,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateRDSServer]'
@@ -39233,7 +39196,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39241,7 +39204,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39249,7 +39212,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateRDSServerSettings]'
@@ -39301,7 +39264,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39309,7 +39272,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39317,7 +39280,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateSchedule]'
@@ -39405,7 +39368,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39413,7 +39376,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39421,7 +39384,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateServer]'
@@ -39475,7 +39438,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39483,7 +39446,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39491,7 +39454,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateService]'
@@ -39520,7 +39483,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39528,7 +39491,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39536,7 +39499,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateServiceFully]'
@@ -39567,7 +39530,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39575,7 +39538,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39583,7 +39546,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateServiceItem]'
@@ -39661,7 +39624,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39669,7 +39632,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39677,7 +39640,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateServiceProperties]'
@@ -39729,7 +39692,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39737,7 +39700,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39745,7 +39708,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateSfBUser]'
@@ -39766,7 +39729,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39774,7 +39737,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39782,7 +39745,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateSfBUserPlan]'
@@ -39820,7 +39783,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39828,7 +39791,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39836,7 +39799,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateStorageSpace]'
@@ -39862,7 +39825,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39870,7 +39833,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39878,7 +39841,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateStorageSpaceFolder]'
@@ -39908,7 +39871,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39916,7 +39879,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39924,7 +39887,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateStorageSpaceLevel]'
@@ -39942,7 +39905,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -39950,7 +39913,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -39958,7 +39921,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateSupportServiceLevel]'
@@ -40001,7 +39964,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40009,7 +39972,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40017,7 +39980,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateUser]'
@@ -40098,7 +40061,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40106,7 +40069,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40114,7 +40077,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateUserFailedLoginAttempt]'
@@ -40150,7 +40113,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40158,7 +40121,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40166,7 +40129,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateUserMfaMode]'
@@ -40191,7 +40154,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40199,7 +40162,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40207,7 +40170,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateUserPinSecret]'
@@ -40232,7 +40195,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40240,7 +40203,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40248,7 +40211,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateUserSettings]'
@@ -40303,7 +40266,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40311,7 +40274,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40319,7 +40282,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateUserThemeSetting]'
@@ -40358,7 +40321,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40366,7 +40329,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40374,7 +40337,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateVirtualGroups]'
@@ -40432,7 +40395,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40440,7 +40403,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40448,7 +40411,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateWebDavPortalUsersSettings]'
@@ -40467,7 +40430,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET ANSI_NULLS ON
@@ -40475,7 +40438,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     SET QUOTED_IDENTIFIER ON
@@ -40483,7 +40446,7 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     PRINT 'CREATE PROCEDURE [dbo].[UpdateWhoisDomainInfo]'
@@ -40501,11 +40464,11 @@ END;
 
 IF NOT EXISTS (
     SELECT * FROM [__EFMigrationsHistory]
-    WHERE [MigrationId] = N'20250515113607_InitialCreate'
+    WHERE [MigrationId] = N'20250621163139_InitialCreate'
 )
 BEGIN
     INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-    VALUES (N'20250515113607_InitialCreate', N'9.0.4');
+    VALUES (N'20250621163139_InitialCreate', N'9.0.6');
 END;
 
 COMMIT;
