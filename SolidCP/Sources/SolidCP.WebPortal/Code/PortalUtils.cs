@@ -370,7 +370,7 @@ public class PortalUtils
 		if (persistent)
 			authCookie.Expires = ticket.Expiration;
 
-		HttpContext.Current.Response.Cookies.Add(authCookie);
+		HttpContext.Current.Response.Cookies.Set(authCookie);
 	}
 
 	public static string ApplicationPath
