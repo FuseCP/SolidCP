@@ -19,6 +19,7 @@ using Microsoft.Win32;
 using SolidCP.UniversalInstaller.Web;
 using SolidCP.Providers.OS;
 using System.Globalization;
+using AspNetCoreSharedServer;
 
 namespace SolidCP.UniversalInstaller;
 
