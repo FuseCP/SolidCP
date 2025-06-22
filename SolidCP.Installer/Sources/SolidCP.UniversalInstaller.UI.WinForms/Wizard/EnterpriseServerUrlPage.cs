@@ -60,7 +60,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 			{
 				var installerPath = Settings.InstallPath;
 				var webClientsPath = Path.GetFullPath(Path.Combine(installerPath, "..", Installer.Current.EnterpriseServerFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
-				return File.Exists(webClientsPath);
+				var webClientsAltPath = Path.GetFullPath(Path.Combine(installerPath, "..", Installer.Current.EnterpriseServerAltFolder, "bin", "Code", "SolidCP.Web.Clients.dll"));
+				return File.Exists(webClientsPath) || File.Exists(webClientsAltPath);
 			}
 		}
 		protected override void InitializePageInternal()
