@@ -467,7 +467,7 @@ public class WindowsInstaller : Installer
 			}
 		} 
 		Log.WriteEnd("Created web site");
-		InstallLog($"Installed {siteName} website, listening on the url(s):" +
+		InstallLog($"Installed {siteName} website, listening on the url(s):{NewLine}" +
 			$"{string.Join(NewLine, (GetUrls(setting) ?? "").Split(',', ';')
 			.Select(url => "  " + url))}");
 

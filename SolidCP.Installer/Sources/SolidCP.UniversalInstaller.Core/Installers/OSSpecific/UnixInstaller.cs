@@ -156,7 +156,7 @@ public abstract class UnixInstaller : Installer
 		var error = Configuration.Current.ReadError();
 		if (error != null) throw new InvalidOperationException(error);
 
-		InstallLog($"Installed {name} website, listening on the url(s):" +
+		InstallLog($"Installed {name} website, listening on the url(s):{NewLine}" +
 			$"{string.Join(NewLine, (GetUrls(settings) ?? "").Split(',', ';')
 			.Select(url => "  " + url))}");
 
