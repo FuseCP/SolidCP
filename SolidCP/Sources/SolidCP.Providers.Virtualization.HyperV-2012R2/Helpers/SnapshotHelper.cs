@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Management.Infrastructure;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
@@ -9,9 +9,16 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class SnapshotHelper
+    public class SnapshotHelper
     {
-        public static VirtualMachineSnapshot GetFromPS(PSObject psObject, string runningSnapshotId = null)
+        private PowerShellManager _powerShell;
+
+        public SnapshotHelper(PowerShellManager powerShellManager)
+        {
+            _powerShell = powerShellManager;
+        }
+
+        public VirtualMachineSnapshot GetFromPS(PSObject psObject, string runningSnapshotId = null)
         {
             var snapshot = new VirtualMachineSnapshot
             {
@@ -32,16 +39,16 @@ namespace SolidCP.Providers.Virtualization
             return snapshot;
         }
 
-        public static VirtualMachineSnapshot GetFromWmi(ManagementBaseObject objSnapshot)
+        public VirtualMachineSnapshot GetFromCim(CimInstance objSnapshot)
         {
-            if (objSnapshot == null || objSnapshot.Properties.Count == 0)
+            if (objSnapshot == null || objSnapshot.CimInstanceProperties.Count == 0)
                 return null;
 
             VirtualMachineSnapshot snapshot = new VirtualMachineSnapshot();
-            snapshot.Id = (string)objSnapshot["InstanceID"];
-            snapshot.Name = (string)objSnapshot["ElementName"];
+            snapshot.Id = (string)objSnapshot.CimInstanceProperties["InstanceID"].Value;
+            snapshot.Name = (string)objSnapshot.CimInstanceProperties["ElementName"].Value;
 
-            string parentId = (string)objSnapshot["Parent"];
+            string parentId = (string)objSnapshot.CimInstanceProperties["Parent"].Value;
             if (!String.IsNullOrEmpty(parentId))
             {
                 int idx = parentId.IndexOf("Microsoft:");
@@ -52,7 +59,7 @@ namespace SolidCP.Providers.Virtualization
             {
                 snapshot.Id = snapshot.Id.ToLower().Replace("microsoft:", "");
             }
-            snapshot.Created = Wmi.ToDateTime((string)objSnapshot["CreationTime"]);
+            snapshot.Created = (DateTime)objSnapshot.CimInstanceProperties["CreationTime"].Value;
 
             if (string.IsNullOrEmpty(snapshot.ParentId))
                 snapshot.ParentId = null; // for capability
@@ -60,22 +67,21 @@ namespace SolidCP.Providers.Virtualization
             return snapshot;
         }
 
-        public static void Delete(PowerShellManager powerShell, VirtualMachineSnapshot snapshot, bool includeChilds)
+        public void Delete(VirtualMachineSnapshot snapshot, bool includeChilds) //TODO: better to use VMObject instead of VMName ???
         {
             Command cmd = new Command("Remove-VMSnapshot");
             cmd.Parameters.Add("VMName", snapshot.VMName);
             cmd.Parameters.Add("Name", snapshot.Name);
             if (includeChilds) cmd.Parameters.Add("IncludeAllChildSnapshots", true);
 
-            powerShell.Execute(cmd, true);
+            _powerShell.Execute(cmd, true);
         }
 
-        public static void Delete(PowerShellManager powerShell, string vmName)
+        public void Delete(VirtualMachineData vmData)
         {
             Command cmd = new Command("Remove-VMSnapshot");
-            cmd.Parameters.Add("VMName", vmName);
 
-            powerShell.Execute(cmd, true);
+            _powerShell.ExecuteOnVm(cmd, vmData);
         }
     }
 }

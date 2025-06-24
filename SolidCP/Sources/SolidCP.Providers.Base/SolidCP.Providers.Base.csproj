@@ -377,6 +377,7 @@
     <Compile Include="Virtualization\Config\LibraryItem.cs" />
     <Compile Include="Virtualization\LogicalDisk.cs" />
     <Compile Include="Virtualization\DvdDriveInfo.cs" />
+    <Compile Include="Virtualization\CimSessionMode.cs" />
     <Compile Include="Virtualization\MonitoredObjectAlert.cs" />
     <Compile Include="Virtualization\MonitoredObjectEvent.cs" />
     <Compile Include="Virtualization\MountedDiskInfo.cs" />

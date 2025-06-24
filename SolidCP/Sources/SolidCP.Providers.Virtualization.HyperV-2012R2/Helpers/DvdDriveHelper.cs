@@ -9,13 +9,22 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class DvdDriveHelper
+    public class DvdDriveHelper
     {
-        public static DvdDriveInfo Get(PowerShellManager powerShell, string vmName)
+        private PowerShellManager _powerShell;
+        private MiManager _mi;
+
+        public DvdDriveHelper(PowerShellManager powerShellManager, MiManager mi)
+        {
+            _powerShell = powerShellManager;
+            _mi = mi;
+        }
+
+        public DvdDriveInfo Get(VirtualMachineData vmData)
         {
             DvdDriveInfo info = null;
 
-            PSObject result = GetPS(powerShell, vmName);
+            PSObject result = GetPS(vmData);
 
             if (result != null)
             {
@@ -30,13 +39,11 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public static PSObject GetPS(PowerShellManager powerShell, string vmName)
+        public PSObject GetPS(VirtualMachineData vmData)
         {
             Command cmd = new Command("Get-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
-
-            Collection<PSObject> result = powerShell.Execute(cmd, true);
+            Collection<PSObject> result = _powerShell.ExecuteOnVm(cmd, vmData);
 
             if (result != null && result.Count > 0)
             {
@@ -46,48 +53,46 @@ namespace SolidCP.Providers.Virtualization
             return null;
         }
 
-        public static void Set(PowerShellManager powerShell, string vmName, string path)
+        public void Set(VirtualMachineData vmData, string path)
         {
-            var dvd = Get(powerShell, vmName);
+            var dvd = Get(vmData);
  
             Command cmd = new Command("Set-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VMName", vmData.VM.Name);
             cmd.Parameters.Add("Path", path);
             cmd.Parameters.Add("ControllerNumber", dvd.ControllerNumber);
             cmd.Parameters.Add("ControllerLocation", dvd.ControllerLocation);
 
-            powerShell.Execute(cmd, true);
+            _powerShell.Execute(cmd, true);
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, bool dvdDriveShouldBeInstalled)
+        public void Update(VirtualMachineData vmData, bool dvdDriveShouldBeInstalled)
         {
-            if (!vm.DvdDriveInstalled && dvdDriveShouldBeInstalled)
-                Add(powerShell, vm.Name);
-            else if (vm.DvdDriveInstalled && !dvdDriveShouldBeInstalled)
-                Remove(powerShell, vm.Name);
+            if (!vmData.VM.DvdDriveInstalled && dvdDriveShouldBeInstalled)
+                Add(vmData);
+            else if (vmData.VM.DvdDriveInstalled && !dvdDriveShouldBeInstalled)
+                Remove(vmData);
         }
 
-        public static void Add(PowerShellManager powerShell, string vmName)
+        public void Add(VirtualMachineData vmData)
         {
             Command cmd = new Command("Add-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
-
-            powerShell.Execute(cmd, true, true);
+            _powerShell.ExecuteOnVm(cmd, vmData, true);
         }
 
-        public static void Remove(PowerShellManager powerShell, string vmName)
+        public void Remove(VirtualMachineData vmData)
         {
-            var dvd = Get(powerShell, vmName);
+            var dvd = Get(vmData);
 
             Command cmd = new Command("Remove-VMDvdDrive");
 
-            cmd.Parameters.Add("VMName", vmName);
+            cmd.Parameters.Add("VMName", vmData.VM.Name);
             cmd.Parameters.Add("ControllerNumber", dvd.ControllerNumber);
             cmd.Parameters.Add("ControllerLocation", dvd.ControllerLocation);
 
-            powerShell.Execute(cmd, true, true);
+            _powerShell.Execute(cmd, true, true);
         }
     }
 }
