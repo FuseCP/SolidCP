@@ -113,6 +113,9 @@ namespace SolidCP.UniversalInstaller.WinForms
 					if (Directory.Exists(Path.Combine(Settings.InstallPath, "..", Installer.Current.EnterpriseServerFolder)))
 					{
 						Settings.EnterpriseServerPath = Path.Combine("..", Installer.Current.EnterpriseServerFolder);
+					} else if (Directory.Exists(Path.Combine(Settings.InstallPath, "..", Installer.Current.EnterpriseServerAltFolder)))
+					{
+						Settings.EnterpriseServerPath = Path.Combine("..", Installer.Current.EnterpriseServerAltFolder);
 					}
 				}
 			}

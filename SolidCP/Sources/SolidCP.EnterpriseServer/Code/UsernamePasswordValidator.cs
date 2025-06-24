@@ -56,6 +56,8 @@ namespace SolidCP.EnterpriseServer
 
 		public static bool Validate(string username, string password)
 		{
+			if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password)) return false;
+
 			using (var controller = new Controllers())
 			{
 				UserCacheEntry cachedUser;

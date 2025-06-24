@@ -17,7 +17,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.4")
+                .HasAnnotation("ProductVersion", "9.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
@@ -9959,7 +9959,7 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                         },
                         new
                         {
-                            TaskId = "SCHEDULE_TASK_SCHEDULE_TASK_CHECK_WEBSITES_SSL",
+                            TaskId = "SCHEDULE_TASK_CHECK_WEBSITES_SSL",
                             RoleId = 3,
                             TaskType = "SolidCP.EnterpriseServer.CheckWebsitesSslTask, SolidCP.EnterpriseServer.Code"
                         });
@@ -11739,78 +11739,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             ProviderId = 22,
                             PropertyName = "AdminUsername",
                             PropertyValue = "Administrator"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "BindConfigPath",
-                            PropertyValue = "c:\\BIND\\dns\\etc\\named.conf"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "BindReloadBatch",
-                            PropertyValue = "c:\\BIND\\dns\\reload.bat"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "ExpireLimit",
-                            PropertyValue = "1209600"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "MinimumTTL",
-                            PropertyValue = "86400"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "NameServers",
-                            PropertyValue = "ns1.yourdomain.com;ns2.yourdomain.com"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "RecordDefaultTTL",
-                            PropertyValue = "86400"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "RecordMinimumTTL",
-                            PropertyValue = "3600"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "RefreshInterval",
-                            PropertyValue = "3600"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "ResponsiblePerson",
-                            PropertyValue = "hostmaster.[DOMAIN_NAME]"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "RetryDelay",
-                            PropertyValue = "600"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "ZoneFileNameTemplate",
-                            PropertyValue = "db.[domain_name].txt"
-                        },
-                        new
-                        {
-                            ProviderId = 24,
-                            PropertyName = "ZonesFolderPath",
-                            PropertyValue = "c:\\BIND\\dns\\zones"
                         },
                         new
                         {
@@ -14043,12 +13971,6 @@ namespace SolidCP.EnterpriseServer.Data.Migrations.MySql
                             ProviderId = 1910,
                             PropertyName = "ConfigFile",
                             PropertyValue = "/etc/vsftpd.conf"
-                        },
-                        new
-                        {
-                            ProviderId = 1911,
-                            PropertyName = "BinPath",
-                            PropertyValue = ""
                         },
                         new
                         {

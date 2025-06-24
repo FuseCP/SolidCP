@@ -41,7 +41,7 @@ run-name: ${{ github.event.head_commit.message }} by @${{ github.actor }}
 
 on:
   push:
-    branches: [ "release" ]
+    branches: [ "release", "CoreWCF" ]
   pull_request:
     branches: [ "release" ]
 
@@ -69,7 +69,7 @@ jobs:
       UseAspNetPrecompile: "false"
       BuildLinuxInstallPackages: "true"
       BuildLegacyDatabaseScript: "false"
-      MsBuildSwitches: "/v:m /m"
+      MsBuildSwitches: "/v:n /m:1"
       GitHubAction: true
 
     steps:

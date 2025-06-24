@@ -338,7 +338,7 @@ Install Component to:
 					{
 						//creating user account
 						string userName = settings.ComponentName.Replace(" ", string.Empty);
-						userName = userName.Replace("HostPanelPro", "HPP");
+						userName = userName.Replace("SolidCP", "SCP");
 
 						var domain = "mydomain.com";
 

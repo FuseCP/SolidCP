@@ -30,6 +30,7 @@ public abstract partial class Installer
 	public virtual string SolidCP => "SolidCP";
 	public virtual string ServerFolder => "Server";
 	public virtual string EnterpriseServerFolder => "EnterpriseServer";
+	public virtual string EnterpriseServerAltFolder => "Enterprise Server";
 	public virtual string WebPortalFolder => "Portal";
 	public virtual string WebDavPortalFolder => "WebDavPortal";
 	public virtual string ServerUser => $"{SolidCP}Server";

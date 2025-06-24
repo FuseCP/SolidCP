@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Reflection;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Net.Http;
+﻿using Microsoft.Win32;
 using Newtonsoft.Json.Bson;
-using SolidCP.Providers.Web;
 using SolidCP.Providers;
-using System.Xml.Linq;
+using SolidCP.Providers.OS;
+using SolidCP.Providers.Web;
+using SolidCP.UniversalInstaller.Web;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Http;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography.X509Certificates;
 using System.Security.Policy;
 using System.Security.Principal;
-using System.Security.Cryptography.X509Certificates;
-using System.Net;
-using Microsoft.Win32;
-using SolidCP.UniversalInstaller.Web;
-using SolidCP.Providers.OS;
-using System.Globalization;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using static Azure.Core.HttpHeader;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -466,7 +467,10 @@ public class WindowsInstaller : Installer
 			}
 		} 
 		Log.WriteEnd("Created web site");
-		InstallLog($"Created web site {siteName}");
+		InstallLog($"Installed {siteName} website, listening on the url(s):{NewLine}" +
+			$"{string.Join(NewLine, (GetUrls(setting) ?? "").Split(',', ';')
+			.Select(url => "  " + url))}");
+
 	}
 
 	private void SetFolderPermission(string path, string account, NtfsPermission permission)
@@ -639,7 +643,19 @@ public class WindowsInstaller : Installer
 
 		if (SecurityUtils.UserExists(domain, username)) SecurityUtils.DeleteUser(domain, username);
 	}
+	public virtual void AddUnixGroup(string group) => Shell.Exec($"groupadd {group}");
+	public virtual void AddUnixUser(string user, string group, string password)
+	{
+		Shell.Exec($"useradd --home /home/{user} --gid {group} -m --shell /bin/false {user}");
 
+		var shell = Shell.ExecAsync($"passwd {user}");
+		shell.Input.WriteLine(password);
+		shell.Input.WriteLine(password);
+		var output = shell.Output().Result;
+		Log.WriteLine(output);
+
+		InstallLog($"Added System User {user}.");
+	}
 	public override void InstallWebsite(string name, string path, CommonSettings settings,
 		string group, string dll, string description, string serviceId)
 	{
@@ -666,7 +682,7 @@ public class WindowsInstaller : Installer
 		var binFolder = (Settings.EnterpriseServer.RunOnNetCore ||
 			Settings.WebPortal.RunOnNetCore && Settings.WebPortal.EmbedEnterpriseServer) ?
 				"bin_dotnet" : "bin\\Code";
-		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "HostPanelPro.SchedulerService.exe");
+		var exe = Path.Combine(Settings.EnterpriseServer.InstallPath, binFolder, "SolidCP.SchedulerService.exe");
 
 		var config = exe + ".config";
 		var xml = XElement.Load(config);

@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Newtonsoft.Json.Converters;
 using SolidCP.EnterpriseServer;
+using AspNetCoreSharedServer;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -24,31 +25,43 @@ public abstract class UnixInstaller : Installer
 	public override string SolidCPGroup => SolidCP.ToLower();
 	public override string SolidCPUnixGroup => SolidCPGroup;
 	public UnixInstaller() : base() { }
-
-	public override void InstallWebsite(string name, string path, CommonSettings settings,
-		string group, string dll, string description, string serviceId)
+	bool installedAspNetCoreSharedServer = false;
+	public void InstallAspNetCoreSharedServer()
 	{
-		if (!File.Exists(dll) && !Debugger.IsAttached)
+		Log.WriteStart("Install AspNetCoreSharedServer");
+
+		const string AspNetCoreSharedServerVersion = "1.0.20";
+
+		if (installedAspNetCoreSharedServer) return;
+		installedAspNetCoreSharedServer = true;
+
+		Shell.Standard.Exec($"dotnet tool install AspNetCoreSharedServer -g --version {AspNetCoreSharedServerVersion}");
+
+		AddUnixGroup("www-data");
+		AddUnixUser("www-data", "www-data", Utils.GetRandomString(16));
+
+		var conf = Configuration.Current;
+		using (var mutex = new Configuration.NamedMutex())
 		{
-			throw new FileNotFoundException($"The service executable {dll} was not found.");
+			conf.Load();
+			conf.EnableHttp3 = false;
+			conf.User = "www-data";
+			conf.Group = null;
+			conf.Save();
 		}
 
-		//AddUnixGroup(SolidCPUnixGroup);
-
-		//if (!string.IsNullOrEmpty(settings.Username))
-		//	AddUnixUser(settings.Username, SolidCPUnixGroup, settings.Password);
-
-		var dotnet = Shell.Find("dotnet");
+		const string ServiceId = "aspnetcore-shared-server";
+		const string Description = "ASP.NET Core Shared Server support for shared hosting of ASP.NET Core applications";
+		const string Command = "/root/.dotnet/tools/AspNetCoreSharedServer";
 
 		ServiceDescription service;
 		if (IsSystemd)
 		{
 			service = new SystemdServiceDescription()
 			{
-				ServiceId = serviceId,
-				Directory = Path.GetDirectoryName(dll),
-				Description = description,
-				Executable = $"{dotnet} {dll}",
+				ServiceId = ServiceId,
+				Description = Description,
+				Executable = Command,
 				DependsOn = new List<string>() { "network-online.target" },
 				Environment = new Dictionary<string, string>()
 				{
@@ -58,27 +71,25 @@ public abstract class UnixInstaller : Installer
 				RestartSec = "1s",
 				StartLimitBurst = "5",
 				StartLimitIntervalSec = "500",
-				User = settings.Username ?? "",
-				Group = group,
-				SyslogIdentifier = serviceId
+				User = "root",
+				Group = "root",
+				SyslogIdentifier = ServiceId
 			};
 		}
 		else if (IsOpenRC)
 		{
 			var rcservice = new OpenRCServiceDescription()
 			{
-				ServiceId = serviceId,
-				Description = description,
+				ServiceId = ServiceId,
+				Description = Description,
 				Environment = new Dictionary<string, string>()
 				{
 					{ "ASPNETCORE_ENVIRONMENT", "Production" }
 				},
-				CommandUser = settings.Username ?? "",
-				Command = dotnet,
-				CommandArgs = dll,
-				WorkingDirectory = Path.GetDirectoryName(dll),
+				CommandUser = "root",
+				Command = Command,
 				CommandBackground = true,
-				PidFile = $"/run/{serviceId}.pid",
+				PidFile = $"/run/{ServiceId}.pid",
 				StopTimeout = 30
 			};
 			if (!OSInfo.IsWSL) rcservice.Need = "net";
@@ -86,17 +97,15 @@ public abstract class UnixInstaller : Installer
 		}
 		else if (OSInfo.IsMac)
 		{
-			var log = Path.Combine(WebsiteLogsPath, $"{serviceId}.log");
+			var log = Path.Combine(WebsiteLogsPath, $"{ServiceId}.log");
 			service = new LaunchdServiceDescription()
 			{
-				Label = serviceId,
-				Executable = dotnet,
-				Arguments = dll,
+				Label = ServiceId,
+				Executable = Command,
 				Environment = new Dictionary<string, string>()
 				{
 					{ "ASPNETCORE_ENVIRONMENT", "Production" }
 				},
-				WorkingDirectory = Path.GetDirectoryName(dll),
 				ExitTimeout = 30,
 				KeepAlive = true,
 				RunAtLoad = true,
@@ -105,11 +114,55 @@ public abstract class UnixInstaller : Installer
 				StartOnMount = true
 			};
 		}
-		else throw new NotSupportedException("Only SystemD, OpenRC & Launchd are supported.");
+		else throw new NotSupportedException("Only SystemD, OpenRC and Launchd are supported.");
 
 		InstallService(service);
 
+		Log.WriteEnd("Installed AspNetCoreSharedServer");
+	}
+	public override void InstallWebsite(string name, string path, CommonSettings settings,
+		string group, string dll, string description, string serviceId)
+	{
+		Info($"Creating Website {name}");
+
+		Log.WriteStart(string.Format("Creating web site \"{0}\" ( Urls: {1} )", name, settings.Urls));
+
+		InstallAspNetCoreSharedServer();
+
+		if (!File.Exists(dll) && !Debugger.IsAttached)
+		{
+			throw new FileNotFoundException($"The service executable {dll} was not found.");
+		}
+
+		var app = new Application()
+		{
+			Name = serviceId,
+			Assembly = dll,
+			User = settings.Username,
+			Group = group,
+			Urls = settings.Urls,
+			ListenUrls = settings.Urls,
+			EnableHttp3 = false,
+			Environment = new Dictionary<string, string>() {
+				{ "ASPNETCORE_ENVIRONMENT", "Production" }
+			},
+		};
+
+		var conf = Configuration.Current;
+		conf.Add(app);
+
+		Thread.Sleep(1000);
+
+		var error = Configuration.Current.ReadError();
+		if (error != null) throw new InvalidOperationException(error);
+
+		InstallLog($"Installed {name} website, listening on the url(s):{NewLine}" +
+			$"{string.Join(NewLine, (GetUrls(settings) ?? "").Split(',', ';')
+			.Select(url => "  " + url))}");
+
 		OpenFirewall(settings.Urls ?? "");
+
+		Log.WriteEnd($"Created web site \"{name}\"");
 	}
 
 	public virtual void AddUnixGroup(string group) => Shell.Exec($"groupadd {group}");

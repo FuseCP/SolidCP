@@ -84,6 +84,7 @@
                         <asp:ListItem>TXT</asp:ListItem>
                         <asp:ListItem>CNAME</asp:ListItem>
                         <asp:ListItem>SRV</asp:ListItem>
+                        <asp:ListItem>PTR</asp:ListItem>
                     </asp:DropDownList>
                     <asp:Literal ID="litRecordType" runat="server"></asp:Literal>
                 </div>

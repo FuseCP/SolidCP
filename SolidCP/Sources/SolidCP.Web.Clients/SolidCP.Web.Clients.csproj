@@ -32,7 +32,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="SSH.NET" Version="2025.0.0" />
-    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.4" />
+    <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />

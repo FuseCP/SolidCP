@@ -346,7 +346,7 @@ public class PortalUtils
 				if (authCookie == null || String.IsNullOrEmpty(authCookie.Value))
 					authCookie = HttpContext.Current.Response.Cookies[FormsAuthentication.FormsCookieName];
 				//
-				if (authCookie != null)
+				if (authCookie != null && !string.IsNullOrEmpty(authCookie.Value))
 				{
 					authTicket = FormsAuthentication.Decrypt(authCookie.Value);
 					HttpContext.Current.Items[FormsAuthentication.FormsCookieName] = authTicket;
@@ -370,7 +370,7 @@ public class PortalUtils
 		if (persistent)
 			authCookie.Expires = ticket.Expiration;
 
-		HttpContext.Current.Response.Cookies.Add(authCookie);
+		HttpContext.Current.Response.Cookies.Set(authCookie);
 	}
 
 	public static string ApplicationPath

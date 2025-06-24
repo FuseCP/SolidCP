@@ -209,6 +209,16 @@ namespace SolidCP.Providers.DNS
             ps.RunPipeline(cmd);
         }
 
+        public static void Add_DnsServerResourceRecordPTR(this PowerShellHelper ps, string zoneName, string Name, string alias, TimeSpan timetolive)
+        {
+            var cmd = new Command("Add-DnsServerResourceRecordPtr");
+            cmd.addParam("ZoneName", zoneName);
+            cmd.addParam("Name", Name);
+            cmd.addParam("PtrDomainName", alias);
+            cmd.addParam("TimeToLive", timetolive);
+            ps.RunPipeline(cmd);
+        }
+
         public static void Remove_DnsServerResourceRecord(this PowerShellHelper ps, string zoneName, DnsRecord record)
         {
             string type;
@@ -247,6 +257,7 @@ namespace SolidCP.Providers.DNS
                     case DnsRecordType.UNKNOWN:
                     case DnsRecordType.NS:
                     case DnsRecordType.TXT:
+                    case DnsRecordType.PTR:
                         found = dnsResourceRecord.RecordData == record.RecordData;
                         break;
                     case DnsRecordType.SOA:

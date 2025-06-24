@@ -71,6 +71,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.UniversalInstaller.UI.Console", "SolidCP.UniversalInstaller.UI.Console\SolidCP.UniversalInstaller.UI.Console.csproj", "{70FDF8BB-AB3D-45B6-8C1D-4952D8287339}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Installer", "SolidCP.Installer\SolidCP.Installer.csproj", "{95AA2F01-37C7-4AE8-B1FC-146A6BE35FD1}"
+	ProjectSection(ProjectDependencies) = postProject
+		{143B6454-1765-B043-D5EB-3EEA293B81F5} = {143B6454-1765-B043-D5EB-3EEA293B81F5}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolidCP.Installer.Core", "SolidCP.Installer.Core\SolidCP.Installer.Core.csproj", "{1B515FE6-722B-44A8-B2AB-7787E965B512}"
 EndProject

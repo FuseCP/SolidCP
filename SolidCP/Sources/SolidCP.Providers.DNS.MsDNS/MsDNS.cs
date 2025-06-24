@@ -164,8 +164,10 @@ namespace SolidCP.Providers.DNS
 
 			ManagementObjectCollection rrsSRV_tls = wmi.GetWmiObjects("MicrosoftDNS_SRVType", "DomainName='_tls.{0}'", zoneName);
 
-			List<DnsRecord> records = new List<DnsRecord>();
-			DnsRecord record = new DnsRecord();
+            ManagementObjectCollection rrsPTR = wmi.GetWmiObjects("MicrosoftDNS_PTRType", "DomainName='{0}'", zoneName);
+
+            List<DnsRecord> records = new List<DnsRecord>();
+            DnsRecord record = new DnsRecord();
 
 			foreach (ManagementObject rr in rrsA)
 			{
@@ -270,6 +272,15 @@ namespace SolidCP.Providers.DNS
 				record.RecordData = RemoveTrailingDot((string)rr.Properties["SRVDomainName"].Value);
 				records.Add(record);
 			}
+
+            foreach (ManagementObject rr in rrsPTR)
+            {
+                record = new DnsRecord();
+                record.RecordType = DnsRecordType.PTR;
+                record.RecordName = CorrectHost(zoneName, (string)rr.Properties["OwnerName"].Value);
+                record.RecordData = RemoveTrailingDot((string)rr.Properties["RecordData"].Value);
+                records.Add(record);
+            }
 
 
 
@@ -478,15 +489,17 @@ namespace SolidCP.Providers.DNS
 				else if (record.RecordType == DnsRecordType.AAAA)
 					AddAAAARecord(zoneName, record.RecordName, record.RecordData);
 				else if (record.RecordType == DnsRecordType.CNAME)
-					AddCNameRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.MX)
-					AddMXRecord(zoneName, record.RecordName, record.RecordData, record.MxPriority);
-				else if (record.RecordType == DnsRecordType.NS)
-					AddNsRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.TXT)
-					AddTxtRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.SRV)
-					AddSrvRecord(zoneName, record.RecordName, record.SrvPriority, record.SrvWeight, record.SrvPort, record.RecordData);
+                    AddCNameRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.MX)
+                    AddMXRecord(zoneName, record.RecordName, record.RecordData, record.MxPriority);
+                else if (record.RecordType == DnsRecordType.NS)
+                    AddNsRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.TXT)
+                    AddTxtRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.PTR)
+                    AddPTRRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.SRV)
+                    AddSrvRecord(zoneName, record.RecordName, record.SrvPriority, record.SrvWeight, record.SrvPort, record.RecordData);
 
 			}
 			catch (Exception ex)
@@ -513,15 +526,17 @@ namespace SolidCP.Providers.DNS
 				else if (record.RecordType == DnsRecordType.AAAA)
 					DeleteAAAARecord(zoneName, record.RecordName, record.RecordData);
 				else if (record.RecordType == DnsRecordType.CNAME)
-					DeleteCNameRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.MX)
-					DeleteMXRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.NS)
-					DeleteNsRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.TXT)
-					DeleteTxtRecord(zoneName, record.RecordName, record.RecordData);
-				else if (record.RecordType == DnsRecordType.SRV)
-					DeleteSrvRecord(zoneName, record.RecordName, record.RecordData);
+                    DeleteCNameRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.MX)
+                    DeleteMXRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.NS)
+                    DeleteNsRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.TXT)
+                    DeleteTxtRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.PTR)
+                    DeletePTRRecord(zoneName, record.RecordName, record.RecordData);
+                else if (record.RecordType == DnsRecordType.SRV)
+                    DeleteSrvRecord(zoneName, record.RecordName, record.RecordData);
 
 			}
 			catch (Exception ex)
@@ -1086,18 +1101,72 @@ namespace SolidCP.Providers.DNS
 		}
 		#endregion
 
-		#region private helper methods
-		/// <summary>
-		/// Supports managed resources disposal
-		/// </summary>
-		/// <returns></returns>
-		private string GetDnsServerName()
-		{
-			using (ManagementObject objServer = wmi.GetObject("MicrosoftDNS_Server.Name=\".\""))
-			{
-				return (string)objServer.Properties["Name"].Value;
-			}
-		}
+        #region PTR Record
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="zoneName"></param>
+        /// <param name="alias"></param>
+        /// <param name="targetHost"></param>
+        /// <remarks>Supports managed resources disposal</remarks>
+        private void AddPTRRecord(string zoneName, string alias, string targetHost)
+        {
+            // add record
+            using (ManagementClass clsRR = wmi.GetClass("MicrosoftDNS_PTRType"))
+            {
+                clsRR.InvokeMethod("CreateInstanceFromPropertyData", new object[] {
+                    GetDnsServerName(),
+                    zoneName,
+                    CorrectHostName(zoneName, alias),
+                    1,
+                    MinimumTTL,
+                    targetHost
+                });
+            }
+
+            // update SOA record
+            if (bulkRecords) return;
+            UpdateSoaRecord(zoneName);
+        }
+
+        /// <summary>
+        /// Supports managed resources disposal
+        /// </summary>
+        /// <param name="zoneName"></param>
+        /// <param name="alias"></param>
+        /// <param name="targetHost"></param>
+        private void DeletePTRRecord(string zoneName, string alias, string targetHost)
+        {
+            string query = String.Format("SELECT * FROM MicrosoftDNS_PTRType " +
+                "WHERE ContainerName = '{0}' AND OwnerName = '{1}'",
+                zoneName, CorrectHostName(zoneName, alias));
+
+            if (targetHost != null)
+                query += String.Format(" AND RecordData='{0}.'", targetHost);
+
+            using (ManagementObjectCollection objRRs = wmi.ExecuteQuery(query))
+            {
+                foreach (ManagementObject objRR in objRRs) using (objRR)
+                        objRR.Delete();
+            }
+
+            // update SOA record
+            UpdateSoaRecord(zoneName);
+        }
+        #endregion
+
+        #region private helper methods
+        /// <summary>
+        /// Supports managed resources disposal
+        /// </summary>
+        /// <returns></returns>
+        private string GetDnsServerName()
+        {
+            using (ManagementObject objServer = wmi.GetObject("MicrosoftDNS_Server.Name=\".\""))
+            {
+                return (string)objServer.Properties["Name"].Value;
+            }
+        }
 
 		/// <summary>
 		/// Supports managed resources disposal

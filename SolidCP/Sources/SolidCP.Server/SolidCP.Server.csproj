@@ -61,12 +61,12 @@
         <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.6" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Mono.Posix-4.5" Version="4.5.0" />
     </ItemGroup>
     <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
-        <PackageReference Include="System.Collections.Immutable" Version="9.0.4" />
+        <PackageReference Include="System.Collections.Immutable" Version="9.0.6" />
         <PackageReference Include="System.Memory" Version="4.6.3" />
         <Reference Include="Microsoft.CSharp" />
         <Reference Include="System" />
@@ -88,7 +88,7 @@
         <PackageReference Include="CoreWCF.Primitives" Version="1.7.0" />
         <PackageReference Include="CoreWCF.WebHttp" Version="1.7.0" />
         <PackageReference Include="System.Net.Primitives" Version="4.3.1" />
-        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.4" GeneratePathProperty="true" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.6" GeneratePathProperty="true" />
         <!--<PackageReference Include="System.Management" Version="8.0.0" GeneratePathProperty="true"
             IncludeAssets="None" ExcludeAssets="All" PrivateAssets="None" />-->
     </ItemGroup>

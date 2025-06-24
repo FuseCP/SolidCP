@@ -115,6 +115,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                     break;
                 case DnsRecordType.CNAME:
                 case DnsRecordType.NS:
+                case DnsRecordType.PTR:
                     if (!record.RecordData.EndsWith(".") && record.RecordData.Length > 0) {
                         response.Data = $"{record.RecordData}.";
                         break;
@@ -122,6 +123,7 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                     response.Data = $"{record.RecordData}";
                     break;
                 case DnsRecordType.TXT:
+                case DnsRecordType.CAA:
                     if (!record.RecordData.StartsWith("\"") && record.RecordData.Length > 0)
                     {
                         response.Data = $"\"{record.RecordData}\"";
@@ -187,6 +189,9 @@ namespace SolidCP.Providers.DNS.SimpleDNS90.Models.Response
                     break;
                 case "TXT":
                     resultRecord.RecordType = DnsRecordType.TXT;
+                    break;
+                case "PTR":
+                    resultRecord.RecordType = DnsRecordType.PTR;
                     break;
                 default:
                     resultRecord.RecordType = DnsRecordType.Other;

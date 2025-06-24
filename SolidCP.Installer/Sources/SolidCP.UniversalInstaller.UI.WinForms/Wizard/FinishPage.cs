@@ -52,7 +52,6 @@ namespace SolidCP.UniversalInstaller.WinForms
 		protected internal override void OnBeforeDisplay(EventArgs e)
 		{
 			base.OnBeforeDisplay(e);
-			var logs = Installer.Current.InstallLogs;
 			if (Installer.Current.HasError)
 			{
 				this.Text = "Setup failed";
@@ -63,7 +62,19 @@ namespace SolidCP.UniversalInstaller.WinForms
 				this.Text = "Setup complete";
 				this.txtLog.Text = string.Join(Environment.NewLine,
 					new[] { "The Installer has:" }
-					.Concat(Installer.Current.InstallLogs.Select(log => "- " + log)));
+					.Concat(Installer.Current.InstallLogs.SelectMany(log =>
+					{
+						bool first = true;
+						return log.Split('\n')
+							.Where(line => !string.IsNullOrWhiteSpace(line))
+							.Select(line =>
+							{
+								line = line.Trim();
+								line = first ? $"- {line}" : $"  {line}";
+								first = false;
+								return line;
+							});
+					})));
 				//ParentForm.DialogResult = DialogResult.OK;
 			}
 			this.Description = "Click Finish to exit the wizard.";

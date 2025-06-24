@@ -57,6 +57,7 @@ namespace SolidCP.Providers.DNS
                 { "SRV",   DnsRecordType.SRV   },
                 { "UNKNOWN",   DnsRecordType.UNKNOWN   },
                 { "CAA",   DnsRecordType.CAA   },
+                { "PTR",   DnsRecordType.PTR   },
             };
 
             TextInfo ti = new CultureInfo("en-US", false).TextInfo;
