@@ -83,21 +83,26 @@ public partial class @(Class.Identifier)AssemblyClient: SolidCP.Web.Clients.Clie
         else
         {
 
-            @(method.IsVoid ? "Invoke(" : $"return Invoke<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>(")<text>"@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"</text>
-          
+            @(method.IsVoid ? "Invoke(" : $"return Invoke<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>(")<text>"@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier", new object[] { </text>
+           bool firstPar = true;       
             foreach (var par in method.Method.ParameterList.Parameters)
             {
+                if (!firstPar)
+                {
+                    <text>, </text>
+                } else firstPar = false;
+
                 if (par.Type is ArrayTypeSyntax parray && parray.HasTrailingTrivia && parray.GetTrailingTrivia().Any(tr => tr.ToString() == "/*List*/"))
                 {
-                    <text>, @(par.Identifier).ToList()</text>
+                    <text>@(par.Identifier).ToList()</text>
                 }
                 else
                 {
-                    <text>, @par.Identifier</text>
+                    <text>@par.Identifier</text>
                 }
             }
 
-            <text>);</text>
+            <text>});</text>
         }
 <text>}</text>
       
@@ -106,15 +111,22 @@ public partial class @(Class.Identifier)AssemblyClient: SolidCP.Web.Clients.Clie
         @method.Async.NormalizeWhitespace()
         <text>
             {
-            @(method.IsVoid ? "await " : "return await ")InvokeAsync@(method.IsVoid ? "" : $"<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>")("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier"
-         </text>
+            @(method.IsVoid ? "await " : "return await ")InvokeAsync@(method.IsVoid ? "" : $"<{method.Method.ReturnType}{(returnTypeIsList ? $", {elementType}" : "")}>")("@(OldNamespace).@(Class.Identifier)", "@method.Method.Identifier", new object[] {
+        </text>
+        bool firstPar = true;
 
          @foreach (var par in method.Method.ParameterList.Parameters)
-         {
-            <text>, @par.Identifier</text>
+        {
+            if (!firstPar)
+            {
+                <text>, </text>
+            }
+            else firstPar = false;
+
+            <text>@par.Identifier</text>
          }
          <text>
-          ).ConfigureAwait(false);
+            }).ConfigureAwait(false);
           }
           </text>
     } else {
