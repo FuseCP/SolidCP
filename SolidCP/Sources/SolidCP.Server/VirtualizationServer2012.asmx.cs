@@ -1041,6 +1041,23 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
+        public Memory GetMemory()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetMemory", ProviderSettings.ProviderName);
+                Memory result = VirtualizationProvider.GetMemory();
+                Log.WriteEnd("'{0}' GetMemory", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetMemory", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
         public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
         {
             try

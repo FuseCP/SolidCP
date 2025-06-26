@@ -57,6 +57,7 @@ using System.Configuration;
 using System.Linq;
 using SolidCP.Providers.Virtualization.Extensions;
 using SolidCP.Providers.OS;
+using SolidCP.Server;
 using Microsoft.Management.Infrastructure;
 using Microsoft.Management.Infrastructure.Generic;
 using System.Linq.Expressions;
@@ -856,12 +857,12 @@ namespace SolidCP.Providers.Virtualization
                         string hvHost = node.Members["Name"].Value.ToString();
                         if (!String.IsNullOrEmpty(hvHost))
                         {
-                            cmd = new Command("Get-WmiObject"); //TODO: use CIM cmdlet instead of WMI cmdlet => Get-CimInstance
-                            cmd.Parameters.Add("Class", "Win32_OperatingSystem");
-                            cmd.Parameters.Add("Namespace", "root\\cimv2");
-                            cmd.Parameters.Add("ComputerName", hvHost);
-                            Collection<PSObject> res = PowerShell.Execute(cmd, false, false);
-                            int freeMemory = Convert.ToInt32(res[0].Members["FreePhysicalMemory"].Value);
+                            int freeMemory = 0; //TODO: potentially a future bug, because FreePhysicalMemory is int64, not int32
+                            try {
+                                freeMemory = Convert.ToInt32(GetMemoryInternal(hvHost).FreePhysicalMemoryKB);
+                            }
+                            catch { /* this should never happen, just repeats old PowerShell way */ }
+
                             if (freeMemory > maxMemory)
                             {
                                 maxMemory = freeMemory;
@@ -2104,6 +2105,29 @@ namespace SolidCP.Providers.Virtualization
             }
 
             return coreCount;
+        }
+
+        public Memory GetMemory() 
+        {            
+            return GetMemoryInternal(null); //we don't need to know computerName, we already know it from the constructor.
+        }
+
+        protected Memory GetMemoryInternal(string ClusterNode)
+        {
+            Memory memory = new Memory();
+
+            using (var _mi = string.IsNullOrEmpty(ClusterNode)
+                ? new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE) //reuse session if possible
+                : new MiManager(ClusterNode, this.CimSessionMode, Constants.WMI_CIMV2_NAMESPACE))
+            using (CimInstance item = _mi.GetCimInstance("Win32_OperatingSystem"))
+            {
+                memory.FreePhysicalMemoryKB = Convert.ToUInt64(item.CimInstanceProperties["FreePhysicalMemory"].Value);
+                memory.TotalVisibleMemorySizeKB = Convert.ToUInt64(item.CimInstanceProperties["TotalVisibleMemorySize"].Value);
+                memory.FreeVirtualMemoryKB = Convert.ToUInt64(item.CimInstanceProperties["FreeVirtualMemory"].Value);
+                memory.TotalVirtualMemorySizeKB = Convert.ToUInt64(item.CimInstanceProperties["TotalVirtualMemorySize"].Value);
+            }
+
+            return memory;
         }
 
         public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
