@@ -238,12 +238,8 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
 
             // RAM
-            if (string.IsNullOrEmpty(settings["ServerName"])) {
-                settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
-            } else {
-                settings["RamReserve"] = "0";
-            }
-                
+            settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
+
 
             // Default Windows Configure Version
             settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;
@@ -464,11 +460,6 @@ namespace SolidCP.Portal.ProviderControls
             {
                 txtServerName.Text = "";         
                 radioCimSessionMode.SelectedIndex = 0;
-            }
-            else
-            {
-                txtRamReserve.Text = "0";
-                txtRamReserve.Enabled = false;
             }
 
             // private network

@@ -30,26 +30,28 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using System;
-using System.Data;
+using SolidCP.EnterpriseServer.Code.Virtualization2012;
+using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
+using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
+using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
+using SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase;
+using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
+using SolidCP.Providers.Virtualization2012;
+using SolidCP.Server;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using SolidCP.Providers;
-using System.Text;
-using System.Collections;
-using System.Net.Mail;
+using System.Data;
 using System.Diagnostics;
-using SolidCP.EnterpriseServer.Code.Virtualization2012;
-using SolidCP.Providers.Virtualization2012;
-using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
+using System.IO;
+using System.Net.Mail;
+using System.Text;
 using System.Threading;
-using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
-using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
-using SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase;
+using System.Web.Services.Description;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -527,7 +529,7 @@ namespace SolidCP.EnterpriseServer
                 return null;
 
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(vm.ServiceId);
-            return vs.GetVirtualMachinesNetwordAdapterSettings(vm.Name);
+            return vs.GetVirtualMachinesNetwordAdapterSettings(vm.VirtualMachineId);
         }
 
         public static ResultObject ChangeAdministratorPassword(int itemId, string password)
@@ -1246,7 +1248,30 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Virtual Machine Configuration versions 
+        #region Configurations
+        public static Memory GetMemoryPackageId(int packageId)
+        {
+            int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
+            return GetMemoryInternal(serviceId);
+        }
+
+        public static Memory GetMemory(int serviceId)
+        {
+            return GetMemoryInternal(serviceId);
+        }
+
+        private static Memory GetMemoryInternal(int serviceId)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0)
+                throw new Exception("The account dont have permission");
+
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetMemory();
+        }
+
         public static VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();

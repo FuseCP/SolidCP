@@ -392,8 +392,6 @@ namespace SolidCP.Providers.StorageSpaces
 
                 Log.WriteEnd("ShareExist");
             }
-
-            return false;
         }
 
         public StorageSpaceFolderShare GetShare(string shareName, Runspace runspace = null)

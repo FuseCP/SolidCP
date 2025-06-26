@@ -104,17 +104,16 @@
       <HintPath>..\..\Lib\Microsoft.ReportViewer.WebForms.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="CPCC\CPCC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Bin\CPCC.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.2.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Services3, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Lib\Microsoft.Web.Services3.dll</HintPath>
+      <HintPath>..\packages\Microsoft.Web.Services3.3.0.0.0\lib\net20\Microsoft.Web.Services3.dll</HintPath>
       <Private>True</Private>
-    </Reference>
-    <Reference Include="CPCC\CPCC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Bin\CPCC.dll</HintPath>
     </Reference>
     <Reference Include="MimeKit, Version=4.11.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.4.11.0\lib\net48\MimeKit.dll</HintPath>
@@ -168,7 +167,6 @@
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Optimization, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -779,12 +777,12 @@
     <Content Include="App_Themes\Default\fonts\josefinslab-semibold-webfont.ttf" />
     <Content Include="App_Themes\Default\fonts\josefinslab-semibold-webfont.woff" />
     <Content Include="manifest.json" />
-    <Content Include="packages.config" />
     <Content Include="App_Themes\Default\Styles\defaultTheme.less" />
     <Content Include="App_Themes\Default\Styles\main.less" />
     <Content Include="App_Themes\Default\Styles\Menus.less" />
     <Content Include="App_Themes\Default\Styles\defaultVariables.less" />
     <Content Include="Handlers\AsyncLoadHandler.ashx" />
+    <None Include="packages.config" />
     <None Include="Properties\PublishProfiles\Default Settings.pubxml" />
   </ItemGroup>
   <ItemGroup>

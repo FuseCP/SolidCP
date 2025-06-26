@@ -51,7 +51,6 @@ namespace SolidCP.EnterpriseServer
     using System.Web.Services.Protocols;
     using System;
     using System.Xml.Serialization;
-    using System.Diagnostics;
     using System.Data;
     using System.Collections;
 

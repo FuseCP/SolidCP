@@ -47,6 +47,7 @@ using System.Xml;
 using SolidCP.Providers;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.Utils;
+using SolidCP.Server;
 using SolidCP.Server.Utils;
 
 using Vds = Microsoft.Storage.Vds;
@@ -227,7 +228,7 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
-        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmId)
         {
             throw new NotImplementedException();
         }
@@ -1441,9 +1442,14 @@ namespace SolidCP.Providers.Virtualization
             return Convert.ToInt32(objCpu["NumberOfCores"]);
         }
 
+        public Memory GetMemory()
+        {
+            throw new NotImplementedException("The method is not implemented. See the HyperV2012R2 class for a reference implementation.");
+        }
+
         public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
         {
-            //TODO: need to implement that method. Look in HyperV2012R2 class
+            //TODO: The method is not implemented. See the HyperV2012R2 class for a reference implementation
             return new List<VMConfigurationVersion>() { new VMConfigurationVersion { Version = "0.0", Name = "Default" } };
         }
         #endregion
