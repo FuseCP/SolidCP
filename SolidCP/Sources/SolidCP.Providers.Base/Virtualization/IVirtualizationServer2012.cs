@@ -79,7 +79,7 @@ namespace SolidCP.Providers.Virtualization
         List<SecureBootTemplate> GetSecureBootTemplates(string computerName);
 
         // IP operations
-        List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName);
+        List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmId);
         JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration);
 
         // DVD operations

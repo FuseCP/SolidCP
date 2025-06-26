@@ -13,14 +13,14 @@
 // 
 namespace SolidCP.Providers.Virtualization2012
 {
-    using System.Xml.Serialization;
-    using System.Web.Services;
-    using System.ComponentModel;
-    using System.Web.Services.Protocols;
-    using System;
-    using System.Diagnostics;
     using SolidCP.Providers.Virtualization;
     using SolidCP.Server;
+    using System;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Web.Services;
+    using System.Web.Services.Protocols;
+    using System.Xml.Serialization;
 
 
     /// <remarks/>
@@ -1951,18 +1951,18 @@ namespace SolidCP.Providers.Virtualization2012
         /// <remarks/>
         [System.Web.Services.Protocols.SoapHeaderAttribute("ServiceProviderSettingsSoapHeaderValue")]
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/server/GetVirtualMachinesNetwordAdapterSettings", RequestNamespace = "http://smbsaas/solidcp/server/", ResponseNamespace = "http://smbsaas/solidcp/server/", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        public VirtualMachineNetworkAdapter[] GetVirtualMachinesNetwordAdapterSettings(string vmId)
         {
             object[] results = this.Invoke("GetVirtualMachinesNetwordAdapterSettings", new object[] {
-                        vmName});
+                        vmId});
             return ((VirtualMachineNetworkAdapter[])(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginGetVirtualMachinesNetwordAdapterSettings(string vmName, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginGetVirtualMachinesNetwordAdapterSettings(string vmId, System.AsyncCallback callback, object asyncState)
         {
             return this.BeginInvoke("GetVirtualMachinesNetwordAdapterSettings", new object[] {
-                        vmName}, callback, asyncState);
+                        vmId}, callback, asyncState);
         }
 
         /// <remarks/>
@@ -1973,20 +1973,20 @@ namespace SolidCP.Providers.Virtualization2012
         }
 
         /// <remarks/>
-        public void GetVirtualMachinesNetwordAdapterSettingsAsync(string vmName)
+        public void GetVirtualMachinesNetwordAdapterSettingsAsync(string vmId)
         {
-            this.GetVirtualMachinesNetwordAdapterSettingsAsync(vmName, null);
+            this.GetVirtualMachinesNetwordAdapterSettingsAsync(vmId, null);
         }
 
         /// <remarks/>
-        public void GetVirtualMachinesNetwordAdapterSettingsAsync(string vmName, object userState)
+        public void GetVirtualMachinesNetwordAdapterSettingsAsync(string vmId, object userState)
         {
             if ((this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted == null))
             {
                 this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetVirtualMachinesNetwordAdapterSettingsOperationCompleted);
             }
             this.InvokeAsync("GetVirtualMachinesNetwordAdapterSettings", new object[] {
-                        vmName}, this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted, userState);
+                        vmId}, this.GetVirtualMachinesNetwordAdapterSettingsOperationCompleted, userState);
         }
 
         private void OnGetVirtualMachinesNetwordAdapterSettingsOperationCompleted(object arg)

@@ -228,7 +228,7 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
-        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmId)
         {
             throw new NotImplementedException();
         }

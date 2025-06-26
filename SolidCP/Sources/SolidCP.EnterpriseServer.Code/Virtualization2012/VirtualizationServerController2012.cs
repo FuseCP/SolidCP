@@ -529,7 +529,7 @@ namespace SolidCP.EnterpriseServer
                 return null;
 
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(vm.ServiceId);
-            return vs.GetVirtualMachinesNetwordAdapterSettings(vm.Name);
+            return vs.GetVirtualMachinesNetwordAdapterSettings(vm.VirtualMachineId);
         }
 
         public static ResultObject ChangeAdministratorPassword(int itemId, string password)

@@ -381,20 +381,15 @@ namespace SolidCP.Providers.Virtualization
             return vm;
         }
 
-        // TODO: use vmId instead of vmName, to increase performance
-        // Need to change API, so later
-        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName) 
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmId) 
         {
             List<VirtualMachineNetworkAdapter> adapters = new List<VirtualMachineNetworkAdapter>();
             try
             {                
-                //PSObject vmObject = VirtualMachineHelper.GetVmPSObject(vmId);
+                var vmData = GetVirtualMachineDataGeneral(vmId, true);
 
                 Command command = new Command("Get-VMNetworkAdapter");
-                //command.Parameters.Add("VM", vmObject);
-                command.Parameters.Add("VMName", vmName);
-                //Collection<PSObject> result = PowerShell.Execute(command, false, true); //False, because all remote connection information is already contained in vmObj
-                Collection<PSObject> result = PowerShell.Execute(command, true, true); 
+                Collection<PSObject> result = PowerShell.ExecuteOnVm(command, vmData, true); 
 
                 foreach (PSObject current in result)
                 {
@@ -411,11 +406,8 @@ namespace SolidCP.Providers.Virtualization
                 foreach (VirtualMachineNetworkAdapter adapter in adapters)
                 {
                     command = new Command("Get-VMNetworkAdapterVlan");
-                    //command.Parameters.Add("VM", vmObject);
-                    command.Parameters.Add("VMName", vmName);
                     command.Parameters.Add("VMNetworkAdapterName", adapter.Name);
-                    //result = PowerShell.Execute(command, false, true);
-                    result = PowerShell.Execute(command, true, true);
+                    result = PowerShell.ExecuteOnVm(command, vmData, true);
                     int vlan = 0;
                     Int32.TryParse(result[0].GetString("AccessVlanId"), out vlan);
                     adapter.vlan = vlan;
