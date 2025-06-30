@@ -331,15 +331,15 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 #endregion
 
                 // check RAM limit
-                ulong ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : UInt64.Parse(settings["RamReserve"]);
+                long ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : Int64.Parse(settings["RamReserve"]);
                 if (ramReserve > 0 && createMetaItem) //0 - no RAM reserve. if createMetaItem = false - reinstallation, disable check.
                 {
                     try
                     {
                         Server.Memory memory = VirtualizationServerController2012.GetMemoryPackageId(packageId);
 
-                        ulong freePhysicalMemoryMB = (memory.FreePhysicalMemoryKB / 1024);
-                        ulong futureFreeMemoryMB = freePhysicalMemoryMB - (ulong)vm.RamSize; //futureFreeMemoryMB can be negative
+                        long freePhysicalMemoryMB = Convert.ToInt64(memory.FreePhysicalMemoryKB / 1024);
+                        long futureFreeMemoryMB = freePhysicalMemoryMB - vm.RamSize; //futureFreeMemoryMB can be negative
                         bool isEnoughRAM = (futureFreeMemoryMB >= ramReserve);
 
                         if (!isEnoughRAM)
