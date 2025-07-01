@@ -1,6 +1,7 @@
 ﻿using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
 using SolidCP.Providers;
+using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Providers.Virtualization2012;
@@ -336,9 +337,9 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 {
                     try
                     {
-                        Server.Memory memory = VirtualizationServerController2012.GetMemoryPackageId(packageId);
+                        SystemMemoryInfo memory = VirtualizationServerController2012.GetSystemMemoryInfoPackageId(packageId);
 
-                        long freePhysicalMemoryMB = Convert.ToInt64(memory.FreePhysicalMemoryKB / 1024);
+                        long freePhysicalMemoryMB = Convert.ToInt64(memory.FreePhysicalKB / 1024);
                         long futureFreeMemoryMB = freePhysicalMemoryMB - vm.RamSize; //futureFreeMemoryMB can be negative
                         bool isEnoughRAM = (futureFreeMemoryMB >= ramReserve);
 

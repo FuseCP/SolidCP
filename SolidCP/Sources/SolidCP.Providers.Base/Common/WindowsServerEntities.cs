@@ -239,13 +239,5 @@ namespace SolidCP.Server
         Error,
         SuccessAudit,
         FailureAudit
-    }
-
-    public class Memory
-    {
-        public ulong FreePhysicalMemoryKB { get; set; }
-        public ulong FreeVirtualMemoryKB { get; set; }
-        public ulong TotalVirtualMemorySizeKB { get; set; }
-        public ulong TotalVisibleMemorySizeKB { get; set; }
-    }
+    }    
 }

@@ -1248,19 +1248,14 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Configurations
-        public static Memory GetMemoryPackageId(int packageId)
+        #region Server information
+        public static SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
-            return GetMemoryInternal(serviceId);
+            return GetSystemResourceUsageInfo(serviceId);
         }
 
-        public static Memory GetMemory(int serviceId)
-        {
-            return GetMemoryInternal(serviceId);
-        }
-
-        private static Memory GetMemoryInternal(int serviceId)
+        public static SystemResourceUsageInfo GetSystemResourceUsageInfo(int serviceId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1269,9 +1264,34 @@ namespace SolidCP.EnterpriseServer
 
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
-            return vs.GetMemory();
+            return vs.GetSystemResourceUsageInfo();
         }
 
+        public static SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
+        {
+            int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
+            return GetSystemMemoryInfoInternal(serviceId);
+        }
+
+        public static SystemMemoryInfo GetSystemMemoryInfo(int serviceId)
+        {
+            return GetSystemMemoryInfoInternal(serviceId);
+        }
+
+        private static SystemMemoryInfo GetSystemMemoryInfoInternal(int serviceId)
+        {
+            // check account
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
+            if (accountCheck < 0)
+                throw new Exception("The account dont have permission");
+
+            VirtualizationServer2012 vs = new VirtualizationServer2012();
+            ServiceProviderProxy.Init(vs, serviceId);
+            return vs.GetSystemMemoryInfo();
+        }
+        #endregion
+
+        #region Configurations
         public static VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
