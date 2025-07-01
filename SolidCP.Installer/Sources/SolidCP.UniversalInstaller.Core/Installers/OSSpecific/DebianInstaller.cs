@@ -32,11 +32,19 @@ namespace SolidCP.UniversalInstaller
 
 			if (!HasDotnet)
 			{
-				// install dotnet from microsoft
+				/*	// install dotnet from microsoft
 				var tmp = DownloadFile($"https://packages.microsoft.com/config/debian/{OSInfo.OSVersion.Major}/packages-microsoft-prod.deb");
 				Shell.Exec($"dpkg -i \"{tmp}\"");
 				File.Delete(tmp);
-				Apt.Update();
+				Apt.Update(); */
+				// do not install dotnet from microsoft
+				var text = @"Package: dotnet* aspnet* netstandard*
+Pin: origin ""packages.microsoft.com""
+Pin-Priority: -10
+";
+				var file = "/etc/apt/preferences";
+				if (!File.Exists(file)) File.WriteAllText(file, text);
+				else File.AppendAllText(file, Environment.NewLine + text);
 			}
 
 			Apt.Install("aspnetcore-runtime-8.0 netcore-runtime-8.0");
