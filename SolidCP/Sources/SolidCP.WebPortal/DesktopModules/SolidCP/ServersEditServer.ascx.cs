@@ -42,8 +42,8 @@ using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
 
 using SolidCP.EnterpriseServer;
-using SolidCP.Server;
 using System.Linq;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.Portal
 {
@@ -168,19 +168,19 @@ namespace SolidCP.Portal
         {
             try
             {
-                Memory memory = null;
+                SystemMemoryInfo memory = null;
                 // We need to get the ServiceInfo for VPS2012 servers, because only this way allows access to the Remote Hyper-V API.
                 // Otherwise, it will return information about the local server.
                 ServiceInfo ServiceInfo = ES.Services.Servers.GetServicesByServerIdGroupName(PanelRequest.ServerId, ResourceGroups.VPS2012).FirstOrDefault();
                 if (ServiceInfo != null)
-                    memory = ES.Services.VPS2012.GetMemory(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
+                    memory = ES.Services.VPS2012.GetSystemMemoryInfo(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
                 else
-                    memory = ES.Services.Servers.GetMemory(PanelRequest.ServerId);
+                    memory = ES.Services.Servers.GetSystemMemoryInfo(PanelRequest.ServerId);
 
-                freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
-                totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
-                ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
-                ramGauge.Progress = (int)((memory.TotalVisibleMemorySizeKB / 1024) - (memory.FreePhysicalMemoryKB / 1024));
+                freeMemory.Text = (memory.FreePhysicalKB / 1024).ToString();
+                totalMemory.Text = (memory.TotalVisibleSizeKB / 1024).ToString();
+                ramGauge.Total = (int)memory.TotalVisibleSizeKB / 1024;
+                ramGauge.Progress = (int)((memory.TotalVisibleSizeKB / 1024) - (memory.FreePhysicalKB / 1024));
             }
             catch
             {
