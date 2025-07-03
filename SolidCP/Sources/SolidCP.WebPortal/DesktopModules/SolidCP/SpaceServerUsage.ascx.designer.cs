@@ -33,6 +33,24 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.Timer Timer1;
 
         /// <summary>
+        /// loadProgress control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdateProgress loadProgress;
+
+        /// <summary>
+        /// gaugeUsage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl gaugeUsage;
+
+        /// <summary>
         /// cpuGauge control.
         /// </summary>
         /// <remarks>

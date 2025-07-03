@@ -12,6 +12,7 @@ namespace SolidCP.Portal
         protected void Page_Load(object sender, EventArgs e)
         {
             this.ContainerControl.Visible = (PanelSecurity.SelectedUser.Role != UserRole.User);
+            gaugeUsage.Visible = false;
 
             if (!IsPostBack)
             {
@@ -64,6 +65,10 @@ namespace SolidCP.Portal
             catch
             {
                 FillNA();
+            }
+            finally
+            {
+                gaugeUsage.Visible = true;
             }
         }
 
