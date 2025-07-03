@@ -1,0 +1,1 @@
+﻿<%@ WebService Language="C#" CodeBehind="ServerService.asmx.cs" Class="SolidCP.Portal.Services.ServerService" %>
