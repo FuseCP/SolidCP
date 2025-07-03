@@ -1,5 +1,4 @@
 ﻿using SolidCP.EnterpriseServer;
-using SolidCP.Portal.Services;
 using SolidCP.Providers.Common;
 using System;
 using System.Linq;
@@ -9,7 +8,7 @@ namespace SolidCP.Portal
 {
     public partial class SpaceServerUsage : SolidCPModuleBase
     {
-        private const int DEFAULT_TIMEOUT = 10000; //10 sec
+        private const int SERVER_TIMEOUT = 10000; //10 sec
         protected void Page_Load(object sender, EventArgs e)
         {
             this.ContainerControl.Visible = (PanelSecurity.SelectedUser.Role != UserRole.User);
@@ -23,24 +22,33 @@ namespace SolidCP.Portal
 
         protected void Timer1_Tick(object sender, EventArgs e)
         {
-            if(PanelSecurity.PackageId != 1) // PackageId 1 is the serveradmin package
-            { 
-                using (var service = new ServerService())
-                {
-                    BindSpaceServerUsage(service.GetServerUsageData(PanelSecurity.PackageId, DEFAULT_TIMEOUT));
-                }
-            }
+            if (PanelSecurity.PackageId != 1) // PackageId 1 is the serveradmin package
+                BindSpaceServerUsage();
 
             Timer1.Enabled = false; //disable timer, after getting usage information
         }
 
-        private void BindSpaceServerUsage(SystemResourceUsageInfo resourceUsage)
-        {            
+        private SystemResourceUsageInfo GetSystemResourceUsage()
+        {
+            PackageInfo packageInfo = PackagesHelper.GetCachedPackage(PanelSecurity.PackageId);
+            // TODO: We need to find a way to detect whether other services have a Remote Computer setting.
+            // As of 2025, this setting exists only for Hyper-V (VPS2012).
+            // In other cases, we assume it's not Hyper-V and they don't have Remote Computer settings.
+            ServiceInfo serviceInfo = ES.Services.Servers.GetServicesByServerIdGroupName(packageInfo.ServerId, ResourceGroups.VPS2012).FirstOrDefault();
+            if (serviceInfo != null)
+                return ES.Services.WithTimeout(SERVER_TIMEOUT).VPS2012.GetSystemResourceUsageInfo(serviceInfo.ServiceId);
+
+            return ES.Services.WithTimeout(SERVER_TIMEOUT).Servers.GetSystemResourceUsageInfo(packageInfo.ServerId);
+        }
+
+        private void BindSpaceServerUsage()
+        {
             try
             {
+                SystemResourceUsageInfo resourceUsage = GetSystemResourceUsage();
                 int cpuUsage = 0;
                 if (resourceUsage.LogicalProcessorUsagePercent != -1)
-                    cpuUsage =  resourceUsage.LogicalProcessorUsagePercent; //this is more accurate if installed Hyper-V
+                    cpuUsage = resourceUsage.LogicalProcessorUsagePercent; //this is more accurate if installed Hyper-V
                 else
                     cpuUsage = resourceUsage.ProcessorTimeUsagePercent; //this is for everything else
 

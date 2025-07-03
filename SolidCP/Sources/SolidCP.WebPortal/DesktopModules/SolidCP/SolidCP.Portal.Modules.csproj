@@ -659,10 +659,6 @@
     <Compile Include="ServerVLANsControl.ascx.designer.cs">
       <DependentUpon>ServerVLANsControl.ascx</DependentUpon>
     </Compile>
-    <Compile Include="Services\ServerService.asmx.cs">
-      <DependentUpon>ServerService.asmx</DependentUpon>
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="SettingsVerificationCodeLetter.ascx.cs">
       <DependentUpon>SettingsVerificationCodeLetter.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -9295,7 +9291,6 @@
     <Content Include="VPS2012\VirtualMachineImage.ashx" />
     <Content Include="VPS2012\VirtualMachineSnapshotImage.ashx" />
     <Content Include="ThumbnailPhoto.ashx" />
-    <Content Include="Services\ServerService.asmx" />
     <None Include="Web.config">
       <SubType>Designer</SubType>
     </None>
