@@ -30,45 +30,63 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Common;
 using System;
-using System.Data;
-using System.Configuration;
 using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
-using System.Web.UI.HtmlControls;
-
-using SolidCP.EnterpriseServer;
-using System.Linq;
-using SolidCP.Providers.Common;
 
 namespace SolidCP.Portal
 {
     public partial class ServersEditServer : SolidCPModuleBase
     {
+        private const int SERVER_INFO_TIMEOUT = 10000; //10 sec, there is no point to wait too long for just a server information
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 try
                 {
+                    //load infromation from the database only, check Timer1_Tick for the rest
                     BindTools();
                     BindServer();
-                    BindServerMemory();
-                    BindServerVersion();
-                    BindServerFilepath();
                 }
                 catch (Exception ex)
                 {
                     ShowErrorMessage("SERVER_GET_SERVER", ex);
                     return;
                 }
-
+                Timer1.Enabled = true;
                 IPAddressesHeader.IsCollapsed = IsIpAddressesCollapsed;
             }
+        }
+
+        protected void Timer1_Tick(object sender, EventArgs e) //we use <asp:UpdatePanel> with <asp:Timer> to post update
+        {
+            try
+            {
+                //load information from the server
+                BindServerMemory();
+                BindServerVersion();
+                BindServerFilepath();
+            }
+            catch (Exception ex)
+            {
+                divSimpleMessageBox.Visible = true;
+                ShowSimpleErrorMessage("SERVER_GET_SERVER", ex);
+                updSimpleMessageBox.Update();
+            }
+
+            Timer1.Enabled = false;
         }
         //protected void rbUsersCreationMode_SelectedIndexChanged(object sender, EventArgs e)
         //{
@@ -154,49 +172,33 @@ namespace SolidCP.Portal
 
 		private void BindServerVersion()
 		{
-			try
-			{
-				scpVersion.Text = ES.Services.Servers.GetServerVersion(PanelRequest.ServerId);
-			}
-			catch
-			{
-				ShowErrorMessage("SERVER_GET_SERVER");
-			}
-		}
+            scpVersion.Text = ES.Services.WithTimeout(SERVER_INFO_TIMEOUT).Servers.GetServerVersion(PanelRequest.ServerId);
+        }
 
         private void BindServerMemory()
         {
-            try
-            {
-                SystemMemoryInfo memory = null;
-                // We need to get the ServiceInfo for VPS2012 servers, because only this way allows access to the Remote Hyper-V API.
-                // Otherwise, it will return information about the local server.
-                ServiceInfo ServiceInfo = ES.Services.Servers.GetServicesByServerIdGroupName(PanelRequest.ServerId, ResourceGroups.VPS2012).FirstOrDefault();
-                if (ServiceInfo != null)
-                    memory = ES.Services.VPS2012.GetSystemMemoryInfo(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
-                else
-                    memory = ES.Services.Servers.GetSystemMemoryInfo(PanelRequest.ServerId);
+            freeMemory.Text = "N/A";
+            totalMemory.Text = "N/A";
 
-                freeMemory.Text = (memory.FreePhysicalKB / 1024).ToString();
-                totalMemory.Text = (memory.TotalVisibleSizeKB / 1024).ToString();
-                ramGauge.Total = (int)memory.TotalVisibleSizeKB / 1024;
-                ramGauge.Progress = (int)((memory.TotalVisibleSizeKB / 1024) - (memory.FreePhysicalKB / 1024));
-            }
-            catch
-            {
-                freeMemory.Text = "N/A";
-                totalMemory.Text = "N/A";
-            }
+            SystemMemoryInfo memory = null;
+            // We need to get the ServiceInfo for VPS2012 servers, because only this way allows access to the Remote Hyper-V API.
+            // Otherwise, it will return information about the local server.
+            ServiceInfo ServiceInfo = ES.Services.Servers.GetServicesByServerIdGroupName(PanelRequest.ServerId, ResourceGroups.VPS2012).FirstOrDefault();
+            if (ServiceInfo != null)
+                memory = ES.Services.WithTimeout(SERVER_INFO_TIMEOUT).VPS2012.GetSystemMemoryInfo(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
+            else
+                memory = ES.Services.WithTimeout(SERVER_INFO_TIMEOUT).Servers.GetSystemMemoryInfo(PanelRequest.ServerId);
+
+            freeMemory.Text = (memory.FreePhysicalKB / 1024).ToString();
+            totalMemory.Text = (memory.TotalVisibleSizeKB / 1024).ToString();
+            ramGauge.Total = (int)memory.TotalVisibleSizeKB / 1024;
+            ramGauge.Progress = (int)((memory.TotalVisibleSizeKB / 1024) - (memory.FreePhysicalKB / 1024));
+
         }
 
-        private void BindServerFilepath() {
-            try {
-                // scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
-
-                scpFilepath.Text = ES.Services.Servers.GetServerFilePath(PanelRequest.ServerId);
-            } catch {
-                ShowErrorMessage("SERVER_GET_SERVER");
-            }
+        private void BindServerFilepath() 
+        {
+            scpFilepath.Text = ES.Services.WithTimeout(SERVER_INFO_TIMEOUT).Servers.GetServerFilePath(PanelRequest.ServerId);
         }
 
         private void UpdateServer()
@@ -345,6 +347,41 @@ namespace SolidCP.Portal
             {
                 txtAdParentDomain.Text = null;
             }
+        }
+
+        private void ShowSimpleErrorMessage(string messageKey, Exception ex)
+        {
+            string exceptionKey = null;
+            litStackTrace.Visible = false;
+            if (ex != null)
+            {
+                if (!String.IsNullOrEmpty(ex.Message) && ex.Message.Contains("SolidCP_ERROR"))
+                {
+                    string[] messageParts = ex.Message.Split(new char[] { '@' });
+                    if (messageParts.Length > 1)
+                    {
+                        exceptionKey = messageParts[1].TrimStart(new char[] { ' ' });
+                    }
+                }
+                litStackTrace.Visible = true;
+                litStackTrace.Text = ex.ToString().Replace("\n", "<br/>");
+            }
+            string localizedMessage = GetSharedLocalizedString(Utils.ModuleName, "Error." + exceptionKey);
+            string localizedDescription = GetSharedLocalizedString(Utils.ModuleName, "ErrorDescription." + exceptionKey);
+
+            if (localizedMessage == null)
+            {
+                localizedMessage = GetSharedLocalizedString(Utils.ModuleName, "Error." + messageKey);
+                localizedDescription = GetSharedLocalizedString(Utils.ModuleName, messageKey);
+                if (localizedMessage == null)
+                    localizedMessage = messageKey;
+            }
+
+            string boxStyle = "MessageBox Red";
+            divSimpleMessageBox.Attributes["class"] = boxStyle;
+            litMessageBox.Text = localizedMessage;
+            litDescriptionBox.Text = !String.IsNullOrEmpty(localizedDescription)
+                ? String.Format("<br/><span class=\"description\">{0}</span>", localizedDescription) : "";
         }
     }
 }
