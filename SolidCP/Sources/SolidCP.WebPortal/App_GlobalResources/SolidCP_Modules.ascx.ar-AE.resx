@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ModuleTitle.User" xml:space="preserve">
     <value>المستخدم</value>
@@ -647,6 +647,9 @@
   </data>
   <data name="ModuleTitle.SpaceQuotas" xml:space="preserve">
     <value>حصص المساحة</value>
+  </data>
+  <data name="ModuleTitle.SpaceServerUsage" xml:space="preserve">
+    <value>استخدام موارد خادم الفضاء</value>
   </data>
   <data name="ModuleTitle.CreateNewOrganization" xml:space="preserve">
     <value>إنشاء منظمة جديدة</value>

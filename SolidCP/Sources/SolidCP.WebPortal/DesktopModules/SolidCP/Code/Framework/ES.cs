@@ -48,6 +48,9 @@ namespace SolidCP.Portal
 
     public class ES
     {
+        // Thread-safe way to store a temporary timeout for the current request
+        private const string TIMEOUT_KEY = "SolidCP.ES.CurrentRequestTimeout";
+
         public static ES Services
         {
             get
@@ -62,6 +65,18 @@ namespace SolidCP.Portal
 
                 return services;
             }
+        }
+
+        /// <summary>
+        /// Sets a temporary timeout for the next web service call.
+        /// This method is designed to be chained.
+        /// </summary>
+        /// <param name="timeoutMilliseconds">The timeout value in milliseconds.</param>
+        /// <returns>The current ES instance for chaining.</returns>
+        public ES WithTimeout(int timeoutMilliseconds)
+        {
+            HttpContext.Current.Items[TIMEOUT_KEY] = timeoutMilliseconds;
+            return this;
         }
 
         public esCRM CRM
@@ -295,6 +310,16 @@ namespace SolidCP.Portal
 
             // configure proxy
 			PortalUtils.ConfigureEnterpriseServerProxy((WebServicesClientProtocol)p, secureCalls);
+
+            // Apply temporary timeout if set, then clear it
+            if (HttpContext.Current.Items.Contains(TIMEOUT_KEY))
+            {
+                if (p is WebServicesClientProtocol webServiceProxy)
+                {
+                    webServiceProxy.Timeout = (int)HttpContext.Current.Items[TIMEOUT_KEY];
+                }
+                HttpContext.Current.Items.Remove(TIMEOUT_KEY);
+            }
 
             return proxy;
         }

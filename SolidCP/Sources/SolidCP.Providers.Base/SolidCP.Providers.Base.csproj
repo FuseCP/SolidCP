@@ -88,6 +88,7 @@
     <Compile Include="..\VersionInfo.cs">
       <Link>VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="Common\SystemMemoryInfo.cs" />
     <Compile Include="HostedSolution\ADPermissions.cs" />
     <Compile Include="Common\LogExtension\LogExtensionHelper.cs" />
     <Compile Include="Common\LogExtension\Attributes\LogParentPropertyAttribute.cs" />
@@ -381,6 +382,7 @@
     <Compile Include="Virtualization\MonitoredObjectAlert.cs" />
     <Compile Include="Virtualization\MonitoredObjectEvent.cs" />
     <Compile Include="Virtualization\MountedDiskInfo.cs" />
+    <Compile Include="Common\SystemResourceUsageInfo.cs" />
     <Compile Include="Virtualization\OperationalStatus.cs" />
     <Compile Include="Virtualization\PerformanceObject.cs" />
     <Compile Include="Virtualization\Replication\CertificateInfo.cs" />

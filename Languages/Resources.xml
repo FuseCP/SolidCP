@@ -902,6 +902,11 @@
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
+    <Key>ModuleTitle.SpaceServerUsage</Key>
+    <DefaultValue>Space Server Resource Usage</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
     <Key>ModuleTitle.CreateNewOrganization</Key>
     <DefaultValue>Create New Organization</DefaultValue>
   </Resource>

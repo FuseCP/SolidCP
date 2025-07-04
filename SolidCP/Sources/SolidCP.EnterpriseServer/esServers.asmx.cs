@@ -1016,17 +1016,29 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region OS informations
+        #region Server informations
         [WebMethod]
-        public Memory GetMemoryPackageId(int packageId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
-            return OperatingSystemController.GetMemoryPackageId(packageId);
+            return OperatingSystemController.GetSystemResourceUsageInfoPackageId(packageId);
         }
 
         [WebMethod]
-        public Memory GetMemory(int serverId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo(int serverId)
         {
-            return OperatingSystemController.GetMemory(serverId);
+            return OperatingSystemController.GetSystemResourceUsageInfo(serverId);
+        }
+
+        [WebMethod]
+        public SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
+        {
+            return OperatingSystemController.GetSystemMemoryInfoPackageId(packageId);
+        }
+
+        [WebMethod]
+        public SystemMemoryInfo GetSystemMemoryInfo(int serverId)
+        {
+            return OperatingSystemController.GetSystemMemoryInfo(serverId);
         }
         #endregion
 

@@ -13,6 +13,27 @@
 <scp:EnableAsyncTasksSupport id="asyncTasks" runat="server"/>
 <asp:ValidationSummary ID="summary" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Server" />
 
+<asp:UpdatePanel ID="updSimpleMessageBox" runat="server" UpdateMode="Conditional">
+    <ContentTemplate>
+        <div style="height:3px;"></div>
+        <div id="divSimpleMessageBox" runat="server" class="MessageBox" visible="false">
+            <asp:Literal ID="litMessageBox" runat="server"></asp:Literal>
+            <asp:Literal ID="litDescriptionBox" runat="server"></asp:Literal>
+            <asp:Literal ID="litStackTrace" runat="server"></asp:Literal>
+        </div>
+    </ContentTemplate>
+</asp:UpdatePanel>
+<asp:UpdateProgress ID="loadProgress" runat="server" AssociatedUpdatePanelID="updAsyncInfo" DisplayAfter="0">
+    <ProgressTemplate>
+        <div class="ProgressPanelArea" style="text-align: center; margin-top: 10px;">
+            <div class="MediumBold" style="white-space:nowrap; display: inline-flex; align-items: center; justify-content: center;">
+                <img src='<%= PortalUtils.GetThemedImage("indicator_medium.gif") %>' alt="Loading..." style="vertical-align: middle;" />&nbsp;
+                <span>Loading data...</span> 
+            </div>
+        </div>
+    </ProgressTemplate>
+</asp:UpdateProgress>
+
 <section>
 <div class="panel-body">
     <div class="row">
@@ -245,35 +266,40 @@
         </ul>
         </div>
          <br />
-    <div class="panel panel-primary">
+            <asp:UpdatePanel ID="updAsyncInfo" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <asp:Timer ID="Timer1" runat="server" Interval="100" OnTick="Timer1_Tick" Enabled="false" />
+                <div class="panel panel-primary">
 
-        <ul class="list-group">
+                <ul class="list-group">
             
-            <li class="list-group-item"><asp:Label ID="lblServerVersion" runat="server" meta:resourcekey="lblServerVersion" Text="SolidCP Server Version"></asp:Label>:<br/>
-                <asp:Localize ID="locVersion" runat="server" meta:resourcekey="locVersion" /> <asp:Label id="scpVersion" runat="server"/>
-            </li>
-              <li class="list-group-item">
-                    <asp:Label ID="lblServerFilePath" runat="server" meta:resourcekey="lblServerFilePath" Text="SolidCP Server Filepath"></asp:Label>:<br/>
-                  <asp:Localize ID="locFilepath" runat="server" meta:resourcekey="locFilepath" /> <asp:Label id="scpFilepath" runat="server"/>
-            </li>
+                    <li class="list-group-item"><asp:Label ID="lblServerVersion" runat="server" meta:resourcekey="lblServerVersion" Text="SolidCP Server Version"></asp:Label>:<br/>
+                        <asp:Localize ID="locVersion" runat="server" meta:resourcekey="locVersion" /> <asp:Label id="scpVersion" runat="server"/>
+                    </li>
+                      <li class="list-group-item">
+                            <asp:Label ID="lblServerFilePath" runat="server" meta:resourcekey="lblServerFilePath" Text="SolidCP Server Filepath"></asp:Label>:<br/>
+                          <asp:Localize ID="locFilepath" runat="server" meta:resourcekey="locFilepath" /> <asp:Label id="scpFilepath" runat="server"/>
+                    </li>
              
-        </ul>
-        </div>
-    <br />
-    <div class="panel panel-primary">
-        <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-microchip">&nbsp;</i>&nbsp;<asp:Label ID="lblServerRAM" runat="server" meta:resourcekey="lblServerRAM" Text="Server RAM"></asp:Label></h3></div>
-        <ul class="list-group">
-            <li class="list-group-item"><asp:Label ID="lblFreeMemory" runat="server" meta:resourcekey="lblFreeMemory" Text="Free Memory"></asp:Label>:
-                <asp:Localize ID="locFreeMemory" runat="server" meta:resourcekey="locFreeMemory" /> <asp:Label id="freeMemory" runat="server"/> (MB)
-            </li>
-            <li class="list-group-item"><asp:Label ID="lblTotalMemory" runat="server" meta:resourcekey="lblTotalMemory" Text="Total Memory"></asp:Label>:
-                <asp:Localize ID="locTotalMemory" runat="server" meta:resourcekey="locTotalMemory" /> <asp:Label id="totalMemory" runat="server"/> (MB)
-            </li>
-            <li class="list-group-item">
-                Usage: <scp:Gauge ID="ramGauge" runat="server" Progress="0" Total="100" />
-             </li>
-        </ul>
-        </div>
+                </ul>
+            </div>
+                <br />
+                <div class="panel panel-primary">
+                <div class="panel-heading"><h3 class="panel-title"><i class="fa fa-microchip">&nbsp;</i>&nbsp;<asp:Label ID="lblServerRAM" runat="server" meta:resourcekey="lblServerRAM" Text="Server RAM"></asp:Label></h3></div>
+                <ul class="list-group">
+                    <li class="list-group-item"><asp:Label ID="lblFreeMemory" runat="server" meta:resourcekey="lblFreeMemory" Text="Free Memory"></asp:Label>:
+                        <asp:Localize ID="locFreeMemory" runat="server" meta:resourcekey="locFreeMemory" /> <asp:Label id="freeMemory" runat="server"/> (MB)
+                    </li>
+                    <li class="list-group-item"><asp:Label ID="lblTotalMemory" runat="server" meta:resourcekey="lblTotalMemory" Text="Total Memory"></asp:Label>:
+                        <asp:Localize ID="locTotalMemory" runat="server" meta:resourcekey="locTotalMemory" /> <asp:Label id="totalMemory" runat="server"/> (MB)
+                    </li>
+                    <li class="list-group-item">
+                        Usage: <scp:Gauge ID="ramGauge" runat="server" Progress="0" Total="100" />
+                     </li>
+                </ul>
+            </div>
+                </ContentTemplate>
+            </asp:UpdatePanel>
         
         </div>
     </div>

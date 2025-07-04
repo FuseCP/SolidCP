@@ -184,7 +184,11 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
         private System.Threading.SendOrPostCallback GetSecureBootTemplatesOperationCompleted;
 
-        private System.Threading.SendOrPostCallback GetMemoryOperationCompleted;
+        private System.Threading.SendOrPostCallback GetSystemResourceUsageInfoPackageIdOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetSystemResourceUsageInfoOperationCompleted;
+
+        private System.Threading.SendOrPostCallback GetSystemMemoryInfoOperationCompleted;
 
         private System.Threading.SendOrPostCallback GetVMConfigurationVersionSupportedListOperationCompleted;
 
@@ -456,7 +460,13 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         public event GetSecureBootTemplatesCompletedEventHandler GetSecureBootTemplatesCompleted;
 
         /// <remarks/>
-        public event GetMemoryCompletedEventHandler GetMemoryCompleted;
+        public event GetSystemResourceUsageInfoPackageIdCompletedEventHandler GetSystemResourceUsageInfoPackageIdCompleted;
+
+        /// <remarks/>
+        public event GetSystemResourceUsageInfoCompletedEventHandler GetSystemResourceUsageInfoCompleted;
+
+        /// <remarks/>
+        public event GetSystemMemoryInfoCompletedEventHandler GetSystemMemoryInfoCompleted;
 
         /// <remarks/>
         public event GetVMConfigurationVersionSupportedListCompletedEventHandler GetVMConfigurationVersionSupportedListCompleted;
@@ -4984,51 +4994,149 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
         }
 
         /// <remarks/>
-        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetMemory", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public Memory GetMemory(int serviceId)
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSystemResourceUsageInfoPackageId", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
-            object[] results = this.Invoke("GetMemory", new object[] {
-                        serviceId});
-            return ((Memory)(results[0]));
+            object[] results = this.Invoke("GetSystemResourceUsageInfoPackageId", new object[] {
+                        packageId});
+            return ((SystemResourceUsageInfo)(results[0]));
         }
 
         /// <remarks/>
-        public System.IAsyncResult BeginGetMemory(int serviceId, System.AsyncCallback callback, object asyncState)
+        public System.IAsyncResult BeginGetSystemResourceUsageInfoPackageId(int packageId, System.AsyncCallback callback, object asyncState)
         {
-            return this.BeginInvoke("GetMemory", new object[] {
+            return this.BeginInvoke("GetSystemResourceUsageInfoPackageId", new object[] {
+                        packageId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public SystemResourceUsageInfo EndGetSystemResourceUsageInfoPackageId(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((SystemResourceUsageInfo)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetSystemResourceUsageInfoPackageIdAsync(int packageId)
+        {
+            this.GetSystemResourceUsageInfoPackageIdAsync(packageId, null);
+        }
+
+        /// <remarks/>
+        public void GetSystemResourceUsageInfoPackageIdAsync(int packageId, object userState)
+        {
+            if ((this.GetSystemResourceUsageInfoPackageIdOperationCompleted == null))
+            {
+                this.GetSystemResourceUsageInfoPackageIdOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSystemResourceUsageInfoPackageIdOperationCompleted);
+            }
+            this.InvokeAsync("GetSystemResourceUsageInfoPackageId", new object[] {
+                        packageId}, this.GetSystemResourceUsageInfoPackageIdOperationCompleted, userState);
+        }
+
+        private void OnGetSystemResourceUsageInfoPackageIdOperationCompleted(object arg)
+        {
+            if ((this.GetSystemResourceUsageInfoPackageIdCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetSystemResourceUsageInfoPackageIdCompleted(this, new GetSystemResourceUsageInfoPackageIdCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSystemResourceUsageInfo", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo(int serviceId)
+        {
+            object[] results = this.Invoke("GetSystemResourceUsageInfo", new object[] {
+                        serviceId});
+            return ((SystemResourceUsageInfo)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetSystemResourceUsageInfo(int serviceId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetSystemResourceUsageInfo", new object[] {
                         serviceId}, callback, asyncState);
         }
 
         /// <remarks/>
-        public Memory EndGetMemory(System.IAsyncResult asyncResult)
+        public SystemResourceUsageInfo EndGetSystemResourceUsageInfo(System.IAsyncResult asyncResult)
         {
             object[] results = this.EndInvoke(asyncResult);
-            return ((Memory)(results[0]));
+            return ((SystemResourceUsageInfo)(results[0]));
         }
 
         /// <remarks/>
-        public void GetMemoryAsync(int serviceId)
+        public void GetSystemResourceUsageInfoAsync(int serviceId)
         {
-            this.GetMemoryAsync(serviceId, null);
+            this.GetSystemResourceUsageInfoAsync(serviceId, null);
         }
 
         /// <remarks/>
-        public void GetMemoryAsync(int serviceId, object userState)
+        public void GetSystemResourceUsageInfoAsync(int serviceId, object userState)
         {
-            if ((this.GetMemoryOperationCompleted == null))
+            if ((this.GetSystemResourceUsageInfoOperationCompleted == null))
             {
-                this.GetMemoryOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetMemoryOperationCompleted);
+                this.GetSystemResourceUsageInfoOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSystemResourceUsageInfoOperationCompleted);
             }
-            this.InvokeAsync("GetMemory", new object[] {
-                        serviceId}, this.GetMemoryOperationCompleted, userState);
+            this.InvokeAsync("GetSystemResourceUsageInfo", new object[] {
+                        serviceId}, this.GetSystemResourceUsageInfoOperationCompleted, userState);
         }
 
-        private void OnGetMemoryOperationCompleted(object arg)
+        private void OnGetSystemResourceUsageInfoOperationCompleted(object arg)
         {
-            if ((this.GetMemoryCompleted != null))
+            if ((this.GetSystemResourceUsageInfoCompleted != null))
             {
                 System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
-                this.GetMemoryCompleted(this, new GetMemoryCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+                this.GetSystemResourceUsageInfoCompleted(this, new GetSystemResourceUsageInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
+            }
+        }
+
+        /// <remarks/>
+        [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://smbsaas/solidcp/enterpriseserver/GetSystemMemoryInfo", RequestNamespace = "http://smbsaas/solidcp/enterpriseserver", ResponseNamespace = "http://smbsaas/solidcp/enterpriseserver", Use = System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle = System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
+        public SystemMemoryInfo GetSystemMemoryInfo(int serviceId)
+        {
+            object[] results = this.Invoke("GetSystemMemoryInfo", new object[] {
+                        serviceId});
+            return ((SystemMemoryInfo)(results[0]));
+        }
+
+        /// <remarks/>
+        public System.IAsyncResult BeginGetSystemMemoryInfo(int serviceId, System.AsyncCallback callback, object asyncState)
+        {
+            return this.BeginInvoke("GetSystemMemoryInfo", new object[] {
+                        serviceId}, callback, asyncState);
+        }
+
+        /// <remarks/>
+        public SystemMemoryInfo EndGetSystemMemoryInfo(System.IAsyncResult asyncResult)
+        {
+            object[] results = this.EndInvoke(asyncResult);
+            return ((SystemMemoryInfo)(results[0]));
+        }
+
+        /// <remarks/>
+        public void GetSystemMemoryInfoAsync(int serviceId)
+        {
+            this.GetSystemMemoryInfoAsync(serviceId, null);
+        }
+
+        /// <remarks/>
+        public void GetSystemMemoryInfoAsync(int serviceId, object userState)
+        {
+            if ((this.GetSystemMemoryInfoOperationCompleted == null))
+            {
+                this.GetSystemMemoryInfoOperationCompleted = new System.Threading.SendOrPostCallback(this.OnGetSystemMemoryInfoOperationCompleted);
+            }
+            this.InvokeAsync("GetSystemMemoryInfo", new object[] {
+                        serviceId}, this.GetSystemMemoryInfoOperationCompleted, userState);
+        }
+
+        private void OnGetSystemMemoryInfoOperationCompleted(object arg)
+        {
+            if ((this.GetSystemMemoryInfoCompleted != null))
+            {
+                System.Web.Services.Protocols.InvokeCompletedEventArgs invokeArgs = ((System.Web.Services.Protocols.InvokeCompletedEventArgs)(arg));
+                this.GetSystemMemoryInfoCompleted(this, new GetSystemMemoryInfoCompletedEventArgs(invokeArgs.Results, invokeArgs.Error, invokeArgs.Cancelled, invokeArgs.UserState));
             }
         }
 
@@ -8297,30 +8405,90 @@ namespace SolidCP.EnterpriseServer.VirtualizationServer2012
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
-    public delegate void GetMemoryCompletedEventHandler(object sender, GetMemoryCompletedEventArgs e);
+    public delegate void GetSystemResourceUsageInfoPackageIdCompletedEventHandler(object sender, GetSystemResourceUsageInfoPackageIdCompletedEventArgs e);
 
     /// <remarks/>
     [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
-    public partial class GetMemoryCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    public partial class GetSystemResourceUsageInfoPackageIdCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
     {
 
         private object[] results;
 
-        internal GetMemoryCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+        internal GetSystemResourceUsageInfoPackageIdCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
                 base(exception, cancelled, userState)
         {
             this.results = results;
         }
 
         /// <remarks/>
-        public Memory Result
+        public SystemResourceUsageInfo Result
         {
             get
             {
                 this.RaiseExceptionIfNecessary();
-                return ((Memory)(this.results[0]));
+                return ((SystemResourceUsageInfo)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    public delegate void GetSystemResourceUsageInfoCompletedEventHandler(object sender, GetSystemResourceUsageInfoCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetSystemResourceUsageInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetSystemResourceUsageInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public SystemResourceUsageInfo Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((SystemResourceUsageInfo)(this.results[0]));
+            }
+        }
+    }
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    public delegate void GetSystemMemoryInfoCompletedEventHandler(object sender, GetSystemMemoryInfoCompletedEventArgs e);
+
+    /// <remarks/>
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("wsdl", "4.8.3928.0")]
+    [System.Diagnostics.DebuggerStepThroughAttribute()]
+    [System.ComponentModel.DesignerCategoryAttribute("code")]
+    public partial class GetSystemMemoryInfoCompletedEventArgs : System.ComponentModel.AsyncCompletedEventArgs
+    {
+
+        private object[] results;
+
+        internal GetSystemMemoryInfoCompletedEventArgs(object[] results, System.Exception exception, bool cancelled, object userState) :
+                base(exception, cancelled, userState)
+        {
+            this.results = results;
+        }
+
+        /// <remarks/>
+        public SystemMemoryInfo Result
+        {
+            get
+            {
+                this.RaiseExceptionIfNecessary();
+                return ((SystemMemoryInfo)(this.results[0]));
             }
         }
     }

@@ -57,10 +57,10 @@ using System.Configuration;
 using System.Linq;
 using SolidCP.Providers.Virtualization.Extensions;
 using SolidCP.Providers.OS;
-using SolidCP.Server;
 using Microsoft.Management.Infrastructure;
 using Microsoft.Management.Infrastructure.Generic;
 using System.Linq.Expressions;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -851,7 +851,7 @@ namespace SolidCP.Providers.Virtualization
                         {
                             int freeMemory = 0; //TODO: potentially a future bug, because FreePhysicalMemory is int64, not int32
                             try {
-                                freeMemory = Convert.ToInt32(GetMemoryInternal(hvHost).FreePhysicalMemoryKB);
+                                freeMemory = Convert.ToInt32(GetSystemMemoryInfoInternal(hvHost).FreePhysicalKB);
                             }
                             catch { /* this should never happen, just repeats old PowerShell way */ }
 
@@ -2082,44 +2082,91 @@ namespace SolidCP.Providers.Virtualization
 
         #endregion
 
-        #region Configuration
-        public int GetProcessorCoresNumber()
+        #region Server information
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo()
         {
-            int coreCount = 0;
-
-            using(var _mi = new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE))
+            return new SystemResourceUsageInfo
             {
-                foreach (CimInstance item in _mi.EnumerateCimInstances("Win32_Processor"))
-                {
-                    using (item)
-                        coreCount += int.Parse(item.CimInstanceProperties["NumberOfLogicalProcessors"].Value.ToString());                                               
-                }
+                SystemMemoryInfo = GetSystemMemoryInfoInternal(null),
+                LogicalProcessorUsagePercent = GetHypervisorLogicalProcessorTotalRunTime(null),
+            };
+        }
+
+        protected short GetHypervisorLogicalProcessorTotalRunTime(string ClusterNode)
+        {
+            short totalRunTime = 99;
+            Collection<PSObject> result = null;
+            //this command doesn't support WSMan protocol, if that important, then we can use WMIv2 to get this data. Or use Invoke-Command
+            var cmd = new Command("Get-Counter");
+            cmd.Parameters.Add("Counter", @"\Hyper-V Hypervisor Logical Processor(_Total)\% Total Run Time");
+            if (!string.IsNullOrEmpty(ClusterNode))
+            {
+                cmd.Parameters.Add("ComputerName", ClusterNode);
+                result = PowerShell.Execute(cmd, false);
+            }
+            else
+            {
+                result = PowerShell.Execute(cmd, true, true);
             }
 
-            return coreCount;
+            if (result != null && result.Count > 0)
+            {
+                dynamic[] counterSamples = result[0].GetProperty<dynamic[]>("CounterSamples"); //dynamic -> PerformanceCounterSample (TODO should we create a class for it?)
+                if (counterSamples != null && counterSamples.Length > 0)
+                    return Convert.ToInt16(counterSamples[0].CookedValue);
+            }
+
+            // this WMIv2 sometimes freezes on a Heavy loaded node
+            /*using (var _mi = string.IsNullOrEmpty(ClusterNode)
+                ? new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE) //reuse session if possible
+                : new MiManager(ClusterNode, this.CimSessionMode, Constants.WMI_CIMV2_NAMESPACE))
+            using (CimInstance item = _mi.GetCimInstance("Win32_PerfFormattedData_HvStats_HyperVHypervisorLogicalProcessor", "Name='{0}'", "_Total"))
+            {
+                totalRunTime = Convert.ToInt16(item.CimInstanceProperties["PercentTotalRunTime"].Value);
+            }*/
+
+            return totalRunTime;
         }
 
-        public Memory GetMemory() 
-        {            
-            return GetMemoryInternal(null); //we don't need to know computerName, we already know it from the constructor.
-        }
-
-        protected Memory GetMemoryInternal(string ClusterNode)
+        public SystemMemoryInfo GetSystemMemoryInfo()
         {
-            Memory memory = new Memory();
+            return GetSystemMemoryInfoInternal(null); //we don't need to know computerName, we already know it from the constructor.
+        }
+
+        protected SystemMemoryInfo GetSystemMemoryInfoInternal(string ClusterNode)
+        {
+            SystemMemoryInfo memory = new SystemMemoryInfo();
 
             using (var _mi = string.IsNullOrEmpty(ClusterNode)
                 ? new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE) //reuse session if possible
                 : new MiManager(ClusterNode, this.CimSessionMode, Constants.WMI_CIMV2_NAMESPACE))
             using (CimInstance item = _mi.GetCimInstance("Win32_OperatingSystem"))
             {
-                memory.FreePhysicalMemoryKB = Convert.ToUInt64(item.CimInstanceProperties["FreePhysicalMemory"].Value);
-                memory.TotalVisibleMemorySizeKB = Convert.ToUInt64(item.CimInstanceProperties["TotalVisibleMemorySize"].Value);
-                memory.FreeVirtualMemoryKB = Convert.ToUInt64(item.CimInstanceProperties["FreeVirtualMemory"].Value);
-                memory.TotalVirtualMemorySizeKB = Convert.ToUInt64(item.CimInstanceProperties["TotalVirtualMemorySize"].Value);
+                memory.FreePhysicalKB = Convert.ToUInt64(item.CimInstanceProperties["FreePhysicalMemory"].Value);
+                memory.TotalVisibleSizeKB = Convert.ToUInt64(item.CimInstanceProperties["TotalVisibleMemorySize"].Value);
+                memory.FreeVirtualKB = Convert.ToUInt64(item.CimInstanceProperties["FreeVirtualMemory"].Value);
+                memory.TotalVirtualSizeKB = Convert.ToUInt64(item.CimInstanceProperties["TotalVirtualMemorySize"].Value);
             }
 
             return memory;
+        }
+        #endregion
+
+        #region Configuration
+        public int GetProcessorCoresNumber()
+        {
+            int coreCount = 0;
+
+            using (var _mi = new MiManager(Mi, Constants.WMI_CIMV2_NAMESPACE))
+            {
+                foreach (CimInstance item in _mi.EnumerateCimInstances("Win32_Processor"))
+                {
+                    using (item)
+                        coreCount += int.Parse(item.CimInstanceProperties["NumberOfLogicalProcessors"].Value.ToString());
+                }
+            }
+
+            return coreCount;
         }
 
         public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()

@@ -30,7 +30,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using SolidCP.Server;
+using SolidCP.Providers.Common;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -115,9 +115,12 @@ namespace SolidCP.Providers.Virtualization
         void ClearOldPsJobs();
         ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState);
 
+        // Server information
+        SystemResourceUsageInfo GetSystemResourceUsageInfo();
+        SystemMemoryInfo GetSystemMemoryInfo();
+
         // Configuration
         int GetProcessorCoresNumber();
-        Memory GetMemory();
         List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList();
 
         // Replication 
