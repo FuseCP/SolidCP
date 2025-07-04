@@ -75,9 +75,9 @@ namespace SolidCP.Portal
             try
             {
                 //load information from the server
-                BindServerMemory();
                 BindServerVersion();
                 BindServerFilepath();
+                BindServerMemory();
             }
             catch (Exception ex)
             {
