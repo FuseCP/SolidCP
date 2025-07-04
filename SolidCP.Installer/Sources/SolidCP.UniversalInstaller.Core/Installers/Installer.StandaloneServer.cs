@@ -128,7 +128,7 @@ namespace SolidCP.UniversalInstaller
 		}
 		public virtual void ConfigureStandaloneServer() {
 			Settings.WebPortal.EmbedEnterpriseServer = true;
-			Settings.WebPortal.EnterpriseServerPath = $"..{Path.DirectorySeparatorChar}{EnterpriseServerAltFolder}";
+			Settings.WebPortal.EnterpriseServerPath = Path.Combine("..", EnterpriseServerAltFolder);
 			ConfigureServer();
 			ConfigureEnterpriseServer();
 			ConfigureWebPortal();
