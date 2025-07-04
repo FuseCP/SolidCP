@@ -160,7 +160,8 @@ Install Component to:
 [?InstallPath                                                          ]
 
 [  Next  ]  [  Back  ]");
-				form["InstallPath"].Text = Path.GetDirectoryName(settings.InstallPath);
+				form["InstallPath"].Text = settings is StandaloneSettings ? settings.InstallPath :
+					Path.GetDirectoryName(settings.InstallPath);
 				form.ShowDialog();
 				if (form["Next"].Clicked)
 				{
