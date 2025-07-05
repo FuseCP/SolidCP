@@ -334,32 +334,27 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 #endregion
 
                 // check RAM limit
-                bool isNotRemote = string.IsNullOrEmpty(settings["ServerName"]);
-
-                if (isNotRemote) //at this moment Remote HyperV not supported
+                ulong ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : UInt64.Parse(settings["RamReserve"]);
+                if (ramReserve > 0 && createMetaItem) //0 - no RAM reserve. if createMetaItem = false - reinstallation, disable check.
                 {
-                    ulong ramReserve = string.IsNullOrEmpty(settings["RamReserve"]) ? 0 : UInt64.Parse(settings["RamReserve"]);
-                    if (ramReserve > 0 && createMetaItem) //0 - no RAM reserve. if createMetaItem = false - reinstallation, disable check.
+                    try
                     {
-                        try
+                        Providers.OS.Memory memory = VirtualizationServerController2012.GetMemoryPackageId(packageId);
+
+                        long freePhysicalMemoryMB = (long)(memory.FreePhysicalMemoryKB / 1024);
+                        long futureFreeMemoryMB = freePhysicalMemoryMB - (long)vm.RamSize; //futureFreeMemoryMB can be negative
+                        bool isEnoughRAM = (futureFreeMemoryMB >= (long)ramReserve);
+
+                        if (!isEnoughRAM)
                         {
-                            Providers.OS.Memory memory = OperatingSystemController.GetMemoryPackageId(packageId);
-
-                            long freePhysicalMemoryMB = (long)(memory.FreePhysicalMemoryKB / 1024);
-                            long futureFreeMemoryMB = freePhysicalMemoryMB - (long)vm.RamSize; //futureFreeMemoryMB can be negative
-                            bool isEnoughRAM = (futureFreeMemoryMB >= (long)ramReserve);
-
-                            if (!isEnoughRAM)
-                            {
-                                throw new Exception("Not enough Memory on the Node! Reserved: " + ramReserve.ToString() + "Available: " + freePhysicalMemoryMB.ToString());
-                            }
-
+                            throw new Exception("Not enough Memory on the Node! Reserved: " + ramReserve.ToString() + " Available: " + freePhysicalMemoryMB.ToString());
                         }
-                        catch (Exception ex)
-                        {
-                            res.AddError(VirtualizationErrorCodes.RAM_VM_RAM_RESERVE_ERROR, ex);
-                            return res;
-                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        res.AddError(VirtualizationErrorCodes.RAM_VM_RAM_RESERVE_ERROR, ex);
+                        return res;
                     }
                 }
 

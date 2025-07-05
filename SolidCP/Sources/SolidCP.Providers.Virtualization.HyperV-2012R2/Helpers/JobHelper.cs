@@ -1,9 +1,9 @@
-﻿using SolidCP.Providers.HostedSolution;
+﻿using Microsoft.Management.Infrastructure;
+using SolidCP.Providers.HostedSolution;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
@@ -34,14 +34,30 @@ namespace SolidCP.Providers.Virtualization
             };
         }
 
-        public static JobResult CreateJobResultFromWmiResults(Wmi wmi,ManagementBaseObject outParams)
+        public static JobResult CreateJobResultFromCimResults(MiManager mi, CimMethodResult outParams)
         {
             JobResult result = new JobResult();
 
-            result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams["ReturnValue"]);
+            result.ReturnValue = (ReturnCode)Convert.ToInt32(outParams.OutParameters["ReturnValue"].Value);
+            try
+            {
+                using (CimInstance objJob = outParams.OutParameters["Job"].Value as CimInstance)
+                {
+                    if (objJob == null)
+                    { //we suppose if obj is null, then job already finished. Anyway ReturnValue should be checked first
+                        result.Job = new ConcreteJob
+                        {
+                            JobState = ConcreteJobState.New,
+                            ErrorDescription = "The job has never been started"
+                        };
+                        return result;
+                    }
+                    result.Job = CreateFromCimObject(mi.GetInstance(objJob));
+                }                
 
-            ManagementObject objJob = wmi.GetWmiObjectByPath((string)outParams["Job"]);
-            result.Job = CreateFromWmiObject(objJob);
+            } catch (Exception e) {
+                HostedSolutionLog.LogError(e);
+            }
 
             return result;
         }
@@ -66,22 +82,25 @@ namespace SolidCP.Providers.Virtualization
             return result;
         }
 
-        public static ConcreteJob CreateFromWmiObject(ManagementObject objJob)
+        public static ConcreteJob CreateFromCimObject(CimInstance cimJob)
         {
-            if (objJob == null || objJob.Properties.Count == 0)
+            if (cimJob == null || cimJob.CimInstanceProperties.Count == 0)
                 return null;
 
+            var objJob = cimJob.CimInstanceProperties;
+
             ConcreteJob job = new ConcreteJob();
-            job.Id = (string)objJob["InstanceID"];
-            job.JobState = (ConcreteJobState)Convert.ToInt32(objJob["JobState"]);
-            job.Caption = (string)objJob["Caption"];
-            job.Description = (string)objJob["Description"];
-            job.StartTime = Wmi.ToDateTime((string)objJob["StartTime"]);
-            // TODO proper parsing of WMI time spans, e.g. 00000000000001.325247:000
-            job.ElapsedTime = DateTime.Now; //wmi.ToDateTime((string)objJob["ElapsedTime"]);
-            job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"]);
-            job.ErrorDescription = (string)objJob["ErrorDescription"];
-            job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"]);
+            job.Id = (string)objJob["InstanceID"].Value;
+            job.JobState = (ConcreteJobState)Convert.ToInt32(objJob["JobState"].Value);
+            job.Caption = (string)objJob["Caption"].Value;
+            job.Description = (string)objJob["Description"].Value;
+            job.StartTime = (System.DateTime)objJob["StartTime"].Value;
+            // TODO CIM correcly provide ElapsedTime, e.g. 00000000000001.325247:000 so we can just use as it is.
+            //we can use after remove all WMIv1 stuff depencies. Need to change job.ElapsedTime type to TimeSpan.
+            job.ElapsedTime = DateTime.Now; //(System.TimeSpan)objJob["ElapsedTime"].Value;
+            job.ErrorCode = Convert.ToInt32(objJob["ErrorCode"].Value);
+            job.ErrorDescription = (string)objJob["ErrorDescription"].Value;
+            job.PercentComplete = Convert.ToInt32(objJob["PercentComplete"].Value);
             return job;
         }
 

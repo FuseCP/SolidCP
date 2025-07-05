@@ -9264,26 +9264,11 @@
         <Content Include="VPS\VpsToolsReinstallServer.ascx" />
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\..\..\CPCC\CPCC.csproj">
-            <Project>{68b50d26-3f14-4ac7-977a-2f6128088019}</Project>
-            <Name>CPCC</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj">
-            <Project>{c09ce910-f16b-48a1-b2cc-c99b8c1cf775}</Project>
-            <Name>SolidCP.EnterpriseServer.Base</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj">
-            <Project>{df3d477e-741c-4871-b838-c1635e72474b}</Project>
-            <Name>SolidCP.EnterpriseServer.Client</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj">
-            <Project>{684c932a-6c75-46ac-a327-f3689d89eb42}</Project>
-            <Name>SolidCP.Providers.Base</Name>
-        </ProjectReference>
-        <ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj">
-            <Project>{652639d5-59ce-4f42-8a5f-87cb1e812961}</Project>
-            <Name>SolidCP.Web.Clients</Name>
-        </ProjectReference>
+        <ProjectReference Include="..\..\..\CPCC\CPCC.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer.Base\SolidCP.EnterpriseServer.Base.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP.EnterpriseServer\WebServices\SolidCP.Build\SolidCP.EnterpriseServer.Client.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\..\..\SolidCP.Web.Clients\SolidCP.Web.Clients.csproj" />
         <ProjectReference Include="..\..\SolidCP.WebPortal.csproj" />
     </ItemGroup>
     <ItemGroup>

@@ -2,9 +2,16 @@
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class ReplicaHelper
+    public class ReplicaHelper
     {
-        public static void SetReplicaServer(PowerShellManager powerShell, bool enabled, string remoteServer, string thumbprint, string storagePath)
+        private PowerShellManager _powerShell;
+
+        public ReplicaHelper(PowerShellManager powerShellManager)
+        {
+            _powerShell = powerShellManager;
+        }
+
+        public void SetReplicaServer(bool enabled, string remoteServer, string thumbprint, string storagePath)
         {
             Command cmd = new Command("Set-VMReplicationServer");
             cmd.Parameters.Add("ReplicationEnabled", enabled);
@@ -26,24 +33,24 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("DefaultStorageLocation", storagePath);
             }
 
-            powerShell.Execute(cmd, false);
+            _powerShell.Execute(cmd, false);
         }
 
-        public static void SetFirewallRule(PowerShellManager powerShell, bool enabled)
+        public void SetFirewallRule(bool enabled)
         {
             Command cmd = new Command("Enable-Netfirewallrule");
             cmd.Parameters.Add("DisplayName", "Hyper-V Replica HTTPS Listener (TCP-In)");
 
-            powerShell.Execute(cmd, false);
+            _powerShell.Execute(cmd, false);
         }
 
-        public static void RemoveVmReplication(PowerShellManager powerShell, string vmName, string server)
+        public void RemoveVmReplication(string vmName, string server)
         {
             Command cmd = new Command("Remove-VMReplication");
             cmd.Parameters.Add("VmName", vmName);
             if (!string.IsNullOrEmpty(server)) cmd.Parameters.Add("ComputerName", server);
 
-            powerShell.Execute(cmd, false);
+            _powerShell.Execute(cmd, false);
         }
     }
 }

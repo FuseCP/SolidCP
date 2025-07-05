@@ -27,7 +27,7 @@ namespace SolidCP.Web.Clients
 			if (method == null) throw new ArgumentException($"Method {methodName} not found");
 		}
 
-		protected T Invoke<T>(string typeName, string methodName, params object[] parameters)
+		protected T Invoke<T>(string typeName, string methodName, object[] parameters)
 		{
 			Assembly assembly;
 			Type type;
@@ -36,7 +36,7 @@ namespace SolidCP.Web.Clients
 			return Invoke<T>(assembly, type, method, methodName, parameters);
 		}
 
-		protected T Invoke<T>(Assembly assembly, Type type, MethodInfo method, string methodName, params object[] parameters)
+		protected T Invoke<T>(Assembly assembly, Type type, MethodInfo method, string methodName, object[] parameters)
 		{
 			var principal = Thread.CurrentPrincipal;
 
@@ -116,13 +116,13 @@ namespace SolidCP.Web.Clients
 				Thread.CurrentPrincipal = principal;
 			}
 		}
-		protected void Invoke(string typeName, string methodName, params object[] parameters)
+		protected void Invoke(string typeName, string methodName, object[] parameters)
 		{
 			Invoke<object>(typeName, methodName, parameters);
 		}
 
 
-		protected T Invoke<T, TItem>(string typeName, string methodName, params object[] parameters)
+		protected T Invoke<T, TItem>(string typeName, string methodName, object[] parameters)
 		{
 			var result = Invoke<object>(typeName, methodName, parameters);
 			if (result is IEnumerable<TItem> list) return (T)((object)list.ToArray());
@@ -130,14 +130,14 @@ namespace SolidCP.Web.Clients
 		}
 
 		TaskScheduler Scheduler => SynchronizationContext.Current == null ? TaskScheduler.Default : TaskScheduler.FromCurrentSynchronizationContext();
-		protected Task<T> InvokeAsync<T>(string typeName, string methodName, params object[] parameters)
+		protected Task<T> InvokeAsync<T>(string typeName, string methodName, object[] parameters)
 		{
 			return Task.Factory.StartNew<T>(() => Invoke<T>(typeName, methodName, parameters),
 				CancellationToken.None,
 				TaskCreationOptions.None,
 				Scheduler);
 		}
-		protected Task<T> InvokeAsync<T, TItem>(string typeName, string methodName, params object[] parameters)
+		protected Task<T> InvokeAsync<T, TItem>(string typeName, string methodName, object[] parameters)
 		{
 			var scheduler = SynchronizationContext.Current == null ? TaskScheduler.Default : TaskScheduler.FromCurrentSynchronizationContext();
 			return Task.Factory.StartNew<T>(() => Invoke<T, TItem>(typeName, methodName, parameters),
@@ -145,7 +145,7 @@ namespace SolidCP.Web.Clients
 				TaskCreationOptions.None,
 				Scheduler);
 		}
-		protected Task InvokeAsync(string typeName, string methodName, params object[] parameters)
+		protected Task InvokeAsync(string typeName, string methodName, object[] parameters)
 		{
 			return Task.Factory.StartNew(() => Invoke<object>(typeName, methodName, parameters),
 				CancellationToken.None,

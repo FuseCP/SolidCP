@@ -30,17 +30,21 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-﻿using System;
+using System;
 using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using SolidCP.Web.Services;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
+using SolidCP.Web.Services;
+using SolidCP.Providers;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers;
 using SolidCP.Providers.Virtualization;
+//using SolidCP.Server;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -614,7 +618,13 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Virtual Machine Configuration versions 
+        #region Configurations 
+        [WebMethod]
+        public Providers.OS.Memory GetMemory(int serviceId)
+        {
+            return VirtualizationServerController2012.GetMemory(serviceId);
+        }
+
         [WebMethod]
         public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {

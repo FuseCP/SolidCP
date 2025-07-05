@@ -30,9 +30,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
- using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -78,7 +79,7 @@ namespace SolidCP.Providers.Virtualization
         List<SecureBootTemplate> GetSecureBootTemplates(string computerName);
 
         // IP operations
-        List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName);
+        List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmId);
         JobResult InjectIPs(string vmId, GuestNetworkAdapterConfiguration guestNetworkAdapterConfiguration);
 
         // DVD operations
@@ -116,6 +117,7 @@ namespace SolidCP.Providers.Virtualization
 
         // Configuration
         int GetProcessorCoresNumber();
+        Memory GetMemory();
         List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList();
 
         // Replication 

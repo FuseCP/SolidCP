@@ -320,9 +320,10 @@ namespace SolidCP.Web.Clients
 
             lock (lockobj)
             {
-                if (LoadedAssemblies.ContainsKey(name)) return LoadedAssemblies[name];
+                Assembly loadedAssembly;
+                if (LoadedAssemblies.TryGetValue(name, out loadedAssembly)) return loadedAssembly;
 
-                var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
+                loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == name);
                 if (loadedAssembly != null)
                 {
                     LoadedAssemblies.Add(name, loadedAssembly);
