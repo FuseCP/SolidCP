@@ -479,7 +479,7 @@ namespace SolidCP.Server
             try
             {
                 Log.WriteStart("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
-                List<VirtualSwitch> result = VirtualizationProvider.GetExternalSwitches(computerName);
+                List<VirtualSwitch> result = VirtualizationProvider.GetExternalSwitchesWMI(computerName);
                 Log.WriteEnd("'{0}' GetExternalSwitchesWMI", ProviderSettings.ProviderName);
                 return result;
             }
@@ -578,12 +578,12 @@ namespace SolidCP.Server
 
         #region IP operations
         [WebMethod, SoapHeader("settings")]
-        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmName)
+        public List<VirtualMachineNetworkAdapter> GetVirtualMachinesNetwordAdapterSettings(string vmId)
         {
             try
             {
                 Log.WriteStart("'{0}' GetVirtualMachinesNetwordAdapterSettings", ProviderSettings.ProviderName);
-                List<VirtualMachineNetworkAdapter> result = VirtualizationProvider.GetVirtualMachinesNetwordAdapterSettings(vmName);
+                List<VirtualMachineNetworkAdapter> result = VirtualizationProvider.GetVirtualMachinesNetwordAdapterSettings(vmId);
                 Log.WriteEnd("'{0}' GetVirtualMachinesNetwordAdapterSettings", ProviderSettings.ProviderName);
                 return result;
             }
@@ -1033,6 +1033,23 @@ namespace SolidCP.Server
             catch (Exception ex)
             {
                 Log.WriteError(String.Format("'{0}' GetProcessorCoresNumber", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public Memory GetMemory()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetMemory", ProviderSettings.ProviderName);
+                Memory result = VirtualizationProvider.GetMemory();
+                Log.WriteEnd("'{0}' GetMemory", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetMemory", ProviderSettings.ProviderName), ex);
                 throw;
             }
         }

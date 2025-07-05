@@ -63,7 +63,10 @@ namespace SolidCP.Portal.ProviderControls
         {
             txtServerName.Text = settings["ServerName"];
             radioServer.SelectedIndex = (txtServerName.Text == "") ? 0 : 1;
-            
+            radioCimSessionMode.SelectedValue = settings["CimSessionMode"];
+            radioCimSessionMode.SelectedIndex = string.IsNullOrEmpty(radioCimSessionMode.SelectedValue)
+                ? 0 : radioCimSessionMode.SelectedIndex;
+
             // bind networks
             BindNetworksList();
 
@@ -205,10 +208,14 @@ namespace SolidCP.Portal.ProviderControls
 
         void IHostingServiceProviderSettings.SaveSettings(StringDictionary settings)
         {            
-            if (radioServer.SelectedIndex == 0)
+            if (radioServer.SelectedIndex == 0){
                 settings["ServerName"] = "";
-            else
+                settings["CimSessionMode"] = "0";
+            }
+            else{
                 settings["ServerName"] = txtServerName.Text.Trim();
+                settings["CimSessionMode"] = radioCimSessionMode.SelectedValue;
+            }
 
             // MaintenanceMode
             settings["MaintenanceMode"] = radioMaintenanceMode.SelectedValue;
@@ -231,12 +238,8 @@ namespace SolidCP.Portal.ProviderControls
             settings["CpuWeight"] = txtCpuWeight.Text.Trim();
 
             // RAM
-            if (string.IsNullOrEmpty(settings["ServerName"])) {
-                settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
-            } else {
-                settings["RamReserve"] = "0";
-            }
-                
+            settings["RamReserve"] = Utils.ParseInt(txtRamReserve.Text.Trim(), 0).ToString();
+
 
             // Default Windows Configure Version
             settings["HyperVConfigurationVersion"] = ddlHyperVConfig.SelectedValue;
@@ -450,16 +453,13 @@ namespace SolidCP.Portal.ProviderControls
         private void ToggleControls()
         {
             ServerNameRow.Visible = (radioServer.SelectedIndex == 1);
+            ServerCimSessionModeRow.Visible = (radioServer.SelectedIndex == 1);
 
             txtRamReserve.Enabled = true;
             if (radioServer.SelectedIndex == 0)
             {
-                txtServerName.Text = "";                
-            }
-            else
-            {
-                txtRamReserve.Text = "0";
-                txtRamReserve.Enabled = false;
+                txtServerName.Text = "";         
+                radioCimSessionMode.SelectedIndex = 0;
             }
 
             // private network

@@ -9,15 +9,21 @@ using System.Threading.Tasks;
 
 namespace SolidCP.Providers.Virtualization
 {
-    public static class MemoryHelper
+    public class MemoryHelper
     {
-        public static DynamicMemory GetDynamicMemory(PowerShellManager powerShell, string vmName)
+        private PowerShellManager _powerShell;
+
+        public MemoryHelper(PowerShellManager powerShellManager)
+        {
+            _powerShell = powerShellManager;
+        }
+
+        public DynamicMemory GetDynamicMemory(VirtualMachineData vmData)
         {
             DynamicMemory info = null;
 
             Command cmd = new Command("Get-VMMemory");
-            cmd.Parameters.Add("VMName", vmName);
-            Collection<PSObject> result = powerShell.Execute(cmd);
+            Collection<PSObject> result = _powerShell.ExecuteOnVm(cmd, vmData);
 
             if (result != null && result.Count > 0)
             {
@@ -32,11 +38,10 @@ namespace SolidCP.Providers.Virtualization
             return info;
         }
 
-        public static void Update(PowerShellManager powerShell, VirtualMachine vm, int ramMb, DynamicMemory dynamicMemory)
+        public void Update(VirtualMachineData vmData, int ramMb, DynamicMemory dynamicMemory)
         {
             Command cmd = new Command("Set-VMMemory");
 
-            cmd.Parameters.Add("VMName", vm.Name);
             cmd.Parameters.Add("StartupBytes", ramMb * Constants.Size1M);
 
             if (dynamicMemory != null && dynamicMemory.Enabled)
@@ -52,7 +57,7 @@ namespace SolidCP.Providers.Virtualization
                 cmd.Parameters.Add("DynamicMemoryEnabled", false);
             }
 
-            powerShell.Execute(cmd, true, true);
+            _powerShell.ExecuteOnVm(cmd, vmData, true);
         }
     }
 }

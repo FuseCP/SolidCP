@@ -12,15 +12,18 @@ namespace SolidCP.Providers.Virtualization
     {
         #region Properties
 
-        public static object GetProperty(this PSObject obj, string name)
+        public static object GetProperty(this PSObject obj, string name, bool suppressErrors = false)
         {
+            if (suppressErrors)
+                return obj?.Members[name]?.Value;
+
             return obj.Members[name].Value;
         }
         public static T GetProperty<T>(this PSObject obj, string name)
         {
             return (T)obj.Members[name].Value;
         }
-        public static T GetEnum<T>(this PSObject obj, string name, T? defaultValue = null) where T : struct
+        public static T GetEnum<T>(this PSObject obj, string name, T? defaultValue = null, bool suppressErrors = false) where T : struct
         {
             try
             {
@@ -28,7 +31,7 @@ namespace SolidCP.Providers.Virtualization
             }
             catch
             {
-                if (defaultValue.HasValue) return defaultValue.Value;
+                if (defaultValue.HasValue && suppressErrors) return defaultValue.Value;
                 throw;
             }
         }
