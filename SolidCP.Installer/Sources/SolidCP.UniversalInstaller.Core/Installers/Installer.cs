@@ -531,6 +531,7 @@ public abstract partial class Installer
 
 		if (!OSInfo.IsWindows)
 		{
+			if (string.IsNullOrEmpty(owner)) owner = "root";
 			Info("Set file owner...");
 			OSInfo.Unix.ChangeUnixFileOwner(folder, owner, group, true);
 			InstallLog($"Changed file owner in {folder}.");
