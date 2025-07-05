@@ -322,7 +322,7 @@ namespace SolidCP.Web.Clients
             {
                 if (LoadedAssemblies.ContainsKey(name)) return LoadedAssemblies[name];
 
-                var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.FullName == args.Name);
+                var loadedAssembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == name);
                 if (loadedAssembly != null)
                 {
                     LoadedAssemblies.Add(name, loadedAssembly);
