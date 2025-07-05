@@ -35,7 +35,7 @@ public abstract class UnixInstaller : Installer
 		if (installedAspNetCoreSharedServer) return;
 		installedAspNetCoreSharedServer = true;
 
-		Shell.Standard.Exec($"dotnet tool install AspNetCoreSharedServer -g --version {AspNetCoreSharedServerVersion}");
+		Shell.Exec($"dotnet tool install AspNetCoreSharedServer -g --version {AspNetCoreSharedServerVersion}");
 
 		AddUnixGroup("www-data");
 		AddUnixUser("www-data", "www-data", Utils.GetRandomString(16));
@@ -53,6 +53,7 @@ public abstract class UnixInstaller : Installer
 		const string ServiceId = "aspnetcore-shared-server";
 		const string Description = "ASP.NET Core Shared Server support for shared hosting of ASP.NET Core applications";
 		const string Command = "/root/.dotnet/tools/AspNetCoreSharedServer";
+		string Directory = Path.GetDirectoryName(Command);
 
 		ServiceDescription service;
 		if (IsSystemd)
@@ -62,6 +63,7 @@ public abstract class UnixInstaller : Installer
 				ServiceId = ServiceId,
 				Description = Description,
 				Executable = Command,
+				Directory = Directory,
 				DependsOn = new List<string>() { "network-online.target" },
 				Environment = new Dictionary<string, string>()
 				{
@@ -89,6 +91,7 @@ public abstract class UnixInstaller : Installer
 				CommandUser = "root",
 				Command = Command,
 				CommandBackground = true,
+				WorkingDirectory = Directory,
 				PidFile = $"/run/{ServiceId}.pid",
 				StopTimeout = 30
 			};
@@ -102,6 +105,7 @@ public abstract class UnixInstaller : Installer
 			{
 				Label = ServiceId,
 				Executable = Command,
+				WorkingDirectory = Directory,
 				Environment = new Dictionary<string, string>()
 				{
 					{ "ASPNETCORE_ENVIRONMENT", "Production" }
