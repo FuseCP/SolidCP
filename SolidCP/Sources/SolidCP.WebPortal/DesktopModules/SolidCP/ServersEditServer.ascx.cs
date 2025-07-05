@@ -45,7 +45,6 @@ using System.Threading.Tasks;
 
 using SolidCP.EnterpriseServer;
 using SolidCP.Providers.OS;
-using SolidCP.Server;
 using System.Linq;
 
 namespace SolidCP.Portal
@@ -206,10 +205,10 @@ namespace SolidCP.Portal
 			try
 			{
 				//Memory memory = await ES.Services.Servers.GetMemoryAsync(ServerId);
-                Memory memory = null;
+                Providers.OS.Memory memory = null;
                 // We need to get the ServiceInfo for VPS2012 servers, because only this way allows access to the Remote Hyper-V API.
                 // Otherwise, it will return information about the local server.
-                ServiceInfo ServiceInfo = await ES.Services.Servers.GetServicesByServerIdGroupNameAsync(PanelRequest.ServerId, ResourceGroups.VPS2012).FirstOrDefault();
+                ServiceInfo ServiceInfo = (await ES.Services.Servers.GetServicesByServerIdGroupNameAsync(PanelRequest.ServerId, ResourceGroups.VPS2012)).FirstOrDefault();
                 if (ServiceInfo != null)
                     memory = await ES.Services.VPS2012.GetMemoryAsync(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
                 else

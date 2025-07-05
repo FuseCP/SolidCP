@@ -1038,12 +1038,12 @@ namespace SolidCP.Server
         }
 
         [WebMethod, SoapHeader("settings")]
-        public Memory GetMemory()
+        public Providers.OS.Memory GetMemory()
         {
             try
             {
                 Log.WriteStart("'{0}' GetMemory", ProviderSettings.ProviderName);
-                Memory result = VirtualizationProvider.GetMemory();
+                Providers.OS.Memory result = VirtualizationProvider.GetMemory();
                 Log.WriteEnd("'{0}' GetMemory", ProviderSettings.ProviderName);
                 return result;
             }

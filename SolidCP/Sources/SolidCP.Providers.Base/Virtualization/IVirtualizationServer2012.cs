@@ -30,10 +30,10 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-using SolidCP.Server;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SolidCP.Providers.OS;
 
 namespace SolidCP.Providers.Virtualization
 {

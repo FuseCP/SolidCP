@@ -339,7 +339,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase
                 {
                     try
                     {
-                        Server.Memory memory = VirtualizationServerController2012.GetMemoryPackageId(packageId);
+                        Providers.OS.Memory memory = VirtualizationServerController2012.GetMemoryPackageId(packageId);
 
                         long freePhysicalMemoryMB = (long)(memory.FreePhysicalMemoryKB / 1024);
                         long futureFreeMemoryMB = freePhysicalMemoryMB - (long)vm.RamSize; //futureFreeMemoryMB can be negative

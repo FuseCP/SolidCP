@@ -35,23 +35,16 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using SolidCP.Web.Services;
-using System.ComponentModel;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers;
-using SolidCP.Providers.Common;
-using SolidCP.Providers.ResultObjects;
-using SolidCP.Providers.Virtualization;
-using SolidCP.Server;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Web;
-using System.Web.Services;
-using System.Web.Services.Protocols;
+using SolidCP.Web.Services;
+using SolidCP.Providers;
+using SolidCP.Providers.Common;
+using SolidCP.Providers.ResultObjects;
+using SolidCP.Providers.Virtualization;
+//using SolidCP.Server;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -627,7 +620,7 @@ namespace SolidCP.EnterpriseServer
 
         #region Configurations 
         [WebMethod]
-        public Memory GetMemory(int serviceId)
+        public Providers.OS.Memory GetMemory(int serviceId)
         {
             return VirtualizationServerController2012.GetMemory(serviceId);
         }

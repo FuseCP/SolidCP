@@ -1442,7 +1442,7 @@ namespace SolidCP.Providers.Virtualization
             return Convert.ToInt32(objCpu["NumberOfCores"]);
         }
 
-        public Memory GetMemory()
+        public OS.Memory GetMemory()
         {
             throw new NotImplementedException("The method is not implemented. See the HyperV2012R2 class for a reference implementation.");
         }
