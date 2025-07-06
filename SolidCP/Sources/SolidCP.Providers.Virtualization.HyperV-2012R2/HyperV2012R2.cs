@@ -2094,7 +2094,7 @@ namespace SolidCP.Providers.Virtualization
 
         protected short GetHypervisorLogicalProcessorTotalRunTime(string ClusterNode)
         {
-            short totalRunTime = 99;
+            short totalRunTime = 0;
             Collection<PSObject> result = null;
             //this command doesn't support WSMan protocol, if that important, then we can use WMIv2 to get this data. Or use Invoke-Command
             var cmd = new Command("Get-Counter");

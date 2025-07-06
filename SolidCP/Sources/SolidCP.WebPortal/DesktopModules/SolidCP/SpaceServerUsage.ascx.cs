@@ -49,7 +49,10 @@ namespace SolidCP.Portal
                 SystemResourceUsageInfo resourceUsage = GetSystemResourceUsage();
                 int cpuUsage = 0;
                 if (resourceUsage.LogicalProcessorUsagePercent != -1)
+                {
                     cpuUsage = resourceUsage.LogicalProcessorUsagePercent; //this is more accurate if installed Hyper-V
+                    locUsageCpu.Text = "VPS " + locUsageCpu.Text; //GetLocalizedString("locUsageCpu.Text");
+                } 
                 else
                     cpuUsage = resourceUsage.ProcessorTimeUsagePercent; //this is for everything else
 

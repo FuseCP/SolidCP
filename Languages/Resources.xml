@@ -903,7 +903,7 @@
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
     <Key>ModuleTitle.SpaceServerUsage</Key>
-    <DefaultValue>Space Server Resource Usage</DefaultValue>
+    <DefaultValue>Current assigned server Resource Usage</DefaultValue>
   </Resource>
   <Resource>
     <File>App_GlobalResources\SolidCP_Modules.ascx.resx</File>
@@ -22744,6 +22744,16 @@
     <File>DesktopModules\SolidCP\App_LocalResources\SpaceQuotasControl.ascx.resx</File>
     <Key>lblDomains.Text</Key>
     <DefaultValue>Domains:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SpaceServerUsage.ascx.resx</File>
+    <Key>locUsageCpu.Text</Key>
+    <DefaultValue>Server CPU load:</DefaultValue>
+  </Resource>
+  <Resource>
+    <File>DesktopModules\SolidCP\App_LocalResources\SpaceServerUsage.ascx.resx</File>
+    <Key>locUsageMemory.Text</Key>
+    <DefaultValue>Server RAM usage:</DefaultValue>
   </Resource>
   <Resource>
     <File>DesktopModules\SolidCP\App_LocalResources\SpaceSettings.ascx.resx</File>

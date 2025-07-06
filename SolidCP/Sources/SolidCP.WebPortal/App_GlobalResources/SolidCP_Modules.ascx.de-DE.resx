@@ -646,7 +646,7 @@
     <value>Bereich-Kontingente</value>
   </data>
   <data name="ModuleTitle.SpaceServerUsage" xml:space="preserve">
-    <value>Space Server-Ressourcennutzung</value>
+    <value>Aktuell zugewiesene Serverressourcennutzung</value>
   </data>
   <data name="ModuleTitle.CreateNewOrganization" xml:space="preserve">
     <value>Neue Organisation erstellen</value>

@@ -658,7 +658,7 @@
     <value>Space Quotas</value>
   </data>
   <data name="ModuleTitle.SpaceServerUsage" xml:space="preserve">
-    <value>Space Server Resource Usage</value>
+    <value>Current assigned server Resource Usage</value>
   </data>
   <data name="ModuleTitle.CreateNewOrganization" xml:space="preserve">
     <value>Create New Organization</value>

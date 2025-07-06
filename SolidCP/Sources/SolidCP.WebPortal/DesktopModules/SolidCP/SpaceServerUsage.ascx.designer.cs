@@ -51,15 +51,6 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl gaugeUsage;
 
         /// <summary>
-        /// cpuGauge control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::SolidCP.Portal.Gauge cpuGauge;
-
-        /// <summary>
         /// locUsageCpu control.
         /// </summary>
         /// <remarks>
@@ -67,6 +58,15 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Localize locUsageCpu;
+
+        /// <summary>
+        /// cpuGauge control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::SolidCP.Portal.Gauge cpuGauge;
 
         /// <summary>
         /// usageCpu control.
@@ -78,15 +78,6 @@ namespace SolidCP.Portal
         protected global::System.Web.UI.WebControls.Label usageCpu;
 
         /// <summary>
-        /// locTotalCpu control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locTotalCpu;
-
-        /// <summary>
         /// totalCpu control.
         /// </summary>
         /// <remarks>
@@ -94,6 +85,15 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label totalCpu;
+
+        /// <summary>
+        /// locUsageMemory control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Localize locUsageMemory;
 
         /// <summary>
         /// ramGauge control.
@@ -105,15 +105,6 @@ namespace SolidCP.Portal
         protected global::SolidCP.Portal.Gauge ramGauge;
 
         /// <summary>
-        /// locFreeMemory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locFreeMemory;
-
-        /// <summary>
         /// freeMemory control.
         /// </summary>
         /// <remarks>
@@ -121,15 +112,6 @@ namespace SolidCP.Portal
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label freeMemory;
-
-        /// <summary>
-        /// locTotalMemory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Localize locTotalMemory;
 
         /// <summary>
         /// totalMemory control.
