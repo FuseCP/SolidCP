@@ -944,6 +944,13 @@
       <DependentUpon>BootstrapDropDownList.ascx</DependentUpon>
     </Compile>
     <Compile Include="SkinControls\BootstrapDropDownListItem.cs" />
+    <Compile Include="SpaceServerUsage.ascx.cs">
+      <DependentUpon>SpaceServerUsage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="SpaceServerUsage.ascx.designer.cs">
+      <DependentUpon>SpaceServerUsage.ascx</DependentUpon>
+    </Compile>
     <Compile Include="ThumbnailPhoto.ashx.cs">
       <DependentUpon>ThumbnailPhoto.ashx</DependentUpon>
     </Compile>
@@ -5722,6 +5729,7 @@
     <Content Include="ServerVLANsControl.ascx" />
     <Content Include="SettingsVerificationCodeLetter.ascx" />
     <Content Include="SkinControls\BootstrapDropDownList.ascx" />
+    <Content Include="SpaceServerUsage.ascx" />
     <Content Include="UserControls\AllocatePackageVLANs.ascx" />
     <Content Include="UserControls\EditVLANControl.ascx" />
     <Content Include="UserControls\PackageVLANs.ascx" />
@@ -6696,6 +6704,7 @@
     <Content Include="ProviderControls\App_LocalResources\SmarterMail100x_EditAccess.ascx.resx">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="App_LocalResources\SpaceServerUsage.ascx.resx" />
     <EmbeddedResource Include="RDS\App_LocalResources\RDSEditCollectionSettings.ascx.resx" />
     <Content Include="RDSServersEditServer.ascx" />
     <Content Include="RDS\AssignedRDSServers.ascx" />
