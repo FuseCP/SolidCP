@@ -111,7 +111,7 @@ jobs:
       id: sanitize_name_step
       shell: bash 
       run: |
-        original_commit_message="${{ github.event.head_commit.message }}"
+        original_commit_message="${{ github.event.head_commit.message }} by @${{ github.actor }}"
 
         sanitized_name=$(echo "$original_commit_message" | tr -d '\r\n')
         
