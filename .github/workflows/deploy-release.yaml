@@ -109,35 +109,17 @@ jobs:
 
     - name: Sanitize Artifact Name
       id: sanitize_name_step # Give this step an ID to reference its outputs
+      shell: bash
       run: |
         original_commit_message="${{ github.event.head_commit.message }}"
-        # Define characters to remove. The error explicitly mentioned '\n'.
-        # We'll also include common problematic characters for filenames: " : < > | * ? \ / \r
-        # Using sed to remove these characters. `\` must be escaped in both regex and string.
-        # `\r` and `\n` are literal carriage return and line feed.
-        # We'll replace them first for simplicity.
+
         sanitized_name=$(echo "$original_commit_message" | tr -d '\r\n')
-        
-        # Now remove other invalid characters using sed.
-        # Note: forward slash / needs to be escaped if it's also the sed delimiter.
-        # Using a different delimiter like # to avoid issues with /
         sanitized_name=$(echo "$sanitized_name" | sed 's#["':<>|*?\\\]##g')
-        
-        # Handle the specific "Merge pull request #XXX from YYY/ZZZ" pattern
-        # This regex removes the entire "Merge pull request #N from branch/name " part.
         sanitized_name=$(echo "$sanitized_name" | sed 's/^Merge pull request #[0-9]\+ from [^[:space:]]\+\s*//g')
-        
-        # Replace spaces with hyphens (good practice for artifact names)
         sanitized_name=$(echo "$sanitized_name" | tr ' ' '-')
-        
-        # Trim leading/trailing hyphens or underscores that might result
         sanitized_name=$(echo "$sanitized_name" | sed 's/^-*//;s/-*$//')
         sanitized_name=$(echo "$sanitized_name" | sed 's/^_//;s/_$//')
-
-        # Collapse multiple consecutive hyphens or underscores
         sanitized_name=$(echo "$sanitized_name" | sed 's/--/-/g;s/__/_/g')
-        
-        # Ensure it's not empty after sanitization; fall back to a default if it is
         if [ -z "$sanitized_name" ]; then
           sanitized_name="unnamed-artifact-$(date +%s)" # Append timestamp for uniqueness
         fi
