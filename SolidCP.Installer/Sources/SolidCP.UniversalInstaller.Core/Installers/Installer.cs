@@ -478,6 +478,31 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
+
+	public void RunUnattended()
+	{
+		var releases = Installer.Current.Releases;
+
+		UI.ShowWaitCursor();
+		var components = releases.GetAvailableComponents();
+		UI.EndWaitCursor();
+
+		var componentsToInstall = Settings.Installer.UnattendedInstallPackages.Split(',', ';')
+			.Select(name => name.Trim())
+			.Where(name => !string.IsNullOrEmpty(name))
+			.ToArray();
+
+		components = components.Where(c => componentsToInstall.Any(ci => c.ComponentName.Equals(ci, StringComparison.OrdinalIgnoreCase) ||
+			c.ComponentCode.Equals(ci, StringComparison.OrdinalIgnoreCase) || c.Component.Equals(ci, StringComparison.OrdinalIgnoreCase)))
+			.ToList();
+
+		foreach (var component in components)
+		{
+			Log.WriteInfo($"Unattended ${Settings.Installer.Action} ${component.ComponentName}.");
+			RunSetup(component, Settings.Installer.Action);
+		}
+	}
+
 	protected bool? Net8RuntimeInstalled { get; set; }
 	public bool CheckNet8RuntimeInstalled()
 	{

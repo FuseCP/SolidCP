@@ -29,6 +29,10 @@ public class ConsoleUI : UI
 		int CurrentPage = 0;
 		public string NewLine => Environment.NewLine;
 
+		protected void AddInteractivePage(Action action)
+		{
+			if (!Installer.Current.Settings.Installer.IsUnattended) Pages.Add(action);
+		}
 		protected void Next()
 		{
 			if (CurrentPage < Pages.Count) CurrentPage++;
@@ -53,7 +57,7 @@ public class ConsoleUI : UI
 
 		public override UI.SetupWizard Introduction(ComponentSettings settings)
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var form = new ConsoleForm($@"
 Welcome to the SolidCP Setup Wizard
@@ -65,7 +69,7 @@ It is recommended that you close all other applications before starting Setup. "
 @"This will make it possible to update relevant system files without having " +
 @"to reboot your computer.
 
-[  Next  ]  [  Cancel  ]")
+[*  Next  ]  [  Cancel  ]")
 					.ShowDialog();
 				if (form["Cancel"].Clicked) Cancel();
 				else Next();
@@ -75,7 +79,7 @@ It is recommended that you close all other applications before starting Setup. "
 
 		public override UI.SetupWizard LicenseAgreement()
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var form = new ConsoleForm();
 				var license = @"
@@ -146,11 +150,12 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ""AS IS"" AN
 				((ConsoleUI)UI).CheckPrerequisites();
 				Next();
 			});
+
 			return this;
 		}
 		public override UI.SetupWizard InstallFolder(ComponentSettings settings)
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var form = new ConsoleForm(@"
 Install Folder:
@@ -331,7 +336,7 @@ Install Component to:
 		{
 			if (OSInfo.IsWindows || !(settings is ServerSettings))
 			{
-				Pages.Add(() =>
+				AddInteractivePage(() =>
 				{
 					bool passwordMatch = true, settingsValid = false;
 					ConsoleForm form;
@@ -417,7 +422,7 @@ Passwords must match!
 		}
 		public override UI.SetupWizard Web(CommonSettings settings)
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var component = settings.ComponentName;
 				var componentUnderline = new string('=', component.Length);
@@ -454,7 +459,7 @@ Urls: [?Urls                                                                    
 			var settings = Settings.WebPortal;
 			settings.EnterpriseServerPath = settings.EnterpriseServerPath.Replace('\\', Path.DirectorySeparatorChar)
 				.Replace('/', Path.DirectorySeparatorChar);
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var exit = false;
 				var message = "";
@@ -513,7 +518,7 @@ Path to EnterpriseServer: [?EnterpriseServerPath                                
 		{
 			var settings = Settings.WebPortal;
 
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var form = new ConsoleForm(@"
 EnterpriseServer Settings:
@@ -551,7 +556,7 @@ EnterpriseServer Settings:
 			.Any(url => IsSecure(new Uri(url)));
 		public override UI.SetupWizard InsecureHttpWarning(CommonSettings settings)
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				if (!IsSecure(settings.Urls))
 				{
@@ -576,7 +581,7 @@ when adding the server in SolidCP Portal.
 		public override UI.SetupWizard Database()
 		{
 			var settings = Settings.EnterpriseServer;
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				var dbType = settings.DatabaseType;
 				ConsoleForm form = null;
@@ -827,7 +832,7 @@ Database: [?DatabaseName                               ]
 
 		public override UI.SetupWizard ServerPassword()
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				bool passwordMatch = true;
 				do
@@ -860,7 +865,7 @@ Passwords must match!
 		}
 		public override UI.SetupWizard ServerAdminPassword()
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				bool passwordMatch = true;
 				do
@@ -898,7 +903,7 @@ Passwords must match!
 
 		public override UI.SetupWizard Certificate(CommonSettings settings)
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				bool exit = false;
 				string message = "";
@@ -1133,8 +1138,10 @@ SolidCP Installer successfully has:
 {string.Join(NewLine, Installer.Current.InstallLogs
 	.Select(line => $"- {line}"))}
 
-[  Finish  ]")
-					.ShowDialog();
+[  Finish  ]");
+
+					if (Installer.Settings.Installer.IsUnattended) form.Show();
+					else form.ShowDialog();
 				}
 				else
 				{
@@ -1145,8 +1152,9 @@ Installation Failed
 Installation of {Settings.Installer.Component.Component} failed. Any changes have been rolled back.
 Exception Message: {Installer.Error.SourceException.Message}
 
-[  Finish  ]")
-					.ShowDialog();
+[  Finish  ]");
+					if (Installer.Settings.Installer.IsUnattended) form.Show();
+					else form.ShowDialog();
 				}
 				Installer.Current.UpdateSettings();
 				Installer.Current.Cleanup();
@@ -1204,7 +1212,7 @@ Exception Message: {Installer.Error.SourceException.Message}
 		}
 		public override UI.SetupWizard ConfirmUninstall(ComponentSettings settings)
 		{
-			Pages.Add(() =>
+			AddInteractivePage(() =>
 			{
 				if (settings == null) settings = Settings.Standalone;
 				var form = new ConsoleForm(@$"
@@ -1967,11 +1975,15 @@ Checking System Requirements
 
 			form.Show();
 		}
-		ConsoleKeyInfo key;
-		do
+
+		if (!Installer.Settings.Installer.IsUnattended)
 		{
-			key = Console.ReadKey();
-		} while (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Spacebar);
+			ConsoleKeyInfo key;
+			do
+			{
+				key = Console.ReadKey();
+			} while (key.Key != ConsoleKey.Enter && key.Key != ConsoleKey.Spacebar);
+		}
 
 		if (!ok)
 		{
@@ -1983,7 +1995,8 @@ SolidCP cannot be installed on this System.
 
 [    Exit    ]
 ");
-			form.ShowDialog();
+			if (!Installer.Settings.Installer.IsUnattended) form.ShowDialog();
+			else form.Show();
 			Exit();
 		}
 	}
