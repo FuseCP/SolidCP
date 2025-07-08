@@ -2102,7 +2102,7 @@ SolidCP cannot be installed on this System.
 			await Task.Delay(333);
 		};
 		CancelWaitCursor = new CancellationTokenSource();
-		if (File.Exists(CancelFile)) File.Delete(CancelFile);
+		if (Directory.Exists(dir) && File.Exists(CancelFile)) File.Delete(CancelFile);
 		CursorVisibleAfterWaitCursor = false; // Console.CursorVisible;
 		Console.CursorVisible = false;
 		Task.Run(async () =>
@@ -2120,7 +2120,7 @@ SolidCP cannot be installed on this System.
 			catch
 			{
 				CancelWaitCursor = new CancellationTokenSource();
-				if (File.Exists(CancelFile)) File.Delete(CancelFile);
+				if (Directory.Exists(dir) && File.Exists(CancelFile)) File.Delete(CancelFile);
 			}
 		});
 	}
