@@ -496,6 +496,9 @@ public abstract partial class Installer
 			c.ComponentCode.Equals(ci, StringComparison.OrdinalIgnoreCase) || c.Component.Equals(ci, StringComparison.OrdinalIgnoreCase)))
 			.ToList();
 
+		Settings.Installer.UnattendedInstallPackages = null;
+		SaveSettings();
+
 		foreach (var component in components)
 		{
 			Log.WriteInfo($"Unattended ${Settings.Installer.Action} ${component.ComponentName}.");
