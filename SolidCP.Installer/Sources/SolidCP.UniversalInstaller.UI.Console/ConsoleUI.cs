@@ -452,7 +452,8 @@ Urls: [?Urls                                                                    
 		public override UI.SetupWizard EnterpriseServerUrl()
 		{
 			var settings = Settings.WebPortal;
-
+			settings.EnterpriseServerPath = settings.EnterpriseServerPath.Replace('\\', Path.DirectorySeparatorChar)
+				.Replace('/', Path.DirectorySeparatorChar);
 			Pages.Add(() =>
 			{
 				var exit = false;
