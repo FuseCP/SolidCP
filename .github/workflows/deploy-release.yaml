@@ -108,13 +108,14 @@ jobs:
         submodules: recursive
 
     - name: Sanitize Artifact Name
-      id: sanitize_name_step # Give this step an ID to reference its outputs
-      shell: bash
+      id: sanitize_name_step
+      shell: bash 
       run: |
         original_commit_message="${{ github.event.head_commit.message }}"
 
         sanitized_name=$(echo "$original_commit_message" | tr -d '\r\n')
-        sanitized_name=$(echo "$sanitized_name" | sed 's#["':<>|*?\\\]##g')
+        
+        sanitized_name=$(echo "$sanitized_name" | sed 's#["'':<>|*?\\\\]##g') # Corrected backslash escape
         sanitized_name=$(echo "$sanitized_name" | sed 's/^Merge pull request #[0-9]\+ from [^[:space:]]\+\s*//g')
         sanitized_name=$(echo "$sanitized_name" | tr ' ' '-')
         sanitized_name=$(echo "$sanitized_name" | sed 's/^-*//;s/-*$//')
@@ -124,14 +125,14 @@ jobs:
           sanitized_name="unnamed-artifact-$(date +%s)" # Append timestamp for uniqueness
         fi
 
-        # Optional: Truncate if too long (e.g., max 200 characters to be safe)
+        # Truncate if too long (e.g., max 200 characters to be safe)
         if [ ${#sanitized_name} -gt 200 ]; then
           sanitized_name="${sanitized_name:0:200}"
         fi
 
         echo "Original Commit Message: $original_commit_message"
         echo "Sanitized Artifact Name: $sanitized_name"
-        echo "sanitized_artifact_name=$sanitized_name" >> "$GITHUB_OUTPUT" # Set output for subsequent steps
+        echo "sanitized_artifact_name=$sanitized_name" >> "$GITHUB_OUTPUT"
 
 
     - name: Run deploy-release.bat
