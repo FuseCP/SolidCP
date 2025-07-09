@@ -13,6 +13,8 @@ using SolidCP.Updater;
 namespace SolidCP.UniversalInstaller {
 
     public class WinFormsUI: UI {
+		const string WaitCursorIncrementFileName = "WaitCursor.cancel";
+		string WaitCursorIncrementFile => Path.Combine(Settings.Installer.TempPath, WaitCursorIncrementFileName);
 
 		public new class SetupWizard : UI.SetupWizard
 		{
@@ -280,6 +282,8 @@ namespace SolidCP.UniversalInstaller {
 		{
 			if (!exitCalled)
 			{
+				if (File.Exists(WaitCursorIncrementFile)) File.Delete(WaitCursorIncrementFile);
+
 				exitCalled = true;
 				Application.Exit();
 				Installer.Exit(0);
@@ -325,8 +329,24 @@ namespace SolidCP.UniversalInstaller {
 			return res == Result.OK;
 		}
 
-		public override void ShowWaitCursor() => Cursor.Current = Cursors.WaitCursor;
-		public override void EndWaitCursor() => Cursor.Current = Cursors.Default;
+		public override void ShowWaitCursor()
+		{
+			if (string.IsNullOrEmpty(Settings.Installer.TempPath)) Settings.Installer.TempPath = FileUtils.GetTempDirectory();
+
+			if (!Directory.Exists(Settings.Installer.TempPath)) Directory.CreateDirectory(Settings.Installer.TempPath);
+
+			Cursor.Current = Cursors.WaitCursor;
+
+			var instances = File.Exists(WaitCursorIncrementFile) ? int.Parse(File.ReadAllText(WaitCursorIncrementFile)) : 0;
+			File.WriteAllText(WaitCursorIncrementFile, (++instances).ToString());
+		}
+		public override void EndWaitCursor()
+		{
+			var instances = File.Exists(WaitCursorIncrementFile) ? int.Parse(File.ReadAllText(WaitCursorIncrementFile)) : 0;
+			File.WriteAllText(WaitCursorIncrementFile, (--instances).ToString());
+
+			if (instances <= 0) Cursor.Current = Cursors.Default;
+		}
 
 		public override void DownloadInstallerUpdate()
 		{
