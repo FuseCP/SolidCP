@@ -163,6 +163,7 @@ namespace SolidCP.UniversalInstaller
 		public SetupActions Action { get; set; }
 		public string TempPath { get; set; }
 		public int Files { get; set; } = 0;
+		[JsonIgnore]
 		public bool IsUnattended => !string.IsNullOrWhiteSpace(UnattendedInstallPackages);
 		public string UnattendedInstallPackages { get; set; }
 		public Version Version { get; set; }
