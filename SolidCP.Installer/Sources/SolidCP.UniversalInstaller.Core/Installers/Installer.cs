@@ -510,15 +510,16 @@ public abstract partial class Installer
 		Settings.Installer.UnattendedInstallPackages = null;
 		SaveSettings();
 
+		var success = true;
 		foreach (var component in components)
 		{
 			Log.WriteInfo($"Unattended ${Settings.Installer.Action} ${component.ComponentName}.");
-			RunSetup(component, Settings.Installer.Action);
+			success &= RunSetup(component, Settings.Installer.Action);
 		}
 
 		UI.EndWaitCursor();
 
-		Exit();
+		Exit(success ? 0 : 1);
 	}
 
 	protected bool? Net8RuntimeInstalled { get; set; }
