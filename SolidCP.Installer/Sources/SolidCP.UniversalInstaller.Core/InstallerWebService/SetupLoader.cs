@@ -568,7 +568,11 @@ public class SetupLoader
 
 		if (Directory.Exists(tmpFolder))
 		{
-			Directory.Delete(tmpFolder, true);
+			try
+			{
+				Directory.Delete(tmpFolder, true);
+			}
+			catch { }
 		}
 
 		if (!Directory.Exists(tmpFolder))
