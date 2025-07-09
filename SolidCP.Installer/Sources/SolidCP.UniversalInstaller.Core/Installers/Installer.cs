@@ -1371,8 +1371,8 @@ public abstract partial class Installer
 					case OSFlavor.Alpine: current = new AlpineInstaller(); break;
 					default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
 				}
+				current.Shell.LogCommand += msg => current.Log.WriteInfo($"> {msg}");
 			}
-			current.Shell.LogCommand += msg => current.Log.WriteInfo($"> {msg}");
 			return current;
 		}
 	}
