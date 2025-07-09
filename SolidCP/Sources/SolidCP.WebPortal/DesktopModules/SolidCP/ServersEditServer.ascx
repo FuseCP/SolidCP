@@ -13,27 +13,6 @@
 <scp:EnableAsyncTasksSupport ID="asyncTasks" runat="server" />
 <asp:ValidationSummary ID="summary" runat="server" ShowMessageBox="true" ShowSummary="false" ValidationGroup="Server" />
 
-<asp:UpdatePanel ID="updSimpleMessageBox" runat="server" UpdateMode="Conditional">
-    <ContentTemplate>
-        <div style="height:3px;"></div>
-        <div id="divSimpleMessageBox" runat="server" class="MessageBox" visible="false">
-            <asp:Literal ID="litMessageBox" runat="server"></asp:Literal>
-            <asp:Literal ID="litDescriptionBox" runat="server"></asp:Literal>
-            <asp:Literal ID="litStackTrace" runat="server"></asp:Literal>
-        </div>
-    </ContentTemplate>
-</asp:UpdatePanel>
-<asp:UpdateProgress ID="loadProgress" runat="server" AssociatedUpdatePanelID="updAsyncInfo" DisplayAfter="0">
-    <ProgressTemplate>
-        <div class="ProgressPanelArea" style="text-align: center; margin-top: 10px;">
-            <div class="MediumBold" style="white-space:nowrap; display: inline-flex; align-items: center; justify-content: center;">
-                <img src='<%= PortalUtils.GetThemedImage("indicator_medium.gif") %>' alt="Loading..." style="vertical-align: middle;" />&nbsp;
-                <span>Loading data...</span> 
-            </div>
-        </div>
-    </ProgressTemplate>
-</asp:UpdateProgress>
-
 <section>
     <div class="panel-body">
         <div class="row">
