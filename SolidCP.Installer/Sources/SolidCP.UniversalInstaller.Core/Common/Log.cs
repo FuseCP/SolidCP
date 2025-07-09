@@ -113,6 +113,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] ERROR: {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.WriteLine(line);
 				Trace.WriteLine(ex);
 			}
@@ -129,6 +130,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] ERROR: {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -144,6 +146,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.Write(line);
 			}
 			catch { }
@@ -160,6 +163,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -185,6 +189,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] INFO: {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -200,6 +205,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] START: {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -215,6 +221,7 @@ namespace SolidCP.UniversalInstaller
 			{
 				OnWrite?.Invoke();
 				string line = string.Format("[{0:G}] END: {1}", DateTime.Now, message);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -229,6 +236,7 @@ namespace SolidCP.UniversalInstaller
 				string version = Installer.Current.GetEntryAssembly().GetName().Version.ToString();
 				string identity = WindowsIdentity.GetCurrent().Name;
 				string line = string.Format("[{0:G}] {1} {2} Started by {3}", DateTime.Now, name, version, identity);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -241,6 +249,7 @@ namespace SolidCP.UniversalInstaller
 				OnWrite?.Invoke();
 				string name = Installer.Current.GetEntryAssembly().GetName().Name;
 				string line = string.Format("[{0:G}] {1} Ended", DateTime.Now, name);
+				CloseProgress();
 				Trace.WriteLine(line);
 			}
 			catch { }
@@ -250,10 +259,22 @@ namespace SolidCP.UniversalInstaller
 		/// Opens notepad to view log file.
 		/// </summary>
 		public virtual void ShowLogFile() => Installer.Current.ShowLogFile();
+
+		bool isInLogProgress = false;
 		public void ProgressOne()
 		{
+			isInLogProgress = true;
 			OnWrite?.Invoke();
 			Trace.Write(".");
+		}
+
+		private void CloseProgress()
+		{
+			if (isInLogProgress)
+			{
+				isInLogProgress = false;
+				Trace.WriteLine("");
+			}
 		}
 	}
 
