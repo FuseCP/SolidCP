@@ -1353,7 +1353,8 @@ public abstract partial class Installer
 		{
 			if (current == null)
 			{
-				switch (OSInfo.OSFlavor)
+				var flavor = OSInfo.OSFlavor;
+				switch (flavor)
 				{
 					// TODO support for Ubuntu variants
 					case OSFlavor.Windows: current = new WindowsInstaller(); break;
@@ -1365,11 +1366,18 @@ public abstract partial class Installer
 					case OSFlavor.Fedora: current = new FedoraInstaller(); break;
 					case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 					case OSFlavor.CentOS: current = new CentOSInstaller(); break;
+					case OSFlavor.Alma: current = new AlmaInstaller(); break;
+					case OSFlavor.Rocky: current = new RockyInstaller(); break;
 					case OSFlavor.Oracle: current = new OracleInstaller(); break;
 					case OSFlavor.SUSE: current = new SuseInstaller(); break;
 					case OSFlavor.Arch: current = new ArchInstaller(); break;
 					case OSFlavor.Alpine: current = new AlpineInstaller(); break;
-					default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
+					default:
+						var assembly = Assembly.GetExecutingAssembly();
+						var type = assembly.GetType($"HostPanelPro.UniversalInstaller.{flavor}");
+						if (type != null) current = Activator.CreateInstance(type) as Installer;
+						else throw new PlatformNotSupportedException("This OS is not supported by the installer.");
+						break;
 				}
 				current.Shell.LogCommand += msg => current.Log.WriteInfo($"> {msg}");
 			}
