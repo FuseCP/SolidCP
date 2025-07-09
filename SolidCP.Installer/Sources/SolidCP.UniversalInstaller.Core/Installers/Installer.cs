@@ -902,6 +902,17 @@ public abstract partial class Installer
 			}
 		}
 	}
+	private void DeleteRootDirectory(string destination)
+	{
+		if (destination != Settings.Standalone.InstallPath) Directory.Delete(destination, true);
+		else
+		{
+			if (Directory.Exists(Settings.EnterpriseServer.InstallPath)) Directory.Delete(Settings.EnterpriseServer.InstallPath, true);
+			if (Directory.Exists(Settings.Server.InstallPath)) Directory.Delete(Settings.Server.InstallPath, true);
+			if (Directory.Exists(Settings.WebPortal.InstallPath)) Directory.Delete(Settings.WebPortal.InstallPath, true);
+			if (Directory.Exists(Settings.WebDavPortal.InstallPath)) Directory.Delete(Settings.WebDavPortal.InstallPath, true);
+		}
+	}
 	public void CopyFiles(string source, string destination, bool clearDestination = false,
 		Func<string, string> filter = null, string root = null, string destroot = null, bool settings = false)
 	{
@@ -917,13 +928,13 @@ public abstract partial class Installer
 			Transaction(() =>
 			{
 
-				if (clearDestination && Directory.Exists(destination)) Directory.Delete(destination, true);
+				if (clearDestination && Directory.Exists(destination)) DeleteRootDirectory(destination);
 				CopyFiles(source, destination, clearDestination, filter, source, destination);
 				InstallLog("Unzipped & installed distribution files");
 			})
 				.WithRollback(() =>
 				{
-					Directory.Delete(destination, true);
+					DeleteRootDirectory(destination);
 					if (IsUpdateAction)
 					{
 						// Restore backup

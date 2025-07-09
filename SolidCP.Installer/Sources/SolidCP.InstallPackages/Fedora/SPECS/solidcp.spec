@@ -31,6 +31,7 @@ cp -rp usr/share/* $RPM_BUILD_ROOT/usr/share
 if [ $1 -ge 1 ];then
     sed -i 's|/usr/bin/solidcp-installer|%{_bindir}/solidcp-installer|g' /usr/share/applications/solidcp-installer.desktop
 #  %{_bindir}/solidcp-installer
+    rm /usr/share/solidcp/Installer/Setup2.*
     echo "======================================================"
     echo "Please run 'sudo solidcp-installer' to install SolidCP"
     echo "======================================================"

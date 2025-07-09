@@ -1,4 +1,7 @@
 #!/bin/sh
+rm /usr/share/solidcp/Installer/Setup2.*
+
 echo "===================================================================="
 echo "run 'sudo solidcp-installer' to complete the installation of SolidCP"
 echo "===================================================================="
+
