@@ -81,16 +81,33 @@ namespace SolidCP.UniversalInstaller
 			=> FromResult<ComponentUpdateInfo>(base.GetComponentUpdate(componentCode, release));
 		public new async Task<ComponentUpdateInfo> GetComponentUpdateAsync(string componentCode, string release)
 			=> FromResult<ComponentUpdateInfo>(await base.GetComponentUpdateAsync(componentCode, release));
+
+		private void Filter(List<ComponentInfo> result)
+		{
+			// exclude Standalone vs. other components
+			if (Installer.Current.Settings.Installer.InstalledComponents.Any(c => c.ComponentCode == "standalone"))
+			{
+				result.RemoveAll(c => c.ComponentCode == "enterprise server" || c.ComponentCode == "serverunix" || c.ComponentCode == "server" ||
+						c.ComponentCode == "portal" || c.ComponentCode == "WebDavPortal" || c.ComponentCode == "serveraspv2");
+			}
+			else if (Installer.Current.Settings.Installer.InstalledComponents.Any(c => c.ComponentCode == "enterprise server" || c.ComponentCode == "serverunix" || c.ComponentCode == "server" ||
+						c.ComponentCode == "portal" || c.ComponentCode == "WebDavPortal" || c.ComponentCode == "serveraspv2"))
+			{
+				result.RemoveAll(c => c.ComponentCode == "standalone");
+			}
+		}
 		public new List<ComponentInfo> GetAvailableComponents()
 		{
 			var result = FromResultCollection<ComponentInfo>(base.GetAvailableComponents());
 			foreach (var component in result) component.VersionName = component.Version.ToString(3);
+			Filter(result);
 			return result;
 		}
 		public new async Task<List<ComponentInfo>> GetAvailableComponentsAsync()
 		{
 			var result = FromResultCollection<ComponentInfo>(await base.GetAvailableComponentsAsync());
 			foreach (var component in result) component.VersionName = component.Version.ToString(3);
+			Filter(result);
 			return result;
 		}
 		public new ComponentUpdateInfo GetLatestComponentUpdate(string componentCode) => FromResult<ComponentUpdateInfo>(base.GetLatestComponentUpdate(componentCode));
