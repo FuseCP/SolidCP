@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Text.RegularExpressions;
 using SolidCP.Providers.OS;
 
 namespace SolidCP.UniversalInstaller;
@@ -84,6 +85,24 @@ public class Program
 			if (args.Any(arg => arg.Equals("-ui=winforms", StringComparison.OrdinalIgnoreCase))) UI.Current = UI.WinFormsUI;
 			else if (args.Any(arg => arg.Equals("-ui=avalonia", StringComparison.OrdinalIgnoreCase))) UI.Current = UI.AvaloniaUI;
 			else if (args.Any(arg => arg.Equals("-ui=console", StringComparison.OrdinalIgnoreCase))) UI.Current = UI.ConsoleUI;
+
+			var unattendedInstallPackages = args.Select(arg => Regex.Match(arg, @"(?<=-unattended=).*$"))
+				.Where(match => match.Success)
+				.Select(match => match.Value)
+				.FirstOrDefault();
+			var unattendedAction = args.Select(arg => Regex.Match(arg, @"(?<=-action=).*$"))
+				.Where(match => match.Success)
+				.Select(match => match.Value)
+				.FirstOrDefault()
+				?? "Install";
+
+			if (unattendedInstallPackages != null)
+			{
+				Installer.Current.Settings.Installer.UnattendedInstallPackages = unattendedInstallPackages;
+				SetupActions action;
+				if (!Enum.TryParse<SetupActions>(unattendedAction, out action)) action = SetupActions.Install;
+				Installer.Current.Settings.Installer.Action = action;
+			}
 
 			Installer.Current.UI.Init();
 

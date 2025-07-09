@@ -317,7 +317,14 @@ public abstract partial class Installer
 			settings.Installer.Version = Version;
 			settings.Installer.TempPath = FileUtils.GetTempDirectory();
 			settings.Installer.UI = UI.Current.GetType().Name;
+			var unattendedInstallPackages = Settings.Installer.UnattendedInstallPackages;
+			var action = Settings.Installer.Action;
 			Settings = settings;
+			if (!string.IsNullOrEmpty(unattendedInstallPackages))
+			{
+				Settings.Installer.UnattendedInstallPackages = unattendedInstallPackages;
+				Settings.Installer.Action = action;
+			}
 		}
 		else SaveSettings();
 	}
@@ -478,22 +485,26 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
-
+	public bool Equals(string a, string b)
+	{
+		return a.Equals(b, StringComparison.OrdinalIgnoreCase) ||
+			a.Replace(" ", "").Equals(b.Replace(" ", ""), StringComparison.OrdinalIgnoreCase);
+	}
 	public void RunUnattended()
 	{
+		UI.ShowWaitCursor();
+
 		var releases = Installer.Current.Releases;
 
-		UI.ShowWaitCursor();
 		var components = releases.GetAvailableComponents();
-		UI.EndWaitCursor();
 
 		var componentsToInstall = Settings.Installer.UnattendedInstallPackages.Split(',', ';')
 			.Select(name => name.Trim())
 			.Where(name => !string.IsNullOrEmpty(name))
 			.ToArray();
 
-		components = components.Where(c => componentsToInstall.Any(ci => c.ComponentName.Equals(ci, StringComparison.OrdinalIgnoreCase) ||
-			c.ComponentCode.Equals(ci, StringComparison.OrdinalIgnoreCase) || c.Component.Equals(ci, StringComparison.OrdinalIgnoreCase)))
+		components = components.Where(c => componentsToInstall.Any(ci => Equals(c.ComponentName, ci) ||
+			Equals(c.ComponentCode, ci) || Equals(c.Component, ci)))
 			.ToList();
 
 		Settings.Installer.UnattendedInstallPackages = null;
@@ -504,6 +515,10 @@ public abstract partial class Installer
 			Log.WriteInfo($"Unattended ${Settings.Installer.Action} ${component.ComponentName}.");
 			RunSetup(component, Settings.Installer.Action);
 		}
+
+		UI.EndWaitCursor();
+
+		Exit();
 	}
 
 	protected bool? Net8RuntimeInstalled { get; set; }

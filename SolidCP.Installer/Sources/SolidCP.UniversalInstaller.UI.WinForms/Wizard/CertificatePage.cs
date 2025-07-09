@@ -121,7 +121,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			base.OnAfterDisplay(e);
 			//unattended setup
-			if ((/*!string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml) ||*/ Hidden) && AllowMoveNext)
+			if ((Installer.Current.Settings.Installer.IsUnattended || Hidden) && AllowMoveNext)
 				Wizard.GoNext();
 		}
 

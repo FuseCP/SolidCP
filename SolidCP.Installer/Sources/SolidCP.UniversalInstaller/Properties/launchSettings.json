@@ -1,7 +1,8 @@
 {
     "profiles": {
         "SolidCP.UniversalInstaller": {
-            "commandName": "Project"
+            "commandName": "Project",
+            "commandLineArgs": "-unattended=Server;EnterpriseServer" //"-ui=console"
         },
         "WSL": {
             "commandName": "WSL2",
