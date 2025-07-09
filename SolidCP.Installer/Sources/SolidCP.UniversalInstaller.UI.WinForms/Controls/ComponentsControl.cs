@@ -304,7 +304,7 @@ namespace SolidCP.UniversalInstaller.Controls
                                 continue;
                         }
                         StartInstaller(component);
-                        AppContext.AppForm.ProceedUnattendedSetup();
+                        //AppContext.AppForm.ProceedUnattendedSetup();
                         break;
                     }
                 }
