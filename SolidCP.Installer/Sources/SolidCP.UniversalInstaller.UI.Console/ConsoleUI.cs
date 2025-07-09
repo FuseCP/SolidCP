@@ -176,7 +176,7 @@ Install Component to:
 						Installer.Current.Settings.Server.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
 						Installer.Current.Settings.EnterpriseServer.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.EnterpriseServer.InstallFolder);
 						Installer.Current.Settings.WebDavPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.WebDavPortal.InstallFolder);
-						Installer.Current.Settings.WebPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.Server.InstallFolder);
+						Installer.Current.Settings.WebPortal.InstallPath = Path.Combine(settings.InstallPath, Installer.Current.Settings.WebPortal.InstallFolder);
 					}
 					else
 					{
