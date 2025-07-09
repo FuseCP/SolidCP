@@ -1683,6 +1683,8 @@ Enterprise Server Url: [?EnterpriseServerUrl http://localhost:9002              
 
 	public override void ShowError(Exception ex)
 	{
+		Log.WriteError("Error: ", ex);
+
 		var form = new ConsoleForm(@$"Error:
 ======
 

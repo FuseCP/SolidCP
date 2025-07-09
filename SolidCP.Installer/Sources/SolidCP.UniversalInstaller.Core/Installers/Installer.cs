@@ -1372,6 +1372,7 @@ public abstract partial class Installer
 					default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
 				}
 			}
+			current.Shell.LogCommand += msg => current.Log.WriteInfo($"> {msg}");
 			return current;
 		}
 	}
