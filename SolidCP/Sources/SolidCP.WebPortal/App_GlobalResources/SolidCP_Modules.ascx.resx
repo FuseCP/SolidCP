@@ -663,6 +663,9 @@
   <data name="ModuleTitle.SpaceQuotas" xml:space="preserve">
     <value>Space Quotas</value>
   </data>
+  <data name="ModuleTitle.SpaceServerUsage" xml:space="preserve">
+    <value>Current assigned server Resource Usage</value>
+  </data>
   <data name="ModuleTitle.CreateNewOrganization" xml:space="preserve">
     <value>Create New Organization</value>
   </data>

@@ -40,6 +40,7 @@ using SolidCP.Providers;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Server.Utils;
 using System.Collections.Generic;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.Server
 {
@@ -1019,6 +1020,42 @@ namespace SolidCP.Server
         }
         #endregion
 
+        #region Node information
+        [WebMethod, SoapHeader("settings")]
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetSystemResourceUsageInfo", ProviderSettings.ProviderName);
+                SystemResourceUsageInfo result = VirtualizationProvider.GetSystemResourceUsageInfo();
+                Log.WriteEnd("'{0}' GetSystemResourceUsageInfo", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetSystemResourceUsageInfo", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+
+        [WebMethod, SoapHeader("settings")]
+        public SystemMemoryInfo GetSystemMemoryInfo()
+        {
+            try
+            {
+                Log.WriteStart("'{0}' GetSystemMemoryInfo", ProviderSettings.ProviderName);
+                SystemMemoryInfo result = VirtualizationProvider.GetSystemMemoryInfo();
+                Log.WriteEnd("'{0}' GetSystemMemoryInfo", ProviderSettings.ProviderName);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.WriteError(String.Format("'{0}' GetSystemMemoryInfo", ProviderSettings.ProviderName), ex);
+                throw;
+            }
+        }
+        #endregion
+
         #region Configuration
         [WebMethod, SoapHeader("settings")]
         public int GetProcessorCoresNumber()
@@ -1037,7 +1074,7 @@ namespace SolidCP.Server
             }
         }
 
-        [WebMethod, SoapHeader("settings")]
+        /*[WebMethod, SoapHeader("settings")]
         public Providers.OS.Memory GetMemory()
         {
             try
@@ -1052,7 +1089,7 @@ namespace SolidCP.Server
                 Log.WriteError(String.Format("'{0}' GetMemory", ProviderSettings.ProviderName), ex);
                 throw;
             }
-        }
+        }*/
 
         [WebMethod, SoapHeader("settings")]
         public List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList()
@@ -1071,7 +1108,6 @@ namespace SolidCP.Server
             }
         }
         #endregion
-
 
         #region Replication
 

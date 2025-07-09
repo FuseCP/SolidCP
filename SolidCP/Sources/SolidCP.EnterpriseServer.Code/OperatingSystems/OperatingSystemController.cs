@@ -49,6 +49,7 @@ using System.Collections;
 using SolidCP.Providers.DomainLookup;
 using SolidCP.Providers.DNS;
 using System.Linq;
+using SolidCP.Providers.Common;
 
 
 namespace SolidCP.EnterpriseServer
@@ -614,28 +615,43 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region OS informations
-        public Memory GetMemoryPackageId(int packageId)
+        #region Server informations
+        public static SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
             PackageInfo package = PackageController.GetPackage(packageId);
             if (package == null)
             {
                 throw new Exception("PACKAGE_NOT_FOUND");
             }
-            return GetMemoryInternal(package.ServerId);
+            return GetSystemResourceUsageInfo(package.ServerId);
         }
-        public Memory GetMemory(int serverId)
+
+        public static SystemResourceUsageInfo GetSystemResourceUsageInfo(int serverId)
         {
-            return GetMemoryInternal(serverId);
+            return GetServerService(serverId).GetSystemResourceUsageInfo();
         }
-        private Memory GetMemoryInternal(int serverId)
+
+        public static SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
+        {
+            PackageInfo package = PackageController.GetPackage(packageId);
+            if (package == null)
+            {
+                throw new Exception("PACKAGE_NOT_FOUND");
+            }
+            return GetSystemMemoryInfoInternal(package.ServerId);
+        }
+        public static SystemMemoryInfo GetSystemMemoryInfo(int serverId)
+        {
+            return GetSystemMemoryInfoInternal(serverId);
+        }
+        private static SystemMemoryInfo GetSystemMemoryInfoInternal(int serverId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo| DemandAccount.IsActive);
             if (accountCheck < 0) 
                 throw new Exception("The account dont have permission");
 
-            return GetServerService(serverId).GetMemory();
+            return GetServerService(serverId).GetSystemMemoryInfo();
         }
 
         #endregion

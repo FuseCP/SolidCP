@@ -618,13 +618,27 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Configurations 
+        #region Node information
         [WebMethod]
-        public Providers.OS.Memory GetMemory(int serviceId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
-            return VirtualizationServerController2012.GetMemory(serviceId);
+            return VirtualizationServerController2012.GetSystemResourceUsageInfoPackageId(packageId);
         }
 
+        [WebMethod]
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo(int serviceId)
+        {
+            return VirtualizationServerController2012.GetSystemResourceUsageInfo(serviceId);
+        }
+
+        [WebMethod]
+        public SystemMemoryInfo GetSystemMemoryInfo(int serviceId)
+        {
+            return VirtualizationServerController2012.GetSystemMemoryInfo(serviceId);
+        }
+        #endregion
+
+        #region Configurations
         [WebMethod]
         public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {
