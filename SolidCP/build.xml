@@ -192,10 +192,10 @@
 		<RemoveDir Directories="$(LocalizationToolkitBuild)"/>
 		<RemoveDir Directories="$(InstallerBuild)"/>
 		<RemoveDir Directories="$(UniversalInstallerBuild)"/>		
+	    <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
 		<RemoveDir Directories="$(BuildFolder)"/>
-    <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
 
-    <MakeDir Directories="$(BuildFolder)"/>
+    	<MakeDir Directories="$(BuildFolder)"/>
 		<MakeDir Directories="$(ServerBuild)"/>
 		<MakeDir Directories="$(EnterpriseServerBuild)"/>
 		<MakeDir Directories="$(SchedulerServiceBuild)"/>
@@ -211,8 +211,8 @@
 		<MakeDir Directories="$(LocalizationToolkitBuild)"/>
 		<MakeDir Directories="$(InstallerBuild)"/>
 		<MakeDir Directories="$(UniversalInstallerBuild)"/>
-    <MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
-  </Target>
+    	<MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
+  	</Target>
 
 	<Target Name="CreateServerBuild" DependsOnTargets="PrepareBuilds">
 		<ItemGroup>
