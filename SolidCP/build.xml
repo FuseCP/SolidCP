@@ -37,7 +37,7 @@
 		<HyperVUtilsSrc>$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils\bin\$(BuildConfiguration)</HyperVUtilsSrc>
 		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)</VMConfigSrc>
 		<ImportEnterpriseSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise\bin\$(BuildConfiguration)</ImportEnterpriseSrc>
-		<CertMakerSrc>$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\bin\$(BuildConfiguration)\net48</CertMakerSrc>
+		<CertMakerSrc>$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\bin\$(BuildConfiguration)</CertMakerSrc>
 		<AWStatsViewerSrc>$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer</AWStatsViewerSrc>
 		<SCPTransportAgentSrc>$(TrunkFolder)\Sources\Tools\SCPTransportAgent</SCPTransportAgentSrc>
 		<SolidCP-Configuration-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolSrc>
@@ -608,6 +608,7 @@
 		<VMConfigInstall>$(ToolsFolder)\VMconfig</VMConfigInstall>
 		<ImportEnterpriseInstall>$(ToolsFolder)\Import.Enterprise</ImportEnterpriseInstall>
 		<AWStatsViewerInstall>$(ToolsFolder)\AWStats.Viewer</AWStatsViewerInstall>
+		<CertMakerInstall>$(ToolsFolder)\CertificateMaker</CertMakerInstall>
 		<SCPTransportAgentInstall>$(ToolsFolder)\SCPTransportAgent</SCPTransportAgentInstall>
 		<SolidCP-Configuration-ToolInstall>$(ToolsFolder)\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolInstall>
 		<MSPtoSCPInstall>$(ToolsFolder)\MSPtoSCP</MSPtoSCPInstall>
