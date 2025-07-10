@@ -914,9 +914,8 @@ Certificate Settings:
 
 [  Use a certificate from the store  ]
 " + (!OSInfo.IsWindows ?
-@"[   Use a certificate from a file    ]
-[  Use a Let's Encrypt certificate   ]
-" : "") +
+@$"[   Use a certificate from a file    ]
+{(Installer.UseLettuceEncrypt ? $"[  Use a Let's Encrypt certificate   ]{Environment.NewLine}" : "")}" : "") +
 @"[ Configure the certificate manually ]
 
 [  Back  ]")
@@ -926,7 +925,7 @@ Certificate Settings:
 					Back();
 					if (IsSecure(settings.Urls)) Back(); // Go also back in InsecureHttpWarnings
 				}
-				else if (form[0].Clicked)
+				else if (form["Use a certificate from the store"].Clicked)
 				{
 					do
 					{
@@ -957,7 +956,7 @@ Find Value:      [?CertificateFindValue                                     ]
 						}
 					} while (!exit);
 				}
-				else if (form[1].Clicked && !OSInfo.IsWindows)
+				else if (form["Use a certificate from a file"].Clicked && !OSInfo.IsWindows)
 				{
 					do
 					{
@@ -986,7 +985,7 @@ Password: [?CertificatePassword                                     ]
 						}
 					} while (!exit);
 				}
-				else if (form[2].Clicked && !OSInfo.IsWindows)
+				else if (form["Use a Let's Encrypt certificate"].Clicked && !OSInfo.IsWindows)
 				{
 					do
 					{

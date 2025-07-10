@@ -85,6 +85,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 				tabControl.TabPages.RemoveAt(2);
 				tabControl.TabPages.RemoveAt(1);
 			}
+			else if (!Installer.UseLettuceEncrypt) tabControl.TabPages.RemoveAt(2);
+
 			if (!string.IsNullOrEmpty(Settings.CertificateFindValue)) tabControl.SelectedTab = tabPageCertStore;
 			else if (!string.IsNullOrEmpty(Settings.CertificateFile)) tabControl.SelectedTab = tabPageCertFile;
 			else if (!string.IsNullOrEmpty(Settings.LetsEncryptCertificateEmail)) tabControl.SelectedTab = tabPageLetsEncrypt;
