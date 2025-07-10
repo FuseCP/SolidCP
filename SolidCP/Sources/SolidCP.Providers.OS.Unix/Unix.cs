@@ -1,19 +1,20 @@
-﻿using System;
-using System.Linq;
-using System.Runtime.InteropServices;
+﻿using Mono.Unix;
+using SolidCP.Providers.DNS;
+using SolidCP.Providers.DomainLookup;
+using SolidCP.Providers.Utils;
+using SolidCP.Server.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.IO;
-using System.Text;
-using Mono.Unix;
-using System.Threading;
-using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Compression;
-using SolidCP.Server.Utils;
-using SolidCP.Providers.Utils;
-using SolidCP.Providers.DomainLookup;
-using SolidCP.Providers.DNS;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidCP.Providers.OS;
 
@@ -730,7 +731,7 @@ public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 		else DefaultShell.Exec("reboot");
 	}
 
-	public Memory GetMemory()
+	public SystemMemoryInfo GetSystemMemoryInfo()
 	{
 		if (Shell.Default.Find("free") != null)
 		{
@@ -744,17 +745,89 @@ public class Unix : HostingServiceProviderBase, IUnixOperatingSystem
 				ulong.TryParse(matches[2].Value, out totalswap) &&
 				ulong.TryParse(matches[3].Value, out freeswap))
 			{
-				return new Memory()
+				return new SystemMemoryInfo()
 				{
-					TotalVisibleMemorySizeKB = total,
-					FreePhysicalMemoryKB = free,
-					TotalVirtualMemorySizeKB = totalswap,
-					FreeVirtualMemoryKB = freeswap
+					FreePhysicalKB = free,
+					FreeVirtualKB = freeswap,
+					 TotalVirtualSizeKB = totalswap,
+					 TotalVisibleSizeKB = total,
 				};
 			}
 		}
-		return new Memory();
+		throw new PlatformNotSupportedException("free command not found on this system.");
 	}
+
+	protected short GetProcessorTotalProcessorTime()
+	{
+		if (OSInfo.IsLinux)
+		{
+			var (idle1, total1) = ReadCpuStats();
+			Thread.Sleep(1000); // 1 second delay
+			var (idle2, total2) = ReadCpuStats();
+
+			var idleDelta = (long)idle2 - (long)idle1;
+			var totalDelta = (long)total2 - (long)total1;
+
+			long cpuIdlePercentage = (100 * idleDelta) / totalDelta;
+
+			return (short)(100 - cpuIdlePercentage);
+		}
+		else if (OSInfo.IsMac) return MacOSHelper.GetProcessorTotalProcessorTimeMac();
+		else return 0;
+	}
+
+	private (ulong idle, ulong total) ReadCpuStats()
+	{
+		string[] fields = null;
+
+		foreach (var line in File.ReadLines("/proc/stat"))
+		{
+			if (line.StartsWith("cpu "))
+			{
+				fields = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+				break;
+			}
+		}
+
+		if (fields == null || fields.Length < 5)
+			throw new Exception("Could not read /proc/stat properly.");
+
+		// Field indices based on /proc/stat format
+		// user, nice, system, idle, iowait, irq, softirq, steal, guest, guest_nice
+		ulong[] values = new ulong[fields.Length - 1];
+		for (int i = 1; i < fields.Length; i++)
+			values[i - 1] = ulong.Parse(fields[i]);
+
+		ulong idle = values[3] + values[4]; // idle + iowait
+		ulong total = 0;
+		foreach (var val in values)
+			total += val;
+
+		return (idle, total);
+	}
+	public SystemResourceUsageInfo GetSystemResourceUsageInfo()
+	{
+		try
+		{
+			Log.WriteStart("GetSystemResourceUsageInfo");
+			return new SystemResourceUsageInfo
+			{
+				SystemMemoryInfo = GetSystemMemoryInfo(),
+				ProcessorTimeUsagePercent = GetProcessorTotalProcessorTime(),
+			};
+
+		}
+		catch (Exception ex)
+		{
+			Log.WriteError("GetSystemResourceUsageInfo", ex);
+			throw;
+		}
+		finally
+		{
+			Log.WriteEnd("GetSystemResourceUsageInfo");
+		}
+	}
+
 	public string ExecuteSystemCommand(string user, string password, string path, string args)
 	{
 		try

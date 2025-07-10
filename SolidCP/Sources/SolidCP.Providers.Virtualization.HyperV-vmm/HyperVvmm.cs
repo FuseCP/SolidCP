@@ -31,34 +31,27 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-
 using System.Text;
 using System.Drawing;
 using System.Drawing.Imaging;
-
 using System.Management;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-
 using System.Reflection;
 using System.Globalization;
-
 using System.Xml;
-using SolidCP.Providers;
+using System.Linq;
+
+using SolidCP.Providers.OS;
 using SolidCP.Providers.HostedSolution;
 using SolidCP.Providers.Utils;
 using SolidCP.Server.Utils;
-
-using Vds = Microsoft.Storage.Vds;
-using System.Configuration;
-﻿using System.Linq;
-﻿using SolidCP.Providers.Virtualization.Extensions;
 
 using Microsoft.SystemCenter.VirtualMachineManager;
 using Microsoft.SystemCenter.VirtualMachineManager.Remoting;
 using Microsoft.SystemCenter.VirtualMachineManager.Cmdlets;
 using Microsoft.VirtualManager.PowerShellAbstractionLayer;
-using SolidCP.Providers.Common;
+using Vds = Microsoft.Storage.Vds;
 
 
 namespace SolidCP.Providers.Virtualization

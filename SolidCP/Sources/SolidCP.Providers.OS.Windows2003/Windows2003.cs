@@ -44,6 +44,8 @@ using System.Collections;
 using System.Security;
 using System.Web;
 using System.Management;
+using System.Management.Automation;
+using System.Management.Automation.Runspaces;
 using System.ServiceProcess;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
@@ -56,6 +58,11 @@ using SolidCP.Providers.DNS;
 using SolidCP.Server.Code;
 using SolidCP.Server.WPIService;
 using System.Threading;
+
+using SolidCP.Providers;
+using SolidCP.Providers.Common;
+using System.Collections.ObjectModel;
+
 
 namespace SolidCP.Providers.OS
 {
@@ -1948,26 +1955,82 @@ namespace SolidCP.Providers.OS
 		}
 		#endregion
 
-		#region OS informations
-		public Memory GetMemory()
+		#region Server informations
+		public SystemResourceUsageInfo GetSystemResourceUsageInfo()
 		{
 			try
 			{
-				Memory memory = new Memory();
+				Log.WriteStart("GetSystemResourceUsageInfo");
+				return new SystemResourceUsageInfo
+				{
+					SystemMemoryInfo = GetSystemMemoryInfo(),
+					ProcessorTimeUsagePercent = GetProcessorTotalProcessorTime(),
+				};
+
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("GetSystemResourceUsageInfo", ex);
+				throw;
+			}
+			finally
+			{
+				Log.WriteEnd("GetSystemResourceUsageInfo");
+			}
+		}
+
+		protected short GetProcessorTotalProcessorTime()
+		{
+			short totalRunTime = 0;
+			try
+			{
+				using (var _powerShell = new PowerShellManager(null))
+				{
+					Collection<PSObject> result = null;
+					//this command doesn't support WSMan protocol, if that important, then we can use WMIv2 to get this data. Or use Invoke-Command
+					var cmd = new Command("Get-Counter");
+					cmd.Parameters.Add("Counter", @"\Processor(_Total)\% Processor Time");
+					result = _powerShell.Execute(cmd, true, true);
+
+					if (result != null && result.Count > 0)
+					{
+						dynamic[] counterSamples = (dynamic[])result[0].Members["CounterSamples"].Value;
+						if (counterSamples != null && counterSamples.Length > 0)
+							return Convert.ToInt16(counterSamples[0].CookedValue);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError("GetHypervisorLogicalProcessorTotalRunTime", ex);
+				//ignore error, return default value
+			}
+
+			return totalRunTime;
+		}
+
+		public SystemMemoryInfo GetSystemMemoryInfo()
+		{
+			try
+			{
+				Log.WriteStart("GetSystemMemoryInfo");
+				SystemMemoryInfo memory = new SystemMemoryInfo();
 
 				WmiHelper wmi = new WmiHelper("root\\cimv2");
 				ManagementObjectCollection objOses = wmi.ExecuteQuery("SELECT * FROM Win32_OperatingSystem");
 				foreach (ManagementObject objOs in objOses)
 				{
-					memory.FreePhysicalMemoryKB = UInt64.Parse(objOs["FreePhysicalMemory"].ToString());
-					memory.TotalVisibleMemorySizeKB = UInt64.Parse(objOs["TotalVisibleMemorySize"].ToString());
-					memory.TotalVirtualMemorySizeKB = UInt64.Parse(objOs["TotalVirtualMemorySize"].ToString());
-					memory.FreeVirtualMemoryKB = UInt64.Parse(objOs["FreeVirtualMemory"].ToString());
+					memory.FreePhysicalKB = UInt64.Parse(objOs["FreePhysicalMemory"].ToString());
+					memory.TotalVisibleSizeKB = UInt64.Parse(objOs["TotalVisibleMemorySize"].ToString());
+					memory.TotalVirtualSizeKB = UInt64.Parse(objOs["TotalVirtualMemorySize"].ToString());
+					memory.FreeVirtualKB = UInt64.Parse(objOs["FreeVirtualMemory"].ToString());
 				}
+				Log.WriteEnd("GetSystemMemoryInfo");
 				return memory;
 			}
 			catch (Exception ex)
 			{
+				Log.WriteError("GetSystemMemoryInfo", ex);
 				throw;
 			}
 		}

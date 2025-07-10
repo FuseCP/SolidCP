@@ -616,7 +616,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Server informations
-        public static SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
             PackageInfo package = PackageController.GetPackage(packageId);
             if (package == null)
@@ -626,12 +626,12 @@ namespace SolidCP.EnterpriseServer
             return GetSystemResourceUsageInfo(package.ServerId);
         }
 
-        public static SystemResourceUsageInfo GetSystemResourceUsageInfo(int serverId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo(int serverId)
         {
             return GetServerService(serverId).GetSystemResourceUsageInfo();
         }
 
-        public static SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
+        public SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
         {
             PackageInfo package = PackageController.GetPackage(packageId);
             if (package == null)
@@ -640,14 +640,14 @@ namespace SolidCP.EnterpriseServer
             }
             return GetSystemMemoryInfoInternal(package.ServerId);
         }
-        public static SystemMemoryInfo GetSystemMemoryInfo(int serverId)
+        public SystemMemoryInfo GetSystemMemoryInfo(int serverId)
         {
             return GetSystemMemoryInfoInternal(serverId);
         }
-        private static SystemMemoryInfo GetSystemMemoryInfoInternal(int serverId)
+        private SystemMemoryInfo GetSystemMemoryInfoInternal(int serverId)
         {
             // check account
-            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo| DemandAccount.IsActive);
+            int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
             if (accountCheck < 0) 
                 throw new Exception("The account dont have permission");
 

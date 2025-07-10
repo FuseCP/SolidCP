@@ -34,13 +34,13 @@
 using System.Data;
 using System.Web;
 using System.Collections;
-using SolidCP.Web.Services;
+using System.Collections.Generic;
 using System.ComponentModel;
+using SolidCP.Web.Services;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Virtualization;
 using SolidCP.Server.Utils;
-using System.Collections.Generic;
-using SolidCP.Providers.Common;
 
 namespace SolidCP.Server
 {
@@ -1112,7 +1112,7 @@ namespace SolidCP.Server
         #region Replication
 
         [WebMethod, SoapHeader("settings")]
-        public List<CertificateInfo> GetCertificates(string remoteServer)
+        public List<Providers.Virtualization.CertificateInfo> GetCertificates(string remoteServer)
         {
             try
             {

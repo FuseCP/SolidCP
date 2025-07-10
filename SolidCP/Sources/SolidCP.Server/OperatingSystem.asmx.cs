@@ -1119,18 +1119,34 @@ namespace SolidCP.Server
 
 		#region OS Info
 		[WebMethod, SoapHeader("settings")]
-		public Memory GetMemory()
+		public SystemMemoryInfo GetSystemMemoryInfo()
 		{
 			try
 			{
-				Log.WriteStart("'{0}' GetMemory", ProviderSettings.ProviderName);
-				var result = OSProvider.GetMemory();
-				Log.WriteEnd("'{0}' GetMemory", ProviderSettings.ProviderName);
+				Log.WriteStart("'{0}' GetSystemMemoryInfo", ProviderSettings.ProviderName);
+				var result = OSProvider.GetSystemMemoryInfo();
+				Log.WriteEnd("'{0}' GetSystemMemoryInfo", ProviderSettings.ProviderName);
 				return result;
 			}
 			catch (Exception ex)
 			{
-				Log.WriteError(String.Format("'{0}' GetMemory", ProviderSettings.ProviderName), ex);
+				Log.WriteError(String.Format("'{0}' GetSystemMemoryInfo", ProviderSettings.ProviderName), ex);
+				throw;
+			}
+		}
+		[WebMethod, SoapHeader("settings")]
+		public SystemResourceUsageInfo GetSystemResourceUsageInfo()
+		{
+			try
+			{
+				Log.WriteStart("'{0}' GetSystemResourceUsageInfo", ProviderSettings.ProviderName);
+				var result = OSProvider.GetSystemResourceUsageInfo();
+				Log.WriteEnd("'{0}' GetSystemResourceUsageInfo", ProviderSettings.ProviderName);
+				return result;
+			}
+			catch (Exception ex)
+			{
+				Log.WriteError(String.Format("'{0}' GetSystemResourceUsageInfo", ProviderSettings.ProviderName), ex);
 				throw;
 			}
 		}
@@ -1366,6 +1382,7 @@ namespace SolidCP.Server
 		public bool IsSystemd => Provider is IUnixOperatingSystem && UnixProvider.IsSystemd;
 		public bool IsOpenRC => Provider is IUnixOperatingSystem && UnixProvider.IsOpenRC;
 		public TraceListener DefaultTraceListener => OSProvider.DefaultTraceListener;
+		public bool IsUnix() => OSProvider.IsUnix();
 
 	}
 }

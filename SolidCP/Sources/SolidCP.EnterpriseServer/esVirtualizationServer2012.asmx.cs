@@ -35,16 +35,13 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using SolidCP.Web.Services;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
-//using SolidCP.Server;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -705,7 +702,7 @@ namespace SolidCP.EnterpriseServer
         #region Replication
 
         [WebMethod]
-        public CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
+        public Providers.Virtualization.CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
         {
             return VirtualizationServerController2012.GetCertificates(serviceId, remoteServer);
         }

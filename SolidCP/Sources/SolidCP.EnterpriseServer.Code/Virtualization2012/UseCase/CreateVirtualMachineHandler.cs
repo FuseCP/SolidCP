@@ -1,7 +1,7 @@
 ﻿using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
 using SolidCP.Providers;
-using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
 //using SolidCP.Providers.Virtualization2012;

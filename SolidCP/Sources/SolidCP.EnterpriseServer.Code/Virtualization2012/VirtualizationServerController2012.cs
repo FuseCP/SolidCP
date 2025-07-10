@@ -48,6 +48,7 @@ using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.PS;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers.VM;
 using SolidCP.EnterpriseServer.Code.Virtualization2012.UseCase;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
@@ -1250,13 +1251,13 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Server information
-        public static SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
             return GetSystemResourceUsageInfo(serviceId);
         }
 
-        public static SystemResourceUsageInfo GetSystemResourceUsageInfo(int serviceId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo(int serviceId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1268,18 +1269,18 @@ namespace SolidCP.EnterpriseServer
             return vs.GetSystemResourceUsageInfo();
         }
 
-        public static SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
+        public SystemMemoryInfo GetSystemMemoryInfoPackageId(int packageId)
         {
             int serviceId = PackageController.GetPackageServiceId(packageId, ResourceGroups.VPS2012);
             return GetSystemMemoryInfoInternal(serviceId);
         }
 
-        public static SystemMemoryInfo GetSystemMemoryInfo(int serviceId)
+        public SystemMemoryInfo GetSystemMemoryInfo(int serviceId)
         {
             return GetSystemMemoryInfoInternal(serviceId);
         }
 
-        private static SystemMemoryInfo GetSystemMemoryInfoInternal(int serviceId)
+        private SystemMemoryInfo GetSystemMemoryInfoInternal(int serviceId)
         {
             // check account
             int accountCheck = SecurityContext.CheckAccount(DemandAccount.NotDemo | DemandAccount.IsActive);
@@ -1293,7 +1294,7 @@ namespace SolidCP.EnterpriseServer
         #endregion
 
         #region Configurations
-        public static VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
+        public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {
             VirtualizationServer2012 vs = new VirtualizationServer2012();
             ServiceProviderProxy.Init(vs, serviceId);
@@ -1470,7 +1471,7 @@ namespace SolidCP.EnterpriseServer
 
         #region IsReplicaServer Part
 
-        public CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
+        public Providers.Virtualization.CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
         {
             VirtualizationServer2012 vs = VirtualizationHelper.GetVirtualizationProxy(serviceId);
             return vs.GetCertificates(remoteServer);
