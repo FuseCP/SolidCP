@@ -79,13 +79,12 @@ namespace SolidCP.UniversalInstaller.WinForms
 			manualCert.Checked = false;
 			tabControl.Selected += SetAllowedMoveNext;
 			manualCert.CheckedChanged += SetAllowedMoveNext;
-			if (OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support cert file & Let's Encrypt also on Windows
+			if (!Installer.UseLettuceEncrypt || OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support Let's Encrypt also on Windows
 			{
-				// remove cert file & Let's Encrypt tab pages
+				// remove Let's Encrypt tab pages
 				tabControl.TabPages.RemoveAt(2);
-				tabControl.TabPages.RemoveAt(1);
+				//tabControl.TabPages.RemoveAt(1);
 			}
-			else if (!Installer.UseLettuceEncrypt) tabControl.TabPages.RemoveAt(2);
 
 			if (!string.IsNullOrEmpty(Settings.CertificateFindValue)) tabControl.SelectedTab = tabPageCertStore;
 			else if (!string.IsNullOrEmpty(Settings.CertificateFile)) tabControl.SelectedTab = tabPageCertFile;

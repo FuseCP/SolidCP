@@ -1,17 +1,18 @@
-using System;
-using System.IO;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Security.Cryptography.X509Certificates;
-using System.Text.RegularExpressions;
-using System.Text;
-using System.Runtime.ExceptionServices;
-using SolidCP.Providers.OS;
+using SolidCP.Core;
 using SolidCP.EnterpriseServer.Data;
 using SolidCP.Providers.Common;
+using SolidCP.Providers.OS;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.ExceptionServices;
+using System.Security.Cryptography.X509Certificates;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SolidCP.UniversalInstaller;
 
@@ -908,17 +909,16 @@ Passwords must match!
 				bool exit = false;
 				string message = "";
 
-				var form = new ConsoleForm(@"
+				var form = new ConsoleForm(@$"
 Certificate Settings:
 =====================
 
 [  Use a certificate from the store  ]
-" + (!OSInfo.IsWindows ?
-@$"[   Use a certificate from a file    ]
-{(Installer.UseLettuceEncrypt ? $"[  Use a Let's Encrypt certificate   ]{Environment.NewLine}" : "")}" : "") +
-@"[ Configure the certificate manually ]
+[   Use a certificate from a file    ]
+{(Installer.UseLettuceEncrypt && (OSInfo.IsWindows && settings.RunOnNetCore || !OSInfo.IsWindows) ? $"[Use a Let's Encrypt certificate   ]{Environment.NewLine}" : "")}
+[Configure the certificate manually]
 
-[  Back  ]")
+[Back  ]")
 				.ShowDialog();
 				if (form["Back"].Clicked)
 				{
@@ -956,7 +956,7 @@ Find Value:      [?CertificateFindValue                                     ]
 						}
 					} while (!exit);
 				}
-				else if (form["Use a certificate from a file"].Clicked && !OSInfo.IsWindows)
+				else if (form["Use a certificate from a file"].Clicked)
 				{
 					do
 					{
@@ -985,7 +985,8 @@ Password: [?CertificatePassword                                     ]
 						}
 					} while (!exit);
 				}
-				else if (form["Use a Let's Encrypt certificate"].Clicked && !OSInfo.IsWindows)
+				else if (Installer.UseLettuceEncrypt && (OSInfo.IsWindows && settings.RunOnNetCore || !OSInfo.IsWindows) && 
+					form["Use a Let's Encrypt certificate"].Clicked)
 				{
 					do
 					{
