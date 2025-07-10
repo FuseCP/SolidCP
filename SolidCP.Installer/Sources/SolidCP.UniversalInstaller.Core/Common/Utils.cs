@@ -848,6 +848,8 @@ namespace SolidCP.UniversalInstaller
 		}
 		public static bool IsHttps(string ip, string domain) => !IsLocalAddress(ip) && IsGlobalDomain(domain) && !IsHostLocal(domain);
 		public static bool IsHttpsAndNotWindows(string ip, string domain) => !OSInfo.IsWindows && IsHttps(ip, domain);
+		public static bool IsHttps(bool useHttpsOnWindows, string ip, string domain) => (useHttpsOnWindows || !OSInfo.IsWindows) && IsHttps(ip, domain);
+
 
 		public static string[] GetApplicationUrls(string ip, string domain, string port, string virtualDir)
 		{

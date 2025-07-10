@@ -58,6 +58,8 @@ public abstract partial class Installer
 	public virtual bool IsUninstallAction => Settings.Installer.Action == SetupActions.Uninstall;
 	public virtual string SolidCPGroup => SolidCP.ToLower();
 	public virtual string SolidCPUnixGroup => SolidCPGroup;
+
+	public const bool UseHttpsOnWindows = true;
 	public Action OnExit { get; set; }
 	public Action<Exception> OnError { get; set; }
 
@@ -621,7 +623,7 @@ public abstract partial class Installer
 				.Select(url => new Uri(url))
 				.Any(uri => uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase));
 		}
-		return (IsIis7 || !OSInfo.IsWindows) && Utils.IsHttpsAndNotWindows(settings.WebSiteIp, settings.WebSiteDomain);
+		return (IsIis7 || !OSInfo.IsWindows) && Utils.IsHttps(UseHttpsOnWindows, settings.WebSiteIp, settings.WebSiteDomain);
 	}
 	public virtual string GetUrls(CommonSettings settings)
 	{
