@@ -35,8 +35,9 @@
 		<SchedulerServiceSrc>$(TrunkFolder)\Sources\SolidCP.SchedulerService\bin</SchedulerServiceSrc>
 		<ImportCsvSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk\bin\$(BuildConfiguration)</ImportCsvSrc>
 		<HyperVUtilsSrc>$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils\bin\$(BuildConfiguration)</HyperVUtilsSrc>
-		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)\net48</VMConfigSrc>
+		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)</VMConfigSrc>
 		<ImportEnterpriseSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise\bin\$(BuildConfiguration)</ImportEnterpriseSrc>
+		<CertMakerSrc>$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\bin\$(BuildConfiguration)\net48</CertMakerSrc>
 		<AWStatsViewerSrc>$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer</AWStatsViewerSrc>
 		<SCPTransportAgentSrc>$(TrunkFolder)\Sources\Tools\SCPTransportAgent</SCPTransportAgentSrc>
 		<SolidCP-Configuration-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolSrc>
@@ -62,6 +63,7 @@
 		<HyperVUtilsBuild>$(BuildFolder)\HyperVUtils</HyperVUtilsBuild>
 		<VMConfigBuild>$(BuildFolder)\VMConfig</VMConfigBuild>
 		<ImportEnterpriseBuild>$(BuildFolder)\Import.Enterprise</ImportEnterpriseBuild>
+		<CertMakerBuild>$(BuildFolder)\CertificateMaker</CertMakerBuild>
 		<AWStatsViewerBuild>$(BuildFolder)\AWStats.Viewer</AWStatsViewerBuild>
 		<SCPTransportAgentBuild>$(BuildFolder)\SCPTransportAgent</SCPTransportAgentBuild>
 		<LocalizationToolkitBuild>$(BuildFolder)\LocalizationToolkit</LocalizationToolkitBuild>
@@ -113,6 +115,7 @@
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\SSL-Certificate-Maker.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" />
 	</Target>
@@ -167,6 +170,7 @@
 		<MSBuild Projects="$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\SSL-Certificate-Maker.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
   		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
  	</Target>
@@ -392,7 +396,17 @@
 		<Copy SourceFiles="@(ImportEnterpriseBuildFiles)" DestinationFolder="$(ImportEnterpriseBuild)\%(RecursiveDir)" />
 	</Target>
 
-	<Target Name="CreateAWStatsViewerBuild" DependsOnTargets="CreateImportEnterpriseBuild">
+	<Target Name="CreateCertMakerBuild" DependsOnTargets="CreateImportEnterpriseBuild">
+		<ItemGroup>
+			<CertMakerExclude Include="$(CertMakerSrc)\**\ref\**" />
+			<CertMakerExclude Include="$(CertMakerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
+			<CertMakerExclude Include="$(CertMakerSrc)\**\*.vshost.*" />
+			<CertMakerBuildFiles Include="$(CertMakerSrc)\**\*.*" Exclude="@(CertMakerExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(CertMakerBuildFiles)" DestinationFolder="$(CertMakerBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateAWStatsViewerBuild" DependsOnTargets="CreateCertMakerBuild">
 		<ItemGroup>
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\ref\**" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\.svn\**" />
@@ -697,7 +711,17 @@
 		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(ImportEnterpriseInstall)" />
 	</Target>
 
-	<Target Name="CreateSCPTransportAgentInstall" DependsOnTargets="CreateImportEnterpriseInstall">
+	<Target Name="CreateCertMakerInstall" DependsOnTargets="CreateImportEnterpriseInstall">
+		<ItemGroup>
+			<CertMakerDeployFiles Include="$(CertMakerBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(CertMakerInstall)"/>
+		<MakeDir Directories="$(CertMakerInstall)"/>
+		<Copy SourceFiles="@(CertMakerDeployFiles)" DestinationFolder="$(CertMakerInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(CertMakerInstall)" />
+	</Target>
+	
+	<Target Name="CreateSCPTransportAgentInstall" DependsOnTargets="CreateCertMakerInstall">
 		<ItemGroup>
 			<SCPTransportAgentDeployFiles Include="$(SCPTransportAgentBuild)\**\*.*" />
 		</ItemGroup>
