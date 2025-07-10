@@ -235,7 +235,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 					}
 					Settings.LetsEncryptCertificateEmail = txtLetsEncryptEmail.Text;
 					System.Net.IPAddress ip;
-					Settings.LetsEncryptCertificateDomains = string.Join(",", Settings.Urls.Split(',', ';')
+					var urls = string.IsNullOrEmpty(Settings.Urls) ? Settings.WebSiteDomain : Settings.Urls;
+					Settings.LetsEncryptCertificateDomains = string.Join(",", urls.Split(',', ';')
 						.Where(url => url.StartsWith("https", StringComparison.OrdinalIgnoreCase) ||
 							url.StartsWith("net.tcp", StringComparison.OrdinalIgnoreCase))
 						.Select(url => new Uri(url).Host)
