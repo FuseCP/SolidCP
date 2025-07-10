@@ -1115,6 +1115,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-SCPTransportAgent.zip&quot; &quot;$(SCPTransportAgentInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip&quot; &quot;$(FixDefaultPublicFolderMailboxInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Configuration-Tool.zip&quot; &quot;$(SolidCP-Configuration-ToolInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-CertificateMaker.zip&quot; &quot;$(CertMakerInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
@@ -1204,7 +1205,8 @@
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Server-Update.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Installer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Installer-Update.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-CsvBulk.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-CsvBulk.zip" />
-	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/HostPanelPro-CertificateMaker.zip" LocalFile="$(ToolsFolder)\HostPanelPro-CertificateMaker.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-AWStatsViewer.zip" LocalFile="$(ToolsFolder)\SolidCP-AWStatsViewer.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
