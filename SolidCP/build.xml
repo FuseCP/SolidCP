@@ -37,7 +37,7 @@
 		<HyperVUtilsSrc>$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils\bin\$(BuildConfiguration)</HyperVUtilsSrc>
 		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)</VMConfigSrc>
 		<ImportEnterpriseSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise\bin\$(BuildConfiguration)</ImportEnterpriseSrc>
-		<CertMakerSrc>$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\bin\$(BuildConfiguration)</CertMakerSrc>
+		<CertMakerSrc>$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\SSLCertificateMaker\bin\$(BuildConfiguration)</CertMakerSrc>
 		<AWStatsViewerSrc>$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer</AWStatsViewerSrc>
 		<SCPTransportAgentSrc>$(TrunkFolder)\Sources\Tools\SCPTransportAgent</SCPTransportAgentSrc>
 		<SolidCP-Configuration-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolSrc>
