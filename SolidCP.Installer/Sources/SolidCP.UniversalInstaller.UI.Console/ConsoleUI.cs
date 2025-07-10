@@ -915,8 +915,8 @@ Certificate Settings:
 
 [  Use a certificate from the store  ]
 [   Use a certificate from a file    ]
-{(Installer.UseLettuceEncrypt && (OSInfo.IsWindows && settings.RunOnNetCore || !OSInfo.IsWindows) ? $"[Use a Let's Encrypt certificate   ]{Environment.NewLine}" : "")}
-[Configure the certificate manually]
+{(Installer.UseLettuceEncrypt && (OSInfo.IsWindows && settings.RunOnNetCore || !OSInfo.IsWindows) ? $"[   Use a Let's Encrypt certificate   ]{Environment.NewLine}" : "")}" +
+@"[ Configure the certificate manually  ]
 
 [Back  ]")
 				.ShowDialog();
