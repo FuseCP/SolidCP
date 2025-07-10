@@ -54,6 +54,7 @@ namespace SolidCP.Server
 		protected void Application_Start(object sender, EventArgs e)
 		{
 			//if (!Debugger.IsAttached) Debugger.Launch();
+			PreloadSpecificAssemblies.Init();
 			StartupNetFX.Start();
 			PasswordValidator.Init();
 		}
