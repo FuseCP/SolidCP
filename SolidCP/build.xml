@@ -184,6 +184,7 @@
 		<RemoveDir Directories="$(WebDavPortalBuild)"/>
 		<RemoveDir Directories="$(ImportCsvBuild)"/>
 		<RemoveDir Directories="$(ImportEnterpriseBuild)"/>
+		<RemoveDir Directories="$(CertMakerBuild)"/>
 		<RemoveDir Directories="$(VMConfigBuild)"/>
 		<RemoveDir Directories="$(HyperVUtilsBuild)"/>
 		<RemoveDir Directories="$(AWStatsViewerBuild)"/>
@@ -204,6 +205,7 @@
 		<MakeDir Directories="$(VmConfigBuild)"/>
 		<MakeDir Directories="$(ImportCsvBuild)"/>
 		<MakeDir Directories="$(ImportEnterpriseBuild)"/>
+		<MakeDir Directories="$(CertMakerBuild)"/>
 		<MakeDir Directories="$(AWStatsViewerBuild)"/>
 		<MakeDir Directories="$(SCPTransportAgentBuild)"/>
 		<MakeDir Directories="$(LocalizationToolkitBuild)"/>
