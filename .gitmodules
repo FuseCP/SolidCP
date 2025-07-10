@@ -14,3 +14,6 @@
 [submodule "tools/MSBuildCommunityTasks/Source"]
 	path = tools/MSBuildCommunityTasks/Source
 	url = http://github.com/simonegli8/msbuildtasks
+[submodule "SolidCP/Sources/Tools/SSL-Certificate-Maker"]
+	path = SolidCP/Sources/Tools/SSL-Certificate-Maker
+	url = https://github.com/bp2008/SSL-Certificate-Maker
