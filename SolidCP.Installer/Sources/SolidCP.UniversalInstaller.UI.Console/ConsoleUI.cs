@@ -990,6 +990,15 @@ Password: [?CertificatePassword                                     ]
 				{
 					do
 					{
+						System.Net.IPAddress ip;
+						var urls = string.IsNullOrEmpty(settings.Urls) ? settings.WebSiteDomain : settings.Urls;
+						settings.LetsEncryptCertificateDomains = string.Join(", ", urls.Split(',', ';')
+							.Where(url => url.StartsWith("https", StringComparison.OrdinalIgnoreCase) ||
+								url.StartsWith("net.tcp", StringComparison.OrdinalIgnoreCase))
+							.Select(url => new Uri(url).Host)
+							.Where(host => !System.Net.IPAddress.TryParse(host, out ip))
+							.ToArray());
+
 						form = new ConsoleForm(@"
 Let's Encrypt Certificate:
 ==========================
