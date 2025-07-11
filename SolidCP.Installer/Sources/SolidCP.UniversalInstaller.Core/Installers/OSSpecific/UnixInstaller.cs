@@ -193,9 +193,7 @@ public abstract class UnixInstaller : Installer
 		}).WithRollback(() => RemoveUser(settings.Username));
 	}
 	public override void RemoveUser(string username) => Shell.Standard.Exec($"userdel {username}");
-
-
-	public override void RemoveWebsite(string serviceId, CommonSettings settings)
+	/*public override void RemoveWebsite(string serviceId, CommonSettings settings)
 	{
 		var service = ServiceController[serviceId];
 
@@ -209,7 +207,20 @@ public abstract class UnixInstaller : Installer
 
 			RemoveFirewallRule(GetUrls(settings));
 		}
+	}*/
+	public override void RemoveWebsite(string serviceId, CommonSettings settings)
+	{
+		Configuration.Current.Load();
+		var app = Configuration.Current.Applications.FirstOrDefault(app => app.Name == serviceId);
+		if (app != null)
+		{
+			Configuration.Current.Remove(app);
+			InstallLog($"Removed {serviceId} service");
+
+			RemoveFirewallRule(GetUrls(settings));
+		}
 	}
+
 	public override void RemoveServerWebsite()
 	{
 		RemoveWebsite(UnixServerServiceId, Settings.Server);
