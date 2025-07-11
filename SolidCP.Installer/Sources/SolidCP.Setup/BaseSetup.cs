@@ -211,13 +211,20 @@ public class BaseSetup
 		}
 		return null;
 	}
+
+	private void RunWithInfo(Action installer)
+	{
+		Installer.Current.Info("Download & Unzip Component");
+		installer?.Invoke();
+	}
+
 	public virtual Result InstallOrSetup(object args, string title, Action installer, bool setup = false) {
 		var wizard = Wizard(args, setup);
 		if (wizard == null) return Result.Abort;
 		if (setup) Installer.Current.Settings.Installer.Action = SetupActions.Setup;
 		else Installer.Current.Settings.Installer.Action = SetupActions.Install;
 		var res = wizard
-			.RunWithProgress(title, installer, ComponentSettings)
+			.RunWithProgress(title, () => RunWithInfo(installer), ComponentSettings)
 			.Finish()
 			.Show() ? Result.OK : Result.Cancel;
 		Unload();
@@ -250,7 +257,7 @@ public class BaseSetup
 			Installer.Current.Settings.Installer.Action = SetupActions.Update;
 
 			res = CheckUpdate() && Wizard(args)
-				.RunWithProgress(title, installer, ComponentSettings)
+				.RunWithProgress(title, () => RunWithInfo(installer), ComponentSettings)
 				.Finish()
 				.Show() ? Result.OK : Result.Cancel;
 			Unload();

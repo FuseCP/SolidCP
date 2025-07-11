@@ -2071,7 +2071,7 @@ SolidCP cannot be installed on this System.
 	{
 		var loader = Core.SetupLoaderFactory.CreateFileLoader(file);
 		loader.ProgressChanged += DownloadProgressChanged;
-		ShowInstallationProgress("Download and Extract Component");
+		ShowInstallationProgress("Download and Extract Setup");
 		loader.OperationCompleted += DownloadAndUnzipCompleted;
 		loader.DownloadComplete += DownloadCompleted;
 		loader.NoUnzipStatus += (sender, args) => maxProgress = 100;
