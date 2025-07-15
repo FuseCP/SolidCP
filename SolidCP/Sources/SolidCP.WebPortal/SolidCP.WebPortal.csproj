@@ -97,17 +97,18 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.12" />
-        <!--<ProjectReference Include="..\..\Lib\WebFormsForCore\src\WebFormsForCore.Web\WebFormsForCore.Web.csproj" />-->
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Configuration" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.12" ExcludeAssets="runtime" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.12" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.12" />
+        <!--<PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.13" />-->
+        <ProjectReference Include="..\..\Lib\WebFormsForCore\src\WebFormsForCore.Web\WebFormsForCore.Web.csproj" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Drawing" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Configuration" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.13" ExcludeAssets="runtime" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.13" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.12" />
         
         <!-- .NET 8 for SolidCP.EnterpriseServer.Data -->
@@ -273,6 +274,13 @@
         </ItemGroup>
 
         <Copy SourceFiles="@(DepsJson)" DestinationFolder="$(OutputPath)" />
+    </Target>-->
+
+    <!--<Target Name="CopyProjectDlls" AfterTargets="Build">
+        <ItemGroup>
+            <DllsToCopy Include="..\..\Lib\WebFormsForCore\src\WebFormsForCore.Drawing\bin\Debug\net8.0\**\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(DllsToCopy)" DestinationFolder="bin_dotnet" />
     </Target>-->
 
 </Project>
