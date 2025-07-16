@@ -181,7 +181,17 @@ public abstract class UnixInstaller : Installer
 		shell.Input.WriteLine(password);
 		var output = shell.Output().Result;
 		Log.WriteLine(output);
-		
+
+		if (user == "www-data")
+		{
+			if (!Directory.Exists("/var/www/.dotnet"))
+			{
+				Directory.CreateDirectory("/var/www/.dotnet");
+				Shell.Exec($"chown -R {user}:{group} /var/www/.dotnet");
+				Shell.Exec($"chmod -R 755 /var/www/.dotnet");
+			}
+		}
+
 		InstallLog($"Added System User {user}.");
 	}
 	public override void CreateUser(CommonSettings settings)
