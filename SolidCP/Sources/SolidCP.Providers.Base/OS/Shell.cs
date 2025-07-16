@@ -293,6 +293,7 @@ namespace SolidCP.Providers.OS
 				process.Start();
 				process.BeginOutputReadLine();
 				process.BeginErrorReadLine();
+				process.StandardInput.AutoFlush = true;
 				return child;
 			}
 			else
