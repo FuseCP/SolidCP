@@ -273,6 +273,12 @@ namespace SolidCP.Providers.FTP
 				// Create wsp-vsftpd user
 				AddUnixUser(VsftpdUser, VsftpdGroup);
 
+				var dir = Path.GetDirectoryName(PasswordFile);
+				if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+
+				// Create Password File
+				File.WriteAllText(PasswordFile, "");
+
 				// Configure PAM
 				File.WriteAllText($"/etc/pam.d/{VsftpdUser}", @$"auth required pam_pwdfile.so pwdfile {PasswordFile}{NewLine}account required pam_permit.so");
 
