@@ -142,7 +142,7 @@ public abstract class UnixInstaller : Installer
 		{
 			Name = serviceId,
 			Assembly = dll,
-			User = settings.Username,
+			User = settings.Username ?? "root",
 			Group = group,
 			Urls = settings.Urls,
 			ListenUrls = settings.Urls,
