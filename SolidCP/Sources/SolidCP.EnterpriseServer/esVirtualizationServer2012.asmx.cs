@@ -35,16 +35,13 @@ using System.Data;
 using System.Web;
 using System.Collections;
 using System.Collections.Generic;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using SolidCP.Web.Services;
 using SolidCP.Providers;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using SolidCP.Providers.ResultObjects;
 using SolidCP.Providers.Virtualization;
-//using SolidCP.Server;
 
 namespace SolidCP.EnterpriseServer
 {
@@ -618,13 +615,27 @@ namespace SolidCP.EnterpriseServer
         }
         #endregion
 
-        #region Configurations 
+        #region Node information
         [WebMethod]
-        public Providers.OS.Memory GetMemory(int serviceId)
+        public SystemResourceUsageInfo GetSystemResourceUsageInfoPackageId(int packageId)
         {
-            return VirtualizationServerController2012.GetMemory(serviceId);
+            return VirtualizationServerController2012.GetSystemResourceUsageInfoPackageId(packageId);
         }
 
+        [WebMethod]
+        public SystemResourceUsageInfo GetSystemResourceUsageInfo(int serviceId)
+        {
+            return VirtualizationServerController2012.GetSystemResourceUsageInfo(serviceId);
+        }
+
+        [WebMethod]
+        public SystemMemoryInfo GetSystemMemoryInfo(int serviceId)
+        {
+            return VirtualizationServerController2012.GetSystemMemoryInfo(serviceId);
+        }
+        #endregion
+
+        #region Configurations
         [WebMethod]
         public VMConfigurationVersion[] GetVMConfigurationVersionSupportedList(int serviceId)
         {
@@ -691,7 +702,7 @@ namespace SolidCP.EnterpriseServer
         #region Replication
 
         [WebMethod]
-        public CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
+        public Providers.Virtualization.CertificateInfo[] GetCertificates(int serviceId, string remoteServer)
         {
             return VirtualizationServerController2012.GetCertificates(serviceId, remoteServer);
         }

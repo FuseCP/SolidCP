@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
         <TargetFrameworks>net8.0;net48</TargetFrameworks>
         <Nullable>disable</Nullable>
@@ -49,7 +49,11 @@
  
     <ItemGroup>
         <Compile Remove="Code\WPIHelper.cs" />
+        <Content Remove="wwwroot\img\logo.png" />
         <None Include="Code\WPIHelper.cs" />
+        <None Include="wwwroot\img\logo.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
         <!--<Content Include="wwwroot\img\logo.png" />-->
     </ItemGroup>
 
@@ -101,11 +105,6 @@
     <ItemGroup>
         <Folder Include="WebServices\SolidCP.Build\SolidCP.Build.WebServices\" />
     </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' != 'net48'">
-        <Content Update="wwwroot\img\logo.png">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </Content>
-    </ItemGroup>
     
     <Target Name="DeleteUnusedDlls" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net48'">
         <Message Text="Delete unused dll files" Importance="high" />
@@ -137,6 +136,14 @@
             <FilesToMove Include="bin\WPIServiceContract.*" />
             <FilesToMove Include="bin\Azure.*" />
             <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\System.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Renci.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Newtonsoft.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Microsoft.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\BouncyCastle.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\AntiXSSLibrary.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\HtmlSanitizationLibrary.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Mono.Posix.*" />
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
         <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" ContinueOnError="true" />
@@ -150,8 +157,8 @@
         <Copy SourceFiles="@(Dll)" DestinationFolder="$(OutputDir)" />
     </Target>-->
     
-    <Target Name="CopyServiceProcessRuntime" AfterTargets="Build"  Condition="'$(TargetFramework)' == 'net8.0'">
-        <Message Importance="high" Text="Copying $(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll"  />
+    <Target Name="CopyServiceProcessRuntime" AfterTargets="Build" Condition="'$(TargetFramework)' == 'net8.0'">
+        <Message Importance="high" Text="Copying $(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll" />
         <Copy SourceFiles="$(PkgSystem_ServiceProcess_ServiceController)\runtimes\win\lib\net8.0\System.ServiceProcess.ServiceController.dll" DestinationFolder="$(OutputPath)" />
     </Target>
 

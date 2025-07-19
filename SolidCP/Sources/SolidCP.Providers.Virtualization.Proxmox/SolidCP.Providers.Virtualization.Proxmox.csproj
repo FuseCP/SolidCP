@@ -39,8 +39,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.3.0" GeneratePathProperty="true" />
-		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.3.0" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api" Version="8.4.1" GeneratePathProperty="true" />
+		<PackageReference Include="Corsinvest.ProxmoxVE.Api.Shared" Version="8.4.1" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.6" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

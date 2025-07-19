@@ -3,7 +3,7 @@
         <RootNamespace>SolidCP.Providers.OS</RootNamespace>
         <TargetFramework>net48</TargetFramework>
         <WarningsAsErrors>618</WarningsAsErrors>
-        <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+        <OutputPath>..\SolidCP.Server\bin\ProvidersLegacy</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -25,9 +25,14 @@
             <SpecificVersion>False</SpecificVersion>
         </Reference>
         <Reference Include="System.Management" />
+        <Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+            <HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
+            <SpecificVersion>False</SpecificVersion>
+        </Reference>
         <Reference Include="System.Runtime.Remoting" />
         <Reference Include="System.ServiceProcess" />
         <Reference Include="System.Web" />
+        <Reference Include="Microsoft.CSharp" />
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />

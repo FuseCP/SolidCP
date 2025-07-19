@@ -32,7 +32,7 @@
 			<SpecificVersion>False</SpecificVersion>
 		</Reference>
 		<Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-			<HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
+			<HintPath>..\..\Lib\References\Microsoft\Windows2012\System.Management.Automation.dll</HintPath>
 			<SpecificVersion>False</SpecificVersion>
 		</Reference>
 		<Reference Include="System.DirectoryServices" />

@@ -58,6 +58,10 @@ public abstract partial class Installer
 	public virtual bool IsUninstallAction => Settings.Installer.Action == SetupActions.Uninstall;
 	public virtual string SolidCPGroup => SolidCP.ToLower();
 	public virtual string SolidCPUnixGroup => SolidCPGroup;
+
+	public const bool UseHttpsOnWindows = true;
+	public const bool UseLettuceEncrypt = false;
+
 	public Action OnExit { get; set; }
 	public Action<Exception> OnError { get; set; }
 
@@ -317,7 +321,14 @@ public abstract partial class Installer
 			settings.Installer.Version = Version;
 			settings.Installer.TempPath = FileUtils.GetTempDirectory();
 			settings.Installer.UI = UI.Current.GetType().Name;
+			var unattendedInstallPackages = Settings.Installer.UnattendedInstallPackages;
+			var action = Settings.Installer.Action;
 			Settings = settings;
+			if (!string.IsNullOrEmpty(unattendedInstallPackages))
+			{
+				Settings.Installer.UnattendedInstallPackages = unattendedInstallPackages;
+				Settings.Installer.Action = action;
+			}
 		}
 		else SaveSettings();
 	}
@@ -478,6 +489,43 @@ public abstract partial class Installer
 	public bool Uninstall(ComponentInfo info) => RunSetup(info, SetupActions.Uninstall);
 	public bool Setup(ComponentInfo info) => RunSetup(info, SetupActions.Setup);
 	public bool Update(ComponentInfo info) => RunSetup(info, SetupActions.Update);
+	public bool Equals(string a, string b)
+	{
+		return a.Equals(b, StringComparison.OrdinalIgnoreCase) ||
+			a.Replace(" ", "").Equals(b.Replace(" ", ""), StringComparison.OrdinalIgnoreCase);
+	}
+	public void RunUnattended()
+	{
+		UI.ShowWaitCursor();
+
+		var releases = Installer.Current.Releases;
+
+		var components = releases.GetAvailableComponents();
+
+		var componentsToInstall = Settings.Installer.UnattendedInstallPackages.Split(',', ';')
+			.Select(name => name.Trim())
+			.Where(name => !string.IsNullOrEmpty(name))
+			.ToArray();
+
+		components = components.Where(c => componentsToInstall.Any(ci => Equals(c.ComponentName, ci) ||
+			Equals(c.ComponentCode, ci) || Equals(c.Component, ci)))
+			.ToList();
+
+		Settings.Installer.UnattendedInstallPackages = null;
+		SaveSettings();
+
+		var success = true;
+		foreach (var component in components)
+		{
+			Log.WriteInfo($"Unattended ${Settings.Installer.Action} ${component.ComponentName}.");
+			success &= RunSetup(component, Settings.Installer.Action);
+		}
+
+		UI.EndWaitCursor();
+
+		Exit(success ? 0 : 1);
+	}
+
 	protected bool? Net8RuntimeInstalled { get; set; }
 	public bool CheckNet8RuntimeInstalled()
 	{
@@ -577,7 +625,7 @@ public abstract partial class Installer
 				.Select(url => new Uri(url))
 				.Any(uri => uri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase));
 		}
-		return (IsIis7 || !OSInfo.IsWindows) && Utils.IsHttpsAndNotWindows(settings.WebSiteIp, settings.WebSiteDomain);
+		return (IsIis7 || !OSInfo.IsWindows) && Utils.IsHttps(UseHttpsOnWindows, settings.WebSiteIp, settings.WebSiteDomain);
 	}
 	public virtual string GetUrls(CommonSettings settings)
 	{
@@ -858,6 +906,17 @@ public abstract partial class Installer
 			}
 		}
 	}
+	private void DeleteRootDirectory(string destination)
+	{
+		if (destination != Settings.Standalone.InstallPath) Directory.Delete(destination, true);
+		else
+		{
+			if (Directory.Exists(Settings.EnterpriseServer.InstallPath)) Directory.Delete(Settings.EnterpriseServer.InstallPath, true);
+			if (Directory.Exists(Settings.Server.InstallPath)) Directory.Delete(Settings.Server.InstallPath, true);
+			if (Directory.Exists(Settings.WebPortal.InstallPath)) Directory.Delete(Settings.WebPortal.InstallPath, true);
+			if (Directory.Exists(Settings.WebDavPortal.InstallPath)) Directory.Delete(Settings.WebDavPortal.InstallPath, true);
+		}
+	}
 	public void CopyFiles(string source, string destination, bool clearDestination = false,
 		Func<string, string> filter = null, string root = null, string destroot = null, bool settings = false)
 	{
@@ -873,13 +932,13 @@ public abstract partial class Installer
 			Transaction(() =>
 			{
 
-				if (clearDestination && Directory.Exists(destination)) Directory.Delete(destination, true);
+				if (clearDestination && Directory.Exists(destination)) DeleteRootDirectory(destination);
 				CopyFiles(source, destination, clearDestination, filter, source, destination);
 				InstallLog("Unzipped & installed distribution files");
 			})
 				.WithRollback(() =>
 				{
-					Directory.Delete(destination, true);
+					DeleteRootDirectory(destination);
 					if (IsUpdateAction)
 					{
 						// Restore backup
@@ -1298,7 +1357,8 @@ public abstract partial class Installer
 		{
 			if (current == null)
 			{
-				switch (OSInfo.OSFlavor)
+				var flavor = OSInfo.OSFlavor;
+				switch (flavor)
 				{
 					// TODO support for Ubuntu variants
 					case OSFlavor.Windows: current = new WindowsInstaller(); break;
@@ -1310,12 +1370,20 @@ public abstract partial class Installer
 					case OSFlavor.Fedora: current = new FedoraInstaller(); break;
 					case OSFlavor.RedHat: current = new RedHatInstaller(); break;
 					case OSFlavor.CentOS: current = new CentOSInstaller(); break;
+					case OSFlavor.Alma: current = new AlmaInstaller(); break;
+					case OSFlavor.Rocky: current = new RockyInstaller(); break;
 					case OSFlavor.Oracle: current = new OracleInstaller(); break;
 					case OSFlavor.SUSE: current = new SuseInstaller(); break;
 					case OSFlavor.Arch: current = new ArchInstaller(); break;
 					case OSFlavor.Alpine: current = new AlpineInstaller(); break;
-					default: throw new PlatformNotSupportedException("This OS is not supported by the installer.");
+					default:
+						var assembly = Assembly.GetExecutingAssembly();
+						var type = assembly.GetType($"HostPanelPro.UniversalInstaller.{flavor}");
+						if (type != null) current = Activator.CreateInstance(type) as Installer;
+						else throw new PlatformNotSupportedException("This OS is not supported by the installer.");
+						break;
 				}
+				current.Shell.LogCommand += msg => current.Log.WriteInfo($"> {msg}");
 			}
 			return current;
 		}

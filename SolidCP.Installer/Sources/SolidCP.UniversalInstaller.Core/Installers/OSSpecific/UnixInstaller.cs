@@ -30,7 +30,7 @@ public abstract class UnixInstaller : Installer
 	{
 		Log.WriteStart("Install AspNetCoreSharedServer");
 
-		const string AspNetCoreSharedServerVersion = "1.0.25";
+		const string AspNetCoreSharedServerVersion = "1.1.4";
 
 		if (installedAspNetCoreSharedServer) return;
 		installedAspNetCoreSharedServer = true;
@@ -142,7 +142,7 @@ public abstract class UnixInstaller : Installer
 		{
 			Name = serviceId,
 			Assembly = dll,
-			User = settings.Username,
+			User = settings.Username ?? "root",
 			Group = group,
 			Urls = settings.Urls,
 			ListenUrls = settings.Urls,
@@ -181,7 +181,17 @@ public abstract class UnixInstaller : Installer
 		shell.Input.WriteLine(password);
 		var output = shell.Output().Result;
 		Log.WriteLine(output);
-		
+
+		if (user == "www-data")
+		{
+			if (!Directory.Exists("/var/www/.dotnet"))
+			{
+				Directory.CreateDirectory("/var/www/.dotnet");
+				Shell.Exec($"chown -R {user}:{group} /var/www/.dotnet");
+				Shell.Exec($"chmod -R 755 /var/www/.dotnet");
+			}
+		}
+
 		InstallLog($"Added System User {user}.");
 	}
 	public override void CreateUser(CommonSettings settings)
@@ -193,9 +203,7 @@ public abstract class UnixInstaller : Installer
 		}).WithRollback(() => RemoveUser(settings.Username));
 	}
 	public override void RemoveUser(string username) => Shell.Standard.Exec($"userdel {username}");
-
-
-	public override void RemoveWebsite(string serviceId, CommonSettings settings)
+	/*public override void RemoveWebsite(string serviceId, CommonSettings settings)
 	{
 		var service = ServiceController[serviceId];
 
@@ -209,7 +217,20 @@ public abstract class UnixInstaller : Installer
 
 			RemoveFirewallRule(GetUrls(settings));
 		}
+	}*/
+	public override void RemoveWebsite(string serviceId, CommonSettings settings)
+	{
+		Configuration.Current.Load();
+		var app = Configuration.Current.Applications.FirstOrDefault(app => app.Name == serviceId);
+		if (app != null)
+		{
+			Configuration.Current.Remove(app);
+			InstallLog($"Removed {serviceId} service");
+
+			RemoveFirewallRule(GetUrls(settings));
+		}
 	}
+
 	public override void RemoveServerWebsite()
 	{
 		RemoveWebsite(UnixServerServiceId, Settings.Server);

@@ -30,13 +30,18 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE)  ARISING  IN  ANY WAY OUT OF THE USE OF THIS
 // SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+using SolidCP.EnterpriseServer;
+using SolidCP.Providers.Common;
 using System;
-using System.Data;
-using System.Configuration;
 using System.Collections;
+using System.Configuration;
+using System.Data;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Web;
 using System.Web.Security;
 using System.Web.UI;
+using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
 using System.Web.UI.WebControls.WebParts;
 using System.Web.UI.HtmlControls;
@@ -205,19 +210,19 @@ namespace SolidCP.Portal
 			try
 			{
 				//Memory memory = await ES.Services.Servers.GetMemoryAsync(ServerId);
-                Providers.OS.Memory memory = null;
+                SystemMemoryInfo memory = null;
                 // We need to get the ServiceInfo for VPS2012 servers, because only this way allows access to the Remote Hyper-V API.
                 // Otherwise, it will return information about the local server.
                 ServiceInfo ServiceInfo = (await ES.Services.Servers.GetServicesByServerIdGroupNameAsync(PanelRequest.ServerId, ResourceGroups.VPS2012)).FirstOrDefault();
                 if (ServiceInfo != null)
-                    memory = await ES.Services.VPS2012.GetMemoryAsync(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
+                    memory = await ES.Services.VPS2012.GetSystemMemoryInfoAsync(ServiceInfo.ServiceId); //this is only immportant for Remote Hyper-V
                 else
-                    memory = await ES.Services.Servers.GetMemoryAsync(PanelRequest.ServerId);
+                    memory = await ES.Services.Servers.GetSystemMemoryInfoAsync(PanelRequest.ServerId);
 
-				freeMemory.Text = (memory.FreePhysicalMemoryKB / 1024).ToString();
-				totalMemory.Text = (memory.TotalVisibleMemorySizeKB / 1024).ToString();
-				ramGauge.Total = (int)memory.TotalVisibleMemorySizeKB / 1024;
-				ramGauge.Progress = (int)((memory.TotalVisibleMemorySizeKB / 1024) - (memory.FreePhysicalMemoryKB / 1024));
+				freeMemory.Text = (memory.FreePhysicalKB / 1024).ToString();
+				totalMemory.Text = (memory.TotalVisibleSizeKB / 1024).ToString();
+				ramGauge.Total = (int)memory.TotalVisibleSizeKB / 1024;
+				ramGauge.Progress = (int)((memory.TotalVisibleSizeKB / 1024) - (memory.FreePhysicalKB / 1024));
 			}
 			catch (Exception ex)
 			{

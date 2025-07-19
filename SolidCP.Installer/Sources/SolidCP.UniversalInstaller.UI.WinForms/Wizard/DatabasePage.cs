@@ -89,7 +89,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
-			cbSqlServerAuthentication.SelectedIndex = 0;
+			cbSqlServerAuthentication.SelectedIndex = Settings.DatabaseWindowsAuthentication ? 0 : 1;
 			//ParseConnectionString();
 		}
 

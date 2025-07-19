@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>net48</TargetFramework>
         <WarningsAsErrors>618</WarningsAsErrors>
-        <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+        <OutputPath>..\SolidCP.Server\bin\ProvidersLegacy\</OutputPath>
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

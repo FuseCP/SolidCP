@@ -327,7 +327,6 @@ namespace SolidCP.UniversalInstaller {
 
 		public override void ShowWaitCursor() => Cursor.Current = Cursors.WaitCursor;
 		public override void EndWaitCursor() => Cursor.Current = Cursors.Default;
-
 		public override void DownloadInstallerUpdate()
 		{
 			Application.Run(new UpdaterForm());

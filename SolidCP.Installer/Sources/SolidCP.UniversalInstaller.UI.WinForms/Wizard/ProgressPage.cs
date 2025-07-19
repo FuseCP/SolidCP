@@ -261,6 +261,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			if (!errorShown)
 			{
 				errorShown = true;
+				Log.WriteError("Error: ", ex);
 				ShowError();
 			}
 		}

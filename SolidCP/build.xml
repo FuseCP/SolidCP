@@ -35,8 +35,9 @@
 		<SchedulerServiceSrc>$(TrunkFolder)\Sources\SolidCP.SchedulerService\bin</SchedulerServiceSrc>
 		<ImportCsvSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.CsvBulk\bin\$(BuildConfiguration)</ImportCsvSrc>
 		<HyperVUtilsSrc>$(RootFolder)\SolidCP.HyperV.Utils\Sources\SolidCP.HyperV.Utils\bin\$(BuildConfiguration)</HyperVUtilsSrc>
-		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)\net48</VMConfigSrc>
+		<VMConfigSrc>$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig\bin\$(BuildConfiguration)</VMConfigSrc>
 		<ImportEnterpriseSrc>$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise\bin\$(BuildConfiguration)</ImportEnterpriseSrc>
+		<CertMakerSrc>$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\SSLCertificateMaker\bin\$(BuildConfiguration)</CertMakerSrc>
 		<AWStatsViewerSrc>$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer</AWStatsViewerSrc>
 		<SCPTransportAgentSrc>$(TrunkFolder)\Sources\Tools\SCPTransportAgent</SCPTransportAgentSrc>
 		<SolidCP-Configuration-ToolSrc>$(TrunkFolder)\Sources\Tools\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolSrc>
@@ -62,11 +63,11 @@
 		<HyperVUtilsBuild>$(BuildFolder)\HyperVUtils</HyperVUtilsBuild>
 		<VMConfigBuild>$(BuildFolder)\VMConfig</VMConfigBuild>
 		<ImportEnterpriseBuild>$(BuildFolder)\Import.Enterprise</ImportEnterpriseBuild>
+		<CertMakerBuild>$(BuildFolder)\CertificateMaker</CertMakerBuild>
 		<AWStatsViewerBuild>$(BuildFolder)\AWStats.Viewer</AWStatsViewerBuild>
 		<SCPTransportAgentBuild>$(BuildFolder)\SCPTransportAgent</SCPTransportAgentBuild>
 		<LocalizationToolkitBuild>$(BuildFolder)\LocalizationToolkit</LocalizationToolkitBuild>
 		<InstallerBuild>$(BuildFolder)\Installer</InstallerBuild>
-		<UniversalInstallerBuild>$(BuildFolder)\UniversalInstaller</UniversalInstallerBuild>
 		<FixDefaultPublicFolderMailboxBuild>$(BuildFolder)\FixDefaultPublicFolderMailbox</FixDefaultPublicFolderMailboxBuild>
         <WiXInstallerBuild>$(BuildFolder)\WiXInstaller</WiXInstallerBuild>
 		<WIX Condition=" '$(WIX)' == '' ">$(RootFolder)\tools\WIX\x86</WIX>
@@ -113,6 +114,7 @@
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" />
+		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\SSLCertificateMaker.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" />
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" />
 	</Target>
@@ -167,6 +169,7 @@
 		<MSBuild Projects="$(RootFolder)\SolidCP.VmConfig\Sources\SolidCP.VmConfig.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.Import.Enterprise.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.AWStats.Viewer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
+		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SSL-Certificate-Maker\SSLCertificateMaker.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
 		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SCPTransportAgent.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
   		<MSBuild Projects="$(TrunkFolder)\Sources\Tools\SolidCP.FixDefaultPublicFolderMailbox.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform)" />
  	</Target>
@@ -180,17 +183,17 @@
 		<RemoveDir Directories="$(WebDavPortalBuild)"/>
 		<RemoveDir Directories="$(ImportCsvBuild)"/>
 		<RemoveDir Directories="$(ImportEnterpriseBuild)"/>
+		<RemoveDir Directories="$(CertMakerBuild)"/>
 		<RemoveDir Directories="$(VMConfigBuild)"/>
 		<RemoveDir Directories="$(HyperVUtilsBuild)"/>
 		<RemoveDir Directories="$(AWStatsViewerBuild)"/>
 		<RemoveDir Directories="$(SCPTransportAgentBuild)"/>
 		<RemoveDir Directories="$(LocalizationToolkitBuild)"/>
 		<RemoveDir Directories="$(InstallerBuild)"/>
-		<RemoveDir Directories="$(UniversalInstallerBuild)"/>		
+	    <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
 		<RemoveDir Directories="$(BuildFolder)"/>
-    <RemoveDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
 
-    <MakeDir Directories="$(BuildFolder)"/>
+    	<MakeDir Directories="$(BuildFolder)"/>
 		<MakeDir Directories="$(ServerBuild)"/>
 		<MakeDir Directories="$(EnterpriseServerBuild)"/>
 		<MakeDir Directories="$(SchedulerServiceBuild)"/>
@@ -200,13 +203,13 @@
 		<MakeDir Directories="$(VmConfigBuild)"/>
 		<MakeDir Directories="$(ImportCsvBuild)"/>
 		<MakeDir Directories="$(ImportEnterpriseBuild)"/>
+		<MakeDir Directories="$(CertMakerBuild)"/>
 		<MakeDir Directories="$(AWStatsViewerBuild)"/>
 		<MakeDir Directories="$(SCPTransportAgentBuild)"/>
 		<MakeDir Directories="$(LocalizationToolkitBuild)"/>
 		<MakeDir Directories="$(InstallerBuild)"/>
-		<MakeDir Directories="$(UniversalInstallerBuild)"/>
-    <MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
-  </Target>
+    	<MakeDir Directories="$(FixDefaultPublicFolderMailboxBuild)"/>
+  	</Target>
 
 	<Target Name="CreateServerBuild" DependsOnTargets="PrepareBuilds">
 		<ItemGroup>
@@ -392,7 +395,17 @@
 		<Copy SourceFiles="@(ImportEnterpriseBuildFiles)" DestinationFolder="$(ImportEnterpriseBuild)\%(RecursiveDir)" />
 	</Target>
 
-	<Target Name="CreateAWStatsViewerBuild" DependsOnTargets="CreateImportEnterpriseBuild">
+	<Target Name="CreateCertMakerBuild" DependsOnTargets="CreateImportEnterpriseBuild">
+		<ItemGroup>
+			<CertMakerExclude Include="$(CertMakerSrc)\**\ref\**" />
+			<CertMakerExclude Include="$(CertMakerSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
+			<CertMakerExclude Include="$(CertMakerSrc)\**\*.vshost.*" />
+			<CertMakerBuildFiles Include="$(CertMakerSrc)\**\*.*" Exclude="@(CertMakerExclude)" />
+		</ItemGroup>
+		<Copy SourceFiles="@(CertMakerBuildFiles)" DestinationFolder="$(CertMakerBuild)\%(RecursiveDir)" />
+	</Target>
+
+	<Target Name="CreateAWStatsViewerBuild" DependsOnTargets="CreateCertMakerBuild">
 		<ItemGroup>
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\ref\**" />
 			<AWStatsViewerBuildExclude Include="$(AWStatsViewerSrc)\**\.svn\**" />
@@ -465,11 +478,11 @@
 		</PropertyGroup>
 
 		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(InstallerProjectRoot)SolidCP.Installer.sln" />
-		<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" />
+		<!--<Exec Command="dotnet restore /p:BuildWithNetFrameworkHostedCompiler=true $(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" />-->
 
 		<!-- compile Installer -->
 		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
-		<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />
+		<!--<MSBuild Projects="$(InstallerProjectRoot)SolidCP.Installer.Legacy.sln" Properties="Configuration=$(BuildConfiguration);Platform=$(Platform);VisualStudioVersion=17.12.4" />-->
 
 		<!-- copy installer binaries for upgrade -->
 		<ItemGroup>
@@ -540,15 +553,16 @@
 
 	</Target>
 
-  <Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
-    <ItemGroup>
-      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\ref\**" />
-      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
-      <FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.vshost.*" />
-      <FixDefaultPublicFolderMailboxBuildFiles Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.*" Exclude="@(FixDefaultPublicFolderMailboxExclude)" />
-    </ItemGroup>
-    <Copy SourceFiles="@(FixDefaultPublicFolderMailboxBuildFiles)" DestinationFolder="$(FixDefaultPublicFolderMailboxBuild)\%(RecursiveDir)" />
-  </Target>
+	<Target Name="CreateFixDefaultPublicFolderMailboxBuild" DependsOnTargets="CreateSetupBuild">
+    	<ItemGroup>
+    		<FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\ref\**" />
+    		<FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.pdb" Condition=" '$(BuildConfiguration)' == 'Release' And !$(IncludeReleasePdbs) " />
+    		<FixDefaultPublicFolderMailboxExclude Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.vshost.*" />
+    		<FixDefaultPublicFolderMailboxBuildFiles Include="$(FixDefaultPublicFolderMailboxSrc)\**\*.*" Exclude="@(FixDefaultPublicFolderMailboxExclude)" />
+    	</ItemGroup>
+    	<Copy SourceFiles="@(FixDefaultPublicFolderMailboxBuildFiles)" DestinationFolder="$(FixDefaultPublicFolderMailboxBuild)\%(RecursiveDir)" />
+	</Target>
+
 
     <Target Name="WiXCreateRedistFileListBuild" DependsOnTargets="CreateFixDefaultPublicFolderMailboxBuild">
         <RemoveDir Directories="$(WiXInstallerBuild)\ComponentsFiles" />
@@ -569,7 +583,7 @@
 		<Copy SourceFiles="@(SolidCPInstallerMsi)" DestinationFolder="$(DeployFolder)\%(RecursiveDir)" />
 	</Target>
 
-    <Target Name="Build" DependsOnTargets="WiXCreateRedistFileListBuild">
+    <Target Name="Build" DependsOnTargets="CreateFixDefaultPublicFolderMailboxBuild">
 		<!-- Do nothing -->
 	</Target>
 
@@ -594,6 +608,7 @@
 		<VMConfigInstall>$(ToolsFolder)\VMconfig</VMConfigInstall>
 		<ImportEnterpriseInstall>$(ToolsFolder)\Import.Enterprise</ImportEnterpriseInstall>
 		<AWStatsViewerInstall>$(ToolsFolder)\AWStats.Viewer</AWStatsViewerInstall>
+		<CertMakerInstall>$(ToolsFolder)\CertificateMaker</CertMakerInstall>
 		<SCPTransportAgentInstall>$(ToolsFolder)\SCPTransportAgent</SCPTransportAgentInstall>
 		<SolidCP-Configuration-ToolInstall>$(ToolsFolder)\SolidCP-Configuration-Tool</SolidCP-Configuration-ToolInstall>
 		<MSPtoSCPInstall>$(ToolsFolder)\MSPtoSCP</MSPtoSCPInstall>
@@ -697,7 +712,17 @@
 		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(ImportEnterpriseInstall)" />
 	</Target>
 
-	<Target Name="CreateSCPTransportAgentInstall" DependsOnTargets="CreateImportEnterpriseInstall">
+	<Target Name="CreateCertMakerInstall" DependsOnTargets="CreateImportEnterpriseInstall">
+		<ItemGroup>
+			<CertMakerDeployFiles Include="$(CertMakerBuild)\**\*.*" />
+		</ItemGroup>
+		<RemoveDir Directories="$(CertMakerInstall)"/>
+		<MakeDir Directories="$(CertMakerInstall)"/>
+		<Copy SourceFiles="@(CertMakerDeployFiles)" DestinationFolder="$(CertMakerInstall)\%(RecursiveDir)" />
+		<Copy SourceFiles="$(RootFolder)\LICENSE.txt" DestinationFolder="$(CertMakerInstall)" />
+	</Target>
+	
+	<Target Name="CreateSCPTransportAgentInstall" DependsOnTargets="CreateCertMakerInstall">
 		<ItemGroup>
 			<SCPTransportAgentDeployFiles Include="$(SCPTransportAgentBuild)\**\*.*" />
 		</ItemGroup>
@@ -991,7 +1016,6 @@
 			<InstallerMsi Include="$(InstallerProjectRoot)SolidCP.UniversalInstaller.Msi\$(BuildConfiguration)\*.msi" />
 		</ItemGroup>
 		<Copy SourceFiles="@(InstallerMsi)" DestinationFolder="$(InstallerBuild)" />
-
 	</Target>
 
 	<!-- Deploy -->
@@ -1088,6 +1112,7 @@
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-SCPTransportAgent.zip&quot; &quot;$(SCPTransportAgentInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-FixDefaultPublicFolderMailbox.zip&quot; &quot;$(FixDefaultPublicFolderMailboxInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Configuration-Tool.zip&quot; &quot;$(SolidCP-Configuration-ToolInstall)\*&quot;" />
+		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-CertificateMaker.zip&quot; &quot;$(CertMakerInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MSPtoSCP.zip&quot; &quot;$(MSPtoSCPInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\MailTemplates.zip&quot; &quot;$(MailTemplatesInstall)\*&quot;" />
 		<Exec Command="$(ZipCmd) a &quot;$(ToolsFolder)\SolidCP-Auto-Upgrade-Tool.zip&quot; &quot;$(SolidCP-Auto-Upgrade-ToolInstall)\*&quot;" />
@@ -1177,14 +1202,14 @@
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Server-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Server-Update.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Installer-Update.zip" LocalFile="$(DeployFolder)\SolidCP-Installer-Update.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-CsvBulk.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-CsvBulk.zip" />
-	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise-$(Version).zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-Import-Enterprise.zip" LocalFile="$(ToolsFolder)\SolidCP-Import-Enterprise.zip" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/HostPanelPro-CertificateMaker.zip" LocalFile="$(ToolsFolder)\HostPanelPro-CertificateMaker.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-AWStatsViewer.zip" LocalFile="$(ToolsFolder)\SolidCP-AWStatsViewer.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-SCPTransportAgent.zip" LocalFile="$(ToolsFolder)\SolidCP-SCPTransportAgent.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP.LocalizationToolkit.msi" LocalFile="$(ToolsFolder)\SolidCP.LocalizationToolkit.msi" />
-	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
-	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPUniversalInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.UniversalInstaller.exe" />
+	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.msi" LocalFile="$(DeployFolder)\SolidCP.Installer.msi" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller.exe" LocalFile="$(DeployFolder)\SolidCP.Installer.exe" />
-    <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCPInstaller.msi" />
+    <FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCPInstaller-webpi.msi" LocalFile="$(DeployFolder)\SolidCP.Installer.msi" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-HyperVUtils.zip" LocalFile="$(ToolsFolder)\SolidCP-HyperVUtils.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/SolidCP-VMConfig.zip" LocalFile="$(ToolsFolder)\SolidCP-VMConfig.zip" />
 	<FtpUpload Username="$(ftpUsername)" password="$(ftpPassword)" RemoteUri="ftp://$(ftphost)/Manual-Update.zip" LocalFile="$(DeployFolder)\Manual-Update.zip" />

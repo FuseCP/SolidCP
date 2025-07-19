@@ -34,6 +34,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using SolidCP.Providers.OS;
+using SolidCP.Providers.Common;
 
 namespace SolidCP.Providers.Virtualization
 {
@@ -115,9 +116,12 @@ namespace SolidCP.Providers.Virtualization
         void ClearOldPsJobs();
         ChangeJobStateReturnCode ChangeJobState(string jobId, ConcreteJobRequestedState newState);
 
+        // Server information
+        SystemResourceUsageInfo GetSystemResourceUsageInfo();
+        SystemMemoryInfo GetSystemMemoryInfo();
+
         // Configuration
         int GetProcessorCoresNumber();
-        Memory GetMemory();
         List<VMConfigurationVersion> GetVMConfigurationVersionSupportedList();
 
         // Replication 

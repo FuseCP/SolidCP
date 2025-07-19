@@ -187,7 +187,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 			}*/
 
 			//address string
-			address = (((iis7 || !OSInfo.IsWindows) && Utils.IsHttpsAndNotWindows(ip, domain)) ? "https://" : "http://") + server + port + virtualDir;
+			address = (((iis7 || !OSInfo.IsWindows) && Utils.IsHttps(Installer.UseHttpsOnWindows, ip, domain)) ? "https://" : "http://") + server + port + virtualDir;
 			txtAddress.Text = address;
 
 		}

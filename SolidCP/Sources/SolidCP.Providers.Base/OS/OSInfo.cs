@@ -12,7 +12,7 @@ namespace SolidCP.Providers.OS
 {
 
 	public enum OSPlatform { Unknown = 0, Windows, Mac, Linux, Unix, Other };
-	public enum OSFlavor { Unknown = 0, Min = 0, Windows, Mac, Debian, Mint, Kali, Ubuntu, Fedora, RedHat, Oracle, CentOS, SUSE, Alpine, Arch, FreeBSD, NetBSD, Other, Max = Other }
+	public enum OSFlavor { Unknown = 0, Min = 0, Windows, Mac, Debian, Mint, Kali, Ubuntu, Fedora, RedHat, Oracle, CentOS, Alma, Rocky, SUSE, Alpine, Arch, FreeBSD, NetBSD, Other, Max = Other }
 
 	public class OSInfo
 	{
@@ -94,7 +94,8 @@ namespace SolidCP.Providers.OS
 						if (match.Success)
 						{
 							if (Version.TryParse(match.Value, out osReleaseVersion)) version = osReleaseVersion;
-							else if (int.TryParse(match.Value, out intVersion)) {
+							else if (int.TryParse(match.Value, out intVersion))
+							{
 								version = new Version(intVersion, 0);
 							}
 						}
@@ -110,15 +111,22 @@ namespace SolidCP.Providers.OS
 					// TODO use hostnamectl
 					OSFlavor f;
 					if (name == null) flavor = OSFlavor.Other;
-					else if (Enum.TryParse<OSFlavor>(name, out f)) flavor = f;
 					else
 					{
-						for (var os = OSFlavor.Min; os <= OSFlavor.Max; os++)
+						if (name != "Linux" && name != "linux" && name.EndsWith("linux", StringComparison.OrdinalIgnoreCase))
 						{
-							if (Regex.IsMatch(name, $"(?<=^|\\s){Regex.Escape(Enum.GetName(typeof(OSFlavor), os))}(?=\\s|$)", RegexOptions.IgnoreCase))
+							name = name.Substring(0, name.Length - "linux".Length);
+						}
+						if (Enum.TryParse<OSFlavor>(name, out f)) flavor = f;
+						else
+						{
+							for (var os = OSFlavor.Min; os <= OSFlavor.Max; os++)
 							{
-								flavor = os;
-								break;
+								if (Regex.IsMatch(name, $"(?<=^|\\s){Regex.Escape(Enum.GetName(typeof(OSFlavor), os))}(?=\\s|$)", RegexOptions.IgnoreCase))
+								{
+									flavor = os;
+									break;
+								}
 							}
 						}
 					}

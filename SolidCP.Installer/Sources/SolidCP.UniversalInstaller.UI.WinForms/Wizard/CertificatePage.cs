@@ -79,12 +79,17 @@ namespace SolidCP.UniversalInstaller.WinForms
 			manualCert.Checked = false;
 			tabControl.Selected += SetAllowedMoveNext;
 			manualCert.CheckedChanged += SetAllowedMoveNext;
-			if (OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support cert file & Let's Encrypt also on Windows
+			if (!Installer.UseLettuceEncrypt || OSInfo.IsWindows && !Settings.RunOnNetCore) // TODO support Let's Encrypt also on Windows
 			{
-				// remove cert file & Let's Encrypt tab pages
+				// remove Let's Encrypt tab pages
 				tabControl.TabPages.RemoveAt(2);
-				tabControl.TabPages.RemoveAt(1);
+				//tabControl.TabPages.RemoveAt(1);
 			}
+
+			if (!string.IsNullOrEmpty(Settings.CertificateFindValue)) tabControl.SelectedTab = tabPageCertStore;
+			else if (!string.IsNullOrEmpty(Settings.CertificateFile)) tabControl.SelectedTab = tabPageCertFile;
+			else if (!string.IsNullOrEmpty(Settings.LetsEncryptCertificateEmail)) tabControl.SelectedTab = tabPageLetsEncrypt;
+			else tabControl.SelectedTab = tabPageManual;
 
 			string[] names, locations;
 			CertificateStoreInfo.GetStoreNames(out names, out locations);
@@ -121,7 +126,7 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			base.OnAfterDisplay(e);
 			//unattended setup
-			if ((/*!string.IsNullOrEmpty(Wizard.SetupVariables.SetupXml) ||*/ Hidden) && AllowMoveNext)
+			if ((Installer.Current.Settings.Installer.IsUnattended || Hidden) && AllowMoveNext)
 				Wizard.GoNext();
 		}
 
@@ -231,7 +236,8 @@ namespace SolidCP.UniversalInstaller.WinForms
 					}
 					Settings.LetsEncryptCertificateEmail = txtLetsEncryptEmail.Text;
 					System.Net.IPAddress ip;
-					Settings.LetsEncryptCertificateDomains = string.Join(",", Settings.Urls.Split(',', ';')
+					var urls = string.IsNullOrEmpty(Settings.Urls) ? Settings.WebSiteDomain : Settings.Urls;
+					Settings.LetsEncryptCertificateDomains = string.Join(",", urls.Split(',', ';')
 						.Where(url => url.StartsWith("https", StringComparison.OrdinalIgnoreCase) ||
 							url.StartsWith("net.tcp", StringComparison.OrdinalIgnoreCase))
 						.Select(url => new Uri(url).Host)

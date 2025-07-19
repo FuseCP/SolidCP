@@ -35,12 +35,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text.RegularExpressions;
 using System.Web;
 using SolidCP.Providers.DNS;
 using SolidCP.Providers.DomainLookup;
-using System.Runtime.InteropServices;
 
 
 namespace SolidCP.Providers.OS
@@ -103,8 +103,11 @@ namespace SolidCP.Providers.OS
 		// reboot
 		void RebootSystem();
 
-		// memory
-		Memory GetMemory();
+		#region Server informations
+		public SystemResourceUsageInfo GetSystemResourceUsageInfo();
+		public SystemMemoryInfo GetSystemMemoryInfo();
+		public bool IsUnix();
+		#endregion
 
 		// execute command
 		string ExecuteSystemCommand(string user, string password, string path, string args);

@@ -515,70 +515,14 @@ namespace SolidCP.UniversalInstaller
 
 			StartUnattendedSetup();
 		}
-
 		private void StartUnattendedSetup()
 		{
-			XmlDocument doc = Global.SetupXmlDocument;
-			if (doc != null)
+			if (Installer.Current.Settings.Installer.IsUnattended)
 			{
-				XmlNode root = doc.SelectSingleNode("setup");
-				if (root == null)
-				{
-					Log.WriteError("Incorrect setup xml file");
-					Close();
-				}
 				Log.WriteStart("Starting unattended setup");
-				ProceedUnattendedSetup();
+				Installer.Current.RunUnattended();
 			}
 		}
-
-		public void ProceedUnattendedSetup()
-		{
-			XmlDocument doc = Global.SetupXmlDocument;
-			XmlNode root = doc.SelectSingleNode("setup");
-			if (root.ChildNodes.Count == 0)
-			{
-				Log.WriteEnd("Unuttended setup finished");
-				Close();
-				return;
-			}
-			XmlNode node = root.ChildNodes[0];
-			switch (node.Name.ToLower())
-			{
-				case "install":
-					ParseInstallNode(node);
-					break;
-			}
-		}
-
-		private void ParseInstallNode(XmlNode installNode)
-		{
-			XmlNodeList components = installNode.SelectNodes("component");
-			if (components.Count == 0)
-			{
-				//remove parent install node
-				installNode.ParentNode.RemoveChild(installNode);
-				ProceedUnattendedSetup();
-			}
-			else
-			{
-				//remove current node and start installation
-				XmlElement componentNode = (XmlElement)components[0];
-				string componentCode = componentNode.GetAttribute("code");
-				string componentVersion = componentNode.GetAttribute("version");
-				string xml = componentNode.InnerXml;
-				installNode.RemoveChild(componentNode);
-
-				if (!string.IsNullOrEmpty(componentCode))
-				{
-					ScopeNode componentsNode = scopeTree.Nodes[0] as ScopeNode;
-					scopeTree.SelectedNode = componentsNode;
-					ComponentsControl ctrl = componentsNode.ResultView as ComponentsControl;
-					ctrl.InstallComponent(componentCode, componentVersion, xml);
-				}
-			}
-		}
-
 		public override object InitializeLifetimeService()
 		{
 #if NETFRAMEWORK

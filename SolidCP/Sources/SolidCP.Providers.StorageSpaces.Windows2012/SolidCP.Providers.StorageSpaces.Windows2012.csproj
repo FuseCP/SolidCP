@@ -1,41 +1,42 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
-		<OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
-		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-		<LangVersion>11</LangVersion>
-		<Nullable>disable</Nullable>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-		<DebugType>full</DebugType>
-	</PropertyGroup>
-	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-		<DebugType>pdbonly</DebugType>
-	</PropertyGroup>
-	<ItemGroup>
-		<Reference Include="Microsoft.Search.Interop">
-			<HintPath>..\..\Lib\References\Microsoft\Microsoft.Search.Interop.dll</HintPath>
-			<EmbedInteropTypes>True</EmbedInteropTypes>
-		</Reference>
-		<Reference Include="System.Management" />
-		<Reference Include="System.Data.DataSetExtensions" />
-		<Reference Include="Microsoft.CSharp" />
-		<Reference Include="System.Management.Automation">
-		  <HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
-		</Reference>
-	</ItemGroup>
-	<ItemGroup>
-		<Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
-	</ItemGroup>
-	<ItemGroup>
-		<ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
-		<ProjectReference Include="..\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj" />
-		<ProjectReference Include="..\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj" />
-		<ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
-	</ItemGroup>
-	<!--<ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>net48</TargetFramework>
+        <OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <LangVersion>11</LangVersion>
+        <Nullable>disable</Nullable>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+        <DebugType>full</DebugType>
+    </PropertyGroup>
+    <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+        <DebugType>pdbonly</DebugType>
+    </PropertyGroup>
+    <ItemGroup>
+        <Reference Include="Microsoft.Search.Interop">
+            <HintPath>..\..\Lib\References\Microsoft\Microsoft.Search.Interop.dll</HintPath>
+            <EmbedInteropTypes>True</EmbedInteropTypes>
+        </Reference>
+        <Reference Include="System.Management" />
+        <Reference Include="System.Data.DataSetExtensions" />
+        <Reference Include="Microsoft.CSharp" />
+        <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+            <HintPath>..\..\Lib\References\Microsoft\Windows2012\System.Management.Automation.dll</HintPath>
+            <SpecificVersion>false</SpecificVersion>
+        </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
+        <ProjectReference Include="..\SolidCP.Providers.OS.Windows2003\SolidCP.Providers.OS.Windows2003.csproj" />
+        <ProjectReference Include="..\SolidCP.Providers.OS.Windows2012\SolidCP.Providers.OS.Windows2012.csproj" />
+        <ProjectReference Include="..\SolidCP.Server.Utils\SolidCP.Server.Utils.csproj" />
+    </ItemGroup>
+    <!--<ItemGroup>
 		<COMReference Include="Scripting">
 			<Guid>{420B2830-E718-11CF-893D-00A0C9054228}</Guid>
 			<VersionMajor>1</VersionMajor>
