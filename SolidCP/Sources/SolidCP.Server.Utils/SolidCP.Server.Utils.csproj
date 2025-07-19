@@ -5,6 +5,7 @@
         <OutputPath>..\SolidCP.Server\bin\netstandard</OutputPath>
         <ServerPath>..\SolidCP.Server\bin\netstandard</ServerPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
         <LangVersion>11</LangVersion>
         <Nullable>disable</Nullable>

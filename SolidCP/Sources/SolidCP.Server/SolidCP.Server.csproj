@@ -143,6 +143,7 @@
             <FilesToDelete Include="bin\ProvidersLegacy\BouncyCastle.*" />
             <FilesToDelete Include="bin\ProvidersLegacy\AntiXSSLibrary.*" />
             <FilesToDelete Include="bin\ProvidersLegacy\HtmlSanitizationLibrary.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Mono.Posix.*" />
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
         <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" ContinueOnError="true" />
