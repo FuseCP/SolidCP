@@ -2,7 +2,7 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <PublishUrl>publish\</PublishUrl>
-        <OutputPath>..\..\Bin\</OutputPath>
+        <OutputPath>..\SolidCP.Server\bin\netstandard</OutputPath>
         <ServerPath>..\SolidCP.Server\bin\netstandard</ServerPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
@@ -24,6 +24,7 @@
         <Reference Include="System.Management.Automation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
             <HintPath>..\..\Lib\System.Management.Automation.dll</HintPath>
             <SpecificVersion>False</SpecificVersion>
+            <Private>false</Private>
         </Reference>
     </ItemGroup>
     <ItemGroup>

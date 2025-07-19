@@ -7,14 +7,14 @@ namespace SolidCP.Server
 	{
 		public static void Init()
 		{
-			if (OSInfo.IsWindows)
+			if (OSInfo.IsWindows && OSInfo.IsNetFX)
 			{
 				if (OSInfo.WindowsVersion >= WindowsVersion.WindowsServer2012)
 				{
-					Assembly.Load("System.Management.Automation, Version=3.0.0");
+					Assembly.LoadFrom(Web.Services.Server.MapPath("~/bin/Providers/System.Management.Automation.dll"));
 				} else
 				{
-					Assembly.Load("System.Management.Automation, Version=1.0.0");
+					Assembly.LoadFrom(Web.Services.Server.MapPath("~/bin/ProvidersLegacy/System.Management.Automation.dll"));
 				}
 			}
 		}

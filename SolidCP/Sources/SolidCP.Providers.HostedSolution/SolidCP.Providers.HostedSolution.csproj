@@ -3,7 +3,7 @@
 		<TargetFramework>net48</TargetFramework>
 		<PublishUrl>publish\</PublishUrl>
 		<WarningsAsErrors>618</WarningsAsErrors>
-		<OutputPath>..\SolidCP.Server\bin\Providers\</OutputPath>
+		<OutputPath>..\SolidCP.Server\bin\ProvidersLegacy\</OutputPath>
 		<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>

@@ -136,6 +136,13 @@
             <FilesToMove Include="bin\WPIServiceContract.*" />
             <FilesToMove Include="bin\Azure.*" />
             <FilesToMove Include="bin\BouncyCastle.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\System.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Renci.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Newtonsoft.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\Microsoft.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\BouncyCastle.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\AntiXSSLibrary.*" />
+            <FilesToDelete Include="bin\ProvidersLegacy\HtmlSanitizationLibrary.*" />
         </ItemGroup>
         <Delete Files="@(FilesToDelete)" ContinueOnError="true" />
         <Move SourceFiles="@(FilesToMove)" DestinationFolder="bin\Providers" ContinueOnError="true" />
