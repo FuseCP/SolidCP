@@ -108,7 +108,7 @@
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.14" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.14" />
         <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.13" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.14" />
         
         <!-- .NET 8 for SolidCP.EnterpriseServer.Data -->
         <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
