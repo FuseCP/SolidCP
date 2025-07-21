@@ -203,9 +203,6 @@
         <None Remove="bin_dotnet\**\*.*" />
         <None Remove="Properties\PublishProfiles\**" />
         <None Remove="appsettings.json" />
-        <None Update="SolidCP.WebPortal.deps.json.old">
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        </None>
         <AspNetControls Remove="DesktopModules\**\*.ascx" />
         <AspNetControls Remove="DesktopModules\**\*.aspx" />
         <AspNetControls Remove="DesktopModules\**\*.master" />
