@@ -1080,7 +1080,7 @@ namespace SolidCP.Providers.DNS
 				var bat = File.ReadAllText(cmd);
 				shell = OSInfo.Unix.DefaultShell.ExecScript(bat, rndcArguments);
 			}
-			else if (cmd.Contains(' ') && !cmd.StartsWith("\"")) shell = Shell.Default.Exec($"\"{cmd}\" {rndcArguments}");
+			else if (cmd.Contains(' ') && !cmd.StartsWith("\"") && File.Exists(cmd)) shell = Shell.Default.Exec($"\"{cmd}\" {rndcArguments}");
 			else if (string.IsNullOrWhiteSpace(cmd)) shell = Shell.Default.Exec($"rndc {rndcArguments}");
 			else shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
 
