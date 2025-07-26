@@ -467,6 +467,8 @@ namespace SolidCP.Web.Services
 							if (isLocal || AllowInsecureHttp)
 							{
 								netTcpBinding = new NetTcpBinding(SecurityMode.None);
+								netTcpBinding.Security.Message.ClientCredentialType = MessageCredentialType.None;
+								netTcpBinding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
 								netTcpUri = new Uri($"net.tcp://{NetTcpHost}:{NetTcpPort}/tcp/{ws.Service.Name}");
 								builder.AddServiceEndpoint(ws.Service, ws.Contract, netTcpBinding, netTcpUri);
 							}

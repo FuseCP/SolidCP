@@ -243,6 +243,7 @@ namespace SolidCP.Web.Services
 					{
 						var binding = new NetTcpBinding(SecurityMode.Transport);
 						binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
+						binding.Security.Message.ClientCredentialType = MessageCredentialType.None;
 						binding.Name = "nettcp.transport";
 						AddEndpoint(contract, binding, adr);
 					}
@@ -250,7 +251,10 @@ namespace SolidCP.Web.Services
 					{
 						if (!isEncrypted || IsLocal(adr) || AllowInsecureHttp)
 						{
-							AddEndpoint(contract, new NetTcpBinding(SecurityMode.None) { Name = "nettcp.none" }, adr);
+							var binding = new NetTcpBinding(SecurityMode.None) { Name = "nettcp.none" };
+							binding.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
+							binding.Security.Message.ClientCredentialType = MessageCredentialType.None;
+							AddEndpoint(contract, binding, adr);
 						}
 					}
 				}
