@@ -19,10 +19,13 @@ public partial class PackageServiceConfiguration: EntityTypeConfiguration<Packag
 #if NetCore
 		HasOne<Service>().WithMany()
 			.HasForeignKey("ServiceId")
-			.HasConstraintName("FK_PackageServices_Services");
-		HasOne<Package>().WithMany()
+			.HasConstraintName("FK_PackageServices_Services")
+            .OnDelete(DeleteBehavior.ClientNoAction);
+        HasOne<Package>().WithMany()
 			.HasForeignKey("PackageId")
-			.HasConstraintName("FK_PackageServices_Packages");
+			.HasConstraintName("FK_PackageServices_Packages")
+			.OnDelete(DeleteBehavior.ClientNoAction);
+
 #endif
-	}
+    }
 }

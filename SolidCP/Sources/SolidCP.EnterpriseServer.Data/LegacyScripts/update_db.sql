@@ -21742,3 +21742,499 @@ CREATE FUNCTION [dbo].[UserParents]
     END
 GO
 
+-- Fix AddDnsRecord
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'AddDnsRecord')
+DROP PROCEDURE AddDnsRecord
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[AddDnsRecord]
+    (
+    	@ActorID int,
+    	@ServiceID int,
+    	@ServerID int,
+    	@PackageID int,
+    	@RecordType nvarchar(10),
+    	@RecordName nvarchar(50),
+    	@RecordData nvarchar(500),
+    	@MXPriority int,
+    	@SrvPriority int,
+    	@SrvWeight int,
+    	@SrvPort int,
+    	@IPAddressID int
+    )
+    AS
+
+    IF (@ServiceID > 0 OR @ServerID > 0) AND dbo.CheckIsUserAdmin(@ActorID) = 0
+    RAISERROR('You should have administrator role to perform such operation', 16, 1)
+
+    IF (@PackageID > 0) AND dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    IF @ServiceID = 0 SET @ServiceID = NULL
+    IF @ServerID = 0 SET @ServerID = NULL
+    IF @PackageID = 0 SET @PackageID = NULL
+    IF @IPAddressID = 0 SET @IPAddressID = NULL
+
+    IF EXISTS
+    (
+    	SELECT RecordID FROM GlobalDnsRecords WHERE
+    	ServiceID = @ServiceID AND ServerID = @ServerID AND PackageID = @PackageID
+    	AND RecordName = @RecordName AND RecordType = @RecordType
+    )
+
+    	UPDATE GlobalDnsRecords
+    	SET
+    		RecordData = RecordData,
+    		MXPriority = MXPriority,
+    		SrvPriority = SrvPriority,
+    		SrvWeight = SrvWeight,
+    		SrvPort = SrvPort,
+
+    		IPAddressID = @IPAddressID
+    	WHERE
+    		ServiceID = @ServiceID AND ServerID = @ServerID AND PackageID = @PackageID
+            AND RecordName = @RecordName AND RecordType = @RecordType
+    ELSE
+    	INSERT INTO GlobalDnsRecords
+    	(
+    		ServiceID,
+    		ServerID,
+    		PackageID,
+    		RecordType,
+    		RecordName,
+    		RecordData,
+    		MXPriority,
+    		SrvPriority,
+    		SrvWeight,
+    		SrvPort,
+    		IPAddressID
+    	)
+    	VALUES
+    	(
+    		@ServiceID,
+    		@ServerID,
+    		@PackageID,
+    		@RecordType,
+    		@RecordName,
+    		@RecordData,
+    		@MXPriority,
+    		@SrvPriority,
+    		@SrvWeight,
+    		@SrvPort,
+    		@IPAddressID
+    	)
+
+    RETURN
+GO
+
+-- Fix GetProviders
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetProviders')
+DROP PROCEDURE GetProviders
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetProviders]
+    AS
+    SELECT
+    	PROV.ProviderID,
+    	PROV.GroupID,
+    	PROV.ProviderName,
+    	PROV.EditorControl,
+    	PROV.DisplayName,
+    	PROV.ProviderType,
+    	RG.GroupName + ' - ' + PROV.DisplayName AS ProviderGroupName,
+    	PROV.DisableAutoDiscovery
+    FROM Providers AS PROV
+    INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+    ORDER BY RG.GroupOrder, PROV.DisplayName
+    RETURN
+GO
+
+-- Fix GetResellerDomains
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetResellerDomains')
+DROP PROCEDURE GetResellerDomains
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetResellerDomains]
+    (
+    	@ActorID int,
+    	@PackageID int
+    )
+    AS
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    -- load parent package
+    DECLARE @ParentPackageID int
+    SELECT @ParentPackageID = ParentPackageID FROM Packages
+    WHERE PackageID = @PackageID
+
+    SELECT
+    	D.DomainID,
+    	D.PackageID,
+    	D.ZoneItemID,
+    	D.DomainName,
+    	D.HostingAllowed,
+    	D.WebSiteID,
+    	WS.ItemName AS WebSiteName,
+    	D.MailDomainID,
+    	MD.ItemName AS MailDomainName
+    FROM Domains AS D
+    INNER JOIN PackagesTree(@ParentPackageID, 0) AS PT ON D.PackageID = PT.PackageID
+    LEFT OUTER JOIN ServiceItems AS WS ON D.WebSiteID = WS.ItemID
+    LEFT OUTER JOIN ServiceItems AS MD ON D.MailDomainID = MD.ItemID
+    WHERE HostingAllowed = 1
+    RETURN
+GO
+
+
+-- Fix DeleteService
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'DeleteService')
+DROP PROCEDURE DeleteService
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[DeleteService]
+    (
+    	@ServiceID int,
+    	@Result int OUTPUT
+    )
+    AS
+
+    SET @Result = 0
+
+    -- check related service items
+    IF EXISTS (SELECT ItemID FROM ServiceItems WHERE ServiceID = @ServiceID)
+    BEGIN
+    	SET @Result = -1
+    	RETURN
+    END
+
+    IF EXISTS (SELECT ServiceID FROM VirtualServices WHERE ServiceID = @ServiceID)
+    BEGIN
+    	SET @Result = -2
+    	RETURN
+    END
+
+    BEGIN TRAN
+    -- delete global DNS records
+    DELETE FROM GlobalDnsRecords
+    WHERE ServiceID = @ServiceID
+
+    -- delete service
+    DELETE FROM Services
+    WHERE ServiceID = @ServiceID
+
+    -- delete PackageServices
+    DELETE FROM PackageServices
+    WHERE ServiceID = @ServiceID
+
+    COMMIT TRAN
+
+    RETURN
+GO
+
+-- Fix GetServiceItemsByPackage
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServiceItemsByPackage')
+DROP PROCEDURE GetServiceItemsByPackage
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetServiceItemsByPackage]
+    (
+    	@ActorID int,
+    	@PackageID int
+    )
+    AS
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    DECLARE @Items TABLE
+    (
+    	ItemID int
+    )
+
+    -- find service items
+    INSERT INTO @Items
+    SELECT
+    	SI.ItemID
+    FROM ServiceItems AS SI
+    WHERE SI.PackageID = @PackageID
+
+    -- select service items
+    SELECT
+    	SI.ItemID,
+    	SI.ItemName,
+    	SI.ItemTypeID,
+    	SIT.TypeName,
+    	SIT.DisplayName,
+    	SI.ServiceID,
+    	SI.PackageID,
+    	P.PackageName,
+    	S.ServiceName,
+    	SRV.ServerID,
+    	SRV.ServerName,
+    	RG.GroupName,
+    	U.UserID,
+    	U.Username,
+    	(U.FirstName + U.LastName) AS UserFullName,
+    	SI.CreatedDate
+    FROM @Items AS FI
+    INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+    INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+    INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+    INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+    INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+    INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+    INNER JOIN Users AS U ON P.UserID = U.UserID
+
+    -- select item properties
+    -- get corresponding item properties
+    SELECT
+    	IP.ItemID,
+    	IP.PropertyName,
+    	IP.PropertyValue
+    FROM ServiceItemProperties AS IP
+    INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+    RETURN
+GO
+
+-- Fix GetServiceItem
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServiceItem')
+DROP PROCEDURE GetServiceItem
+GO
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetServiceItem]
+    (
+    	@ActorID int,
+    	@ItemID int
+    )
+    AS
+
+    DECLARE @Items TABLE
+    (
+    	ItemID int
+    )
+
+    -- find service items
+    INSERT INTO @Items
+    SELECT
+    	SI.ItemID
+    FROM ServiceItems AS SI
+    INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+    WHERE
+    	SI.ItemID = @ItemID
+    	AND dbo.CheckActorPackageRights(@ActorID, SI.PackageID) = 1
+
+    -- select service items
+    SELECT
+    	SI.ItemID,
+    	SI.ItemName,
+    	SI.ItemTypeID,
+    	SIT.TypeName,
+    	SI.ServiceID,
+    	SI.PackageID,
+    	P.PackageName,
+    	S.ServiceName,
+    	SRV.ServerID,
+    	SRV.ServerName,
+    	RG.GroupName,
+    	U.UserID,
+    	U.Username,
+    	U.FullName AS UserFullName,
+    	SI.CreatedDate
+    FROM @Items AS FI
+    INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+    INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+    INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+    INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+    INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+    INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+    INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+    INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+    -- select item properties
+    -- get corresponding item properties
+    SELECT
+    	IP.ItemID,
+    	IP.PropertyName,
+    	IP.PropertyValue
+    FROM ServiceItemProperties AS IP
+    INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+    RETURN
+GO
+
+
+-- Fix  GetServiceItemByName
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServiceItemByName')
+DROP PROCEDURE GetServiceItemByName
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetServiceItemByName]
+    (
+    	@ActorID int,
+    	@PackageID int,
+    	@ItemName nvarchar(500),
+    	@GroupName nvarchar(100) = NULL,
+    	@ItemTypeName nvarchar(200)
+    )
+    AS
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    DECLARE @Items TABLE
+    (
+    	ItemID int
+    )
+
+    -- find service items
+    INSERT INTO @Items
+    SELECT
+    	SI.ItemID
+    FROM ServiceItems AS SI
+    INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+    INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+    WHERE SI.PackageID = @PackageID AND SIT.TypeName = @ItemTypeName
+    AND SI.ItemName = @ItemName
+    AND ((@GroupName IS NULL) OR (@GroupName IS NOT NULL AND RG.GroupName = @GroupName))
+
+    -- select service items
+    SELECT
+    	SI.ItemID,
+    	SI.ItemName,
+    	SI.ItemTypeID,
+    	SIT.TypeName,
+    	SI.ServiceID,
+    	SI.PackageID,
+    	P.PackageName,
+    	S.ServiceName,
+    	SRV.ServerID,
+    	SRV.ServerName,
+    	RG.GroupName,
+    	U.UserID,
+    	U.Username,
+    	U.FullName AS UserFullName,
+    	SI.CreatedDate
+    FROM @Items AS FI
+    INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+    INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+    INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+    INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+    INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+    INNER JOIN Providers AS PROV ON S.ProviderID = PROV.ProviderID
+    INNER JOIN ResourceGroups AS RG ON PROV.GroupID = RG.GroupID
+    INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+    -- select item properties
+    -- get corresponding item properties
+    SELECT
+    	IP.ItemID,
+    	IP.PropertyName,
+    	IP.PropertyValue
+    FROM ServiceItemProperties AS IP
+    INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+    RETURN
+GO
+
+
+-- Fix GetServiceItemsByName
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetServiceItemsByName')
+DROP PROCEDURE GetServiceItemsByName
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetServiceItemsByName]
+    (
+    	@ActorID int,
+    	@PackageID int,
+    	@ItemName nvarchar(500)
+    )
+    AS
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    DECLARE @Items TABLE
+    (
+    	ItemID int
+    )
+
+    -- find service items
+    INSERT INTO @Items
+    SELECT
+    	SI.ItemID
+    FROM ServiceItems AS SI
+    INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+    WHERE SI.PackageID = @PackageID
+    AND SI.ItemName LIKE @ItemName
+
+    -- select service items
+    SELECT
+    	SI.ItemID,
+    	SI.ItemName,
+    	SI.ItemTypeID,
+    	SIT.TypeName,
+    	SI.ServiceID,
+    	SI.PackageID,
+    	P.PackageName,
+    	S.ServiceName,
+    	SRV.ServerID,
+    	SRV.ServerName,
+    	RG.GroupName,
+    	U.UserID,
+    	U.Username,
+    	U.FullName AS UserFullName,
+    	SI.CreatedDate
+    FROM @Items AS FI
+    INNER JOIN ServiceItems AS SI ON FI.ItemID = SI.ItemID
+    INNER JOIN ServiceItemTypes AS SIT ON SI.ItemTypeID = SIT.ItemTypeID
+    INNER JOIN Packages AS P ON SI.PackageID = P.PackageID
+    INNER JOIN Services AS S ON SI.ServiceID = S.ServiceID
+    INNER JOIN Servers AS SRV ON S.ServerID = SRV.ServerID
+    INNER JOIN ResourceGroups AS RG ON SIT.GroupID = RG.GroupID
+    INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+    -- select item properties
+    -- get corresponding item properties
+    SELECT
+    	IP.ItemID,
+    	IP.PropertyName,
+    	IP.PropertyValue
+    FROM ServiceItemProperties AS IP
+    INNER JOIN @Items AS FI ON IP.ItemID = FI.ItemID
+
+    RETURN
+GO
