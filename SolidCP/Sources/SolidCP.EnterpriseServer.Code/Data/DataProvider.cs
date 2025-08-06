@@ -17633,7 +17633,8 @@ namespace SolidCP.EnterpriseServer
 						a.Address.SubnetMask,
 						a.Address.DefaultGateway,
 						a.IsPrimary,
-					})
+                        a.Item.PackageId
+                    })
 					.OrderByDescending(a => a.IsPrimary)
 					.AsEnumerable()
 					.Where(a => Clone.CheckActorPackageRights(actorId, a.PackageId));
