@@ -4760,7 +4760,7 @@ namespace SolidCP.EnterpriseServer
                     .ToTempIdSet(this))
                 {
                     var addresses = IpAddresses
-                        .Join(addressIds, ip => ip.AddressId, id => id., (ip, id) => ip)
+                        .Join(addressIds, ip => ip.AddressId, id => id, (ip, id) => ip)
                         .ToList();
 
                     foreach (var ip in addresses)
@@ -6334,11 +6334,6 @@ namespace SolidCP.EnterpriseServer
 				return Convert.ToInt32(prmServiceId.Value);
 			}
 		}
-
-		public IEnumerable<int> GetServiceIdsByServerId(int serverId) =>
-			Services
-				.Where(s => s.ServerId == serverId)
-				.Select(s => s.ProviderId);
 
 		public void UpdateServiceFully(int serviceId, int providerId, string serviceName, int serviceQuotaValue,
 			 int clusterId, string comments)
@@ -9788,20 +9783,21 @@ namespace SolidCP.EnterpriseServer
 					break;
 				case 302: // CpuNumber of VPS
 				case 555: // CpuNumber of VPS2012
-				case 347: // CpuNumber of VPSforPc 
-					ps = ServiceItemProperties
-					.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
-					{
-						Property = p,
-						Item = s
-					})
-					.Join(PackagesTreeCaches, p => p.Item.PackageId, t => t.PackageId, (p, t) => new
-					{
-						p.Property.PropertyName,
-						t.ParentPackageId,
-						p.Property.PropertyValue
-					})
-					.Where(p => p.PropertyName == "CpuCores" && p.ParentPackageId == packageId);
+                case 347: // CpuNumber of VPSforPc 
+                //case 675: // CpuNumber of Proxmox
+                    ps = ServiceItemProperties
+						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
+						{
+							Property = p,
+							Item = s
+						})
+						.Join(PackagesTreeCaches, p => p.Item.PackageId, t => t.PackageId, (p, t) => new
+						{
+							p.Property.PropertyName,
+							t.ParentPackageId,
+							p.Property.PropertyValue
+						})
+						.Where(p => p.PropertyName == "CpuCores" && p.ParentPackageId == packageId);
 					if (IsCore) result = ps.Sum(p => (int?)Convert.ToInt32(p.PropertyValue)) ?? 0;
 					else result = ps
 							.Select(p => p.PropertyValue)
@@ -9811,6 +9807,7 @@ namespace SolidCP.EnterpriseServer
 				case 306: // HDD of VPS
 				case 559: // HDD of VPS2012
 				case 351: // HDD of VPSforPc
+				//case 679: // HDD of Proxmox
 					result = ServiceItemProperties
 						.Join(ServiceItems, p => p.ItemId, s => s.ItemId, (p, s) => new
 						{
@@ -9831,7 +9828,8 @@ namespace SolidCP.EnterpriseServer
 				case 309: // External IP addresses of VPS
 				case 562: // External IP addresses of VPS2012
 				case 354: // External IP addresses of VPSforPc
-					result = PackageIpAddresses
+				//case 682: // External IP addresses of Proxmox
+                    result = PackageIpAddresses
 						.Join(IpAddresses, p => p.AddressId, ip => ip.AddressId, (p, ip) => new
 						{
 							Package = p,
@@ -10669,7 +10667,8 @@ namespace SolidCP.EnterpriseServer
 					using (var transaction = Database.BeginTransaction())
 					{
 						var oldPlanId = package.PlanId;
-						package.PackageName = packageName;
+                        var parentPackageId = package.ParentPackageId;
+                        package.PackageName = packageName;
 						package.PackageComments = packageComments;
 						package.StatusId = statusId;
 						package.PlanId = planId;
@@ -10686,11 +10685,11 @@ namespace SolidCP.EnterpriseServer
 
 						if (oldPlanId != planId || overrideQuotas)
 						{
-							exceedingQuotas = GetPackageExceedingQuotas(packageId)
+							exceedingQuotas = GetPackageExceedingQuotas(parentPackageId)
 								.Where(q => q.QuotaValue > 0)
 								.ToArray();
 						}
-						else exceedingQuotas = new ExceedingQuota[0];
+						else exceedingQuotas = Array.Empty<ExceedingQuota>();
 
 						if (exceedingQuotas.Any()) transaction.Rollback();
 						else transaction.Commit();
@@ -10698,7 +10697,7 @@ namespace SolidCP.EnterpriseServer
 						return EntityDataSet(exceedingQuotas);
 					}
 				}
-				else return EntityDataSet(new ExceedingQuota[0]);
+				else return EntityDataSet(Array.Empty<ExceedingQuota>());
 			}
 			else
 			{
@@ -10724,12 +10723,9 @@ namespace SolidCP.EnterpriseServer
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-#if NETCOREAPP
-				Packages.Where(p => p.PackageId == packageId).ExecuteUpdate(set => set.SetProperty(p => p.UserId, userId));
-#else
-				foreach (var package in Packages.Where(p => p.PackageId == packageId)) package.UserId = userId;
-				SaveChanges();
-#endif
+                Packages
+					.Where(p => p.PackageId == packageId)
+					.ExecuteUpdate(p => new Data.Entities.Package { UserId = userId });
 			}
 			else
 			{
@@ -10755,22 +10751,16 @@ namespace SolidCP.EnterpriseServer
 					Users.Any(u => u.OwnerId == userId && u.IsPeer))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				// update package
-#if NETCOREAPP
-				Packages.Where(p => p.PackageId == packageId)
-					.ExecuteUpdate(set => set
-						.SetProperty(p => p.PackageName, packageName)
-						.SetProperty(p => p.PackageComments, packageComments));
-#else
-				foreach (var package in Packages.Where(p => p.PackageId == packageId))
-				{
-					package.PackageName = packageName;
-					package.PackageComments = packageComments;
-				}
-				SaveChanges();
-#endif
-			}
-			else
+                // update package
+                Packages
+                    .Where(p => p.PackageId == packageId)
+                    .ExecuteUpdate(p => new Data.Entities.Package
+                    {
+                        PackageName = packageName,
+                        PackageComments = packageComments
+                    });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackageName",
@@ -10938,7 +10928,7 @@ namespace SolidCP.EnterpriseServer
 
 					addonId = addon.PackageAddonId;
 
-					var exceedingQuotas = GetPackageExceedingQuotas(packageId)
+					var exceedingQuotas = GetPackageExceedingQuotas(parentPackageId)
 						.Where(q => q.QuotaValue > 0)
 						.ToList();
 
@@ -10997,7 +10987,7 @@ namespace SolidCP.EnterpriseServer
 						package.Comments = comments;
 						SaveChanges();
 
-						var exceedingQuotas = GetPackageExceedingQuotas(package.PackageId)
+						var exceedingQuotas = GetPackageExceedingQuotas(parentPackageId)
 							.Where(q => q.QuotaValue > 0)
 							.ToList();
 
@@ -11007,9 +10997,9 @@ namespace SolidCP.EnterpriseServer
 						return EntityDataSet(exceedingQuotas);
 					}
 				}
-				else return EntityDataSet(new ExceedingQuota[0]);
-			}
-			else
+                else return EntityDataSet(Array.Empty<ExceedingQuota>());
+            }
+            else
 			{
 				return SqlHelper.ExecuteDataset(NativeConnectionString, CommandType.StoredProcedure,
 					ObjectQualifier + "UpdatePackageAddon",
@@ -11112,31 +11102,31 @@ namespace SolidCP.EnterpriseServer
 					.ToList();
 				var groups = ResourceGroups
 					.Where(r => !packageGroups.Contains(r.GroupId))
-					.AsEnumerable()
-					.Where(r => Clone.GetPackageAllocatedResource(packageId, r.GroupId, null))
-					.Select(r => new { r.GroupId, PrimaryGroup = r.GroupId == package.Server.PrimaryGroupId });
+                    .Select(r => new { r.GroupId, PrimaryGroup = r.GroupId == package.Server.PrimaryGroupId })
+                    .AsEnumerable()
+                    .Where(r => Clone.GetPackageAllocatedResource(packageId, r.GroupId, null));
 
-				if (!package.Server.VirtualServer)
+                if (!package.Server.VirtualServer)
 				{   // Physical Server
 					// just return the list of services based on the plan
 					using (var groupIds = new TempIdSet(this, groups.Select(g => g.GroupId)))
 					{
 						var servicesSet = services.Select(s => s.ServiceId).ToHashSet();
-						foreach (var service in Services
-							.Where(s => s.ServerId == package.Package.ServerId)
-							.Join(groupIds, s => s.Provider.GroupId, g => g, (s, g) => s))
-						{
-							if (!servicesSet.Contains(service.ServiceId))
-							{
-								PackageServices.Add(new Data.Entities.PackageService()
-								{
-									PackageId = packageId,
-									ServiceId = service.ServiceId
-								});
-							}
-						}
+                        foreach (var serviceId in Services
+                            .Where(s => s.ServerId == package.Package.ServerId)
+                            .Join(groupIds, s => s.Provider.GroupId, g => g, (s, g) => s.ServiceId))
+                        {
+                            if (!servicesSet.Contains(serviceId))
+                            {
+                                PackageServices.Add(new Data.Entities.PackageService()
+                                {
+                                    PackageId = packageId,
+                                    ServiceId = serviceId
+                                });
+                            }
+                        }
 					}
-				}
+                }
 				else
 				{   // Virtual Server
 					var primaryGroupId = package.Server.PrimaryGroupId;
@@ -11154,7 +11144,7 @@ namespace SolidCP.EnterpriseServer
 								v.Service.Provider.GroupId == group.GroupId);
 
 						// bind distribution to primary
-						if (virtualGroup.BindDistributionToPrimary == true && group.PrimaryGroup &&
+						if (virtualGroup.BindDistributionToPrimary == true && !group.PrimaryGroup &&
 							primaryGroupId != 0)
 						{
 							// if only one service found just use it and do not distribute
@@ -11166,7 +11156,7 @@ namespace SolidCP.EnterpriseServer
 									.AsEnumerable()
 									.Select(serviceId => new Data.Entities.PackageService()
 									{
-										PackageId = package.Package.PackageId,
+										PackageId = packageId,
 										ServiceId = serviceId
 									})
 									.First());
@@ -11175,16 +11165,17 @@ namespace SolidCP.EnterpriseServer
 							{
 								// try to get primary distribution server
 								var primaryServerId = services
-									.Where(s => s.GroupId == package.Server.PrimaryGroupId)
+									.Where(s => s.GroupId == primaryGroupId)
 									.Select(s => s.ServerId)
 									.FirstOrDefault();
-								foreach (var virtualService in virtualServices
-									.Where(v => v.Service.ServerId == primaryServerId))
+								foreach (var virtualServiceId in virtualServices
+									.Where(v => v.Service.ServerId == primaryServerId)
+									.Select(vs => vs.ServiceId))
 								{
 									PackageServices.Add(new Data.Entities.PackageService()
 									{
-										PackageId = package.Package.PackageId,
-										ServiceId = virtualService.ServiceId
+										PackageId = packageId,
+										ServiceId = virtualServiceId
 									});
 								}
 							}
@@ -11210,27 +11201,37 @@ namespace SolidCP.EnterpriseServer
 								{
 									PackageServices.Add(new Data.Entities.PackageService()
 									{
-										PackageId = package.Package.PackageId,
+										PackageId = packageId,
 										ServiceId = service.ServiceId
 									});
 								}
 							}
 							else // Randomized distribution
 							{
-								var service = vservices
-									.AsEnumerable()
-									.OrderBy(s => random.Next())
-									.FirstOrDefault();
-								if (service != null)
-								{
-									PackageServices.Add(new Data.Entities.PackageService()
-									{
-										PackageId = package.Package.PackageId,
-										ServiceId = service.ServiceId
-									});
-								}
-							}
-						}
+                                var serviceId = -1;
+                                var n = vservices.Count();
+                                if (n > 0)
+                                {
+                                    if (n == 1) serviceId = vservices.First().ServiceId;
+                                    else
+                                    {
+                                        var i = random.Next(0, n);
+                                        serviceId = vservices
+                                            .Select(vs => vs.ServiceId)
+                                            .Skip(i)
+                                            .First();
+                                    }
+                                }
+                                if (serviceId > 0)
+                                {
+                                    PackageServices.Add(new Data.Entities.PackageService()
+                                    {
+                                        PackageId = packageId,
+                                        ServiceId = serviceId
+                                    });
+                                }
+                            }
+                        }
 
 						if (group.PrimaryGroup) primaryGroupId = group.GroupId;
 					}
@@ -11288,7 +11289,7 @@ namespace SolidCP.EnterpriseServer
 					}
 					else
 					{
-						return EntityDataReader(new Data.Entities.PackageSetting[0]);
+						return EntityDataReader(Array.Empty<Data.Entities.PackageSetting>());
 					}
 				}
 			}
@@ -11486,7 +11487,7 @@ namespace SolidCP.EnterpriseServer
 						.Where(l => startDate <= l.StartDate && l.StartDate < endDate &&
 							(sourceName == "" || l.SourceName == sourceName) &&
 							(taskName == "" || l.TaskName == taskName) &&
-							(itemId == 0 || l.ItemId == itemId) &&
+							(itemId == 0 || itemId > 0 && l.ItemId == itemId) &&
 #if NETFRAMEWORK
 							(itemName == "" || DbFunctions.Like(l.ItemName, itemName)) &&
 #else
@@ -11513,8 +11514,8 @@ namespace SolidCP.EnterpriseServer
 							l.TaskName,
 							l.ItemName,
 							l.ExecutionLog,
-							UserId = l.UserId ?? 0,
-							l.Username,
+                            UserId = l.UserId != null ? l.UserId : 0,
+                            l.Username,
 							Users = u
 						})
 						.SelectMany(l => l.Users.DefaultIfEmpty(), (l, u) => new
@@ -11638,7 +11639,6 @@ namespace SolidCP.EnterpriseServer
 						Email = u != null ? u.Email : null,
 					});
 				return EntityDataReader(logsWithUser);
-
 			}
 			else
 			{
@@ -11798,8 +11798,8 @@ namespace SolidCP.EnterpriseServer
 					{
 						Package = p,
 						QuotaValue = p.GroupedPackageId != null ?
-							Clone.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0
-					})
+							Clone.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0 // 51 - Bandwidth
+                    })
 					.Select(p => new
 					{
 						p.Package.PackageId,
@@ -11943,8 +11943,8 @@ namespace SolidCP.EnterpriseServer
 					{
 						Package = p,
 						QuotaValue = p.GroupedPackageId != null ?
-							Clone.GetPackageAllocatedQuota(p.GroupedPackageId, 51) : 0,
-					})
+							Clone.GetPackageAllocatedQuota(p.GroupedPackageId, 52) : 0, // 52 diskspace
+                    })
 					.Select(p => new
 					{
 						p.Package.PackageId,
@@ -12063,13 +12063,13 @@ namespace SolidCP.EnterpriseServer
 					{
 						g.GroupId,
 						g.GroupName,
-						MegaBytesSent = g.MegaBytesSent ?? 0,
-						MegaBytesReceived = g.MegaBytesReceived ?? 0,
-						MegaBytesTotal = g.MegaBytesTotal ?? 0,
-						BytesSent = g.BytesSent ?? 0,
-						BytesReceived = g.BytesReceived ?? 0,
-						BytesTotal = g.BytesTotal ?? 0
-					});
+                        MegaBytesSent = g.MegaBytesSent != null ? g.MegaBytesSent : 0,
+                        MegaBytesReceived = g.MegaBytesReceived != null ? g.MegaBytesReceived : 0,
+                        MegaBytesTotal = g.MegaBytesTotal != null ? g.MegaBytesTotal : 0,
+                        BytesSent = g.BytesSent != null ? g.BytesSent : 0,
+                        BytesReceived = g.BytesReceived != null ? g.BytesReceived : 0,
+                        BytesTotal = g.BytesTotal != null ? g.BytesTotal : 0
+                    });
 				return EntityDataSet(packages);
 			}
 			else
@@ -12125,9 +12125,9 @@ namespace SolidCP.EnterpriseServer
 					{
 						g.GroupId,
 						g.GroupName,
-						Diskspace = g.Diskspace ?? 0,
-						DiskspaceBytes = g.DiskspaceBytes ?? 0
-					});
+                        Diskspace = g.Diskspace.HasValue ? g.Diskspace.Value : 0,
+                        DiskspaceBytes = g.DiskspaceBytes.HasValue ? g.DiskspaceBytes.Value : 0
+                    });
 
 				return EntityDataSet(packages);
 			}
@@ -12772,15 +12772,15 @@ namespace SolidCP.EnterpriseServer
 				if (!CheckActorPackageRights(actorId, packageId))
 					throw new AccessViolationException("You are not allowed to access this package");
 
-				using (var tree = PackagesTree(actorId, true))
-				{
-					var scheduleIds = Schedules
-						.Join(tree, s => s.PackageId, pt => pt, (s, pt) => new { s.ScheduleId, s.Enabled, s.NextRun })
-						.OrderByDescending(s => s.Enabled)
-						.ThenBy(s => s.NextRun)
-						.Select(s => s.ScheduleId)
-						.ToList();
-					var schedules = scheduleIds
+                using (var tree = PackagesTree(actorId, true))
+                using (var scheduleIds = Schedules
+                    .Join(tree, s => s.PackageId, pt => pt, (s, pt) => new { s.ScheduleId, s.Enabled, s.NextRun })
+                    .OrderByDescending(s => s.Enabled)
+                    .ThenBy(s => s.NextRun)
+                    .Select(s => s.ScheduleId)
+                    .ToTempIdSet(this))
+                {
+                    var schedules = scheduleIds
 						.Join(Schedules, sid => sid, s => s.ScheduleId, (sid, s) => s)
 						.Select(s => new
 						{
@@ -12864,7 +12864,7 @@ namespace SolidCP.EnterpriseServer
 							s.S.ScheduleId,
 							s.S.TaskId,
 							s.S.Task.TaskType,
-							//s.S.Task.RoleId,
+							s.S.Task.RoleId,
 							s.S.ScheduleName,
 							s.S.ScheduleTypeId,
 							s.S.Interval,
@@ -12890,7 +12890,7 @@ namespace SolidCP.EnterpriseServer
 							u.FirstName,
 							u.LastName,
 							u.FullName,
-							u.RoleId,
+							UserRoleId = u.RoleId,
 							u.Email
 						});
 
@@ -12974,8 +12974,8 @@ namespace SolidCP.EnterpriseServer
 						s.PriorityId,
 						s.MaxExecutionTime,
 						s.WeekMonthDay,
-						StatusId = 1
-					});
+                        StatusId = ScheduleStatus.Idle
+                    });
 
 				var task = schedule
 					.Join(ScheduleTasks, s => s.TaskId, st => st.TaskId, (s, st) => new
@@ -13040,7 +13040,7 @@ namespace SolidCP.EnterpriseServer
 						s.LastRun,
 						s.NextRun,
 						s.Enabled,
-						StatusId = 1,
+                        StatusId = ScheduleStatus.Idle,
 						s.PriorityId,
 						s.HistoriesNumber,
 						s.MaxExecutionTime,
@@ -13092,8 +13092,8 @@ namespace SolidCP.EnterpriseServer
 						s.PriorityId,
 						s.MaxExecutionTime,
 						s.WeekMonthDay,
-						StatusId = 1
-					});
+                        StatusId = ScheduleStatus.Idle
+                    });
 
 				var task = ScheduleTasks
 					.Where(st => st.TaskId == next.TaskId)
@@ -13104,27 +13104,31 @@ namespace SolidCP.EnterpriseServer
 						st.RoleId
 					});
 
-				var parameter = ScheduleTaskParameters
-					.Where(stp => stp.TaskId == next.TaskId)
-					.GroupJoin(ScheduleParameters, stp => new { stp.ParameterId, ScheduleId = nextScheduleId },
-						sp => new { sp.ParameterId, ScheduleId = (int?)sp.ScheduleId }, (stp, sp) => new
-						{
-							ScheduleId = nextScheduleId,
-							stp.ParameterId,
-							stp.DataTypeId,
-							stp.DefaultValue,
-							Parameters = sp
-						})
-					.SelectMany(p => p.Parameters.DefaultIfEmpty(), (p, sp) => new
-					{
-						p.ScheduleId,
-						p.ParameterId,
-						p.DataTypeId,
-						ParameterValue = sp != null ? sp.ParameterValue : p.DefaultValue
-					});
+                var parameter = Schedules
+                    .Where(s => s.ScheduleId == nextScheduleId)
+                    .Join(ScheduleTaskParameters, s => s.TaskId, stp => stp.TaskId, (s, stp) => new
+                    {
+                        Schedule = s,
+                        TaskParameter = stp
+                    })
+                    .GroupJoin(ScheduleParameters, s => new { s.TaskParameter.ParameterId, s.Schedule.ScheduleId },
+                        sp => new { sp.ParameterId, sp.ScheduleId }, (stp, sp) => new
+                        {
+                            stp.Schedule.ScheduleId,
+                            stp.TaskParameter.ParameterId,
+                            stp.TaskParameter.DataTypeId,
+                            stp.TaskParameter.DefaultValue,
+                            Parameters = sp
+                        })
+                    .SelectMany(p => p.Parameters.DefaultIfEmpty(), (p, sp) => new
+                    {
+                        p.ScheduleId,
+                        p.ParameterId,
+                        p.DataTypeId,
+                        ParameterValue = sp != null ? sp.ParameterValue : p.DefaultValue
+                    });
 
-				return EntityDataSet(schedule, task, parameter);
-
+                return EntityDataSet(schedule, task, parameter);
 			}
 			else
 			{
@@ -13520,30 +13524,30 @@ namespace SolidCP.EnterpriseServer
 				if (!CheckActorUserRights(actorId, userId))
 					throw new AccessViolationException("You are not allowed to access this account");
 
-				var comments = Comments
-					.Where(c => c.ItemTypeId == itemTypeId && c.ItemId == itemId)
-					.AsEnumerable()
-					.Where(c => Clone.CheckUserParent(userId, c.UserId))
-					.OrderBy(c => c.CreatedDate)
-					.Select(c => new
-					{
-						c.CommentId,
-						c.ItemTypeId,
-						c.ItemId,
-						c.UserId,
-						c.CreatedDate,
-						c.CommentText,
-						c.SeverityId,
-						//user
-						c.User.Username,
-						c.User.FirstName,
-						c.User.LastName,
-						FullName = c.User.FirstName + " " + c.User.LastName,
-						c.User.RoleId,
-						c.User.Email
-					});
+                var comments = Comments
+                    .Where(c => c.ItemTypeId == itemTypeId && c.ItemId == itemId)
+                    .OrderBy(c => c.CreatedDate)
+                    .AsEnumerable()
+                    .Where(c => Clone.CheckUserParent(userId, c.UserId))
+                    .Select(c => new
+                    {
+                        c.CommentId,
+                        c.ItemTypeId,
+                        c.ItemId,
+                        c.UserId,
+                        c.CreatedDate,
+                        c.CommentText,
+                        c.SeverityId,
+                        //user
+                        c.User.Username,
+                        c.User.FirstName,
+                        c.User.LastName,
+                        FullName = c.User.FirstName + " " + c.User.LastName,
+                        c.User.RoleId,
+                        c.User.Email
+                    });
 
-				return EntityDataSet(comments);
+                return EntityDataSet(comments);
 			}
 			else
 			{
@@ -13850,19 +13854,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				foreach (var domain in ExchangeOrganizationDomains.Where(d => d.ItemId == itemId && d.DomainId == domainId))
-				{
-					domain.DomainTypeId = domainTypeId;
-				}
-				SaveChanges();
-#else
-				ExchangeOrganizationDomains
-					.Where(d => d.ItemId == itemId && d.DomainId == domainId)
-					.ExecuteUpdate(set => set.SetProperty(d => d.DomainTypeId, domainTypeId));
-#endif
-			}
-			else
+                ExchangeOrganizationDomains
+                    .Where(d => d.ItemId == itemId && d.DomainId == domainId)
+                    .ExecuteUpdate(d => new Data.Entities.ExchangeOrganizationDomain() { DomainTypeId = domainTypeId });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(
 					NativeConnectionString,
@@ -14257,7 +14253,7 @@ namespace SolidCP.EnterpriseServer
 						a.Account.SubscriberNumber,
 						a.Account.UserPrincipalName,
 						a.Account.ArchivingMailboxPlanId,
-						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null,
+						ArchivingMailboxPlan = p != null ? p.MailboxPlan : null,
 						a.Account.EnableArchiving,
 						a.Account.LevelId,
 						a.Account.IsVip
@@ -14302,7 +14298,7 @@ namespace SolidCP.EnterpriseServer
 						a.Account.SubscriberNumber,
 						a.Account.UserPrincipalName,
 						a.Account.ArchivingMailboxPlanId,
-						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null,
+						ArchivingMailboxPlan = p != null ? p.MailboxPlan : null,
 						a.Account.EnableArchiving
 					});
 
@@ -14353,7 +14349,7 @@ namespace SolidCP.EnterpriseServer
 					.SelectMany(a => a.ArchivingMailboxPlans.DefaultIfEmpty(), (a, p) => new
 					{
 						a.Account,
-						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null
+						ArchivingMailboxPlan = p != null ? p.MailboxPlan : null
 					})
 					.Select(a => new
 					{
@@ -14448,8 +14444,8 @@ namespace SolidCP.EnterpriseServer
 						a.PrimaryEmailAddress,
 						a.MailEnabledPublicFolder,
 						a.MailboxPlanId,
-						a.MailboxPlan.MailboxPlan,
-						a.SubscriberNumber,
+                        MailboxPlan = a.MailboxPlan != null ? a.MailboxPlan.MailboxPlan : null,
+                        a.SubscriberNumber,
 						a.UserPrincipalName
 					});
 
@@ -14475,7 +14471,6 @@ namespace SolidCP.EnterpriseServer
 					{
 						Account = a,
 						ArchivingMailboxPlans = p
-						//ArchivingMailboxPlan = p.Any() ? (int?)p.Single().MailboxPlanId : null
 					})
 					.SelectMany(a => a.ArchivingMailboxPlans.DefaultIfEmpty(), (a, p) => new
 					{
@@ -14493,12 +14488,11 @@ namespace SolidCP.EnterpriseServer
 						a.Account.SubscriberNumber,
 						a.Account.UserPrincipalName,
 						a.Account.ArchivingMailboxPlanId,
-						ArchivingMailboxPlan = p != null ? (int?)p.MailboxPlanId : null,
+						ArchivingMailboxPlan = p != null ? p.MailboxPlan : null,
 						a.Account.EnableArchiving
 					});
 
 				return EntityDataReader(account);
-
 			}
 			else
 			{
@@ -14688,8 +14682,8 @@ namespace SolidCP.EnterpriseServer
 						a.PrimaryEmailAddress,
 						a.MailEnabledPublicFolder,
 						a.MailboxPlanId,
-						a.MailboxPlan.MailboxPlan,
-						a.SubscriberNumber,
+                        MaliboxPlan = a.MailboxPlan != null ? a.MailboxPlan.MailboxPlan : null,
+                        a.SubscriberNumber,
 						a.UserPrincipalName,
 						a.LevelId,
 						a.IsVip
@@ -14791,7 +14785,7 @@ namespace SolidCP.EnterpriseServer
 			{
 				var account = ExchangeAccounts
 					.Where(a => a.PrimaryEmailAddress == primaryEmailAddress && a.AccountType == accountType)
-					.Select(a => new { a.AccountId, a.ItemId, a.Item.PackageId })
+					.Select(a => new { a.AccountId, a.Item.PackageId })
 					.FirstOrDefault();
 
 				// check rights
@@ -15167,16 +15161,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				foreach (var org in ExchangeOrganizations.Where(o => o.ItemId == itemId))
-					org.ExchangeMailboxPlanId = mailboxPlanId;
-				SaveChanges();
-#else
-				ExchangeOrganizations.Where(o => o.ItemId == itemId)
-					.ExecuteUpdate(set => set.SetProperty(o => o.ExchangeMailboxPlanId, mailboxPlanId));
-#endif
-			}
-			else
+                ExchangeOrganizations.Where(o => o.ItemId == itemId)
+                    .ExecuteUpdate(eo => new Data.Entities.ExchangeOrganization() { ExchangeMailboxPlanId = mailboxPlanId });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(
 					NativeConnectionString,
@@ -15191,23 +15179,15 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				foreach (var account in ExchangeAccounts.Where(a => a.AccountId == accountId))
-				{
-					account.MailboxPlanId = mailboxPlanId == 0 ? null : mailboxPlanId;
-					account.ArchivingMailboxPlanId = archivePlanId < 1 ? null : archivePlanId;
-					account.EnableArchiving = EnableArchiving;
-				}
-				SaveChanges();
-#else
-				ExchangeAccounts.Where(a => a.AccountId == accountId)
-					.ExecuteUpdate(set => set
-						.SetProperty(a => a.MailboxPlanId, mailboxPlanId)
-						.SetProperty(a => a.ArchivingMailboxPlanId, archivePlanId)
-						.SetProperty(a => a.EnableArchiving, EnableArchiving));
-#endif
-			}
-			else
+                ExchangeAccounts.Where(a => a.AccountId == accountId)
+                    .ExecuteUpdate(ea => new Data.Entities.ExchangeAccount()
+                    {
+                        MailboxPlanId = mailboxPlanId,
+                        ArchivingMailboxPlanId = archivePlanId,
+                        EnableArchiving = EnableArchiving
+                    });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(
 					NativeConnectionString,
@@ -15579,7 +15559,6 @@ namespace SolidCP.EnterpriseServer
 					})
 					.OrderBy(d => d.DisclaimerName);
 				return EntityDataReader(disclaimers);
-
 			}
 			else
 			{
@@ -15595,19 +15574,14 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETCOREAPP
-				ExchangeAccounts
-					.Where(a => a.AccountId == AccountID)
-					.ExecuteUpdate(e => e
-						.SetProperty(p => p.ExchangeDisclaimerId, ExchangeDisclaimerId));
-#else
-				var account = ExchangeAccounts
-					.FirstOrDefault(a => a.AccountId == AccountID);
-				account.ExchangeDisclaimerId = ExchangeDisclaimerId;
-				SaveChanges();
-#endif
-			}
-			else
+                ExchangeAccounts
+                    .Where(a => a.AccountId == AccountID)
+                    .ExecuteUpdate(ea => new Data.Entities.ExchangeAccount()
+                    {
+                        ExchangeDisclaimerId = ExchangeDisclaimerId
+                    });
+            }
+            else
 			{
 				object id = null;
 				if (ExchangeDisclaimerId != -1) id = ExchangeDisclaimerId;
@@ -15693,22 +15667,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				var token = AccessTokens
-					.FirstOrDefault(t => t.AccessTokenGuid == accessToken);
-				if (token != null)
-				{
-					token.SmsResponse = response;
-					SaveChanges();
-				}
-#else
-				AccessTokens
-					.Where(t => t.AccessTokenGuid == accessToken)
-					.ExecuteUpdate(set => set
-						.SetProperty(t => t.SmsResponse, response));
-#endif
-			}
-			else
+                AccessTokens
+                    .Where(t => t.AccessTokenGuid == accessToken)
+                    .ExecuteUpdate(at => new Data.Entities.AccessToken() { SmsResponse = response });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(
 					NativeConnectionString,
@@ -16435,17 +16398,10 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				var user = CrmUsers.FirstOrDefault(u => u.AccountId == itemId);
-				user.CalType = CALType;
-				SaveChanges();
-#else
-				CrmUsers.Where(u => u.AccountId == itemId)
-					.ExecuteUpdate(set => set
-						.SetProperty(u => u.CalType, CALType));
-#endif
-			}
-			else
+                CrmUsers.Where(u => u.AccountId == itemId)
+                    .ExecuteUpdate(cu => new Data.Entities.CrmUser() { CalType = CALType });
+            }
+            else
 			{
 				SqlHelper.ExecuteReader(NativeConnectionString, CommandType.StoredProcedure, "UpdateCRMUser",
 					new SqlParameter[] {
@@ -16990,8 +16946,7 @@ namespace SolidCP.EnterpriseServer
 					{
 						// physical server
 						var packageIps = PackageIpAddresses
-							.Select(pip => pip.AddressId)
-							.ToList();
+							.Select(pip => pip.AddressId);
 						var addresses = IpAddresses
 							.Where(ip => (ip.ServerId == serverId || ip.ServerId == null) &&
 								(poolId == 0 || ip.PoolId == poolId) &&
@@ -17016,21 +16971,23 @@ namespace SolidCP.EnterpriseServer
 					{
 						// virtual server
 						// get resource group by service
-						serverId = Services
-							.Where(s => s.ServiceId == serviceId)
-							.Select(s => s.ServerId)
-							.FirstOrDefault();
-						var packageIps = PackageIpAddresses
-							.Select(pip => pip.AddressId)
-							.ToList();
-						var addresses = IpAddresses
-							.Where(ip => (ip.ServerId == null || ip.ServerId == serverId) &&
-								(poolId == 0 || ip.PoolId == poolId) &&
-								!packageIps.Any(pip => pip == ip.AddressId))
-							.OrderByDescending(ip => ip.ServerId)
-							.ThenBy(ip => ip.DefaultGateway)
-							.ThenBy(ip => ip.ExternalIp)
-							.Select(ip => new
+                        var groupId = Services
+                            .Where(s => s.ServiceId == serviceId)
+                            .Select(s => s.Provider.GroupId)
+                            .FirstOrDefault();
+                        var serverIds = Services
+                            .Where(s => s.ServiceId == serviceId && s.Provider.GroupId == groupId)
+                            .Select(s => s.ServerId);
+                        var packageIps = PackageIpAddresses
+                            .Select(pip => pip.AddressId);
+                        var addresses = IpAddresses
+                            .Where(ip => (ip.ServerId == null || serverIds.Any(si => ip.ServerId == si)) &&
+                                (poolId == 0 || ip.PoolId == poolId) &&
+                                !packageIps.Any(pip => pip == ip.AddressId))
+                            .OrderByDescending(ip => ip.ServerId)
+                            .ThenBy(ip => ip.DefaultGateway)
+                            .ThenBy(ip => ip.ExternalIp)
+                            .Select(ip => new
 							{
 								ip.AddressId,
 								ip.ExternalIp,
@@ -17149,8 +17106,8 @@ namespace SolidCP.EnterpriseServer
 							pa.Address.DefaultGateway,
 							pa.Address.Vlan,
 							pa.ItemId,
-							pa.Item.ItemName,
-							pa.PackageId,
+                            ItemName = pa.Item != null ? pa.Item.ItemName : null,
+                            pa.PackageId,
 							pa.Package.PackageName,
 							pa.Package.UserId,
 							pa.Package.User.Username,
@@ -17215,16 +17172,27 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-				return PackageIpAddresses
-					.Join(IpAddresses, pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
-					{
-						pip.OrgId,
-						ip.PoolId
-					})
-					.Count(ip => (poolId == 0 || poolId == ip.PoolId) &&
-						(orgId == 0 || orgId == ip.OrgId));
-			}
-			else
+                return PackageIpAddresses
+                    .Join(IpAddresses, pip => pip.AddressId, ip => ip.AddressId, (pip, ip) => new
+                    {
+                        pip.OrgId,
+                        pip.PackageId,
+                        ip.PoolId
+                    })
+                    .Join(Packages, pip => pip.PackageId, p => p.PackageId, (pip, p) => new
+                    {
+                        PIP = pip,
+                        UserId = p.UserId
+                    })
+                    .Join(Users, pip => pip.UserId, u => u.UserId, (pip, u) => new
+                    {
+                        pip.PIP.OrgId,
+                        pip.PIP.PoolId
+                    })
+                    .Count(ip => (poolId == 0 || poolId == ip.PoolId) &&
+                        (orgId == 0 || orgId == ip.OrgId));
+            }
+            else
 			{
 				object obj = SqlHelper.ExecuteScalar(NativeConnectionString, CommandType.StoredProcedure,
 					"GetPackageIPAddressesCount",
@@ -17253,22 +17221,14 @@ namespace SolidCP.EnterpriseServer
 				}
 				else // 2rd level space and below
 				{
-#if NETFRAMEWORK
-					var packageIp = PackageIpAddresses
-						.FirstOrDefault(pa => pa.PackageAddressId == id);
-					if (packageIp != null)
-					{
-						packageIp.PackageId = parentPackageId.Value;
-						SaveChanges();
-					}
-#else
-					PackageIpAddresses
-						.Where(pa => pa.PackageAddressId == id)
-						.ExecuteUpdate(set => set
-							.SetProperty(pa => pa.PackageId, parentPackageId.Value));
-#endif
-				}
-			}
+                    PackageIpAddresses
+                        .Where(pa => pa.PackageAddressId == id)
+                        .ExecuteUpdate(pip => new Data.Entities.PackageIpAddress()
+                        {
+                            PackageId = parentPackageId.Value
+                        });
+                }
+            }
 			else
 			{
 				SqlHelper.ExecuteNonQuery(NativeConnectionString, CommandType.StoredProcedure, "DeallocatePackageIPAddress",
@@ -17642,8 +17602,8 @@ namespace SolidCP.EnterpriseServer
 						a.Address.DefaultGateway,
 						a.Address.Vlan,
 						a.ItemId,
-						a.Item.ItemName,
-						a.PackageId,
+                        ItemName = a.Item != null ? a.Item.ItemName : null,
+                        a.PackageId,
 						a.Package.PackageName,
 						a.Package.UserId,
 						a.Package.User.Username,
@@ -17673,7 +17633,6 @@ namespace SolidCP.EnterpriseServer
 						a.Address.SubnetMask,
 						a.Address.DefaultGateway,
 						a.IsPrimary,
-						a.Item.PackageId
 					})
 					.OrderByDescending(a => a.IsPrimary)
 					.AsEnumerable()
@@ -18175,9 +18134,11 @@ namespace SolidCP.EnterpriseServer
 
 				users = users.Skip(startRow).Take(count);
 
-				return EntityDataReader(usersCount, users);
-			}
-			else
+                // TODO bug not returning usersCount?
+                // return EntityDataReader(usersCount, users);
+                return EntityDataReader(users);
+            }
+            else
 			{
 				SqlParameter[] sqlParams = new SqlParameter[]
 				{
@@ -18614,22 +18575,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				var user = LyncUsers
-					.FirstOrDefault(u => u.AccountId == accountId);
-				if (user != null)
-				{
-					user.SipAddress = sipAddress;
-					SaveChanges();
-				}
-#else
-				LyncUsers
-					.Where(u => u.AccountId == accountId)
-					.ExecuteUpdate(set => set
-						.SetProperty(u => u.SipAddress, sipAddress));
-#endif
-			}
-			else
+                LyncUsers
+                    .Where(u => u.AccountId == accountId)
+                    .ExecuteUpdate(lu => new Data.Entities.LyncUser() { SipAddress = sipAddress });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(NativeConnectionString,
 					CommandType.StoredProcedure,
@@ -18735,7 +18685,6 @@ namespace SolidCP.EnterpriseServer
 					"GetLyncUsers", sqlParams);
 			}
 		}
-
 
 		public IDataReader GetLyncUsersByPlanId(int itemId, int planId)
 		{
@@ -18878,7 +18827,6 @@ namespace SolidCP.EnterpriseServer
 				return Convert.ToInt32(outParam.Value);
 			}
 		}
-
 
 		public void UpdateLyncUserPlan(int itemID, LyncUserPlan lyncUserPlan)
 		{
@@ -19097,21 +19045,11 @@ namespace SolidCP.EnterpriseServer
 		{
 			if (UseEntityFramework)
 			{
-#if NETFRAMEWORK
-				var user = LyncUsers.FirstOrDefault(u => u.AccountId == accountId);
-				if (user != null)
-				{
-					user.LyncUserPlanId = lyncUserPlanId;
-					SaveChanges();
-				}
-#else
-				LyncUsers
-					.Where(u => u.AccountId == accountId)
-					.ExecuteUpdate(set => set
-						.SetProperty(u => u.LyncUserPlanId, lyncUserPlanId));
-#endif
-			}
-			else
+                LyncUsers
+                    .Where(u => u.AccountId == accountId)
+                    .ExecuteUpdate(lu => new Data.Entities.LyncUser() { LyncUserPlanId = lyncUserPlanId });
+            }
+            else
 			{
 				SqlHelper.ExecuteNonQuery(
 					NativeConnectionString,
@@ -19666,10 +19604,10 @@ namespace SolidCP.EnterpriseServer
 					new SqlParameter("@SfBUserPlanId", (sfbUserPlanId == 0) ? (object)DBNull.Value : (object)sfbUserPlanId));
 			}
 		}
-		#endregion
+        #endregion
 
-		#region Diverse Methods
-		public int GetPackageIdByName(string Name)
+        #region Diverse Methods
+        /*public int GetPackageIdByName(string Name)
 		{
 			const bool UseEntityFrameworkForGetPackageIdByName = true;
 
@@ -19703,8 +19641,13 @@ namespace SolidCP.EnterpriseServer
 
 				return packageId;
 			}
-		}
-		public int GetServiceIdByProviderForServer(int providerId, int packageId)
+		}*/
+        public IEnumerable<int> GetProviderIdsByServerId(int serverId) =>
+			Services
+			   .Where(s => s.ServerId == serverId)
+			   .Select(s => s.ProviderId);
+
+        public int GetServiceIdByProviderForServer(int providerId, int packageId)
 		{
 			if (UseEntityFramework)
 			{
@@ -19805,8 +19748,8 @@ WHERE P.ProviderID = @ProviderID",
 			if (UseEntityFramework)
 			{
 				var quotaId = Quotas
-					.Where(q => q.QuotaName == engineName)
-					.Select(q => q.QuotaId)
+                    .Where(q => q.QuotaName == engineName && q.GroupId == groupId)
+                    .Select(q => q.QuotaId)
 					.FirstOrDefault();
 				HostingPlanQuotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
 				Quotas.Where(q => q.QuotaId == quotaId).ExecuteDelete();
@@ -19923,7 +19866,7 @@ WHERE (Packages.PackageID = @PackageID) AND (Quotas.GroupID = @GroupID) AND (Hos
 @"SELECT PackageServices.ServiceID 
 FROM PackageServices
 INNER JOIN Services ON PackageServices.ServiceID = Services.ServiceID
-WHERE Services.ProviderID = @ProviderID and PackageID = @PackageID",
+WHERE Services.ProviderID = @ProviderID AND PackageID = @PackageID",
 					new SqlParameter("@ProviderID", providerId),
 					new SqlParameter("@PackageID", packageId));
 
@@ -20728,7 +20671,8 @@ WHERE PackageID = @PackageID",
 			{
 				var levels = StorageSpaceLevels
 					.Where(sl => sl.Id == id)
-					.Select(sl => new { sl.Id, sl.Name, sl.Description });
+					.Select(sl => new { sl.Id, sl.Name, sl.Description })
+					.Take(1);
 				return EntityDataReader(levels);
 			}
 			else
@@ -20940,6 +20884,7 @@ WHERE PackageID = @PackageID",
 			{
 				var spaces = StorageSpaces
 					.Where(s => s.Id == id)
+					.Take(1)
 					.Select(s => new
 					{
 						s.Id,
@@ -20975,6 +20920,7 @@ WHERE PackageID = @PackageID",
 			{
 				var spaces = StorageSpaces
 					.Where(s => s.ServerId == serverId && s.Path == path)
+					.Take(1)
 					.Select(s => new
 					{
 						s.Id,
@@ -21730,15 +21676,7 @@ WHERE PackageID = @PackageID",
 			{
 				var collection = RdsCollections
 					.Where(c => c.Id == id)
-					.Take(1)
-					.Select(c => new
-					{
-						c.Id,
-						c.ItemId,
-						c.Name,
-						c.Description,
-						c.DisplayName
-					});
+					.Take(1);
 				return EntityDataReader(collection);
 			}
 			else
@@ -21777,7 +21715,7 @@ WHERE PackageID = @PackageID",
 
 				collections = collections.Skip(startRow).Take(maximumRows);
 
-				return EntityDataSet(collections);
+				return EntityDataSet(count, collections);
 			}
 			else
 			{
@@ -22084,8 +22022,8 @@ WHERE PackageID = @PackageID",
 
 				if (!string.IsNullOrEmpty(sortColumn))
 				{
-					if (sortColumn.StartsWith("S.")) sortColumn = sortColumn.Substring(2);
-					servers = servers.OrderBy(ColumnName(sortColumn));
+                    sortColumn = Regex.Replace(sortColumn, "^[A-Z]+\\.", "");
+                    servers = servers.OrderBy(ColumnName(sortColumn));
 				}
 
 				servers = servers.Skip(startRow).Take(maximumRows);
@@ -22767,7 +22705,6 @@ WHERE PackageID = @PackageID",
 						e.StorageSpaceFolder.FsrmQuotaSizeBytes
 					});
 				return EntityDataReader(folders);
-
 			}
 			else
 			{

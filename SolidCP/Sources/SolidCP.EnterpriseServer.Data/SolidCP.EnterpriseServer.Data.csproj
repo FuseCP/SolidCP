@@ -6,10 +6,12 @@
         <ImplicitUsings>disable</ImplicitUsings>
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
         <SupportOracle Condition="$(TargetFramework) != 'net48'">true</SupportOracle>
-        <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations;</DefineConstants>
+		<UsePomelo>false</UsePomelo>
+        <DefineConstants>$(DefineConstants);ScaffoldedEntities;ScaffoldedDbContext;ScaffoldedConfigurations</DefineConstants>
         <DefineConstants Condition="$(SupportOracle) == 'true'">$(DefineConstants);Oracle</DefineConstants>
         <DefineConstants Condition="$(MultipleEF6Providers) == 'true'">$(DefineConstants);MultipleEF6Providers</DefineConstants>
-        <OutputType>Exe</OutputType>
+		<DefineConstants Condition="$(UsePomelo) != 'true'">$(DefineConstants);NoPomelo</DefineConstants>
+		<OutputType>Exe</OutputType>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath>bin\$(Configuration)</OutputPath>
         <EntityFramework6>6.5</EntityFramework6>
@@ -45,7 +47,9 @@
         <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.6" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
-        <PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.80" Condition="$(SupportOracle) == 'True'" />
+		<PackageReference Include="MySql.EntityFrameworkCore" Version="9.0.6" Condition="$(UsePomelo) != 'true'" />
+		<PackageReference Include="MySql.Data" Version="9.4.0"  Condition="$(UsePomelo) != 'true'" />
+		<PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.80" Condition="$(SupportOracle) == 'True'" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="9.103.9" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.6" />

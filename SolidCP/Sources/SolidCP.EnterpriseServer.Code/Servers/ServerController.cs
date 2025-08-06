@@ -373,10 +373,10 @@ namespace SolidCP.EnterpriseServer
 					throw new ApplicationException("Could not get providers list.");
 				}
 
-				var installedServiceIds = Database.GetServiceIdsByServerId(server.ServerId)
+				var installedProviderIds = Database.GetProviderIdsByServerId(server.ServerId)
 					.ToHashSet();
 				var discovery = providers
-					.Where(provider => !provider.DisableAutoDiscovery && !installedServiceIds.Contains(provider.ProviderId));
+					.Where(provider => !provider.DisableAutoDiscovery && !installedProviderIds.Contains(provider.ProviderId));
 
 				foreach (var provider in discovery)
 				{

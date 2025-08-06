@@ -579,7 +579,15 @@ when adding the server in SolidCP Portal.
 			return this;
 		}
 
-		public override UI.SetupWizard Database()
+#if EFSupport
+        public const bool SqlServerOnly = false;
+        public const bool MariaDbSupport = DbContext.UsePomelo;
+#else
+        public const bool SqlServerOnly = true;
+        public const bool MariaDbSupport = false;
+#endif
+
+        public override UI.SetupWizard Database()
 		{
 			var settings = Settings.EnterpriseServer;
 			AddInteractivePage(() =>
@@ -589,13 +597,15 @@ when adding the server in SolidCP Portal.
 
 				if (dbType == DbType.Unknown)
 				{
-					form = new ConsoleForm(@"
+					form = new ConsoleForm(@$"
 Database Settings:
 ==================
 
 [  Use Microsoft SQL-Server Database  ]
-[  Use MySQL/MariaDB Database  ]
-[  Use SQLite Database  ]
+" + (SqlServerOnly ? "" : 
+@$"[  Use {(MariaDbSupport ? "MySQL/MariaDB" : "MySQL")} Database  ]
+[  Use SQLite Database  ]") +
+@"
 
 [  Back  ]
 ")

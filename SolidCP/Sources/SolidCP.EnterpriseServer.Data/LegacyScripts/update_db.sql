@@ -22238,3 +22238,206 @@ CREATE PROCEDURE [dbo].[GetServiceItemsByName]
 
     RETURN
 GO
+
+
+-- Fix GetSchedules
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetSchedules')
+DROP PROCEDURE GetSchedules
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetSchedules]
+    (
+    	@ActorID int,
+    	@PackageID int,
+    	@Recursive bit
+    )
+    AS
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    DECLARE @Schedules TABLE
+    (
+    	ScheduleID int
+    )
+
+    INSERT INTO @Schedules (ScheduleID)
+    SELECT
+    	S.ScheduleID
+    FROM Schedule AS S
+    INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+    ORDER BY S.Enabled DESC, S.NextRun
+
+    -- select schedules
+    SELECT
+    	S.ScheduleID,
+    	S.TaskID,
+    	ST.TaskType,
+    	ST.RoleID,
+    	S.PackageID,
+    	S.ScheduleName,
+    	S.ScheduleTypeID,
+    	S.Interval,
+    	S.FromTime,
+    	S.ToTime,
+    	S.StartTime,
+    	S.LastRun,
+    	S.NextRun,
+    	S.Enabled,
+    	1 AS StatusID,
+    	S.PriorityID,
+    	S.MaxExecutionTime,
+    	S.WeekMonthDay,
+    	-- bug ISNULL(0, ...) always is not NULL
+    	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+    	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = 'SCHEDULER' ORDER BY StartDate DESC), 0) AS LastResult,
+
+    	U.Username,
+    	U.FirstName,
+    	U.LastName,
+    	U.FullName,
+    	U.RoleID AS UserRoleID,
+    	U.Email
+    FROM @Schedules AS STEMP
+    INNER JOIN Schedule AS S ON STEMP.ScheduleID = S.ScheduleID
+    INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+    INNER JOIN ScheduleTasks AS ST ON S.TaskID = ST.TaskID
+    INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+
+    -- select schedule parameters
+    SELECT
+    	S.ScheduleID,
+    	STP.ParameterID,
+    	STP.DataTypeID,
+    	ISNULL(SP.ParameterValue, STP.DefaultValue) AS ParameterValue
+    FROM @Schedules AS STEMP
+    INNER JOIN Schedule AS S ON STEMP.ScheduleID = S.ScheduleID
+    INNER JOIN ScheduleTaskParameters AS STP ON S.TaskID = STP.TaskID
+    LEFT OUTER JOIN ScheduleParameters AS SP ON STP.ParameterID = SP.ParameterID AND SP.ScheduleID = S.ScheduleID
+    RETURN
+GO
+
+
+-- Fix GetSchedulesPaged
+IF EXISTS (SELECT * FROM SYS.OBJECTS WHERE type = 'P' AND name = 'GetSchedulesPaged')
+DROP PROCEDURE GetSchedulesPaged
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[GetSchedulesPaged]
+    (
+    	@ActorID int,
+    	@PackageID int,
+    	@Recursive bit,
+    	@FilterColumn nvarchar(50) = '',
+    	@FilterValue nvarchar(50) = '',
+    	@SortColumn nvarchar(50),
+    	@StartRow int,
+    	@MaximumRows int
+    )
+    AS
+    BEGIN
+
+    -- check rights
+    IF dbo.CheckActorPackageRights(@ActorID, @PackageID) = 0
+    RAISERROR('You are not allowed to access this package', 16, 1)
+
+    DECLARE @condition nvarchar(400)
+    SET @condition = ' 1 = 1 '
+
+    IF @FilterValue <> '' AND @FilterValue IS NOT NULL
+    BEGIN
+    	IF @FilterColumn <> '' AND @FilterColumn IS NOT NULL
+    		SET @condition = @condition + ' AND ' + @FilterColumn + ' LIKE ''' + @FilterValue + ''''
+    	ELSE
+    		SET @condition = @condition + '
+    			AND (ScheduleName LIKE ''' + @FilterValue + '''
+    			OR Username LIKE ''' + @FilterValue + '''
+    			OR FullName LIKE ''' + @FilterValue + '''
+    			OR Email LIKE ''' + @FilterValue + ''')'
+    END
+
+    IF @SortColumn IS NULL OR @SortColumn = ''
+    SET @SortColumn = 'S.ScheduleName ASC'
+
+    DECLARE @sql nvarchar(3500)
+
+    set @sql = '
+    SELECT COUNT(S.ScheduleID) FROM Schedule AS S
+    INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+    INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+    INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+    WHERE ' + @condition + '
+
+    DECLARE @Schedules AS TABLE
+    (
+    	ScheduleID int
+    );
+
+    WITH TempSchedules AS (
+    	SELECT ROW_NUMBER() OVER (ORDER BY ' + @SortColumn + ') as Row,
+    		S.ScheduleID
+    	FROM Schedule AS S
+    	INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+    	INNER JOIN PackagesTree(@PackageID, @Recursive) AS PT ON S.PackageID = PT.PackageID
+    	INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID
+    	WHERE ' + @condition + '
+    )
+
+    INSERT INTO @Schedules
+    SELECT ScheduleID FROM TempSchedules
+    WHERE TempSchedules.Row BETWEEN @StartRow + 1 and @StartRow + @MaximumRows
+
+    SELECT
+    	S.ScheduleID,
+    	S.TaskID,
+    	ST.TaskType,
+    	ST.RoleID,
+    	S.ScheduleName,
+    	S.ScheduleTypeID,
+    	S.Interval,
+    	S.FromTime,
+    	S.ToTime,
+    	S.StartTime,
+    	S.LastRun,
+    	S.NextRun,
+    	S.Enabled,
+    	1 AS StatusID,
+    	S.PriorityID,
+    	S.MaxExecutionTime,
+    	S.WeekMonthDay,
+    	-- bug ISNULL(0, ...) always is not NULL
+    	-- ISNULL(0, (SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC)) AS LastResult,
+    	ISNULL((SELECT TOP 1 SeverityID FROM AuditLog WHERE ItemID = S.ScheduleID AND SourceName = ''SCHEDULER'' ORDER BY StartDate DESC), 0) AS LastResult,
+
+    	-- packages
+    	P.PackageID,
+    	P.PackageName,
+
+    	-- user
+    	P.UserID,
+    	U.Username,
+    	U.FirstName,
+    	U.LastName,
+    	U.FullName,
+    	U.RoleID AS UserRoleID,
+    	U.Email
+    FROM @Schedules AS STEMP
+    INNER JOIN Schedule AS S ON STEMP.ScheduleID = S.ScheduleID
+    INNER JOIN ScheduleTasks AS ST ON S.TaskID = ST.TaskID
+    INNER JOIN Packages AS P ON S.PackageID = P.PackageID
+    INNER JOIN UsersDetailed AS U ON P.UserID = U.UserID'
+
+    exec sp_executesql @sql, N'@PackageID int, @StartRow int, @MaximumRows int, @Recursive bit',
+    @PackageID, @StartRow, @MaximumRows, @Recursive
+
+    END
+GO

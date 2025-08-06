@@ -53,7 +53,15 @@ namespace SolidCP.UniversalInstaller.WinForms
 			InitializeComponent();
 		}
 
-		public EnterpriseServerSettings Settings => Installer.Current.Settings.EnterpriseServer;
+#if EFSupport
+		public const bool SqlServerOnly = false;
+		public const bool MariaDbSupport = Data.DbContext.UsePomelo;
+#else
+        public const bool SqlServerOnly = true;
+        public const bool MariaDbSupport = false;
+#endif
+
+        public EnterpriseServerSettings Settings => Installer.Current.Settings.EnterpriseServer;
 		public WebPortalSettings WebPortalSettings => Installer.Current.Settings.WebPortal;
 
 		protected override void InitializePageInternal()
@@ -70,23 +78,35 @@ namespace SolidCP.UniversalInstaller.WinForms
 			txtSqlServerPassword.Text = txtMySqlPassword.Text = Settings.DatabasePassword;
 			txtMySqlServer.Text = Settings.DatabaseServer;
 			txtMySqlPort.Text = Settings.DatabasePort != default ? Settings.DatabasePort.ToString() : "3306";
-			switch (Settings.DatabaseType)
-			{
-				default:
-				case Data.DbType.SqlServer:
-					tabControl.SelectedIndex = 0;
-					break;
-				case Data.DbType.MySql:
-				case Data.DbType.MariaDb:
-					tabControl.SelectedIndex = 1;
-					break;
-				case Data.DbType.Sqlite:
-				case Data.DbType.SqliteFX:
-					tabControl.SelectedIndex = 2;
-					break;
-			}
 
-			this.AllowMoveBack = true;
+            if (MariaDbSupport) tabMySql.Text = "  MySQL / MariaDB  ";
+            else tabMySql.Text = "  MySQL  ";
+
+			if (!SqlServerOnly)
+			{
+				switch (Settings.DatabaseType)
+				{
+					default:
+					case Data.DbType.SqlServer:
+						tabControl.SelectedIndex = 0;
+						break;
+					case Data.DbType.MySql:
+					case Data.DbType.MariaDb:
+						tabControl.SelectedIndex = 1;
+						break;
+					case Data.DbType.Sqlite:
+					case Data.DbType.SqliteFX:
+						tabControl.SelectedIndex = 2;
+						break;
+				}
+			}  else
+			{
+                Settings.DatabaseType = Data.DbType.SqlServer;
+                tabControl.TabPages.Remove(tabMySql);
+                tabControl.TabPages.Remove(tabSqlite);
+				tabControl.SelectedIndex = 0;
+            }
+            this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
 			cbSqlServerAuthentication.SelectedIndex = Settings.DatabaseWindowsAuthentication ? 0 : 1;
