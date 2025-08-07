@@ -1,6 +1,7 @@
 ﻿using Microsoft.Management.Infrastructure;
 using SolidCP.Providers.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -77,6 +78,17 @@ namespace SolidCP.Providers.Virtualization
             Command cmd = new Command("Get-VMHardDiskDrive");
 
             return _powerShell.ExecuteOnVm(cmd, vmData, withExceptions);
+        }
+
+        public string[] GetVirtualHardDiskPathFromVmPsObject(PSObject vmObject)
+        {
+            List<string> pathes = new List<string>();
+            foreach (var hardDrive in (IEnumerable)vmObject.GetProperty("HardDrives"))
+            {
+                string path = (string)hardDrive.GetType().GetProperty("Path").GetValue(hardDrive);
+                if (!String.IsNullOrEmpty(path)) pathes.Add(path);
+            }
+            return pathes.ToArray();
         }
 
         public void GetVirtualHardDiskDetail(string path, ref VirtualHardDiskInfo disk)
