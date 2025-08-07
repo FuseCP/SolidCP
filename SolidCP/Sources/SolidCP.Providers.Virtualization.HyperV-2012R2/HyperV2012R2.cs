@@ -246,8 +246,9 @@ namespace SolidCP.Providers.Virtualization
 
             try
             {
-                PSObject vmObject = VirtualMachineHelper.GetVmPSObject(vmId);
+                PSObject vmObject = VirtualMachineHelper.GetVmPSObject(vmId, !suppressErrors);
                 vmData.RawObject = vmObject;
+                vmData.VM = vm;
 
                 if (vmObject != null)
                 {
@@ -275,8 +276,6 @@ namespace SolidCP.Providers.Virtualization
                     vm.IsClustered = vmObject.GetBool("IsClustered");
 
                     vm.DynamicMemory = MemoryHelper.GetDynamicMemory(vmData);
-
-                    vmData.VM = vm;
                 }
             }
             catch (Exception ex)
@@ -315,7 +314,7 @@ namespace SolidCP.Providers.Virtualization
                 vmData.VM.DvdDriveInstalled = dvdInfo != null;
 
                 // HDD
-                vmData.VM.Disks = HardDriveHelper.Get(vmData);
+                vmData.VM.Disks = HardDriveHelper.Get(vmData, false);
 
                 if (vmData.VM.Disks != null && vmData.VM.Disks.GetLength(0) > 0)
                 {
@@ -2475,7 +2474,7 @@ namespace SolidCP.Providers.Virtualization
         {
             if (!isGetHddData)
             {
-                vmData.VM.Disks = HardDriveHelper.Get(vmData);
+                vmData.VM.Disks = HardDriveHelper.Get(vmData, false);
                 if (vmData.VM.Disks != null && vmData.VM.Disks.GetLength(0) > 0)
                 {
                     short numOfDisks = (short)vmData.VM.Disks.GetLength(0);
