@@ -35,9 +35,10 @@ namespace SolidCP.EnterpriseServer.Context
 	public partial class DbContextBase : DbContext, Data.IGenericDbContext
 	{
 		public const bool UsePomelo = Data.DbContext.UsePomelo;
+		public const bool NoMySql = !Data.DbContext.UseMySql;
 
 #if NetCore
-		public DbContextBase(Data.DbContext context) : this(new Data.DbOptions<DbContextBase>(context)) { }
+        public DbContextBase(Data.DbContext context) : this(new Data.DbOptions<DbContextBase>(context)) { }
 		public DbContextBase(DbContextOptions<DbContextBase> options) : base(options)
 		{
             if (options is Data.DbOptions<DbContextBase> opts)
@@ -265,15 +266,16 @@ namespace SolidCP.EnterpriseServer.Context
             {   // Pomelo
 				var serverVersion = serverVersions.GetOrAdd(connectionString, connectionString => ServerVersion.AutoDetect(connectionString));
 				builder.UseMySql(connectionString, serverVersion);
-			} else
+			} else if (!NoMySql)
             {   // MySQL.EntityFrameworkCore
                 var serverVersion = serverVersions.GetOrAdd(connectionString, connectionString => ServerVersion.AutoDetect(connectionString));
 				if (serverVersion.Type == Pomelo.EntityFrameworkCore.MySql.Infrastructure.ServerType.MariaDb) throw new NotSupportedException("MariaDB is not supported without Pomelo");
-#if NoPomelo
+#if NoPomelo && !NoMySql
 				builder.UseMySQL(connectionString);
 #endif
-			}
-		}
+            }
+            else throw new NotSupportedException("MySQL is not supported");
+        }
 		protected void UsePostgreSql(DbContextOptionsBuilder builder, string connectionString) => builder.UseNpgsql(connectionString);
 #if Oracle
 		protected void UseOracle(DbContextOptionsBuilder builder, string connectionString) => builder.UseOracle(connectionString);

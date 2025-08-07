@@ -33,6 +33,26 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 #endif
 
+#if NoMySql
+#if NETFRAMEWORK
+        public const bool UseMySql = true;
+#else
+#if NET9_0_OR_GREATER
+        public const bool UseMySql = true;
+#else
+        public const bool UseMySql = false;
+#endif
+#endif
+#else
+        public const bool UseMySql = true;
+#endif
+
+#if EFSupport
+        public const bool SupportsEF = true;
+#else
+        public const bool SupportsEF = false;
+#endif
+
         public DateTime DateTimeMin = new DateTime(1735, 1, 1);
 
         public const bool UseStoredProcedures = true;

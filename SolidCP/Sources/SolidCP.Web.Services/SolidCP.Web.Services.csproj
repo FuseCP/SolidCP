@@ -16,9 +16,9 @@
 		<PackageReference Include="CoreWCF.WebHttp" Version="1.7.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="9.0.1" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.6" />
-        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.6" GeneratePathProperty="true" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.Systemd" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="9.0.8" />
+        <PackageReference Include="System.ServiceProcess.ServiceController" Version="9.0.8" GeneratePathProperty="true" />
         <!--
 		<ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.Http\src\CoreWCF.Http.csproj" />
 		<ProjectReference Include="..\..\Lib\CoreWCF\src\CoreWCF.NetTcp\src\CoreWCF.NetTcp.csproj" />

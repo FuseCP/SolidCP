@@ -40,6 +40,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using SolidCP.Providers.OS;
 using SolidCP.Providers.Common;
 using Data = SolidCP.EnterpriseServer.Data;
 using SolidCP.UniversalInstaller.Core;
@@ -52,14 +53,10 @@ namespace SolidCP.UniversalInstaller.WinForms
 		{
 			InitializeComponent();
 		}
-
-#if EFSupport
-		public const bool SqlServerOnly = false;
-		public const bool MariaDbSupport = Data.DbContext.UsePomelo;
-#else
-        public const bool SqlServerOnly = true;
-        public const bool MariaDbSupport = false;
-#endif
+		
+		public const bool SqlServerOnly = !Data.DbContext.SupportsEF;
+        public bool MariaDbSupport => Data.DbContext.UsePomelo && Installer.Current.Settings.EnterpriseServer.RunOnNetCore;
+        public bool MySqlSupport => Data.DbContext.UsePomelo || Data.DbContext.UseMySql; // || !Installer.Current.Settings.EnterpriseServer.RunOnNetCore;
 
         public EnterpriseServerSettings Settings => Installer.Current.Settings.EnterpriseServer;
 		public WebPortalSettings WebPortalSettings => Installer.Current.Settings.WebPortal;
@@ -84,28 +81,48 @@ namespace SolidCP.UniversalInstaller.WinForms
 
 			if (!SqlServerOnly)
 			{
-				switch (Settings.DatabaseType)
+				if (MySqlSupport)
 				{
-					default:
-					case Data.DbType.SqlServer:
-						tabControl.SelectedIndex = 0;
-						break;
-					case Data.DbType.MySql:
-					case Data.DbType.MariaDb:
-						tabControl.SelectedIndex = 1;
-						break;
-					case Data.DbType.Sqlite:
-					case Data.DbType.SqliteFX:
-						tabControl.SelectedIndex = 2;
-						break;
+					switch (Settings.DatabaseType)
+					{
+						default:
+						case Data.DbType.SqlServer:
+							tabControl.SelectedIndex = 0;
+							break;
+						case Data.DbType.MySql:
+						case Data.DbType.MariaDb:
+							tabControl.SelectedIndex = 1;
+							break;
+						case Data.DbType.Sqlite:
+						case Data.DbType.SqliteFX:
+							tabControl.SelectedIndex = 2;
+							break;
+					}
 				}
-			}  else
+				else
+				{
+					tabControl.TabPages.Remove(tabMySql);
+					switch (Settings.DatabaseType)
+					{
+						default:
+						case Data.DbType.SqlServer:
+						case Data.DbType.MySql:
+						case Data.DbType.MariaDb:
+							tabControl.SelectedIndex = 0;
+							break;
+						case Data.DbType.Sqlite:
+						case Data.DbType.SqliteFX:
+							tabControl.SelectedIndex = 1;
+							break;
+					}
+				}
+			} else
 			{
-                Settings.DatabaseType = Data.DbType.SqlServer;
-                tabControl.TabPages.Remove(tabMySql);
-                tabControl.TabPages.Remove(tabSqlite);
+				Settings.DatabaseType = Data.DbType.SqlServer;
+				tabControl.TabPages.Remove(tabMySql);
+				tabControl.TabPages.Remove(tabSqlite);
 				tabControl.SelectedIndex = 0;
-            }
+			}
             this.AllowMoveBack = true;
 			this.AllowMoveNext = true;
 			this.AllowCancel = true;
@@ -196,20 +213,31 @@ namespace SolidCP.UniversalInstaller.WinForms
 						dbport = null;
 						break;
 					case 1:
-						dbtype = Data.DbType.MySql;
-						server = txtMySqlServer.Text.Trim();
-						database = txtMySqlDatabase.Text.Trim();
-						dbuser = txtMySqlUser.Text.Trim();
-						dbpassword = txtMySqlPassword.Text.Trim();
-						int port;
-						if (int.TryParse(txtMySqlPort.Text.Trim(), out port)) dbport = port;
-						else
+						if (MySqlSupport)
 						{
-							e.Cancel = true;
-							ShowWarning("Enter a valid port.");
-							return;
-						}
-						break;
+							dbtype = Data.DbType.MySql;
+							server = txtMySqlServer.Text.Trim();
+							database = txtMySqlDatabase.Text.Trim();
+							dbuser = txtMySqlUser.Text.Trim();
+							dbpassword = txtMySqlPassword.Text.Trim();
+							int port;
+							if (int.TryParse(txtMySqlPort.Text.Trim(), out port)) dbport = port;
+							else
+							{
+								e.Cancel = true;
+								ShowWarning("Enter a valid port.");
+								return;
+							}
+						} else
+						{
+                            dbtype = Data.DbType.Sqlite;
+                            server = "(local)";
+                            database = txtSqliteDatabase.Text.Trim();
+                            dbuser = dbpassword = null;
+                            dbport = null;
+                            break;
+                        }
+                        break;
 					case 2:
 						dbtype = Data.DbType.Sqlite;
 						server = "(local)";

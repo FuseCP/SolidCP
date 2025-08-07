@@ -223,7 +223,7 @@ namespace SolidCP.Portal
             // where the magic happens
             string TransformedXML = ReportTransform(Transform["Transform"], xmlString);
 
-            string fileName = "BandwidthReport-" + litPeriod.Text.Replace(" ", "").Replace("/", "-").Replace(",","") + Transform["TransformSuffix"];
+            string fileName = "BandwidthReport-" + litPeriod.Text.Replace(" ", "").Replace("/", "-").Replace(",","-") + Transform["TransformSuffix"];
 
             Response.Clear();
             Response.ClearHeaders();
