@@ -22,6 +22,37 @@ namespace SolidCP.EnterpriseServer.Data
 {
     public partial class DbContext : IDisposable
     {
+
+#if NoPomelo
+        public const bool UsePomelo = false;
+#else
+#if NETCOREAPP || NETSTANDARD
+        public const bool UsePomelo = true;
+#else
+        public const bool UsePomelo = false;
+#endif
+#endif
+
+#if NoMySql
+#if NETFRAMEWORK
+        public const bool UseMySql = true;
+#else
+#if NET9_0_OR_GREATER
+        public const bool UseMySql = true;
+#else
+        public const bool UseMySql = false;
+#endif
+#endif
+#else
+        public const bool UseMySql = true;
+#endif
+
+#if EFSupport
+        public const bool SupportsEF = true;
+#else
+        public const bool SupportsEF = false;
+#endif
+
         public DateTime DateTimeMin = new DateTime(1735, 1, 1);
 
         public const bool UseStoredProcedures = true;
@@ -81,11 +112,10 @@ namespace SolidCP.EnterpriseServer.Data
 #endif
 #endif
 
-#if NETFRAMEWORK
-		DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(NativeConnectionString);
+#if NETFRAMEWORK || NoPomelo && !NETSTANDARD
+        DbConnection MySqlDbConnection => new MySql.Data.MySqlClient.MySqlConnection(NativeConnectionString);
 #elif NETCOREAPP
         DbConnection MySqlDbConnection => new MySqlConnector.MySqlConnection(NativeConnectionString);
-
 #endif
 
         DbConnection SqliteDbConnection

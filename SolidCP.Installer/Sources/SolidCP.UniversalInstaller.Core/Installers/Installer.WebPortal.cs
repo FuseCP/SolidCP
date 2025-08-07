@@ -223,7 +223,7 @@ public abstract partial class Installer
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Security.Cryptography.ProtectedData"" publicKeyToken=""b03f5f7f11d50a3a"" culture=""neutral""/>
-                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4""/>
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.8"" newVersion=""9.0.0.8""/>
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Security.AccessControl"" publicKeyToken=""b03f5f7f11d50a3a"" culture=""neutral""/>
@@ -235,7 +235,7 @@ public abstract partial class Installer
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Text.Encodings.Web"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral""/>
-                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4""/>
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.8"" newVersion=""9.0.0.8""/>
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.ValueTuple"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral""/>
@@ -247,11 +247,11 @@ public abstract partial class Installer
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Text.Json"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral""/>
-                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4""/>
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.8"" newVersion=""9.0.0.8""/>
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Diagnostics.DiagnosticSource"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral""/>
-                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4""/>
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.8"" newVersion=""9.0.0.8""/>
             </dependentAssembly>
                     <dependentAssembly>
                 <assemblyIdentity name=""System.Memory"" publicKeyToken=""cc7b13ffcd2ddd51"" culture=""neutral"" />

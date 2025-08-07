@@ -176,7 +176,17 @@ namespace SolidCP.Web.Clients
 						if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
 						else protocol = Protocols.NetTcp;
 					}
-					else throw new NotSupportedException("net.tcp url must include tcp api");
+					else if (url.HasApi("ssl"))
+					{
+						protocol = Protocols.NetTcpSsl;
+						url = url.SetApi("tcp/ssl");
+					}
+					else
+					{
+						if (IsEncrypted && !IsLocal) throw new NotSupportedException("This protocol is not secure over this connection.");
+						protocol = Protocols.NetTcp;
+						url = url.SetApi("tcp");
+					}
 				}
 				//#if NETFRAMEWORK
 				else if (url.StartsWith("net.pipe://"))
@@ -564,6 +574,8 @@ namespace SolidCP.Web.Clients
 							{
 								var tcp = new NetTcpBinding(SecurityMode.None);
 								tcp.MaxReceivedMessageSize = MaximumMessageSize;
+								tcp.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
+								tcp.Security.Message.ClientCredentialType = MessageCredentialType.None;
 								binding = tcp;
 							}
 							else
@@ -574,6 +586,8 @@ namespace SolidCP.Web.Clients
 						case Protocols.NetTcpSsl:
 							var tcps = new NetTcpBinding(SecurityMode.Transport);
 							tcps.MaxReceivedMessageSize = MaximumMessageSize;
+							tcps.Security.Transport.ClientCredentialType = TcpClientCredentialType.None;
+							tcps.Security.Message.ClientCredentialType = MessageCredentialType.None;
 							binding = tcps;
 							break;
 						case Protocols.NetPipe:

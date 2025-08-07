@@ -44,7 +44,7 @@
 
 	<ItemGroup>
         <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="9.0.8" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="QRCoder" Version="1.6.0" />
         <PackageReference Include="RestSharp" Version="112.1.0" />
@@ -53,17 +53,17 @@
         <PackageReference Include="SkiaSharp.NativeAssets.macOS" Version="3.119.0" GeneratePathProperty="true" ExcludeAssets="all" />
         <PackageReference Include="SkiaSharp.NativeAssets.Win32" Version="3.119.0" GeneratePathProperty="true" ExcludeAssets="all" />
         <PackageReference Include="System.Buffers" Version="4.6.1" />
-        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.6" />
-        <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.6" />
-        <PackageReference Include="System.DirectoryServices" Version="9.0.6" />
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.8" />
+        <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.8" />
+        <PackageReference Include="System.DirectoryServices" Version="9.0.8" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
         <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
         <PackageReference Include="System.Memory" Version="4.6.3" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
-        <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.6" />
-        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.6" />
-        <PackageReference Include="System.Text.Json" Version="9.0.6" />
+        <PackageReference Include="System.Security.Cryptography.Xml" Version="9.0.8" />
+        <PackageReference Include="System.Text.Encodings.Web" Version="9.0.8" />
+        <PackageReference Include="System.Text.Json" Version="9.0.8" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
         <PackageReference Include="System.ValueTuple" Version="4.6.1" />
         <PackageReference Include="Twilio" Version="7.11.3" />

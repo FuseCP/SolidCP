@@ -97,29 +97,29 @@
         <Reference Include="System.Xml" />
     </ItemGroup>
     <ItemGroup Condition="$(TargetFramework) == 'net8.0'">
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Drawing" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Configuration" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.14" ExcludeAssets="runtime" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.14" />
-        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.14" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Drawing" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Configuration" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Build" Version="1.3.15" ExcludeAssets="runtime" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Compilers" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Extensions" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Mobile" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Optimization.WebForms" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.Web.Infrastructure" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.WebGrease" Version="1.3.15" />
+        <PackageReference Include="EstrellasDeEsperanza.WebFormsForCore.AjaxControlToolkit" Version="1.3.15" />
         
         <!-- .NET 8 for SolidCP.EnterpriseServer.Data -->
-        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.6" />
-        <PackageReference Include="System.Text.Json" Version="9.0.6" />
-        <PackageReference Include="System.Formats.Asn1" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.6" />
-        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.6" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Primitives" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.8" />
+        <PackageReference Include="System.Text.Json" Version="9.0.8" />
+        <PackageReference Include="System.Formats.Asn1" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="9.0.8" />
+        <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.8" />
     </ItemGroup>
     <ItemGroup>
         <Content Include="tinymce\**\*.*" />
@@ -203,9 +203,6 @@
         <None Remove="bin_dotnet\**\*.*" />
         <None Remove="Properties\PublishProfiles\**" />
         <None Remove="appsettings.json" />
-        <None Update="SolidCP.WebPortal.deps.json.old">
-            <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-        </None>
         <AspNetControls Remove="DesktopModules\**\*.ascx" />
         <AspNetControls Remove="DesktopModules\**\*.aspx" />
         <AspNetControls Remove="DesktopModules\**\*.master" />

@@ -21,7 +21,7 @@
     <ItemGroup>
         <PackageReference Include="MySql.Data" Version="9.3.0" />
         <!-- System.Security.Permissions does no show up in output folder, so copy it manually -->
-        <PackageReference Include="System.Security.Permissions" Version="9.0.6" GeneratePathProperty="true" />
+        <PackageReference Include="System.Security.Permissions" Version="9.0.8" GeneratePathProperty="true" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />

@@ -1050,13 +1050,13 @@ namespace SolidCP.Providers.DNS
         private void ReloadBIND(string Args, string zoneName)
         {
             var cmd = BindReloadBatch;
-            if (Shell.Default.Find(cmd) == null)
+            /*if (Shell.Default.Find(cmd) == null)
             {
                 var msg = $"BIND reload batch {cmd} does not exist";
                 var ex = new Exception(msg);
                 Log.WriteError(msg, ex);
                 throw ex;
-            }
+            }*/
 
             string rndcArguments = Args;
             if (!string.IsNullOrEmpty(zoneName))
@@ -1080,7 +1080,7 @@ namespace SolidCP.Providers.DNS
 				var bat = File.ReadAllText(cmd);
 				shell = OSInfo.Unix.DefaultShell.ExecScript(bat, rndcArguments);
 			}
-			else if (cmd.Contains(' ') && !cmd.StartsWith("\"")) shell = Shell.Default.Exec($"\"{cmd}\" {rndcArguments}");
+			else if (cmd.Contains(' ') && !cmd.StartsWith("\"") && File.Exists(cmd)) shell = Shell.Default.Exec($"\"{cmd}\" {rndcArguments}");
 			else if (string.IsNullOrWhiteSpace(cmd)) shell = Shell.Default.Exec($"rndc {rndcArguments}");
 			else shell = Shell.Default.Exec($"{cmd} {rndcArguments}");
 

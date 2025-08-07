@@ -3,7 +3,8 @@
     <PropertyGroup>
         <TargetFramework>netstandard2.0</TargetFramework>
         <LangVersion>13</LangVersion>
-    </PropertyGroup>
+		<DefineConstants>$(DefineConstants)</DefineConstants>
+	</PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\SolidCP\Sources\SolidCP.Providers.Base\SolidCP.Providers.Base.csproj" />
