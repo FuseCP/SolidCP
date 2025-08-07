@@ -4114,21 +4114,21 @@ namespace SolidCP.Providers.Web
 			objSite.Put();
 		}
 
-		#endregion
+        #endregion
+        public virtual int GetIISVersion()
+        {
+            int value = 0;
+            RegistryKey root = Registry.LocalMachine;
+            RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
+            if (rk != null)
+            {
+                value = (int)rk.GetValue("MajorVersion", null);
+                rk.Close();
+            }
+            return value;
+        }
 
-		public virtual bool IsIISInstalled()
-		{
-			int value = 0;
-			RegistryKey root = Registry.LocalMachine;
-			RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
-			if (rk != null)
-			{
-				value = (int)rk.GetValue("MajorVersion", 0);
-				rk.Close();
-			}
-
-			return value == 6;
-		}
+        public virtual bool IsIISInstalled() => GetIISVersion() == 6;
 
 		public override bool IsInstalled()
 		{
