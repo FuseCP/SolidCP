@@ -244,7 +244,7 @@ public abstract partial class Installer
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Collections.Immutable"" publicKeyToken=""b03f5f7f11d50a3a"" culture=""neutral""/>
-                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.3"" newVersion=""9.0.0.4""/>
+                <bindingRedirect oldVersion=""0.0.0.0-9.0.0.8"" newVersion=""9.0.0.8""/>
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Runtime.CompilerServices.Unsafe""
@@ -256,13 +256,13 @@ public abstract partial class Installer
                 <assemblyIdentity name=""System.Text.Encoding.CodePages""
                     publicKeyToken=""b03f5f7f11d50a3a""
                     culture=""neutral"" />
-                <bindingRedirect oldVersion=""4.0.0.0-9.0.0.3"" newVersion=""9.0.0.4"" />
+                <bindingRedirect oldVersion=""4.0.0.0-9.0.0.8"" newVersion=""9.0.0.8"" />
             </dependentAssembly>
             <dependentAssembly>
                 <assemblyIdentity name=""System.Diagnostics.EventLog""
                     publicKeyToken=""cc7b13ffcd2ddd51""
                     culture=""neutral"" />
-                <bindingRedirect oldVersion=""4.0.0.0-9.0.0.3"" newVersion=""9.0.0.4"" />
+                <bindingRedirect oldVersion=""4.0.0.0-9.0.0.8"" newVersion=""9.0.0.8"" />
             </dependentAssembly>
         </assemblyBinding>
 	</runtime>"));
