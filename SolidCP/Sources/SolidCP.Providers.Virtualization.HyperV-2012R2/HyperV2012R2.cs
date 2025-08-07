@@ -274,7 +274,9 @@ namespace SolidCP.Providers.Virtualization
                     vm.CreatedDate = vmObject.GetProperty<DateTime>("CreationTime");
                     vm.ReplicationState = vmObject.GetEnum<ReplicationState>("ReplicationState", ReplicationState.NotApplicable, suppressErrors);
                     vm.IsClustered = vmObject.GetBool("IsClustered");
+                    vm.RootFolderPath = vmObject.GetString("Path");
 
+                    vm.VirtualHardDrivePath = HardDriveHelper.GetVirtualHardDiskPathFromVmPsObject(vmObject);
                     vm.DynamicMemory = MemoryHelper.GetDynamicMemory(vmData);
                 }
             }
