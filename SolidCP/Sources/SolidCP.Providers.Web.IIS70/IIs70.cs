@@ -528,10 +528,10 @@ namespace SolidCP.Providers.Web
 
 		public IIs70()
 		{
-			if (IsIISInstalled())
-			{
-				// New implementation avoiding locks and other sync issues
-				winAuthSvc = new WindowsAuthModuleService();
+            if (GetIISVersion() >= 7)
+            {
+                // New implementation avoiding locks and other sync issues
+                winAuthSvc = new WindowsAuthModuleService();
 				anonymAuthSvc = new AnonymAuthModuleService();
 				basicAuthSvc = new BasicAuthModuleService();
 				comprSvc = new CompressionModuleService();
@@ -3699,20 +3699,22 @@ namespace SolidCP.Providers.Web
 		{
 			List<SettingPair> allSettings = new List<SettingPair>();
 
-			using (ServerManager srvman = webObjectsSvc.GetServerManager())
+			if (GetIISVersion() >= 7)
 			{
-				allSettings.AddRange(extensionsSvc.GetExtensionsInstalled(srvman));
-
-				// add default web management settings
-				WebManagementServiceSettings wmSettings = GetWebManagementServiceSettings();
-				if (wmSettings != null)
+				using (ServerManager srvman = webObjectsSvc.GetServerManager())
 				{
-					allSettings.Add(new SettingPair("WmSvc.Port", wmSettings.Port));
-					allSettings.Add(new SettingPair("WmSvc.ServiceUrl", wmSettings.ServiceUrl));
-					allSettings.Add(new SettingPair("WmSvc.RequiresWindowsCredentials", wmSettings.RequiresWindowsCredentials.ToString()));
+					allSettings.AddRange(extensionsSvc.GetExtensionsInstalled(srvman));
+
+					// add default web management settings
+					WebManagementServiceSettings wmSettings = GetWebManagementServiceSettings();
+					if (wmSettings != null)
+					{
+						allSettings.Add(new SettingPair("WmSvc.Port", wmSettings.Port));
+						allSettings.Add(new SettingPair("WmSvc.ServiceUrl", wmSettings.ServiceUrl));
+						allSettings.Add(new SettingPair("WmSvc.RequiresWindowsCredentials", wmSettings.RequiresWindowsCredentials.ToString()));
+					}
 				}
 			}
-
 			// return settings
 			return allSettings.ToArray();
 		}
@@ -4172,26 +4174,9 @@ namespace SolidCP.Providers.Web
 
 
 
-		#endregion
+        #endregion
 
-		public override bool IsIISInstalled()
-		{
-			int value = 0;
-			RegistryKey root = Registry.LocalMachine;
-			RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
-			if (rk != null)
-			{
-				value = (int)rk.GetValue("MajorVersion", null);
-				rk.Close();
-			}
-
-			return value == 7;
-		}
-
-		public override bool IsInstalled()
-		{
-			return OSInfo.IsWindows && IsIISInstalled();
-		}
+        public override bool IsIISInstalled() => GetIISVersion() == 7;
 
 		#region Remote Management Access
 

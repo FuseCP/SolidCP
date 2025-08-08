@@ -48,7 +48,7 @@ namespace SolidCP.UniversalInstaller
 		{
 			if (!OSInfo.IsWindows) return;
 
-			if (OSInfo.Current.WebServer.IsInstalled())
+			if (!OSInfo.Current.WebServer.IsInstalled())
 				Log.WriteError("IIS not found.");
 			else
 			{

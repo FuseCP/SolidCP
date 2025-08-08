@@ -280,6 +280,11 @@
             "ComponentsUrl" = "8:"
                 "Items"
                 {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.8"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4.8 (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.8"
+                    }
                 }
             }
         }
@@ -288,7 +293,7 @@
         "DisplayName" = "8:Release"
         "IsDebugOnly" = "11:FALSE"
         "IsReleaseOnly" = "11:TRUE"
-        "OutputFilename" = "8:Release\\SolidCP.UniversalInstaller.Setup.msi"
+        "OutputFilename" = "8:Release\\SolidCP.Installer.msi"
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
@@ -1202,7 +1207,7 @@
             "Target" = "8:_9C502469DF204A58AC8C9F815820979C"
             "Folder" = "8:_7CE85549734B4A438AECDF89FF12DC7D"
             "WorkingFolder" = "8:_69534927F8764F848A73EDCFB8B13EC6"
-            "Icon" = "8:"
+            "Icon" = "8:_CB6C4A2B6CFB4E21B5740F9CFE359A18"
             "Feature" = "8:"
             }
         }

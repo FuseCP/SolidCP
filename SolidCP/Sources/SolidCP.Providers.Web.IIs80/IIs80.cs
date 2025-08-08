@@ -116,24 +116,7 @@ namespace SolidCP.Providers.Web
 			return messages.ToArray();
 		}
 
-		public override bool IsIISInstalled()
-		{
-			int value = 0;
-			RegistryKey root = Registry.LocalMachine;
-			RegistryKey rk = root.OpenSubKey("SOFTWARE\\Microsoft\\InetStp");
-			if (rk != null)
-			{
-				value = (int)rk.GetValue("MajorVersion", null);
-				rk.Close();
-			}
-
-			return value == 8;
-		}
-
-		public override bool IsInstalled()
-		{
-			return OS.OSInfo.IsWindows && IsIISInstalled();
-		}
+		public override bool IsIISInstalled() => GetIISVersion() == 8;
 
 		public override bool CheckCertificate(WebSite webSite)
 		{
