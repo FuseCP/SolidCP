@@ -117,7 +117,7 @@ namespace SolidCP.Providers.Virtualization
                 if (bootFromCD)
                     cmd.Parameters.Add("FirstBootDevice", _dvdDriveHelper.GetPS(vmData));
                 else
-                    cmd.Parameters.Add("FirstBootDevice", _hardDriveHelper.GetPS(vmData).FirstOrDefault());
+                    cmd.Parameters.Add("FirstBootDevice", _hardDriveHelper.GetPS(vmData, true).FirstOrDefault());
 
                 _powerShell.ExecuteOnVm(cmd, vmData);
             }

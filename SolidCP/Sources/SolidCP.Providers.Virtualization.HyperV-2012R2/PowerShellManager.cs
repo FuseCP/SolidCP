@@ -82,7 +82,16 @@ namespace SolidCP.Providers.Virtualization
         public Collection<PSObject> ExecuteOnVm(Command cmd, VirtualMachineData vmData, bool withExceptions = false)
         {
             if (vmData.RawObject == null)
-                throw new NullReferenceException("VM rawObject is null! You must use GetVirtualMachine/GetVmPSObject method before using this method!");
+            {
+                if (withExceptions)
+                {
+                    throw new NullReferenceException("VM rawObject is null! You must use GetVirtualMachine/GetVmPSObject method before using this method!");
+                }
+                else
+                {
+                    return null;
+                }
+            }
 
             cmd.Parameters.Add("VM", vmData.RawObject);
             return Execute(cmd, false, withExceptions); //False, because all remote connection information is already contained in RawObject
