@@ -97,7 +97,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             return vm;
         }
 
-        private static void CheckVirtualMachinePath(VirtualMachine vmItem, VirtualMachine realVm, VirtualizationServer2012 vps)
+        private void CheckVirtualMachinePath(VirtualMachine vmItem, VirtualMachine realVm, VirtualizationServer2012 vps)
         {
             bool update = false;
             if (!String.IsNullOrEmpty(realVm.RootFolderPath) && !realVm.RootFolderPath.Equals(vmItem.RootFolderPath))
@@ -123,7 +123,7 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             if (update) PackageController.UpdatePackageItem(vmItem);
         }
 
-        public static VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
+        public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)
         {
             // get proxy
             VirtualizationServer2012 vps = VirtualizationHelper.GetVirtualizationProxy(serviceId);
