@@ -83,6 +83,9 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             // load details
             VirtualMachine vm = vps.GetVirtualMachine(machine.VirtualMachineId);
 
+            // check if VM RootFolderPath and VirtualHardDrivePath is correct
+            CheckVirtualMachinePath(machine, vm, vps);
+
             // add meta props
             vm.Id = machine.Id;
             vm.Name = machine.Name;
@@ -92,6 +95,32 @@ namespace SolidCP.EnterpriseServer.Code.Virtualization2012.Helpers
             vm.ExternalNicMacAddress = machine.ExternalNicMacAddress;
 
             return vm;
+        }
+
+        private void CheckVirtualMachinePath(VirtualMachine vmItem, VirtualMachine realVm, VirtualizationServer2012 vps)
+        {
+            bool update = false;
+            if (!String.IsNullOrEmpty(realVm.RootFolderPath) && !realVm.RootFolderPath.Equals(vmItem.RootFolderPath))
+            {
+                vmItem.RootFolderPath = realVm.RootFolderPath;
+                update = true;
+            }
+            if (realVm.VirtualHardDrivePath != null && realVm.VirtualHardDrivePath.Length > 0)
+            {
+                if (!realVm.VirtualHardDrivePath.SequenceEqual(vmItem.VirtualHardDrivePath))
+                {
+                    // we also need to update the HddSize array to match the paths
+                    VirtualMachine extVm = vps.GetVirtualMachineEx(vmItem.VirtualMachineId);
+                    if (extVm.VirtualHardDrivePath != null && extVm.VirtualHardDrivePath.Length > 0 
+                        && extVm.HddSize != null && extVm.VirtualHardDrivePath.Length == extVm.HddSize.Length)
+                    {
+                        vmItem.VirtualHardDrivePath = extVm.VirtualHardDrivePath;
+                        vmItem.HddSize = extVm.HddSize;
+                        update = true;
+                    }
+                }
+            }
+            if (update) PackageController.UpdatePackageItem(vmItem);
         }
 
         public VirtualMachine GetVirtualMachineExtendedInfo(int serviceId, string vmId)

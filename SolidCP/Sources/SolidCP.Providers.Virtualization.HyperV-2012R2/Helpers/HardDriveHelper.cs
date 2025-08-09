@@ -1,6 +1,7 @@
 ﻿using Microsoft.Management.Infrastructure;
 using SolidCP.Providers.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -25,11 +26,11 @@ namespace SolidCP.Providers.Virtualization
             _fileSystemHelper = fileSystemHelper;
         }
 
-        public VirtualHardDiskInfo[] Get(VirtualMachineData vmData)
+        public VirtualHardDiskInfo[] Get(VirtualMachineData vmData, bool withExceptions)
         {
             List<VirtualHardDiskInfo> disks = new List<VirtualHardDiskInfo>();
 
-            Collection<PSObject> result = GetPS(vmData);
+            Collection<PSObject> result = GetPS(vmData, withExceptions);
 
             if (result != null && result.Count > 0)
             {
@@ -72,11 +73,22 @@ namespace SolidCP.Providers.Virtualization
         //    return drives.FirstOrDefault(d=>d.Path == vhdPath);
         //}
 
-        public Collection<PSObject> GetPS(VirtualMachineData vmData)
+        public Collection<PSObject> GetPS(VirtualMachineData vmData, bool withExceptions)
         {
             Command cmd = new Command("Get-VMHardDiskDrive");
 
-            return _powerShell.ExecuteOnVm(cmd, vmData, true);
+            return _powerShell.ExecuteOnVm(cmd, vmData, withExceptions);
+        }
+
+        public string[] GetVirtualHardDiskPathFromVmPsObject(PSObject vmObject)
+        {
+            List<string> pathes = new List<string>();
+            foreach (var hardDrive in (IEnumerable)vmObject.GetProperty("HardDrives"))
+            {
+                string path = (string)hardDrive.GetType().GetProperty("Path").GetValue(hardDrive);
+                if (!String.IsNullOrEmpty(path)) pathes.Add(path);
+            }
+            return pathes.ToArray();
         }
 
         public void GetVirtualHardDiskDetail(string path, ref VirtualHardDiskInfo disk)
@@ -102,7 +114,7 @@ namespace SolidCP.Providers.Virtualization
         public void Update(VirtualMachineData realVmData, VirtualMachine vmSettings)
         {
             if (realVmData.VM.Disks == null) //At this moment it isn't possible, but if somebody send vm data without vm.disks, we try to get it.
-                realVmData.VM.Disks = Get(realVmData);
+                realVmData.VM.Disks = Get(realVmData, true);
 
             bool vhdChanged = false;
 
@@ -190,7 +202,7 @@ namespace SolidCP.Providers.Virtualization
             }
 
             // resize VHD check
-            if (vhdChanged) realVmData.VM.Disks = Get(realVmData);
+            if (vhdChanged) realVmData.VM.Disks = Get(realVmData, true);
             if (realVmData.VM.Disks != null)
             {
                 for (int i = 0; i < realVmData.VM.Disks.Length; i++)

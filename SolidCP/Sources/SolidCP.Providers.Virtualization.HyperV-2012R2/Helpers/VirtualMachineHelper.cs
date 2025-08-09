@@ -82,11 +82,11 @@ namespace SolidCP.Providers.Virtualization
             }            
         }
                 
-        public PSObject GetVmPSObject(string vmId) //if any Powershell command accept VM object WE MUST use it as it extremely faster
+        public PSObject GetVmPSObject(string vmId, bool withExceptions) //if any Powershell command accept VM object WE MUST use it as it extremely faster
         {
             Command cmd = new Command("Get-VM");
             cmd.Parameters.Add("Id", vmId);
-            Collection<PSObject> result = _powerShell.Execute(cmd, true, true);
+            Collection<PSObject> result = _powerShell.Execute(cmd, true, withExceptions);
             if (result != null && result.Count > 0)
             {
                 return result[0];
