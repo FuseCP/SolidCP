@@ -56,8 +56,8 @@
         <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.8" />
         <PackageReference Include="System.Diagnostics.EventLog" Version="9.0.8" />
         <PackageReference Include="System.DirectoryServices" Version="9.0.8" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.12.1" />
-        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.6" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.13.1" />
+        <PackageReference Include="System.Linq.Dynamic.Core" Version="1.6.7" />
         <PackageReference Include="System.Memory" Version="4.6.3" />
         <PackageReference Include="System.Numerics.Vectors" Version="4.6.1" />
         <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.1.2" />
@@ -66,27 +66,27 @@
         <PackageReference Include="System.Text.Json" Version="9.0.8" />
         <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
         <PackageReference Include="System.ValueTuple" Version="4.6.1" />
-        <PackageReference Include="Twilio" Version="7.11.3" />
+        <PackageReference Include="Twilio" Version="7.12.0" />
         <PackageReference Include="WhoisClient.NET" Version="6.1.0" />
-        <PackageReference Include="MailKit" Version="4.12.1" />
-        <PackageReference Include="MimeKit" Version="4.12.0" />
+        <PackageReference Include="MailKit" Version="4.13.0" />
+        <PackageReference Include="MimeKit" Version="4.13.0" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.5'">
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
-        <PackageReference Include="Azure.Identity" Version="1.14.0" />
-        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.6" />
+        <PackageReference Include="Azure.Identity" Version="1.15.0" />
+        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.7" />
     </ItemGroup>
         
     <ItemGroup Condition="'$(TargetFramework)' == 'net48' AND '$(EntityFramework6)' == '6.4'">
         <PackageReference Include="System.Data.SqlClient" Version="4.8.6" />
-        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.6" />
+        <PackageReference Include="EntityFramework.DynamicLinq" Version="1.6.7" />
     </ItemGroup>
 
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
-        <PackageReference Include="Azure.Identity" Version="1.14.0" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.6.6" />
+        <PackageReference Include="Azure.Identity" Version="1.15.0" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.DynamicLinq" Version="8.6.7" />
         <PackageReference Include="System.ServiceModel.Primitives" Version="8.1.2" />
     </ItemGroup>
 

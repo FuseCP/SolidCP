@@ -14,7 +14,7 @@
 		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="9.3.0" GeneratePathProperty="true" />
+		<PackageReference Include="MySql.Data" Version="9.4.0" GeneratePathProperty="true" />
         <PackageReference Include="System.Security.Permissions" Verison="9.0.4" GeneratePathProperty="true" />
         <PackageReference Include="System.Runtime.Loader" Version="4.3.0" GeneratePathProperty="true" />
     </ItemGroup>

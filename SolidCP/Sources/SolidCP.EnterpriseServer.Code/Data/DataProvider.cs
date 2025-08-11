@@ -4641,12 +4641,12 @@ namespace SolidCP.EnterpriseServer
                         g.Ip.DefaultGateway,
                         g.Ip.Comments,
                         g.Ip.ServerId,
-                        g.Server.ServerName,
+                        ServerName = g.Server != null ? g.Server.ServerName : null,
                         ItemId = g.PackageIp != null ? g.PackageIp.ItemId : null,
-                        g.Item.ItemName,
+                        ItemName = g.Item != null ? g.Item.ItemName : null,
                         PackageId = g.PackageIp != null ? (int?)g.PackageIp.PackageId : null,
-                        g.Package.PackageName,
-                        g.Package.UserId,
+                        PackageName = g.Package != null ? g.Package.PackageName : null,
+                        UserId = g.Package != null ? g.Package.UserId : 0,
                         Username = u != null ? u.Username : null
                     });
 

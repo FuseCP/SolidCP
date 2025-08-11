@@ -19,7 +19,7 @@
         <Compile Include="..\VersionInfo.cs" Link="VersionInfo.cs" />
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="MySql.Data" Version="9.3.0" />
+        <PackageReference Include="MySql.Data" Version="9.4.0" />
         <!-- System.Security.Permissions does no show up in output folder, so copy it manually -->
         <PackageReference Include="System.Security.Permissions" Version="9.0.8" GeneratePathProperty="true" />
     </ItemGroup>
