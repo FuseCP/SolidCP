@@ -5,7 +5,7 @@
         <LangVersion>13</LangVersion>
         <ImplicitUsings>disable</ImplicitUsings>
         <ScaffoldConnectionString>Server=(local);Database=SolidCPFresh;uid=sa;pwd=Password12;TrustServerCertificate=true;Connection Timeout=300;command timeout=300</ScaffoldConnectionString>
-        <SupportOracle Condition="$(TargetFramework) != 'net48'">true</SupportOracle>
+        <SupportOracle Condition="$(TargetFramework) != 'net48'">false</SupportOracle>
 		<UsePomelo>true</UsePomelo>
 		<UseMySql Condition="'$(TargetFramework)' == 'net9.0'">true</UseMySql>
 		<UseMySql Condition="'$(TargetFramework)' != 'net9.0'">false</UseMySql>
@@ -56,7 +56,7 @@
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
         <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="9.0.0-preview.2.efcore.9.0.0" />
 		<PackageReference Include="MySql.EntityFrameworkCore" Version="9.0.6" Condition="$(UseMySql) == 'true'" />
-		<PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.80" Condition="$(SupportOracle) == 'True'" />
+		<PackageReference Include="Oracle.EntityFrameworkCore" Version="9.23.90" Condition="$(SupportOracle) == 'true'" />
         <PackageReference Include="Z.EntityFramework.Plus.EFCore" Version="9.103.9.2" />
         <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
         <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.8" />
