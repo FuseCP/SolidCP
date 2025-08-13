@@ -152,6 +152,7 @@ jobs:
           !SolidCP\Deploy\Release\Install
           !SolidCP\Deploy\Release\Update
         compression-level: 9
+        retention-days: 1
 
     #- name: Run unit tests
     #  working-directory: SolidCP\Sources

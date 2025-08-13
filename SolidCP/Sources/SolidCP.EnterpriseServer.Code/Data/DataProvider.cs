@@ -4570,53 +4570,87 @@ namespace SolidCP.EnterpriseServer
 			{
 				var isAdmin = CheckIsUserAdmin(actorId);
 
-				var addresses = IpAddresses
-					.Where(ip => isAdmin &&
-						(poolId == 0 || (poolId != 0 && poolId == ip.PoolId)) &&
-						(serverId == 0 || (serverId != 0 && serverId == ip.ServerId)))
-					.Join(Servers, ip => ip.ServerId, s => s.ServerId, (ip, s) => new { Ip = ip, Server = s })
-					.Join(PackageIpAddresses, g => g.Ip.AddressId, p => p.AddressId, (g, p) => new
-					{
-						g.Ip,
-						g.Server,
-						PackageIp = p
-					})
-					.Join(ServiceItems, g => g.PackageIp.ItemId, s => s.ItemId, (g, s) => new
-					{
-						g.Ip,
-						g.Server,
-						g.PackageIp,
-						Item = s
-					})
-					.Join(Packages, g => g.PackageIp.PackageId, p => p.PackageId, (g, p) => new
-					{
-						g.Ip,
-						g.Server,
-						g.PackageIp,
-						g.Item,
-						Package = p
-					})
-					.Join(Users, g => g.Package.UserId, u => u.UserId, (g, u) => new
-					{
-						g.Ip.AddressId,
-						g.Ip.PoolId,
-						g.Ip.ExternalIp,
-						g.Ip.InternalIp,
-						g.Ip.SubnetMask,
-						g.Ip.DefaultGateway,
-						g.Ip.Comments,
-						g.Ip.Vlan,
-						g.Ip.ServerId,
-						g.Server.ServerName,
-						g.PackageIp.ItemId,
-						g.Item.ItemName,
-						g.PackageIp.PackageId,
-						g.Package.PackageName,
-						g.Package.UserId,
-						u.Username
-					});
+                var addresses = IpAddresses
+                    .Where(ip => isAdmin &&
+                        (poolId == 0 || (poolId != 0 && poolId == ip.PoolId)) &&
+                        (serverId == 0 || (serverId != 0 && serverId == ip.ServerId)))
+                    .GroupJoin(Servers, ip => ip.ServerId, s => s.ServerId, (ip, ss) => new { Ip = ip, Servers = ss })
+                    .SelectMany(ip => ip.Servers.DefaultIfEmpty(), (ip, ss) => new
+                    {
+                        ip.Ip,
+                        Server = ss
+                    })
+                    .GroupJoin(PackageIpAddresses, g => g.Ip.AddressId, p => p.AddressId, (g, ps) => new
+                    {
+                        g.Ip,
+                        g.Server,
+                        PackageIps = ps
+                    })
+                    .SelectMany(ip => ip.PackageIps.DefaultIfEmpty(), (ip, ps) => new
+                    {
+                        ip.Ip,
+                        ip.Server,
+                        PackageIp = ps
+                    })
+                    .GroupJoin(ServiceItems, g => g.PackageIp != null ? g.PackageIp.ItemId : null, s => s.ItemId, (g, ss) => new
+                    {
+                        g.Ip,
+                        g.Server,
+                        g.PackageIp,
+                        Items = ss
+                    })
+                    .SelectMany(ip => ip.Items.DefaultIfEmpty(), (ip, s) => new
+                    {
+                        ip.Ip,
+                        ip.Server,
+                        ip.PackageIp,
+                        Item = s
+                    })
+                    .GroupJoin(Packages, g => g.PackageIp != null ? g.PackageIp.PackageId : -1, p => p.PackageId, (g, ps) => new
+                    {
+                        g.Ip,
+                        g.Server,
+                        g.PackageIp,
+                        g.Item,
+                        Packages = ps
+                    })
+                    .SelectMany(g => g.Packages.DefaultIfEmpty(), (g, ps) => new
+                    {
+                        g.Ip,
+                        g.Server,
+                        g.PackageIp,
+                        g.Item,
+                        Package = ps
+                    })
+                    .GroupJoin(Users, g => g.Package != null ? g.Package.UserId : -1, u => u.UserId, (g, u) => new
+                    {
+                        g.Ip,
+                        g.Server,
+                        g.PackageIp,
+                        g.Item,
+                        g.Package,
+                        Users = u
+                    })
+                    .SelectMany(g => g.Users.DefaultIfEmpty(), (g, u) => new
+                    {
+                        g.Ip.AddressId,
+                        g.Ip.PoolId,
+                        g.Ip.ExternalIp,
+                        g.Ip.InternalIp,
+                        g.Ip.SubnetMask,
+                        g.Ip.DefaultGateway,
+                        g.Ip.Comments,
+                        g.Ip.ServerId,
+                        ServerName = g.Server != null ? g.Server.ServerName : null,
+                        ItemId = g.PackageIp != null ? g.PackageIp.ItemId : null,
+                        ItemName = g.Item != null ? g.Item.ItemName : null,
+                        PackageId = g.PackageIp != null ? (int?)g.PackageIp.PackageId : null,
+                        PackageName = g.Package != null ? g.Package.PackageName : null,
+                        UserId = g.Package != null ? g.Package.UserId : 0,
+                        Username = u != null ? u.Username : null
+                    });
 
-				if (!string.IsNullOrEmpty(filterValue))
+                if (!string.IsNullOrEmpty(filterValue))
 				{
 					if (!string.IsNullOrEmpty(filterColumn))
 					{
